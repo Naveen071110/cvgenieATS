@@ -58,7 +58,7 @@ export default function Header() {
                 onClick={() => scrollToSection("features")}
                 className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
               >
-                Features
+                How it Works
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
@@ -104,7 +104,7 @@ export default function Header() {
               onClick={() => scrollToSection("features")}
               className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left"
             >
-              Features
+              How it Works
             </button>
             <button 
               onClick={() => scrollToSection("pricing")}

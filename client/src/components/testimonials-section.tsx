@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const testimonials = [
   {
@@ -19,10 +20,15 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection() {
+  const headerAnimation = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div 
+          ref={headerAnimation.ref}
+          className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+        >
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Trusted by Job Seekers Worldwide
           </h2>
@@ -32,8 +38,16 @@ export default function TestimonialsSection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-slate-50 rounded-2xl p-6 border border-slate-200 floating-card">
+          {testimonials.map((testimonial, index) => {
+            const testimonialAnimation = useScrollAnimation({ threshold: 0.2 });
+            return (
+            <div 
+              key={index} 
+              ref={testimonialAnimation.ref}
+              className={`bg-slate-50 rounded-2xl p-6 border border-slate-200 floating-card scroll-fade-in scroll-fade-in-delay-${index + 1} ${
+                testimonialAnimation.isVisible ? 'visible' : ''
+              }`}
+            >
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
                   {[...Array(5)].map((_, i) => (
@@ -49,7 +63,8 @@ export default function TestimonialsSection() {
                 <p className="text-sm text-slate-500">{testimonial.role}</p>
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
       </div>
     </section>

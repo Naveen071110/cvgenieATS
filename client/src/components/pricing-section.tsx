@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const freePlanFeatures = [
   "3 resume generations per month",
@@ -20,10 +21,17 @@ const proPlanFeatures = [
 ];
 
 export default function PricingSection() {
+  const headerAnimation = useScrollAnimation({ threshold: 0.2 });
+  const freePlanAnimation = useScrollAnimation({ threshold: 0.2 });
+  const proPlanAnimation = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div 
+          ref={headerAnimation.ref}
+          className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+        >
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Simple, Transparent Pricing
           </h2>
@@ -34,7 +42,12 @@ export default function PricingSection() {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Free Plan */}
-          <Card className="bg-white shadow-lg floating-card">
+          <Card 
+            ref={freePlanAnimation.ref}
+            className={`bg-white shadow-lg floating-card scroll-fade-in scroll-fade-in-delay-1 ${
+              freePlanAnimation.isVisible ? 'visible' : ''
+            }`}
+          >
             <CardContent className="p-8">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">Free</h3>
@@ -70,7 +83,12 @@ export default function PricingSection() {
           </Card>
 
           {/* Pro Plan */}
-          <Card className="bg-primary text-white shadow-xl relative floating-card">
+          <Card 
+            ref={proPlanAnimation.ref}
+            className={`bg-primary text-white shadow-xl relative floating-card scroll-fade-in scroll-fade-in-delay-2 ${
+              proPlanAnimation.isVisible ? 'visible' : ''
+            }`}
+          >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
               <span className="bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-sm font-semibold">
                 Most Popular

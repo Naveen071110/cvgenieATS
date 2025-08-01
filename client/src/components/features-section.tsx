@@ -1,4 +1,5 @@
 import { Zap, CheckCircle, Mail, Download } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const features = [
   {
@@ -168,10 +169,15 @@ const features = [
 ];
 
 export default function FeaturesSection() {
+  const headerAnimation = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div 
+          ref={headerAnimation.ref}
+          className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+        >
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Why Choose CVGenie?
           </h2>
@@ -181,10 +187,16 @@ export default function FeaturesSection() {
         </div>
 
         <div className="space-y-20">
-          {features.map((feature, index) => (
-            <div key={index} className={`grid lg:grid-cols-2 gap-12 items-center ${
-              feature.reverse ? 'lg:grid-flow-col-dense' : ''
-            }`}>
+          {features.map((feature, index) => {
+            const featureAnimation = useScrollAnimation({ threshold: 0.1 });
+            return (
+            <div 
+              key={index} 
+              ref={featureAnimation.ref}
+              className={`grid lg:grid-cols-2 gap-12 items-center scroll-fade-in ${
+                featureAnimation.isVisible ? 'visible' : ''
+              } ${feature.reverse ? 'lg:grid-flow-col-dense' : ''}`}
+            >
               <div className={feature.reverse ? 'lg:col-start-2' : ''}>
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                   <feature.icon className="w-8 h-8 text-primary" />
@@ -206,7 +218,8 @@ export default function FeaturesSection() {
                 {feature.mockup}
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
       </div>
     </section>
