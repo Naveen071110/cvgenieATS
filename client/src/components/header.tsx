@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,12 +48,12 @@ export default function Header() {
             
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
-              <button 
-                onClick={() => scrollToSection("generator")}
+              <Link 
+                to="/generator"
                 className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
               >
-                How it Works
-              </button>
+                Generator
+              </Link>
               <button 
                 onClick={() => scrollToSection("features")}
                 className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
@@ -92,12 +93,13 @@ export default function Header() {
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white md:hidden">
           <div className="flex flex-col h-full pt-20 px-6">
-            <button 
-              onClick={() => scrollToSection("generator")}
-              className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left"
+            <Link 
+              to="/generator"
+              className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left block"
+              onClick={() => setIsMenuOpen(false)}
             >
-              How it Works
-            </button>
+              Generator
+            </Link>
             <button 
               onClick={() => scrollToSection("features")}
               className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left"

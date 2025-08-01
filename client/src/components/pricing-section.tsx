@@ -34,7 +34,7 @@ export default function PricingSection() {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Free Plan */}
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg floating-card">
             <CardContent className="p-8">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">Free</h3>
@@ -70,7 +70,7 @@ export default function PricingSection() {
           </Card>
 
           {/* Pro Plan */}
-          <Card className="bg-primary text-white shadow-xl relative">
+          <Card className="bg-primary text-white shadow-xl relative floating-card">
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
               <span className="bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-sm font-semibold">
                 Most Popular

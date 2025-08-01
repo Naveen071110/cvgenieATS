@@ -4,19 +4,16 @@ const testimonials = [
   {
     name: "Sarah Chen",
     role: "Software Engineer",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100",
     content: "CVGenie transformed my generic resume into a targeted masterpiece. I got 3 interview calls within a week of using it!"
   },
   {
     name: "Michael Rodriguez",
     role: "Marketing Manager", 
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100",
     content: "The cover letters are incredible! Each one feels personally written. I landed my current role thanks to CVGenie."
   },
   {
     name: "Emily Johnson",
     role: "UX Designer",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100",
     content: "As a career changer, I was struggling to present my transferable skills. CVGenie made it effortless!"
   }
 ];
@@ -36,7 +33,7 @@ export default function TestimonialsSection() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+            <div key={index} className="bg-slate-50 rounded-2xl p-6 border border-slate-200 floating-card">
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
                   {[...Array(5)].map((_, i) => (
@@ -48,11 +45,11 @@ export default function TestimonialsSection() {
                 "{testimonial.content}"
               </p>
               <div className="flex items-center">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full mr-4 object-cover"
-                />
+                <div className="w-12 h-12 rounded-full mr-4 bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
+                  <span className="text-white font-semibold text-lg">
+                    {testimonial.name.charAt(0)}
+                  </span>
+                </div>
                 <div>
                   <p className="font-semibold text-slate-900">{testimonial.name}</p>
                   <p className="text-sm text-slate-500">{testimonial.role}</p>

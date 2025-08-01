@@ -3,28 +3,24 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "How does CVGenie optimize my resume for ATS systems?",
-    answer: "CVGenie analyzes your resume content and the target job description to identify key skills, qualifications, and keywords that ATS systems scan for. It then restructures your resume content, optimizes formatting for machine readability, and ensures proper keyword density without keyword stuffing. Our AI understands ATS parsing patterns and creates clean, structured documents that pass through screening filters while remaining appealing to human recruiters."
+    question: "What is an ATS, and why does my resume need to be \"ATS-compliant\"?",
+    answer: "An Applicant Tracking System (ATS) is software used by most employers to automatically screen, filter, and rank job applications. A resume that's not ATS-friendly might be rejected before a human ever sees it. CVGenie helps you create resumes that are specifically formatted for ATSs—using the right keywords, section headers, and layouts—so your application reaches real recruiters."
   },
   {
-    question: "Is my resume data secure and private?",
-    answer: "Absolutely. We process your resume data transiently - meaning it's only held in memory during generation and immediately discarded afterward. We don't store your personal information, resume content, or job descriptions on our servers. All processing happens securely through encrypted connections, and we never share your data with third parties. Your privacy and security are our top priorities."
+    question: "How is my data used in CVGenie? Do you store my personal information or resume?",
+    answer: "Your data privacy is important to us. CVGenie processes your resume and job description only to generate your tailored documents. We do not store or reuse your uploaded resumes, job descriptions, or generated outputs unless you create an account and explicitly save them. For free and anonymous users, all data is deleted after generation."
   },
   {
-    question: "Can I edit the generated resume and cover letter?",
-    answer: "Yes! CVGenie generates optimized documents as a starting point, but you have complete control to edit and customize them. We provide multiple export formats including Word documents that you can easily modify, as well as plain text versions for copying and pasting into online applications. The generated content serves as a professional foundation that you can personalize further."
+    question: "What makes CVGenie's resumes better than free templates or generic AI tools?",
+    answer: "CVGenie's AI is fine-tuned to produce resumes and cover letters that are optimized for ATS software. Unlike generic tools, it analyzes your target job description, matches keywords, and formats results according to best industry practices—giving you a better shot at interviews with large companies."
   },
   {
-    question: "What file formats do you accept for resume upload?",
-    answer: "Currently, we accept PDF files for resume uploads. PDFs are the most reliable format for text extraction and maintain formatting consistency. If your resume is in Word format, you can easily convert it to PDF using your word processor's \"Save as PDF\" or \"Export to PDF\" feature. We're working on supporting additional formats in future updates."
+    question: "How many times can I use CVGenie for free?",
+    answer: "You can generate up to 3 resumes or cover letters per month at no cost, with no signup required. If you need more generations or want premium features (like unlimited usage or priority support), consider upgrading to our Pro plan."
   },
   {
-    question: "How accurate is the AI in understanding job requirements?",
-    answer: "Our AI is trained on thousands of job descriptions and successful resumes across various industries. It identifies not just obvious keywords but also understands context, job level requirements, industry-specific terminology, and subtle qualifications that human recruiters value. The system continuously improves its accuracy through machine learning, ensuring it stays current with evolving job market trends and requirements."
-  },
-  {
-    question: "Can I cancel my Pro subscription anytime?",
-    answer: "Yes, you can cancel your Pro subscription at any time with no cancellation fees or penalties. You'll continue to have Pro access until the end of your current billing period, after which your account will automatically revert to the free plan with its limitations. You can reactivate Pro whenever you need unlimited access again."
+    question: "What file formats can I download? Will my formatting remain \"ATS-safe\"?",
+    answer: "You can download your documents as plain text (TXT) or rich text (RTF). Both formats are designed to avoid common ATS issues—no tables, columns, images, or fancy graphics—so your submission remains machine-readable and recruiter-friendly."
   }
 ];
 

@@ -64,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check usage limits
-      if (!session.isPro && session.generationsUsed >= 3) {
+      if (!session.isPro && (session.generationsUsed || 0) >= 3) {
         return res.status(403).json({ 
           error: "Free usage limit exceeded. Please upgrade to Pro for unlimited generations." 
         });
@@ -87,13 +87,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Update usage count
-      await storage.updateUsageSession(sessionId, session.generationsUsed + 1);
+      await storage.updateUsageSession(sessionId, (session.generationsUsed || 0) + 1);
 
       res.json({
         id: generation.id,
         optimizedResume: generation.optimizedResume,
         coverLetter: generation.coverLetter,
-        remainingGenerations: session.isPro ? -1 : Math.max(0, 3 - (session.generationsUsed + 1))
+        remainingGenerations: session.isPro ? -1 : Math.max(0, 3 - ((session.generationsUsed || 0) + 1))
       });
 
     } catch (error) {

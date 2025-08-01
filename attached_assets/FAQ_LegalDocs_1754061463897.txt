@@ -1,0 +1,68 @@
+Here's a set of **5 high-quality FAQs with clear answers** for CVGenie, along with draft **legal documents** (Terms of Service, Privacy Policy, and Pricing/Refund Policy) tailored for an AI-powered resume-builder microSaaS.
+
+## 📄 CVGenie — Suggested FAQ
+
+### 1. What is an ATS, and why does my resume need to be “ATS-compliant”?
+**Answer:**  
+An Applicant Tracking System (ATS) is software used by most employers to automatically screen, filter, and rank job applications. A resume that’s not ATS-friendly might be rejected before a human ever sees it. CVGenie helps you create resumes that are specifically formatted for ATSs—using the right keywords, section headers, and layouts—so your application reaches real recruiters.
+
+### 2. How is my data used in CVGenie? Do you store my personal information or resume?
+**Answer:**  
+Your data privacy is important to us. CVGenie processes your resume and job description only to generate your tailored documents. We do **not** store or reuse your uploaded resumes, job descriptions, or generated outputs unless you create an account and explicitly save them. For free and anonymous users, all data is deleted after generation.
+
+### 3. What makes CVGenie’s resumes better than free templates or generic AI tools?
+**Answer:**  
+CVGenie’s AI is fine-tuned to produce resumes and cover letters that are optimized for ATS software. Unlike generic tools, it analyzes your target job description, matches keywords, and formats results according to best industry practices—giving you a better shot at interviews with large companies.
+
+### 4. How many times can I use CVGenie for free?
+**Answer:**  
+You can generate up to 3 resumes or cover letters per month at no cost, with no signup required. If you need more generations or want premium features (like unlimited usage or priority support), consider upgrading to our Pro plan.
+
+### 5. What file formats can I download? Will my formatting remain “ATS-safe”?
+**Answer:**  
+You can download your documents as plain text (TXT) or rich text (RTF). Both formats are designed to avoid common ATS issues—no tables, columns, images, or fancy graphics—so your submission remains machine-readable and recruiter-friendly.
+
+### 6. Can I customize my resume or cover letter before downloading?
+**Answer:**  
+Absolutely! After your document is generated, you’ll see a live preview. You can edit any section for clarity, add extra details, or tweak keywords before downloading your final copy.
+
+## 📃 Legal Documents
+
+### 1. Terms of Service
+
+**Effective Date:** August 1, 2025  
+By using CVGenie, you agree to these terms:
+
+- You are responsible for the content you upload or submit.
+- You agree not to use CVGenie for illegal purposes or harmful activity.
+- All AI-generated content is for informational purposes; you should review outputs before use.
+- Access to free and paid features may change; paid plans are billed monthly and auto-renew unless cancelled.
+- You use CVGenie “as is”; we are not liable for employment decisions or data loss.
+
+For questions, contact support@cvgenie.com.
+
+### 2. Privacy Policy
+
+**Effective Date:** August 1, 2025
+
+- We only collect information you provide (resume content, job description, email for Pro accounts).
+- We do not store or reuse your data after generation unless you have a user account and explicitly save a resume.
+- No personal data is sold to third parties.
+- Analytics are anonymized and used only to improve the service.
+- All transmissions are encrypted; payments are securely processed via Stripe or similar providers.
+
+To request data deletion, email privacy@cvgenie.com.
+
+### 3. Pricing and Refund Policy
+
+**Free Plan**
+- 3 resume/cover letter generations per month; no signup needed; full access to basic features.
+
+**Pro Plan**
+- $9.99/month, unlimited generations, priority queue (where available).
+- Pro subscriptions are billed monthly and can be cancelled anytime via your account.
+
+**Refunds**
+- Refunds are granted only if a technical failure prevents delivery of Pro features and you contact support within 7 days of purchase.
+
+For questions or cancellations, email billing@cvgenie.com.

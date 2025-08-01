@@ -1,4 +1,5 @@
 import { Twitter, Linkedin, Github } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Footer() {
   return (
@@ -55,8 +56,7 @@ export default function Footer() {
                   Pricing
                 </button>
               </li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Changelog</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Roadmap</a></li>
+
             </ul>
           </div>
 
@@ -64,10 +64,19 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Blog</a></li>
+              <li>
+                <button 
+                  onClick={() => {
+                    const element = document.getElementById("faq");
+                    if (element) element.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  FAQ
+                </button>
+              </li>
               <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Resume Tips</a></li>
               <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Career Advice</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Help Center</a></li>
             </ul>
           </div>
 
@@ -75,10 +84,22 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Cookie Policy</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Contact</a></li>
+              <li>
+                <Link to="/privacy" className="text-slate-400 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-slate-400 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="/pricing-policy" className="text-slate-400 hover:text-white transition-colors">
+                  Pricing Policy
+                </Link>
+              </li>
+              <li><a href="mailto:support@cvgenie.com" className="text-slate-400 hover:text-white transition-colors">Contact</a></li>
             </ul>
           </div>
         </div>
