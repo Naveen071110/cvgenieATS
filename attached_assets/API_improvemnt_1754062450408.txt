@@ -1,0 +1,126 @@
+CVGenie – Developer Instructions for ATS-Compliant Deepseek API Integration
+Goal:
+Ensure that Deepseek-generated resumes and cover letters are fully ATS-compliant, always contain all required sections, use the right formatting, and incorporate the key skills/keywords for the user’s target job.
+
+1. Prompt Engineering: Crafting the Deepseek API Input
+A. Core Strategies
+
+Give Deepseek very specific instructions (instruct it as if it’s a junior resume writer).
+
+Explicitly demand ATS-friendly formatting and keywords.
+
+NEVER leave the prompt generic (avoid "Write a resume" as the only instruction).
+
+B. Example Prompt Template
+
+For Resume:
+
+text
+Write a professional, ATS-compliant resume in plain text. 
+- Do NOT use tables, images, columns, graphics, or special symbols—use only standard text.
+- Use clear section headers: Contact Information, Summary, Work Experience, Education, Skills.
+- Match and include the most important skills and keywords from the following job description: [Paste Extracted Keywords].
+- Use concise bullet points in each section (use "•" or "-" for bullets).
+- Start each bullet with a strong action verb.
+- Include measurable achievements when possible.
+- Keep the format simple—no colors, shading, footers, or header images.
+
+[User Details/Parsed Resume]
+[Job Description]
+For Cover Letter:
+
+text
+Write a professional cover letter tailored for this job.
+- The letter should reference top skills and keywords from the job description.
+- Be concise and formal; do not include tables or graphics.
+- Ensure the letter is ATS-readable and well-formatted.
+
+[User Details/Parsed Resume]
+[Job Description]
+C. Automated Keyword Extraction (Pre-Prompt)
+
+Before calling Deepseek, analyze the job description with simple keyword extraction (e.g., NLTK, spaCy, or a simple word frequency count).
+
+Pass a list of the top 5-10 essential keywords/skills directly into the API prompt.
+
+2. Post-Processing: Output Refinement (in Code)
+A. Required Output Checks
+
+Validate output includes ALL required sections:
+
+For Resume: Contact, Summary, Work Experience, Education, Skills (+ Certifications if possible)
+
+Remove any ASCII art, tables, emojis, images, or unusual symbols (allow only - , -, or *).
+
+Check that all section headers follow Title Case and are consistent.
+
+Double-check that output contains at least one occurrence of each included keyword.
+
+B. Formatting Clean-up
+
+Strip all extra spaces, redundant newlines, duplicated headers.
+
+Convert all bullet points ("*", "-", "- ") to a consistent bullet.
+
+Convert smart quotes (“ ”) to plain quotes (" ").
+
+C. Final ATS Validation
+
+Run a regex or simple check to ensure:
+
+No tables (no lines with |, multiple spaces used for column alignment, or tab-characters \t)
+
+No lines longer than ~120 chars (wrap if needed)
+
+All email/phone links are as plain text
+
+3. Debugging & Feedback Loop
+If output is missing sections/keywords or includes any disallowed formatting, log the job/user/jd, and:
+
+Retry the request with an additional instruction, e.g.: "Resume output is missing a Skills section. Please rewrite and include all sections."
+
+Or, insert a default Skills section or notify the user for review.
+
+4. Recommended Workflow
+Extract top keywords from job description.
+
+Format the prompt using the template (filling in all [brackets] with user/job data and keywords).
+
+Call Deepseek API with the crafted prompt and user data.
+
+Post-process output: clean up, enforce bullet and section consistency, ensure ATS rules.
+
+Present result to user for preview/edit/download.
+
+5. Example Pseudocode for Integration
+python
+# Keyword extraction (pseudo)
+keywords = extract_keywords(job_description, top_n=10)
+
+# Build prompt
+prompt = f"""
+Write a professional, ATS-compliant resume in plain text...
+(More instructions above)
+Top keywords: {', '.join(keywords)}
+{user_resume_details}
+{job_description}
+"""
+
+# Call API
+deepseek_output = call_deepseek_api(prompt)
+
+# Post-process
+clean_output = ats_cleanup(deepseek_output, required_sections=[...], allowed_bullets=["•", "-", "*"], keywords=keywords)
+
+# Output
+return clean_output
+6. Summary Checklist for Developer
+ Always use detailed prompt instructing ATS-safe formatting & specific sections.
+
+ Extract and inject key job description keywords for matching.
+
+ Clean and validate output for forbidden formatting and section presence.
+
+ Give user edit/preview step before final download.
+
+ Log and fix/notify when output is malformed or incomplete.

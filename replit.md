@@ -8,6 +8,19 @@ CVGenie is a microSaaS application that uses AI to generate ATS-optimized resume
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (January 2025)
+
+### Enhanced Generator Experience
+- **Inline Editing Interface**: Results now display on-screen with edit/save functionality instead of immediate downloads
+- **Document Preview**: Users can review generated content in formatted preview before editing or downloading
+- **Enhanced User Flow**: Upload → Generate → Review/Edit → Download workflow implemented
+
+### Improved AI Generation
+- **Advanced Deepseek Integration**: Implemented comprehensive keyword extraction and ATS compliance
+- **Keyword-Based Optimization**: Automatic extraction of top 10 keywords from job descriptions
+- **ATS Compliance Validation**: Post-processing ensures proper formatting, section validation, and ATS-friendly output
+- **Enhanced Prompts**: Detailed prompts following ATS best practices for better generation quality
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -60,11 +73,13 @@ The application handles PDF resume uploads with a flexible processing pipeline:
 - **File Validation**: MIME type checking and size limits (10MB max)
 
 ### AI Integration Architecture
-Designed to integrate with external AI services for content generation:
+Full integration with Deepseek API for intelligent content generation:
 
-- **API Integration**: Prepared for Deepseek API integration
-- **Content Generation**: Optimized resume and cover letter creation
-- **Error Handling**: Graceful fallbacks for AI service failures
+- **API Integration**: Complete Deepseek API integration with keyword extraction
+- **Content Generation**: ATS-compliant resume and cover letter creation with intelligent keyword matching
+- **Keyword Extraction**: Automated extraction of top 10 keywords from job descriptions
+- **ATS Compliance**: Advanced post-processing for ATS-friendly formatting and validation
+- **Error Handling**: Graceful fallbacks for AI service failures with structured responses
 
 ### Development and Build System
 Modern development toolchain optimized for TypeScript and React:

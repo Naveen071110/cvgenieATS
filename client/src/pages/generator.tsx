@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft } from "lucide-react";
+import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
@@ -26,6 +26,10 @@ export default function Generator() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
+  const [editedResume, setEditedResume] = useState("");
+  const [editedCoverLetter, setEditedCoverLetter] = useState("");
+  const [isEditingResume, setIsEditingResume] = useState(false);
+  const [isEditingCoverLetter, setIsEditingCoverLetter] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -59,6 +63,8 @@ export default function Generator() {
     },
     onSuccess: (data) => {
       setGenerationResult(data);
+      setEditedResume(data.optimizedResume);
+      setEditedCoverLetter(data.coverLetter);
       queryClient.invalidateQueries({ queryKey: ["/api/usage"] });
       toast({
         title: "Success!",
@@ -93,6 +99,10 @@ export default function Generator() {
     setResumeFile(null);
     setJobDescription("");
     setGenerationResult(null);
+    setEditedResume("");
+    setEditedCoverLetter("");
+    setIsEditingResume(false);
+    setIsEditingCoverLetter(false);
   };
 
   const downloadDocument = (content: string, filename: string) => {
@@ -220,53 +230,138 @@ export default function Generator() {
               </CardContent>
             </Card>
           ) : (
-            <Card className="shadow-xl border border-slate-200 floating-card">
-              <CardContent className="p-8">
-                <div className="text-center mb-8">
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-2xl font-semibold text-slate-900 mb-2">Documents Generated Successfully!</h3>
-                  <p className="text-slate-600">Your ATS-optimized resume and personalized cover letter are ready</p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
-                  <div className="border border-slate-200 rounded-lg p-6 text-center floating-card">
-                    <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                    <h4 className="font-semibold text-slate-900 mb-2">Optimized Resume</h4>
-                    <p className="text-sm text-slate-600 mb-4">ATS-friendly format with relevant keywords</p>
+            <div className="space-y-6">
+              {/* Success Header */}
+              <Card className="shadow-xl border border-slate-200 floating-card">
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                    <h3 className="text-2xl font-semibold text-slate-900 mb-2">Documents Generated Successfully!</h3>
+                    <p className="text-slate-600">Review and edit your documents before downloading</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Resume Section */}
+              <Card className="shadow-xl border border-slate-200 floating-card">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center">
+                      <FileText className="w-5 h-5 text-blue-500 mr-2" />
+                      Optimized Resume
+                    </CardTitle>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditingResume(!isEditingResume)}
+                      >
+                        {isEditingResume ? <Save className="w-4 h-4 mr-1" /> : <Edit className="w-4 h-4 mr-1" />}
+                        {isEditingResume ? 'Save' : 'Edit'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => downloadDocument(editedResume, 'optimized-resume.txt')}
+                        className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      >
+                        <Download className="w-4 h-4 mr-1" />
+                        Download TXT
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {isEditingResume ? (
+                    <Textarea
+                      value={editedResume}
+                      onChange={(e) => setEditedResume(e.target.value)}
+                      rows={20}
+                      className="font-mono text-sm"
+                      placeholder="Edit your resume here..."
+                    />
+                  ) : (
+                    <div className="bg-slate-50 p-4 rounded-lg">
+                      <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-96 overflow-y-auto">
+                        {editedResume}
+                      </pre>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Cover Letter Section */}
+              <Card className="shadow-xl border border-slate-200 floating-card">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center">
+                      <Mail className="w-5 h-5 text-green-500 mr-2" />
+                      Cover Letter
+                    </CardTitle>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditingCoverLetter(!isEditingCoverLetter)}
+                      >
+                        {isEditingCoverLetter ? <Save className="w-4 h-4 mr-1" /> : <Edit className="w-4 h-4 mr-1" />}
+                        {isEditingCoverLetter ? 'Save' : 'Edit'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => downloadDocument(editedCoverLetter, 'cover-letter.txt')}
+                        className="bg-green-50 text-green-700 hover:bg-green-100"
+                      >
+                        <Download className="w-4 h-4 mr-1" />
+                        Download TXT
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {isEditingCoverLetter ? (
+                    <Textarea
+                      value={editedCoverLetter}
+                      onChange={(e) => setEditedCoverLetter(e.target.value)}
+                      rows={15}
+                      className="font-mono text-sm"
+                      placeholder="Edit your cover letter here..."
+                    />
+                  ) : (
+                    <div className="bg-slate-50 p-4 rounded-lg">
+                      <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-80 overflow-y-auto">
+                        {editedCoverLetter}
+                      </pre>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Actions */}
+              <Card className="shadow-xl border border-slate-200 floating-card">
+                <CardContent className="p-6">
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
-                      onClick={() => downloadDocument(generationResult.optimizedResume, 'optimized-resume.txt')}
-                      className="w-full bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      onClick={resetGenerator}
+                      variant="outline"
+                      size="lg"
+                    >
+                      Generate Another Resume
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        downloadDocument(editedResume, 'optimized-resume.txt');
+                        downloadDocument(editedCoverLetter, 'cover-letter.txt');
+                      }}
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90"
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Download Resume
+                      Download Both Documents
                     </Button>
                   </div>
-                  
-                  <div className="border border-slate-200 rounded-lg p-6 text-center floating-card">
-                    <Mail className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                    <h4 className="font-semibold text-slate-900 mb-2">Cover Letter</h4>
-                    <p className="text-sm text-slate-600 mb-4">Personalized for the specific job posting</p>
-                    <Button
-                      onClick={() => downloadDocument(generationResult.coverLetter, 'cover-letter.txt')}
-                      className="w-full bg-green-50 text-green-700 hover:bg-green-100"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Cover Letter
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="text-center">
-                  <Button
-                    onClick={resetGenerator}
-                    variant="outline"
-                    size="lg"
-                  >
-                    Generate Another Resume
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
           {/* Usage Counter */}

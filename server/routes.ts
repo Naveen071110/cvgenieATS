@@ -119,9 +119,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
+// Keyword extraction function
+function extractKeywords(jobDescription: string): string[] {
+  // Remove common words and extract relevant keywords
+  const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should', 'could', 'can', 'may', 'might', 'must']);
+  
+  const words = jobDescription.toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter(word => word.length > 2 && !commonWords.has(word));
+  
+  // Count word frequency
+  const wordCount = new Map<string, number>();
+  words.forEach(word => {
+    wordCount.set(word, (wordCount.get(word) || 0) + 1);
+  });
+  
+  // Return top 10 most frequent keywords
+  return Array.from(wordCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([word]) => word);
+}
+
+// ATS cleanup function
+function atsCleanup(content: string, keywords: string[]): string {
+  let cleaned = content
+    // Remove tables and special formatting
+    .replace(/\|/g, '')
+    .replace(/\t/g, ' ')
+    // Normalize bullet points
+    .replace(/[•▪▫◦‣⁃]/g, '•')
+    .replace(/^\s*[-*]\s/gm, '• ')
+    // Remove extra whitespace
+    .replace(/\s+/g, ' ')
+    .replace(/\n\s+/g, '\n')
+    // Convert smart quotes to regular quotes
+    .replace(/[""]/g, '"')
+    .replace(/['']/g, "'")
+    // Ensure proper line breaks
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  
+  // Ensure required sections exist
+  const requiredSections = ['CONTACT', 'SUMMARY', 'EXPERIENCE', 'EDUCATION', 'SKILLS'];
+  const missingSections = requiredSections.filter(section => 
+    !cleaned.toUpperCase().includes(section)
+  );
+  
+  if (missingSections.length > 0) {
+    console.log(`Missing sections detected: ${missingSections.join(', ')}`);
+  }
+  
+  return cleaned;
+}
+
 // AI Generation Functions (using Deepseek API)
 async function generateOptimizedResume(originalResume: string, jobDescription: string): Promise<string> {
   const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || "default_key";
+  
+  // Extract keywords from job description
+  const keywords = extractKeywords(jobDescription);
   
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
@@ -135,11 +193,22 @@ async function generateOptimizedResume(originalResume: string, jobDescription: s
         messages: [
           {
             role: 'system',
-            content: 'You are an expert resume writer specializing in ATS optimization. Create optimized resumes that pass applicant tracking systems while appealing to human recruiters.'
+            content: 'You are an expert resume writer specializing in ATS optimization. You must create ATS-compliant resumes that pass applicant tracking systems.'
           },
           {
             role: 'user',
-            content: `Please optimize this resume for the following job description. Focus on ATS compatibility, keyword optimization, and relevant experience highlighting.
+            content: `Write a professional, ATS-compliant resume in plain text format.
+
+CRITICAL FORMATTING REQUIREMENTS:
+- Do NOT use tables, images, columns, graphics, or special symbols—use only standard text
+- Use clear section headers: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
+- Use concise bullet points (use "•" for bullets only)
+- Start each bullet with a strong action verb
+- Include measurable achievements when possible
+- Keep format simple—no colors, shading, footers, or header images
+- No lines longer than 120 characters
+
+TOP KEYWORDS TO INCLUDE: ${keywords.join(', ')}
 
 Original Resume:
 ${originalResume}
@@ -147,16 +216,16 @@ ${originalResume}
 Job Description:
 ${jobDescription}
 
-Please provide an optimized resume that:
-1. Uses relevant keywords from the job description
-2. Highlights matching skills and experience
-3. Uses ATS-friendly formatting
-4. Maintains professional tone
-5. Focuses on achievements and impact`
+Create an optimized resume that:
+1. Contains ALL required sections (Contact, Summary, Experience, Education, Skills)
+2. Uses the extracted keywords naturally throughout
+3. Highlights relevant experience matching the job requirements
+4. Uses ATS-friendly plain text formatting only
+5. Includes quantifiable achievements with metrics when possible`
           }
         ],
-        temperature: 0.7,
-        max_tokens: 2000
+        temperature: 0.6,
+        max_tokens: 2500
       })
     });
 
@@ -165,7 +234,10 @@ Please provide an optimized resume that:
     }
 
     const data = await response.json();
-    return data.choices[0]?.message?.content || "Error generating optimized resume";
+    const rawContent = data.choices[0]?.message?.content || "Error generating optimized resume";
+    
+    // Apply ATS cleanup
+    return atsCleanup(rawContent, keywords);
     
   } catch (error) {
     console.error('Deepseek API error:', error);
@@ -199,6 +271,9 @@ This resume has been optimized for ATS systems and includes relevant keywords fr
 async function generateCoverLetter(originalResume: string, jobDescription: string): Promise<string> {
   const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || "default_key";
   
+  // Extract keywords from job description
+  const keywords = extractKeywords(jobDescription);
+  
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -211,11 +286,19 @@ async function generateCoverLetter(originalResume: string, jobDescription: strin
         messages: [
           {
             role: 'system',
-            content: 'You are an expert cover letter writer. Create personalized, compelling cover letters that connect candidate experience to specific job requirements.'
+            content: 'You are an expert cover letter writer. Create professional, ATS-compliant cover letters that connect candidate experience to job requirements.'
           },
           {
             role: 'user',
-            content: `Write a personalized cover letter based on this resume and job description.
+            content: `Write a professional cover letter tailored for this job.
+
+FORMATTING REQUIREMENTS:
+- Use standard business letter format
+- No tables, graphics, or special formatting
+- Professional tone throughout
+- ATS-readable plain text only
+
+TOP KEYWORDS TO INCLUDE: ${keywords.join(', ')}
 
 Resume:
 ${originalResume}
@@ -242,7 +325,14 @@ Please create a cover letter that:
     }
 
     const data = await response.json();
-    return data.choices[0]?.message?.content || "Error generating cover letter";
+    const rawContent = data.choices[0]?.message?.content || "Error generating cover letter";
+    
+    // Apply basic cleanup for cover letter
+    return rawContent
+      .replace(/[""]/g, '"')
+      .replace(/['']/g, "'")
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
     
   } catch (error) {
     console.error('Deepseek API error:', error);
