@@ -52,7 +52,7 @@ export default function HeroSection() {
           background: `linear-gradient(${gradientShift}deg, hsl(210, 40%, 98%) 0%, hsl(0, 0%, 100%) 50%, hsl(210, 20%, 97%) 100%)`
         }}
       />
-      
+
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
         {Array.from({ length: 15 }, (_, i) => (
@@ -75,15 +75,8 @@ export default function HeroSection() {
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI. 
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
-        <Link to="/generator">
-          <Button 
-            size="lg"
-            className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-xl hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
-          >
-            Generate My Resume
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-        </Link>
+        
+        
       </div>
     </section>
   );

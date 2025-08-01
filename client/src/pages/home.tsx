@@ -16,7 +16,7 @@ export default function Home() {
       <Header />
       <main>
         <HeroSection />
-        
+
         {/* Generator CTA Section */}
         <section id="generator" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50">
           <div className="max-w-4xl mx-auto text-center">
@@ -27,14 +27,14 @@ export default function Home() {
                     <Sparkles className="w-8 h-8 text-white" />
                   </div>
                 </div>
-                
+
                 <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
                   Ready to Transform Your Resume?
                 </h2>
                 <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
                   Upload your current resume and paste any job description. Our AI will create an ATS-optimized resume and personalized cover letter in seconds.
                 </p>
-                
+
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
@@ -49,7 +49,7 @@ export default function Home() {
                     <span className="text-sm font-medium">ATS-optimized results</span>
                   </div>
                 </div>
-                
+
                 <Link to="/generator">
                   <Button 
                     size="lg"
@@ -63,7 +63,7 @@ export default function Home() {
             </Card>
           </div>
         </section>
-        
+
         <FeaturesSection />
         <TestimonialsSection />
         <PricingSection />
