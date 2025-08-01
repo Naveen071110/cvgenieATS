@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Generation, type InsertGeneration, type UsageSession, type InsertUsageSession } from "@shared/schema";
+import { type User, type InsertUser, type Generation, type InsertGeneration, type UsageSession, type InsertUsageSession } from "../shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -53,6 +53,8 @@ export class MemStorage implements IStorage {
     const session: UsageSession = { 
       ...insertSession, 
       id,
+      generationsUsed: insertSession.generationsUsed ?? 0,
+      isPro: insertSession.isPro ?? 0,
       createdAt: new Date()
     };
     this.usageSessions.set(id, session);
