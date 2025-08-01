@@ -22,8 +22,8 @@ const proPlanFeatures = [
 
 export default function PricingSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
-  const freePlanAnimation = useScrollAnimation({ threshold: 0.2 });
-  const proPlanAnimation = useScrollAnimation({ threshold: 0.2 });
+  const freePlanAnimation = useScrollAnimation({ threshold: 0.3 });
+  const proPlanAnimation = useScrollAnimation({ threshold: 0.3 });
 
   return (
     <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
@@ -44,7 +44,7 @@ export default function PricingSection() {
           {/* Free Plan */}
           <Card 
             ref={freePlanAnimation.ref}
-            className={`bg-white shadow-lg floating-card scroll-fade-in scroll-fade-in-delay-1 ${
+            className={`bg-white shadow-lg floating-card pricing-card-scale ${
               freePlanAnimation.isVisible ? 'visible' : ''
             }`}
           >
@@ -85,12 +85,12 @@ export default function PricingSection() {
           {/* Pro Plan */}
           <Card 
             ref={proPlanAnimation.ref}
-            className={`bg-primary text-white shadow-xl relative floating-card scroll-fade-in scroll-fade-in-delay-2 ${
+            className={`bg-primary text-white shadow-xl relative floating-card pricing-card-flip pricing-shimmer ${
               proPlanAnimation.isVisible ? 'visible' : ''
             }`}
           >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <span className="bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-sm font-semibold">
+              <span className="bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-sm font-semibold badge-pulse">
                 Most Popular
               </span>
             </div>

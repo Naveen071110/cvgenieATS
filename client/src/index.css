@@ -314,3 +314,78 @@
 .cta-button:hover::before {
   left: 100%;
 }
+
+/* Pricing card animations */
+.pricing-card-scale {
+  opacity: 0;
+  transform: scale(0.8) translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.pricing-card-scale.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.pricing-card-flip {
+  opacity: 0;
+  transform: rotateY(-15deg) scale(0.9) translateY(30px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  transition-delay: 0.2s;
+}
+
+.pricing-card-flip.visible {
+  opacity: 1;
+  transform: rotateY(0deg) scale(1) translateY(0);
+}
+
+/* Pro plan shimmer effect */
+.pricing-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 3s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Badge pulse animation */
+.badge-pulse {
+  animation: badgePulse 2s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+  }
+}
