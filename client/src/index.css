@@ -101,6 +101,19 @@
   .btn-secondary {
     @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 px-6 py-3 rounded-lg font-medium transition-colors duration-200;
   }
+
+  /* Feature hover effects */
+  .feature-icon-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-primary/15;
+  }
+
+  .feature-mockup-hover {
+    @apply transition-all duration-300;
+  }
+
+  .feature-mockup-hover > * {
+    @apply transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:-translate-y-2;
+  }
 }
 
 /* Animation utilities */
@@ -167,6 +180,29 @@
 .scroll-fade-in.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Slide-in animations */
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-50px) translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.slide-in-left.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(50px) translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.slide-in-right.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
 }
 
 .scroll-fade-in-delay-1 {

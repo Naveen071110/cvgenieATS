@@ -189,17 +189,21 @@ export default function FeaturesSection() {
         <div className="space-y-20">
           {features.map((feature, index) => {
             const featureAnimation = useScrollAnimation({ threshold: 0.1 });
+            const isEven = index % 2 === 0;
+            const slideDirection = isEven ? 'slide-in-left' : 'slide-in-right';
+            
             return (
             <div 
               key={index} 
               ref={featureAnimation.ref}
-              className={`grid lg:grid-cols-2 gap-12 items-center scroll-fade-in ${
+              className={`grid lg:grid-cols-2 gap-12 items-center ${slideDirection} ${
                 featureAnimation.isVisible ? 'visible' : ''
               } ${feature.reverse ? 'lg:grid-flow-col-dense' : ''}`}
+              style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className={feature.reverse ? 'lg:col-start-2' : ''}>
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                  <feature.icon className="w-8 h-8 text-primary" />
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer">
+                  <feature.icon className="w-8 h-8 text-primary transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
                 <p className="text-lg text-slate-600 mb-6 leading-relaxed">
@@ -214,7 +218,7 @@ export default function FeaturesSection() {
                   ))}
                 </ul>
               </div>
-              <div className={feature.reverse ? 'lg:col-start-1' : ''}>
+              <div className={`${feature.reverse ? 'lg:col-start-1' : ''} feature-mockup-hover`}>
                 {feature.mockup}
               </div>
             </div>
