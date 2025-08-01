@@ -229,6 +229,19 @@
   transition-delay: 0.3s;
 }
 
+/* Accordion animations */
+.accordion-content {
+  transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.accordion-content:not([style*="max-height: 0px"]) {
+  opacity: 1;
+}
+
+.accordion-content[style*="max-height: 0px"] {
+  opacity: 0;
+}
+
 /* Focus styles for accessibility */
 *:focus {
   outline: 2px solid hsl(221.2, 83.2%, 53.3%);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
 const faqs = [
@@ -26,10 +26,23 @@ const faqs = [
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  useEffect(() => {
+    contentRefs.current.forEach((ref, index) => {
+      if (ref) {
+        if (openIndex === index) {
+          ref.style.maxHeight = ref.scrollHeight + "px";
+        } else {
+          ref.style.maxHeight = "0px";
+        }
+      }
+    });
+  }, [openIndex]);
 
   return (
     <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
@@ -45,25 +58,33 @@ export default function FAQSection() {
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border border-slate-200 rounded-xl">
+            <div key={index} className="border border-slate-200 rounded-xl overflow-hidden">
               <button
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-50 transition-colors duration-200"
                 onClick={() => toggleFAQ(index)}
               >
                 <span className="font-semibold text-slate-900 pr-4">{faq.question}</span>
                 <ChevronDown 
-                  className={`w-5 h-5 text-slate-500 transform transition-transform flex-shrink-0 ${
+                  className={`w-5 h-5 text-slate-500 transform transition-transform duration-300 flex-shrink-0 ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
               </button>
-              {openIndex === index && (
+              <div
+                ref={(el) => {
+                  contentRefs.current[index] = el;
+                }}
+                className="accordion-content overflow-hidden transition-all duration-300 ease-in-out"
+                style={{
+                  maxHeight: openIndex === index ? 'auto' : '0px'
+                }}
+              >
                 <div className="px-6 pb-4">
                   <p className="text-slate-600 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
