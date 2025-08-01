@@ -95,16 +95,28 @@
   }
 
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-colors duration-200;
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  .btn-primary:hover {
+    background-color: hsl(221.2, 83.2%, 53.3%, 0.9);
   }
 
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 px-6 py-3 rounded-lg font-medium transition-colors duration-200;
+    @apply bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  .btn-secondary:hover {
+    background-color: hsl(210, 40%, 96%, 0.8);
   }
 
   /* Feature hover effects */
   .feature-icon-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-primary/15;
+    @apply transition-all duration-300 hover:shadow-lg hover:scale-105;
+  }
+  
+  .feature-icon-hover:hover {
+    background-color: hsl(221.2, 83.2%, 53.3%, 0.15);
   }
 
   .feature-mockup-hover {
