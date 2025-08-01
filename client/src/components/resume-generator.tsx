@@ -185,7 +185,7 @@ export default function ResumeGenerator() {
                   <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 1: Upload Your Current Resume</h3>
                   <p className="text-slate-600">We'll extract the text to optimize it for your target job</p>
                 </div>
-                
+
                 <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-primary transition-colors">
                   {resumeFile ? (
                     <div>
@@ -220,7 +220,7 @@ export default function ResumeGenerator() {
                     onChange={handleFileUpload}
                   />
                 </div>
-                
+
                 <div className="text-center">
                   <Button
                     onClick={() => setStep(2)}
@@ -240,7 +240,7 @@ export default function ResumeGenerator() {
                   <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 2: Paste the Job Description</h3>
                   <p className="text-slate-600">Copy the job posting you're interested in applying for</p>
                 </div>
-                
+
                 <div className="space-y-4">
                   <label htmlFor="job-description" className="block text-sm font-medium text-slate-700">
                     Job Description
@@ -254,7 +254,7 @@ export default function ResumeGenerator() {
                     className="resize-none"
                   />
                 </div>
-                
+
                 <div className="flex justify-between">
                   <Button
                     variant="ghost"
@@ -282,7 +282,7 @@ export default function ResumeGenerator() {
                       <h3 className="text-xl font-semibold text-slate-900 mb-2">Generating Your Documents...</h3>
                       <p className="text-slate-600">Our AI is optimizing your resume and creating a personalized cover letter</p>
                     </div>
-                    
+
                     <div className="mt-8">
                       <div className="inline-flex items-center space-x-2">
                         <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
@@ -299,12 +299,18 @@ export default function ResumeGenerator() {
                       <h3 className="text-xl font-semibold text-slate-900 mb-2">Documents Generated Successfully!</h3>
                       <p className="text-slate-600">Your ATS-optimized resume and personalized cover letter are ready</p>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-2 gap-6">
+                      
                       <div className="border border-slate-200 rounded-lg p-6 text-center">
                         <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
                         <h4 className="font-semibold text-slate-900 mb-2">Optimized Resume</h4>
                         <p className="text-sm text-slate-600 mb-4">ATS-friendly format with relevant keywords</p>
+                        <div className="bg-white p-4 rounded border mb-4 max-h-64 overflow-y-auto">
+                          <pre className="whitespace-pre-wrap font-mono text-xs text-slate-800 leading-relaxed">
+                            {generationResult.optimizedResume}
+                          </pre>
+                        </div>
                         <Button
                           onClick={() => downloadDocument(generationResult.optimizedResume, 'optimized-resume.txt')}
                           className="w-full bg-blue-50 text-blue-700 hover:bg-blue-100"
@@ -313,11 +319,16 @@ export default function ResumeGenerator() {
                           Download Resume
                         </Button>
                       </div>
-                      
+
                       <div className="border border-slate-200 rounded-lg p-6 text-center">
                         <Mail className="w-12 h-12 text-green-500 mx-auto mb-4" />
                         <h4 className="font-semibold text-slate-900 mb-2">Cover Letter</h4>
                         <p className="text-sm text-slate-600 mb-4">Personalized for the specific job posting</p>
+                        <div className="bg-white p-4 rounded border mb-4 max-h-64 overflow-y-auto">
+                          <pre className="whitespace-pre-wrap font-mono text-xs text-slate-800 leading-relaxed">
+                            {generationResult.coverLetter}
+                          </pre>
+                        </div>
                         <Button
                           onClick={() => downloadDocument(generationResult.coverLetter, 'cover-letter.txt')}
                           className="w-full bg-green-50 text-green-700 hover:bg-green-100"
@@ -327,7 +338,7 @@ export default function ResumeGenerator() {
                         </Button>
                       </div>
                     </div>
-                    
+
                     <div className="text-center">
                       <Button
                         onClick={resetGenerator}

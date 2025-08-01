@@ -281,7 +281,7 @@ export default function Generator() {
                     />
                   ) : (
                     <div className="bg-slate-50 p-4 rounded-lg">
-                      <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-96 overflow-y-auto">
+                      <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-96 overflow-y-auto leading-relaxed">
                         {editedResume}
                       </pre>
                     </div>

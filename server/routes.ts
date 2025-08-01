@@ -237,12 +237,16 @@ async function generateOptimizedResume(originalResume: string, jobDescription: s
             content: `Create a professional resume in plain text format. Output ONLY the resume content with no additional commentary, explanations, or meta-text.
 
 FORMATTING REQUIREMENTS:
-- Use clear section headers: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
-- Use bullet points with "•" symbol
+- Use clear section headers in ALL CAPS: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
+- Add blank line after each section header
+- Use bullet points with "•" symbol for list items
 - Start each bullet with action verbs
-- Include measurable achievements
-- Keep lines under 120 characters
+- Include measurable achievements with numbers
+- Keep lines under 100 characters for better readability
+- Use proper spacing between sections (double line breaks)
 - No special formatting, tables, or graphics
+- Format work experience as: Job Title | Company Name | Dates
+- Include phone, email, and location in contact section
 
 KEYWORDS TO INCORPORATE: ${keywords.join(', ')}
 
@@ -326,6 +330,14 @@ async function generateCoverLetter(originalResume: string, jobDescription: strin
             role: 'user',
             content: `Create a professional cover letter tailored for this job. Output ONLY the cover letter content with no additional commentary, explanations, or meta-text.
 
+FORMATTING REQUIREMENTS:
+- Use standard business letter format
+- Include proper spacing between paragraphs (double line breaks)
+- Keep paragraphs concise (3-4 sentences each)
+- Start with "Dear Hiring Manager," or "Dear [Company] Team,"
+- End with "Sincerely," followed by "[Your Name]"
+- No special formatting or graphics
+
 KEYWORDS TO INCORPORATE: ${keywords.join(', ')}
 
 Resume:
@@ -334,7 +346,7 @@ ${originalResume}
 Job Description:
 ${jobDescription}
 
-Write a compelling cover letter that connects the candidate's experience to the job requirements. Use proper business letter format with appropriate spacing. Do not include any introductory text, explanations, or notes.`
+Write a compelling cover letter that connects the candidate's experience to the job requirements. Do not include any introductory text, explanations, or notes.`
           }
         ],
         temperature: 0.8,
