@@ -5,9 +5,23 @@ import { Link } from "wouter";
 
 const rotatingTexts = ['Any Job', 'Tech Roles', 'Creative Positions', 'Leadership Roles', 'Remote Work'];
 
+// Particle component
+const Particle = ({ delay }: { delay: number }) => (
+  <div 
+    className="absolute w-1 h-1 bg-primary/20 rounded-full animate-float"
+    style={{
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${delay}s`,
+      animationDuration: `${6 + Math.random() * 4}s`
+    }}
+  />
+);
+
 export default function HeroSection() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [gradientShift, setGradientShift] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,11 +35,32 @@ export default function HeroSection() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const gradientInterval = setInterval(() => {
+      setGradientShift(prev => (prev + 1) % 360);
+    }, 100);
 
+    return () => clearInterval(gradientInterval);
+  }, []);
 
   return (
-    <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-white">
-      <div className="max-w-7xl mx-auto text-center">
+    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* Animated Background */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 transition-all duration-1000"
+        style={{
+          background: `linear-gradient(${gradientShift}deg, hsl(210, 40%, 98%) 0%, hsl(0, 0%, 100%) 50%, hsl(210, 20%, 97%) 100%)`
+        }}
+      />
+      
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Particle key={i} delay={i * 0.5} />
+        ))}
+      </div>
+
+      <div className="relative max-w-7xl mx-auto text-center">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
           Transform Your Resume for{" "}
           <span 
