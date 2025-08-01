@@ -119,6 +119,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
+// Clean AI response function
+function cleanAIResponse(content: string): string {
+  // Remove common instructional phrases and meta-commentary
+  const instructionalPatterns = [
+    /Here's an? (optimized|ATS-compliant|professional).*?resume.*?format[:\n]/gi,
+    /Here's an? (personalized|professional).*?cover letter.*?[:\n]/gi,
+    /I've (created|optimized|generated).*?[:\n]/gi,
+    /This resume has been.*?[:\n]/gi,
+    /This cover letter has been.*?[:\n]/gi,
+    /Key optimizations made.*?[:\n]/gi,
+    /\*\*Key.*?\*\*/gi,
+    /Critical formatting requirements.*?[:\n]/gi,
+    /Top keywords.*?[:\n]/gi,
+    /ATS optimization notes.*?[:\n]/gi,
+    /Note:.*?$/gim,
+    /\[.*?\]/g, // Remove placeholder brackets like [Your Name]
+    /^\s*---+\s*$/gm, // Remove separator lines
+    /^\s*\*+\s*$/gm, // Remove asterisk lines
+  ];
+
+  let cleaned = content;
+  
+  // Remove all instructional patterns
+  instructionalPatterns.forEach(pattern => {
+    cleaned = cleaned.replace(pattern, '');
+  });
+
+  // Clean up any remaining formatting issues
+  cleaned = cleaned
+    .replace(/^\s*[\*\-\=]{3,}\s*$/gm, '') // Remove separator lines
+    .replace(/\n{3,}/g, '\n\n') // Normalize line breaks
+    .replace(/^\s+$/gm, '') // Remove whitespace-only lines
+    .trim();
+
+  return cleaned;
+}
+
 // Keyword extraction function
 function extractKeywords(jobDescription: string): string[] {
   // Remove common words and extract relevant keywords
@@ -197,18 +234,17 @@ async function generateOptimizedResume(originalResume: string, jobDescription: s
           },
           {
             role: 'user',
-            content: `Write a professional, ATS-compliant resume in plain text format.
+            content: `Create a professional resume in plain text format. Output ONLY the resume content with no additional commentary, explanations, or meta-text.
 
-CRITICAL FORMATTING REQUIREMENTS:
-- Do NOT use tables, images, columns, graphics, or special symbols—use only standard text
+FORMATTING REQUIREMENTS:
 - Use clear section headers: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
-- Use concise bullet points (use "•" for bullets only)
-- Start each bullet with a strong action verb
-- Include measurable achievements when possible
-- Keep format simple—no colors, shading, footers, or header images
-- No lines longer than 120 characters
+- Use bullet points with "•" symbol
+- Start each bullet with action verbs
+- Include measurable achievements
+- Keep lines under 120 characters
+- No special formatting, tables, or graphics
 
-TOP KEYWORDS TO INCLUDE: ${keywords.join(', ')}
+KEYWORDS TO INCORPORATE: ${keywords.join(', ')}
 
 Original Resume:
 ${originalResume}
@@ -216,12 +252,7 @@ ${originalResume}
 Job Description:
 ${jobDescription}
 
-Create an optimized resume that:
-1. Contains ALL required sections (Contact, Summary, Experience, Education, Skills)
-2. Uses the extracted keywords naturally throughout
-3. Highlights relevant experience matching the job requirements
-4. Uses ATS-friendly plain text formatting only
-5. Includes quantifiable achievements with metrics when possible`
+Output the complete resume with proper spacing and line breaks. Do not include any introductory text, explanations, or notes.`
           }
         ],
         temperature: 0.6,
@@ -234,7 +265,10 @@ Create an optimized resume that:
     }
 
     const data = await response.json();
-    const rawContent = data.choices[0]?.message?.content || "Error generating optimized resume";
+    let rawContent = data.choices[0]?.message?.content || "Error generating optimized resume";
+    
+    // Remove instructional text and meta-commentary
+    rawContent = cleanAIResponse(rawContent);
     
     // Apply ATS cleanup
     return atsCleanup(rawContent, keywords);
@@ -290,15 +324,9 @@ async function generateCoverLetter(originalResume: string, jobDescription: strin
           },
           {
             role: 'user',
-            content: `Write a professional cover letter tailored for this job.
+            content: `Create a professional cover letter tailored for this job. Output ONLY the cover letter content with no additional commentary, explanations, or meta-text.
 
-FORMATTING REQUIREMENTS:
-- Use standard business letter format
-- No tables, graphics, or special formatting
-- Professional tone throughout
-- ATS-readable plain text only
-
-TOP KEYWORDS TO INCLUDE: ${keywords.join(', ')}
+KEYWORDS TO INCORPORATE: ${keywords.join(', ')}
 
 Resume:
 ${originalResume}
@@ -306,13 +334,7 @@ ${originalResume}
 Job Description:
 ${jobDescription}
 
-Please create a cover letter that:
-1. Shows genuine interest in the specific role and company
-2. Connects resume experience to job requirements
-3. Highlights relevant achievements
-4. Uses a professional but engaging tone
-5. Demonstrates knowledge of the company/role
-6. Ends with a strong call to action`
+Write a compelling cover letter that connects the candidate's experience to the job requirements. Use proper business letter format with appropriate spacing. Do not include any introductory text, explanations, or notes.`
           }
         ],
         temperature: 0.8,
@@ -325,7 +347,10 @@ Please create a cover letter that:
     }
 
     const data = await response.json();
-    const rawContent = data.choices[0]?.message?.content || "Error generating cover letter";
+    let rawContent = data.choices[0]?.message?.content || "Error generating cover letter";
+    
+    // Remove instructional text and meta-commentary
+    rawContent = cleanAIResponse(rawContent);
     
     // Apply basic cleanup for cover letter
     return rawContent
