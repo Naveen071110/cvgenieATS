@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertGenerationSchema, insertUsageSessionSchema } from "../shared/schema";
+import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
 
 // Configure multer for file uploads
