@@ -1,0 +1,203 @@
+CVGenie MicroSaaS PRD
+(FastAPI Backend, Modern Frontend, Deployed on Replit, ProjectOS-Inspired UI/UX)
+
+1. Product Vision
+Create a standout, user-friendly microSaaS called CVGenie—an AI resume/cover letter generator tuned for ATS compliance—
+with a modern, minimalist frontend inspired by ProjectOS, and a robust, fast backend using FastAPI.
+Keep it single or two-page, with a seamless flow for resume generation and only essential user steps.
+
+2. User Flow Overview
+Landing page loads ➔ User uploads resume (PDF) ➔ User pastes job description ➔ Clicks generate ➔ Gets ATS-friendly resume & cover letter ➔ [Optional] Upgrades for pro features ➔ FAQ/support
+
+3. Core Features
+A. Resume & Cover Letter Generation
+PDF resume upload, intelligent text extraction
+
+Job description paste box
+
+Send user’s data to Deepseek API for AI-powered, ATS-friendly resume and cover letter generation
+
+Output clean, professional, plain text (and optionally formatted) documents for download
+
+B. Pricing
+Free: 3 generations/month, all basic features (no signup needed)
+
+Pro: Unlimited generations, priority queue [if implemented], $9.99/mo (Stripe integration, optional on launch, just show Pro later if not ready yet)
+
+C. UI Sections (ProjectOS-inspired)
+Fixed header/nav with brand, links to “How it Works”, “Features”, “Pricing”, “FAQ”
+
+Hero section with headline, rotating ‘persona’ words, sub-headline, main CTA
+
+Resume Generator card (Upload/Paste/Generate), step indicator/progress bar
+
+Feature section: Four alternating cards:
+
+“One-Click Tailoring”
+
+“ATS-Optimized Formatting”
+
+“AI-Personalized Cover Letters”
+
+“Multiple Export Formats”
+
+Testimonials/Social Proof
+
+Pricing Cards: Free vs Pro, clear CTAs
+
+FAQ accordion
+
+Clean footer with Product, Resources, Legal, Contact
+
+4. Tech Stack
+Back End:
+
+FastAPI (Python, open-source, async-friendly, perfect for APIs)
+
+Uvicorn (for serving FastAPI in production)
+
+pdfplumber or similar for reading/extracting PDF resume text server-side
+
+httpx or requests for calling Deepseek API
+
+[Optional] Database: SQLite (builtin) for usage tracking (free/pro/credits), or use in-memory/session in MVP
+
+[Optional] Dodopayments for payments (later phase)
+
+Server Setup for FastAPI (Critical Note)
+
+Backend server must run with Uvicorn.
+Do not use Gunicorn directly, and do not use any WSGI-only server.
+
+On Replit, use this as your run command:
+
+text
+uvicorn main:app --host=0.0.0.0 --port=8080
+Replace main:app with the actual Python filename and your FastAPI app variable if different.
+
+This command must be set in your .replit file or Startup command panel.
+
+Never use:
+
+text
+gunicorn main:app
+Plain Gunicorn will break FastAPI, as it does not support ASGI.
+
+(Advanced/flexible) If required to run via Gunicorn, only use with the Uvicorn worker:
+
+text
+gunicorn main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+This is rarely needed on Replit, but works if Gunicorn is enforced.
+
+Summary for Agents/Developers:
+
+ALWAYS serve FastAPI with Uvicorn.
+
+Do NOT use Gunicorn alone.
+
+Update all workflow, deployment, or run commands to use the proper Uvicorn launch.
+
+If you see errors about WSGI/server, stop and check that Uvicorn (not Gunicorn) is running.
+
+By adding (or replacing with) this section in your PRD, you’ll never run into the "stuck in a Gunicorn loop" or "server not responding" errors in Replit or elsewhere.Here's your updated CVGenie PRD server section—concise and agent-proof:
+
+FastAPI Uvicorn Server Instruction (Do Not Skip or Alter):
+
+For all environments, always run the backend as:
+
+text
+uvicorn main:app --host=0.0.0.0 --port=8080
+(Replace main:app with your main Python file and FastAPI app variable if different.)
+
+Never use Gunicorn alone. Do not use WSGI-only servers.
+
+Gunicorn can only be used if you specify the Uvicorn ASGI worker:
+
+text
+gunicorn main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+Summary:
+
+The FastAPI backend must always be started with Uvicorn (directly or as a Gunicorn worker).
+
+If you use the wrong server, the app will not work.
+
+Front End:
+
+Jinja2 templating (HTML pages rendered via FastAPI, classic and easy)
+
+Tailwind CSS or Bootstrap 5 for quick, beautiful, mobile-first styles (free, CDN, no JS build tools needed)
+
+Small snippet of vanilla JS for rotating hero text, progress, and section highlight on scroll
+
+[Optional] Alpine.js for simple UI interactions if more dynamic is needed (lightweight, inline, CDN)
+
+Hosting/Infrastructure:
+
+Replit deployment (run FastAPI with Uvicorn, static files via FastAPI’s built-in support)
+
+No external build steps for frontend—keep it lightweight and Replit-friendly
+
+5. Page Map & Section Placement
+Section	Tech	Content	Notes
+Navbar	HTML+Tailwind	Logo, anchor links	Fixed, blurred, responsive
+Hero Section	HTML+Tailwind+JS	Headline, rotating personas, CTA	Large, visually impactful
+Generator Tool	HTML+Tailwind, Form	File upload, JD paste, CTA, Step	Central “card” component
+Feature Cards	HTML+Tailwind	4 features, icons	Alternating layout, mobile stack
+Testimonials	HTML+Tailwind	Text/user avatars	Grid or horizontally scrollable
+Pricing	HTML+Tailwind	Free/Pro, features, CTA	Card layout, simple/clear
+FAQ	HTML+Tailwind+JS	5-6 excellent FAQs, accordion	At most one instance
+Footer	HTML+Tailwind	Columns for Product/Legal/Contact	Full-width, dark background
+6. User Experience (UX) Principles
+Instant/low-latency interactions (no Streamlit reloads, async FastAPI)
+
+Clear, step-by-step generator flow (stepper/progress bar)
+
+Mobile and desktop friendly: buttons/inputs large, touch targets ≥ 44px
+
+Minimal distractions: no sidebar, chat popups, or bloat
+
+Consistent font and color system (project branding)
+
+Accessibility: good contrast, all buttons/inputs labeled
+
+7. ProjectOS-inspired UI/UX Notes
+Whitespace: 40–80px between rows/sections (breathe! minimalist)
+
+Typography: Use Inter, font sizes: Hero (3xl–4xl), features (xl–2xl), body (lg)
+
+Cards: Subtle rounded corners, light drop shadows, clean borders
+
+Feature alternation: Odd cards left-icon/right-text, even cards right-icon/left-text
+
+Trust: Testimonials with user avatars (rounded), “As used by…” badges in social proof row
+
+Accordion: For FAQ; one open at a time by default
+
+8. Non-Functional Requirements
+Fast: Load in <2s on typical home internet
+
+Secure: All user data processed transiently, except as needed for pro/upgrades
+
+Low-cost: All dependencies open source and Replit-compatible (no vendor lock-in)
+
+SEO: Set meta tags, alt texts, semantic HTML (H1–H3), descriptive titles
+
+Accessibility: Test color contrast, ARIA tags for dynamic elements
+
+9. Implementation & Handover
+Developer Workflow on Replit:
+
+Set up FastAPI entrypoint and run with Uvicorn.
+
+Place all CSS (Tailwind via CDN) in base.html for Jinja2 layouts.
+
+Serve each section as Jinja <block> for easy swapping.
+
+Generator form submits via POST to FastAPI /generate endpoint; backend handles Deepseek API and PDF parsing, returns result for download or copy.
+
+All existing CVGenie content (FAQ answers, pricing text, testimonials) must be reused—only update presentation, not text.
+
+Launch, test responsivity, accessibility, speed.
+
+Summary Statement:
+CVGenie is to be relaunched on Replit using FastAPI and a Jinja2 + Tailwind CSS frontend, following the seamless, minimalist, and conversion-optimized UI/UX of ProjectOS. Existing app features, content, and messaging must be faithfully retained—only the visual style and technical underpinnings are to be modernized and streamlined.
