@@ -44,16 +44,9 @@ export default function TestimonialsSection() {
               <p className="text-slate-600 mb-4">
                 "{testimonial.content}"
               </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 rounded-full mr-4 bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">
-                    {testimonial.name.charAt(0)}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900">{testimonial.name}</p>
-                  <p className="text-sm text-slate-500">{testimonial.role}</p>
-                </div>
+              <div>
+                <p className="font-semibold text-slate-900">{testimonial.name}</p>
+                <p className="text-sm text-slate-500">{testimonial.role}</p>
               </div>
             </div>
           ))}
