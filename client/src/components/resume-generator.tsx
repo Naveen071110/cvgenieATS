@@ -1,0 +1,373 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Upload, FileText, Mail, Download, CheckCircle, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+
+interface UsageSession {
+  id: string;
+  sessionId: string;
+  generationsUsed: number;
+  isPro: number;
+}
+
+interface GenerationResult {
+  id: string;
+  optimizedResume: string;
+  coverLetter: string;
+  remainingGenerations: number;
+}
+
+export default function ResumeGenerator() {
+  const [step, setStep] = useState(1);
+  const [sessionId] = useState(() => Math.random().toString(36).substring(7));
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Get usage session
+  const { data: usageSession } = useQuery<UsageSession>({
+    queryKey: ["/api/usage", sessionId],
+    enabled: !!sessionId,
+  });
+
+  // Generate mutation
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      const formData = new FormData();
+      formData.append("sessionId", sessionId);
+      formData.append("jobDescription", jobDescription);
+      if (resumeFile) {
+        formData.append("resume", resumeFile);
+      }
+
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to generate documents");
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setGenerationResult(data);
+      setStep(3);
+      queryClient.invalidateQueries({ queryKey: ["/api/usage"] });
+      toast({
+        title: "Success!",
+        description: "Your resume and cover letter have been generated.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Generation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type !== "application/pdf") {
+        toast({
+          title: "Invalid File Type",
+          description: "Please upload a PDF file.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setResumeFile(file);
+    }
+  };
+
+  const resetGenerator = () => {
+    setStep(1);
+    setResumeFile(null);
+    setJobDescription("");
+    setGenerationResult(null);
+  };
+
+  const downloadDocument = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const remainingGenerations = usageSession?.isPro 
+    ? -1 
+    : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
+
+  return (
+    <section id="generator" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            Generate Your Perfect Resume
+          </h2>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            Follow these simple steps to create an ATS-optimized resume tailored to your target job
+          </p>
+        </div>
+
+        {/* Progress Steps */}
+        <div className="flex items-center justify-center mb-12">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                step >= 1 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
+              }`}>
+                1
+              </div>
+              <span className={`ml-2 font-medium ${
+                step >= 1 ? "text-slate-700" : "text-slate-500"
+              }`}>
+                Upload Resume
+              </span>
+            </div>
+            <div className={`w-16 h-1 rounded ${
+              step >= 2 ? "bg-primary" : "bg-slate-200"
+            }`}></div>
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                step >= 2 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
+              }`}>
+                2
+              </div>
+              <span className={`ml-2 font-medium ${
+                step >= 2 ? "text-slate-700" : "text-slate-500"
+              }`}>
+                Job Description
+              </span>
+            </div>
+            <div className={`w-16 h-1 rounded ${
+              step >= 3 ? "bg-primary" : "bg-slate-200"
+            }`}></div>
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                step >= 3 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
+              }`}>
+                3
+              </div>
+              <span className={`ml-2 font-medium ${
+                step >= 3 ? "text-slate-700" : "text-slate-500"
+              }`}>
+                Generate
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Generator Form */}
+        <Card className="shadow-xl border border-slate-200">
+          <CardContent className="p-8">
+            {/* Step 1: Resume Upload */}
+            {step === 1 && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 1: Upload Your Current Resume</h3>
+                  <p className="text-slate-600">We'll extract the text to optimize it for your target job</p>
+                </div>
+                
+                <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-primary transition-colors">
+                  {resumeFile ? (
+                    <div>
+                      <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                      <p className="text-lg font-medium text-green-700 mb-2">File uploaded successfully!</p>
+                      <p className="text-slate-600 mb-4">{resumeFile.name}</p>
+                      <Button
+                        variant="outline"
+                        onClick={() => document.getElementById('resume-upload')?.click()}
+                      >
+                        Choose Different File
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                      <p className="text-lg font-medium text-slate-700 mb-2">Drag and drop your resume here</p>
+                      <p className="text-slate-500 mb-4">or click to browse files (PDF format)</p>
+                      <Button
+                        variant="outline"
+                        onClick={() => document.getElementById('resume-upload')?.click()}
+                      >
+                        Choose File
+                      </Button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    id="resume-upload"
+                    className="hidden"
+                    accept=".pdf"
+                    onChange={handleFileUpload}
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <Button
+                    onClick={() => setStep(2)}
+                    disabled={!resumeFile}
+                    size="lg"
+                  >
+                    Continue to Job Description
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Job Description */}
+            {step === 2 && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 2: Paste the Job Description</h3>
+                  <p className="text-slate-600">Copy the job posting you're interested in applying for</p>
+                </div>
+                
+                <div className="space-y-4">
+                  <label htmlFor="job-description" className="block text-sm font-medium text-slate-700">
+                    Job Description
+                  </label>
+                  <Textarea
+                    id="job-description"
+                    rows={8}
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    placeholder="Paste the complete job description here... Include responsibilities, requirements, and company information for best results."
+                    className="resize-none"
+                  />
+                </div>
+                
+                <div className="flex justify-between">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setStep(1)}
+                  >
+                    ← Back
+                  </Button>
+                  <Button
+                    onClick={() => generateMutation.mutate()}
+                    disabled={!jobDescription.trim() || jobDescription.length < 50 || generateMutation.isPending}
+                    size="lg"
+                  >
+                    {generateMutation.isPending ? "Generating..." : "Generate Resume & Cover Letter"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Generation & Results */}
+            {step === 3 && (
+              <div className="space-y-6">
+                {generateMutation.isPending ? (
+                  <div className="text-center py-8">
+                    <div className="text-center">
+                      <h3 className="text-xl font-semibold text-slate-900 mb-2">Generating Your Documents...</h3>
+                      <p className="text-slate-600">Our AI is optimizing your resume and creating a personalized cover letter</p>
+                    </div>
+                    
+                    <div className="mt-8">
+                      <div className="inline-flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
+                        <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                      <p className="text-slate-600 mt-4">This usually takes 10-15 seconds...</p>
+                    </div>
+                  </div>
+                ) : generationResult && (
+                  <div className="space-y-6">
+                    <div className="text-center">
+                      <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-slate-900 mb-2">Documents Generated Successfully!</h3>
+                      <p className="text-slate-600">Your ATS-optimized resume and personalized cover letter are ready</p>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="border border-slate-200 rounded-lg p-6 text-center">
+                        <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                        <h4 className="font-semibold text-slate-900 mb-2">Optimized Resume</h4>
+                        <p className="text-sm text-slate-600 mb-4">ATS-friendly format with relevant keywords</p>
+                        <Button
+                          onClick={() => downloadDocument(generationResult.optimizedResume, 'optimized-resume.txt')}
+                          className="w-full bg-blue-50 text-blue-700 hover:bg-blue-100"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          Download Resume
+                        </Button>
+                      </div>
+                      
+                      <div className="border border-slate-200 rounded-lg p-6 text-center">
+                        <Mail className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                        <h4 className="font-semibold text-slate-900 mb-2">Cover Letter</h4>
+                        <p className="text-sm text-slate-600 mb-4">Personalized for the specific job posting</p>
+                        <Button
+                          onClick={() => downloadDocument(generationResult.coverLetter, 'cover-letter.txt')}
+                          className="w-full bg-green-50 text-green-700 hover:bg-green-100"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          Download Cover Letter
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="text-center">
+                      <Button
+                        onClick={resetGenerator}
+                        variant="outline"
+                        size="lg"
+                      >
+                        Generate Another Resume
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Usage Counter */}
+        <div className="text-center mt-8 p-4 bg-slate-50 rounded-lg">
+          <p className="text-sm text-slate-600">
+            {usageSession?.isPro ? (
+              "Unlimited generations with Pro plan"
+            ) : (
+              <>
+                <span className="font-semibold">{remainingGenerations}</span> free generations remaining this month. 
+                <button 
+                  onClick={() => {
+                    const element = document.getElementById("pricing");
+                    if (element) {
+                      element.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                  className="text-primary hover:text-primary/80 font-medium ml-1"
+                >
+                  Upgrade to Pro
+                </button> for unlimited access.
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
