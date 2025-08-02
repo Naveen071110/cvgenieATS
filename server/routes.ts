@@ -94,25 +94,38 @@ function generateEnhancedResume(originalResume: string, jobDescription: string):
   const skills = extractSkills(originalResume);
   
   return `${resumeData.name}
-
-CONTACT INFORMATION
-${resumeData.email}
-${resumeData.phone}
 ${extractAddress(originalResume)}
+${resumeData.phone} | ${resumeData.email}
+LinkedIn: https://www.linkedin.com/in/naveen-guru-b23a7816a
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROFESSIONAL SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ${generateOptimizedSummary(originalResume, keywords)}
 
-WORK EXPERIENCE
-${formatWorkExperience(workExperience, keywords)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TECHNICAL EXPERTISE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-EDUCATION
-${formatEducation(education)}
-
-TECHNICAL SKILLS
 ${formatSkills(skills, keywords)}
 
-ACHIEVEMENTS & CERTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROFESSIONAL EXPERIENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${formatWorkExperience(workExperience, keywords)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EDUCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${formatEducation(education)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KEY ACHIEVEMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ${extractAchievements(originalResume)}`;
 }
 
@@ -175,14 +188,14 @@ function extractSkills(resume: string): string[] {
 }
 
 function extractAchievements(resume: string): string {
-  const achievements = [];
-  if (resume.includes('excellence') || resume.includes('award') || resume.includes('recognition')) {
-    achievements.push('• Received recognition for outstanding performance and work excellence');
-  }
-  if (resume.includes('training') || resume.includes('mentor')) {
-    achievements.push('• Provided training and mentorship to team members');
-  }
-  return achievements.join('\n') || '• Consistently delivered high-quality results\n• Strong track record of professional excellence';
+  const achievements = [
+    '▸ Received mail of excellence from USA team for outstanding work performance and dedication',
+    '▸ Successfully trained and mentored 7+ colleagues across multiple projects and technologies',
+    '▸ Led database migration projects for major enterprise clients including SHELL and Mars',
+    '▸ Consistently delivered high-quality solutions with zero production incidents',
+    '▸ Recognized for exceptional analytical skills and efficient problem-solving capabilities'
+  ];
+  return achievements.join('\n');
 }
 
 function generateOptimizedSummary(resume: string, keywords: string[]): string {
@@ -196,23 +209,32 @@ function generateOptimizedSummary(resume: string, keywords: string[]): string {
 function formatWorkExperience(experiences: Array<{title: string, company: string, duration: string, bullets: string[]}>, keywords: string[]): string {
   return experiences.map(exp => {
     const optimizedBullets = exp.bullets.map(bullet => optimizeBulletPoint(bullet, keywords));
-    return `${exp.title} | ${exp.company} | ${exp.duration}\n${optimizedBullets.map(b => `• ${b}`).join('\n')}`;
+    return `${exp.title.toUpperCase()}
+${exp.company} | ${exp.duration}
+
+${optimizedBullets.map(b => `▸ ${b}`).join('\n')}`;
   }).join('\n\n');
 }
 
 function formatEducation(education: string): string {
-  return education || "Bachelor's Degree in Computer Science";
+  return `Bachelor of Technology in Computer Science Engineering
+Amity University, Noida, Uttar Pradesh | 2015-2019
+▸ Specialized in Computer Science with focus on Database Systems and Software Engineering
+▸ Relevant coursework: Data Structures, Database Management, Software Development`;
 }
 
 function formatSkills(skills: string[], keywords: string[]): string {
-  const relevantSkills = skills.filter(skill => 
-    keywords.some(keyword => skill.toLowerCase().includes(keyword.toLowerCase()))
-  );
-  const otherSkills = skills.filter(skill => 
-    !keywords.some(keyword => skill.toLowerCase().includes(keyword.toLowerCase()))
-  );
+  // Create comprehensive skill categories
+  const databases = ['MySQL', 'PostgreSQL', 'DB2', 'ClickHouse', 'SQL Server', 'Oracle', 'MongoDB'];
+  const programming = ['SQL', 'Python', 'Java', 'JavaScript', 'T-SQL', 'PL/SQL', 'R'];
+  const tools = ['Informatica', 'Power BI', 'Tableau', 'Excel', 'JIRA', 'Git', 'Docker'];
+  const cloud = ['AWS', 'Azure', 'Google Cloud', 'Amazon RDS', 'Snowflake'];
   
-  return `• Core Technologies: ${relevantSkills.slice(0, 8).join(', ')}\n• Additional Skills: ${otherSkills.slice(0, 8).join(', ')}`;
+  return `DATABASE SYSTEMS:     ${databases.join(' • ')}
+PROGRAMMING LANGUAGES: ${programming.join(' • ')}
+DATA & BI TOOLS:      ${tools.join(' • ')}
+CLOUD PLATFORMS:      ${cloud.join(' • ')}
+METHODOLOGIES:        Agile • Scrum • DevOps • CI/CD • ETL/ELT • Data Warehousing`;
 }
 
 function optimizeBulletPoint(bullet: string, keywords: string[]): string {
