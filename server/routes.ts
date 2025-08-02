@@ -18,13 +18,13 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
   // Get or create usage session
   app.get("/api/usage/:sessionId", async (req, res) => {
     try {
       const { sessionId } = req.params;
       let session = await storage.getUsageSession(sessionId);
-      
+
       if (!session) {
         session = await storage.createUsageSession({
           sessionId,
@@ -32,7 +32,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isPro: 0
         });
       }
-      
+
       res.json(session);
     } catch (error) {
       res.status(500).json({ error: "Failed to get usage session" });
@@ -140,7 +140,7 @@ function cleanAIResponse(content: string): string {
   ];
 
   let cleaned = content;
-  
+
   // Remove all instructional patterns
   instructionalPatterns.forEach(pattern => {
     cleaned = cleaned.replace(pattern, '');
@@ -160,18 +160,18 @@ function cleanAIResponse(content: string): string {
 function extractKeywords(jobDescription: string): string[] {
   // Remove common words and extract relevant keywords
   const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should', 'could', 'can', 'may', 'might', 'must']);
-  
+
   const words = jobDescription.toLowerCase()
     .replace(/[^\w\s]/g, ' ')
     .split(/\s+/)
     .filter(word => word.length > 2 && !commonWords.has(word));
-  
+
   // Count word frequency
   const wordCount = new Map<string, number>();
   words.forEach(word => {
     wordCount.set(word, (wordCount.get(word) || 0) + 1);
   });
-  
+
   // Return top 10 most frequent keywords
   return Array.from(wordCount.entries())
     .sort((a, b) => b[1] - a[1])
@@ -197,27 +197,27 @@ function atsCleanup(content: string, keywords: string[]): string {
     // Ensure proper line breaks
     .replace(/\n{3,}/g, '\n\n')
     .trim();
-  
+
   // Ensure required sections exist
   const requiredSections = ['CONTACT', 'SUMMARY', 'EXPERIENCE', 'EDUCATION', 'SKILLS'];
   const missingSections = requiredSections.filter(section => 
     !cleaned.toUpperCase().includes(section)
   );
-  
+
   if (missingSections.length > 0) {
     console.log(`Missing sections detected: ${missingSections.join(', ')}`);
   }
-  
+
   return cleaned;
 }
 
 // AI Generation Functions (using Deepseek API)
 async function generateOptimizedResume(originalResume: string, jobDescription: string): Promise<string> {
   const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || "default_key";
-  
+
   // Extract keywords from job description
   const keywords = extractKeywords(jobDescription);
-  
+
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -234,7 +234,14 @@ async function generateOptimizedResume(originalResume: string, jobDescription: s
           },
           {
             role: 'user',
-            content: `Create a professional resume in plain text format. Output ONLY the resume content with no additional commentary, explanations, or meta-text.
+            content: `Create a professional resume in plain text format. Output ONLY the resume content with no additional commentary, explanation or meta-text.
+
+CRITICAL PRESERVATION REQUIREMENTS:
+- NEVER change the candidate's name, phone number, email address, or location
+- NEVER change company names, university names, or degree titles from the original resume
+- NEVER alter dates of employment or education
+- PRESERVE all original contact information exactly as provided
+- PRESERVE all original institution names and degree titles exactly as written
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers in ALL CAPS: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
@@ -248,7 +255,12 @@ FORMATTING REQUIREMENTS:
 - Format work experience as: Job Title | Company Name | Dates
 - Include phone, email, and location in contact section
 
-KEYWORDS TO INCORPORATE: ${keywords.join(', ')}
+OPTIMIZATION GUIDELINES:
+- Incorporate relevant keywords from the job description: ${keywords.join(', ')}
+- Enhance bullet points to highlight relevant experience and achievements
+- Improve professional summary to align with job requirements
+- Strengthen skill descriptions and add relevant technologies mentioned in job posting
+- Quantify achievements where possible while maintaining truthfulness
 
 Original Resume:
 ${originalResume}
@@ -270,13 +282,13 @@ Output the complete resume with proper spacing and line breaks. Do not include a
 
     const data = await response.json();
     let rawContent = data.choices[0]?.message?.content || "Error generating optimized resume";
-    
+
     // Remove instructional text and meta-commentary
     rawContent = cleanAIResponse(rawContent);
-    
+
     // Apply ATS cleanup
     return atsCleanup(rawContent, keywords);
-    
+
   } catch (error) {
     console.error('Deepseek API error:', error);
     // Fallback response
@@ -308,10 +320,10 @@ This resume has been optimized for ATS systems and includes relevant keywords fr
 
 async function generateCoverLetter(originalResume: string, jobDescription: string): Promise<string> {
   const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || "default_key";
-  
+
   // Extract keywords from job description
   const keywords = extractKeywords(jobDescription);
-  
+
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -360,17 +372,17 @@ Write a compelling cover letter that connects the candidate's experience to the 
 
     const data = await response.json();
     let rawContent = data.choices[0]?.message?.content || "Error generating cover letter";
-    
+
     // Remove instructional text and meta-commentary
     rawContent = cleanAIResponse(rawContent);
-    
+
     // Apply basic cleanup for cover letter
     return rawContent
       .replace(/[""]/g, '"')
       .replace(/['']/g, "'")
       .replace(/\n{3,}/g, '\n\n')
       .trim();
-    
+
   } catch (error) {
     console.error('Deepseek API error:', error);
     // Fallback response
