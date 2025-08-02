@@ -236,12 +236,17 @@ async function generateOptimizedResume(originalResume: string, jobDescription: s
             role: 'user',
             content: `Create a professional resume in plain text format. Output ONLY the resume content with no additional commentary, explanation or meta-text.
 
-CRITICAL PRESERVATION REQUIREMENTS:
-- NEVER change the candidate's name, phone number, email address, or location
-- NEVER change company names, university names, or degree titles from the original resume
-- NEVER alter dates of employment or education
-- PRESERVE all original contact information exactly as provided
-- PRESERVE all original institution names and degree titles exactly as written
+CRITICAL PRESERVATION REQUIREMENTS - THESE ARE ABSOLUTE AND NON-NEGOTIABLE:
+- NEVER change or modify the candidate's name, phone number, email address, or physical location/address
+- NEVER change or modify company names, organization names, university names, or institution names from the original resume
+- NEVER change or modify degree titles, certification names, or educational qualifications
+- NEVER alter dates of employment, education, or any timeline information
+- PRESERVE ALL original contact information EXACTLY as written in the source resume
+- PRESERVE ALL original institution names, company names, and degree titles EXACTLY as written
+- PRESERVE ALL addresses, cities, states, zip codes EXACTLY as written
+- PRESERVE ALL proper nouns (names of people, places, companies, schools) EXACTLY as they appear
+- Only enhance descriptions, achievements, and bullet points - NEVER change factual information
+- Do not create or invent any new companies, schools, or personal details
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers in ALL CAPS: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
@@ -255,20 +260,30 @@ FORMATTING REQUIREMENTS:
 - Format work experience as: Job Title | Company Name | Dates
 - Include phone, email, and location in contact section
 
-OPTIMIZATION GUIDELINES:
-- Incorporate relevant keywords from the job description: ${keywords.join(', ')}
-- Enhance bullet points to highlight relevant experience and achievements
-- Improve professional summary to align with job requirements
-- Strengthen skill descriptions and add relevant technologies mentioned in job posting
-- Quantify achievements where possible while maintaining truthfulness
+WHAT YOU CAN MODIFY:
+- Enhance and improve bullet point descriptions and achievements
+- Improve professional summary language and alignment with job requirements
+- Add relevant keywords naturally within existing job descriptions
+- Strengthen skill descriptions and technical competencies
+- Quantify achievements where data supports it
+- Improve action verbs and impact statements
 
-Original Resume:
+WHAT YOU CANNOT MODIFY:
+- Any names (personal, company, university, certification names)
+- Any contact information (phone, email, address, location)
+- Any dates or timelines
+- Any degree titles or certification names
+- Any company names or organization names
+
+TARGET KEYWORDS TO INCORPORATE NATURALLY: ${keywords.join(', ')}
+
+ORIGINAL RESUME TO OPTIMIZE:
 ${originalResume}
 
-Job Description:
+JOB DESCRIPTION FOR REFERENCE:
 ${jobDescription}
 
-Output the complete resume with proper spacing and line breaks. Do not include any introductory text, explanations, or notes.`
+Remember: Your job is to enhance the CONTENT and DESCRIPTIONS while preserving ALL factual information exactly as provided. Output the complete resume with proper spacing and line breaks. Do not include any introductory text, explanations, or notes.`
           }
         ],
         temperature: 0.6,
