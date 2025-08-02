@@ -3,6 +3,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
+import { promises as fs } from 'fs';
+import { promisify } from 'util';
+import { exec } from 'child_process';
+import path from 'path';
+
+const execAsync = promisify(exec);
 import { exec } from "child_process";
 import { promisify } from "util";
 import fs from "fs";
@@ -311,10 +317,15 @@ ${resumeData.name}`;
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   let extractedText = '';
   
-  // Method 1: Try pdf-parse library
+  // Method 1: Try pdf-parse library with configuration
   try {
     const pdfParse = await import('pdf-parse');
-    const pdfData = await pdfParse.default(buffer);
+    // Use basic configuration to avoid file system dependency issues
+    const pdfData = await pdfParse.default(buffer, {
+      max: 0, // process all pages
+      normalizeWhitespace: true,
+      disableCombineTextItems: false
+    });
     extractedText = pdfData.text || '';
     console.log('Method 1 (pdf-parse) extracted:', extractedText.length, 'characters');
     
@@ -323,6 +334,20 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     }
   } catch (error) {
     console.log('Method 1 (pdf-parse) failed:', error.message);
+    
+    // Try with minimal options if the above failed
+    try {
+      const pdfParse = await import('pdf-parse');
+      const pdfData = await pdfParse.default(buffer);
+      extractedText = pdfData.text || '';
+      console.log('Method 1b (pdf-parse minimal) extracted:', extractedText.length, 'characters');
+      
+      if (extractedText.trim().length > 20) {
+        return cleanExtractedText(extractedText);
+      }
+    } catch (secondError) {
+      console.log('Method 1b also failed:', secondError.message);
+    }
   }
   
   // Method 2: Try alternative PDF processing if available
