@@ -77,9 +77,118 @@ def extract_text_from_pdf(file_content: bytes) -> str:
         print(f"PDF extraction error: {e}")
         return "Error extracting text from PDF"
 
+def parse_resume_structure(resume_text: str) -> dict:
+    """Parse resume into structured data to preserve original information"""
+    import re
+    
+    structure = {
+        "name": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "work_experience": [],
+        "education": [],
+        "skills": [],
+        "raw_text": resume_text
+    }
+    
+    # Extract email
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    email_match = re.search(email_pattern, resume_text)
+    if email_match:
+        structure["email"] = email_match.group()
+    
+    # Extract phone
+    phone_pattern = r'(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})'
+    phone_match = re.search(phone_pattern, resume_text)
+    if phone_match:
+        structure["phone"] = phone_match.group()
+    
+    # Simple name extraction (first line or before email)
+    lines = resume_text.split('\n')
+    if lines:
+        first_line = lines[0].strip()
+        if len(first_line.split()) <= 4 and first_line.replace(' ', '').isalpha():
+            structure["name"] = first_line
+    
+    return structure
+
+def extract_keywords_from_job(job_description: str) -> list:
+    """Extract top 10 keywords from job description for ATS optimization"""
+    import re
+    from collections import Counter
+    
+    # Clean and tokenize
+    text = re.sub(r'[^\w\s]', ' ', job_description.lower())
+    words = text.split()
+    
+    # Remove common stop words
+    stop_words = {'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among', 'is', 'are', 'was', 'were', 'been', 'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'a', 'an'}
+    
+    # Filter meaningful words (length > 2, not stop words)
+    meaningful_words = [word for word in words if len(word) > 2 and word not in stop_words]
+    
+    # Get top 10 most common
+    word_counts = Counter(meaningful_words)
+    return [word for word, count in word_counts.most_common(10)]
+
+def format_to_ats(output: str, original_structure: dict) -> str:
+    """Post-process output to ensure ATS compliance and data preservation"""
+    import re
+    
+    # Ensure original contact information is preserved
+    if original_structure["name"] and original_structure["name"] not in output:
+        output = f"{original_structure['name']}\n" + output
+    
+    if original_structure["email"] and original_structure["email"] not in output:
+        output = output.replace("CONTACT INFORMATION", f"CONTACT INFORMATION\n{original_structure['email']}")
+    
+    if original_structure["phone"] and original_structure["phone"] not in output:
+        contact_section = output.find("CONTACT INFORMATION")
+        if contact_section != -1:
+            output = output.replace("CONTACT INFORMATION", f"CONTACT INFORMATION\n{original_structure['phone']}")
+    
+    # Ensure proper section headers and formatting
+    headers = ["CONTACT INFORMATION", "PROFESSIONAL SUMMARY", "WORK EXPERIENCE", "EDUCATION", "SKILLS", "CERTIFICATIONS"]
+    
+    for header in headers:
+        # Make sure headers are properly formatted
+        output = re.sub(rf'\b{header}\b', f"\n{header}\n", output, flags=re.IGNORECASE)
+    
+    # Convert paragraphs to bullet points in work experience
+    output = re.sub(r'\n{3,}', '\n\n', output)  # Remove excessive line breaks
+    
+    # Ensure bullet points format
+    lines = output.split('\n')
+    formatted_lines = []
+    in_experience_section = False
+    
+    for line in lines:
+        line = line.strip()
+        if any(header in line.upper() for header in ["WORK EXPERIENCE", "PROFESSIONAL EXPERIENCE", "EMPLOYMENT"]):
+            in_experience_section = True
+            formatted_lines.append(line)
+        elif any(header in line.upper() for header in headers) and "EXPERIENCE" not in line.upper():
+            in_experience_section = False
+            formatted_lines.append(line)
+        elif in_experience_section and line and not line.startswith('•') and not line.startswith('-'):
+            # Convert to bullet point if it's a description
+            if len(line) > 20 and not re.match(r'^[A-Z][a-z]+ \d{4}', line):  # Not a date line
+                formatted_lines.append(f"• {line}")
+            else:
+                formatted_lines.append(line)
+        else:
+            formatted_lines.append(line)
+    
+    return '\n'.join(formatted_lines).strip()
+
 async def generate_optimized_resume(original_resume: str, job_description: str) -> str:
-    """Generate optimized resume using Deepseek API"""
+    """Generate optimized resume using Deepseek API with improved ATS compliance"""
     api_key = os.getenv("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_API_KEY_ENV_VAR") or "default_key"
+    
+    # Parse original resume structure to preserve data
+    original_structure = parse_resume_structure(original_resume)
+    keywords = extract_keywords_from_job(job_description)
     
     try:
         async with httpx.AsyncClient() as client:
@@ -94,35 +203,45 @@ async def generate_optimized_resume(original_resume: str, job_description: str) 
                     "messages": [
                         {
                             "role": "system",
-                            "content": "You are an expert resume writer specializing in ATS optimization. Create optimized resumes that pass applicant tracking systems while appealing to human recruiters."
+                            "content": "You are an expert resume writer specializing in ATS optimization. Create optimized resumes that pass applicant tracking systems while preserving all original factual information."
                         },
                         {
                             "role": "user",
-                            "content": f"""Please optimize this resume for the following job description. Focus on ATS compatibility, keyword optimization, and relevant experience highlighting.
+                            "content": f"""Using ONLY the personal and experience information below, generate an ATS-compliant resume in plain text format:
 
-Original Resume:
+CRITICAL REQUIREMENTS:
+- Do NOT change, invent, or remove any personal details, addresses, work experience, company names, education, emails, phone numbers, or dates. These MUST stay exactly as provided.
+- Use clear SECTION HEADERS: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
+- For each role/degree, use bullet points ("•" or "-"), each on its own line. Never use paragraphs.
+- No graphics, tables, columns, or creative formatting—plain text and clean line breaks only.
+- Incorporate these keywords naturally: {', '.join(keywords)}
+
+Original Resume Data:
 {original_resume}
 
-Job Description:
+Job Description for optimization:
 {job_description}
 
-Please provide an optimized resume that:
-1. Uses relevant keywords from the job description
-2. Highlights matching skills and experience
-3. Uses ATS-friendly formatting
-4. Maintains professional tone
-5. Focuses on achievements and impact"""
+Focus on:
+1. ATS-compliant formatting with clear sections
+2. Incorporating relevant keywords from job description
+3. Highlighting matching skills and achievements
+4. Professional bullet points, not paragraphs
+5. Preserving ALL original factual information exactly as provided"""
                         }
                     ],
-                    "temperature": 0.7,
-                    "max_tokens": 2000
+                    "temperature": 0.3,
+                    "max_tokens": 2500
                 },
                 timeout=30.0
             )
             
             if response.status_code == 200:
                 data = response.json()
-                return data["choices"][0]["message"]["content"]
+                generated_resume = data["choices"][0]["message"]["content"]
+                
+                # Post-process to ensure ATS compliance and data preservation
+                return format_to_ats(generated_resume, original_structure)
             else:
                 print(f"Deepseek API error: {response.status_code} - {response.text}")
                 raise HTTPException(status_code=500, detail="AI service temporarily unavailable")
@@ -132,8 +251,8 @@ Please provide an optimized resume that:
         raise HTTPException(status_code=504, detail="AI service timeout")
     except Exception as e:
         print(f"Deepseek API error: {e}")
-        # Fallback response
-        return f"""OPTIMIZED RESUME
+        # Fallback response with ATS formatting
+        fallback_resume = f"""OPTIMIZED RESUME
 
 [Your Name]
 [Contact Information]
@@ -156,6 +275,8 @@ EDUCATION
 [Your Education Background]
 
 This resume has been optimized for ATS systems and includes relevant keywords from your target job description."""
+        
+        return format_to_ats(fallback_resume, original_structure)
 
 async def generate_cover_letter(original_resume: str, job_description: str) -> str:
     """Generate personalized cover letter using Deepseek API"""
@@ -244,8 +365,47 @@ async def get_usage_session(session_id: str):
         "createdAt": session.created_at.isoformat()
     }
 
-@app.post("/api/generate")
+@app.post("/generate")
 async def generate_documents(
+    session_id: str = Form(...),
+    job_description: str = Form(...),
+    resume: UploadFile = File(...)
+):
+    """Enhanced generate endpoint for Node.js integration"""
+    
+    # Validate file
+    if not resume.filename.endswith('.pdf'):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+    
+    if len(job_description.strip()) < 50:
+        raise HTTPException(status_code=400, detail="Job description must be at least 50 characters long")
+    
+    try:
+        # Extract text from PDF
+        file_content = await resume.read()
+        original_resume = extract_text_from_pdf(file_content)
+        
+        if not original_resume or len(original_resume.strip()) < 10:
+            raise HTTPException(status_code=400, detail="Could not extract text from PDF. Please ensure it's a valid PDF with text content.")
+        
+        # Generate optimized documents with enhanced ATS compliance
+        optimized_resume = await generate_optimized_resume(original_resume, job_description)
+        cover_letter = await generate_cover_letter(original_resume, job_description)
+        
+        return {
+            "optimized_resume": optimized_resume,
+            "cover_letter": cover_letter,
+            "original_resume": original_resume
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Generation error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate documents. Please try again.")
+
+@app.post("/api/generate")
+async def generate_documents_legacy(
     sessionId: str = Form(...),
     jobDescription: str = Form(...),
     resume: UploadFile = File(...)
@@ -280,7 +440,7 @@ async def generate_documents(
         if not original_resume or len(original_resume.strip()) < 10:
             raise HTTPException(status_code=400, detail="Could not extract text from PDF. Please ensure it's a valid PDF with text content.")
         
-        # Generate optimized documents
+        # Generate optimized documents with enhanced ATS compliance
         optimized_resume = await generate_optimized_resume(original_resume, jobDescription)
         cover_letter = await generate_cover_letter(original_resume, jobDescription)
         

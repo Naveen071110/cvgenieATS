@@ -1,0 +1,119 @@
+# CVGenie – Change Log & Developer Notes for ATS Resume Output
+
+### **Objective:**  
+Make sure all generated resumes are truly ATS-compliant and factually accurate. Output must:
+- Follow correct ATS resume structure/format (sections, bullets, line breaks—not paragraphs)
+- Always preserve critical personal/employment/education data from the user’s uploaded resume
+
+## 1. **Change Log**
+
+### **A. Prompt Engineering FIXES**
+- [ ] **Update Prompt to Directly Demand ATS Format**
+    - Instruct the LLM:  
+      “Output a resume with clear section headers (e.g., CONTACT INFORMATION, SUMMARY, WORK EXPERIENCE), each section on its own line. For work and education, use bullet points or new lines for each item. Do NOT output as a single paragraph.”
+- [ ] **Explicitly Forbid Changing User Data**
+    - Add:  
+      “Do not change or invent any user information, addresses, company names, degrees, phone numbers, email addresses, or dates. You may only rewrite the bullet points/descriptions—not names, titles, or factual info. Use the data as given without modifications.”
+
+### **B. Data Handling (Pre/Post-processing) FIXES**
+- [ ] **Parse and Pass Input as Structured Data**
+    - Rather than passing the user resume as a single text block, parse and send as structured fields (dictionary/JSON or clearly delimited text).
+    - Example:  
+      ```
+      [Original Data]
+      Name: Jane Doe
+      Address: 123 Main St, NY
+      Email: jane@email.com
+      Phone: 123-456-7890
+      Work Experience:
+        - Title: Data Analyst
+          Company: Acme Corp
+          Dates: 2020-2023
+          Bullets: ...
+      Education:
+        - Degree: BSc Chemistry
+          School: NYU
+          Dates: 2015-2019
+      ```
+- [ ] **Implement Output Post-Processor**
+    - Write a Python function to check the generated output for:
+      - Matching all original information (address, email, phone, company, school names, etc.)
+      - Proper formatting: section headers, bullet points, no big paragraphs
+    - If any field is missing or altered:
+      - Automatically replace with the original,
+      - Or notify the user to edit before downloading.
+
+## 2. **Developer Implementation Help**
+
+**A. Prompt Engineering Example (for API call):**
+
+```python
+prompt = f"""
+You are an expert resume writer. Using ONLY the personal and experience information below, generate an ATS-compliant resume in plain text format:
+- Do NOT change, invent, or remove any personal details, addresses, work experience, company names, education, emails, phone numbers, or dates. These MUST stay exactly as provided.
+- Use clear SECTION HEADERS (e.g.: CONTACT INFORMATION, SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS)
+- For each role/degree, use bullet points ("•" or "-"), each on its own line. Never use paragraphs.
+- Leave any section blank if no input is provided.
+- No graphics, tables, columns, or creative formatting—plain text and clean line breaks only.
+User data:
+Name: {name}
+Address: {address}
+Phone: {phone}
+Email: {email}
+Work Experience:
+{all_user_work_experience}
+Education:
+{all_user_education}
+Skills:
+{skills}
+Job description for ATS optimization:
+{job_description}
+"""
+```
+
+**B. Python Post-Processing Template:**
+
+```python
+def enforce_original_data(original, generated):
+    # Simple check/replace for each vital field
+    for field in ["name","address","phone","email"]:
+        if original[field] not in generated:
+            # Insert/replace in generated text as needed (can be improved with regex)
+            generated = generated.replace(field.upper(), f"{field.upper()}:\n{original[field]}")
+    # Optionally parse and check company, school, etc. in experience/education blocks
+    # Can add alert/highlight for user if mismatches found
+    return generated
+```
+
+**C. Section Formatting Helper:**
+
+```python
+def format_to_ats(output):
+    # Force all section headers and bullets to be clean, replace paragraphs
+    output = re.sub(r'\n{2,}', '\n\n', output)
+    headers = ["CONTACT INFORMATION", "SUMMARY", "WORK EXPERIENCE", "EDUCATION", "SKILLS"]
+    for h in headers:
+        output = output.replace(h, f"\n{h}")
+    # Replace any paragraph blocks with sectioned bullets if detected
+    # Optionally convert lines with "•" not at start of line to new lines
+    return output.strip()
+```
+
+## 3. **Testing Checklist**
+
+- [ ] Run resume generation; output has clear ATS sections, not a long paragraph.
+- [ ] All fields from the uploaded resume (address, companies, degree, phone/email) are present in output and unmodified.
+- [ ] If any field is missing/changed, see alert or auto-correct in post-processing.
+- [ ] Final format: no tables, no columns, bullet points only.
+
+## 4. **Leverage Replit Assistant**
+
+- **Task suggestions:**  
+  - “Help me check if generated resume is missing or changing user’s original company/school.”
+  - “Can you help me split a paragraph resume into ATS sections and bullets using Python?”
+  - “Refactor my Deepseek prompt so it never rewrites emails, phone, company names, degrees, or addresses.”
+- **Use conversation examples:**  
+  - Give it sample inputs and outputs so it can help craft correct code snippets and regex for you.
+
+## **Final Note:**  
+MUST preserve and match all user-provided personal and factual resume data precisely. Update both the **prompt** and the **post-processing logic** as above. Test and iterate until every output is ATS-friendly and never loses/corrupts real-world resume information.

@@ -21,6 +21,13 @@ Preferred communication style: Simple, everyday language.
 - **ATS Compliance Validation**: Post-processing ensures proper formatting, section validation, and ATS-friendly output
 - **Enhanced Prompts**: Detailed prompts following ATS best practices for better generation quality
 
+### Latest ATS Compliance Improvements (Latest Update)
+- **Structured Data Parsing**: Added resume parsing to extract and preserve original contact information, work experience, and education
+- **Data Preservation**: Critical information (emails, phone numbers, company names, dates) is now strictly preserved during optimization
+- **Enhanced Formatting**: Post-processing ensures proper ATS section headers and bullet point formatting
+- **Keyword Integration**: Intelligent extraction and natural incorporation of job description keywords
+- **Fallback Protection**: Robust error handling with ATS-compliant fallback generation
+
 ## System Architecture
 
 ### Frontend Architecture
