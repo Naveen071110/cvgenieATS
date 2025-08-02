@@ -2,6 +2,8 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useAuthDialog } from "@/hooks/useAuthDialog";
+import { LoginDialog } from "@/components/LoginDialog";
 
 const freePlanFeatures = [
   "3 resume generations per month",
@@ -24,6 +26,7 @@ export default function PricingSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
   const freePlanAnimation = useScrollAnimation({ threshold: 0.3 });
   const proPlanAnimation = useScrollAnimation({ threshold: 0.3 });
+  const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   return (
     <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
@@ -116,6 +119,10 @@ export default function PricingSection() {
               
               <Button 
                 className="w-full py-3 px-6 bg-white text-primary font-semibold hover:bg-gray-50"
+                onClick={() => openAuthDialog({
+                  title: "Upgrade to Pro",
+                  description: "Sign in to upgrade to Pro and get unlimited generations."
+                })}
               >
                 Upgrade to Pro
               </Button>
@@ -123,6 +130,13 @@ export default function PricingSection() {
           </Card>
         </div>
       </div>
+
+      <LoginDialog 
+        open={isOpen} 
+        onOpenChange={closeAuthDialog}
+        title={dialogConfig.title}
+        description={dialogConfig.description}
+      />
     </section>
   );
 }

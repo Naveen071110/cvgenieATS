@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useAuth } from "@/context/AuthContext";
+import { LoginDialog } from "@/components/LoginDialog";
+import { useAuthDialog } from "@/hooks/useAuthDialog";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, signOut, isLoading } = useAuth();
+  const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,6 +77,37 @@ export default function Header() {
               >
                 FAQ
               </button>
+              
+              {/* Auth Section */}
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <User className="h-4 w-4 text-slate-600" />
+                    <span className="text-sm text-slate-600">
+                      {user.user_metadata?.full_name || user.email}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={signOut}
+                    disabled={isLoading}
+                    className="text-slate-600 hover:text-slate-900"
+                  >
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => openAuthDialog()}
+                  variant="default"
+                  size="sm"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  Sign In
+                </Button>
+              )}
             </div>
             
             {/* Mobile Menu Button */}
@@ -118,9 +154,49 @@ export default function Header() {
             >
               FAQ
             </button>
+            
+            {/* Mobile Auth Section */}
+            <div className="mt-8 pt-8 border-t border-slate-200">
+              {user ? (
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <User className="h-4 w-4 text-slate-600" />
+                    <span className="text-sm text-slate-600">
+                      {user.user_metadata?.full_name || user.email}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={signOut}
+                    disabled={isLoading}
+                    className="w-full justify-start text-slate-600 hover:text-slate-900"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => {
+                    openAuthDialog();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  Sign In
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       )}
+
+      <LoginDialog 
+        open={isOpen} 
+        onOpenChange={closeAuthDialog}
+        title={dialogConfig.title}
+        description={dialogConfig.description}
+      />
     </>
   );
 }

@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save } from "lucide-react";
+import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { useAuth } from "@/context/AuthContext";
+import { LoginDialog } from "@/components/LoginDialog";
+import { useAuthDialog } from "@/hooks/useAuthDialog";
 
 interface UsageSession {
   id: string;
@@ -32,6 +35,8 @@ export default function Generator() {
   const [isEditingCoverLetter, setIsEditingCoverLetter] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   // Get usage session
   const { data: usageSession } = useQuery<UsageSession>({
@@ -72,11 +77,19 @@ export default function Generator() {
       });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Generation Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Check if the error is about usage limits
+      if (error.message.includes("usage limit exceeded")) {
+        openAuthDialog({
+          title: "Upgrade to Pro",
+          description: "You've used all 3 free generations. Sign in to upgrade to Pro for unlimited generations."
+        });
+      } else {
+        toast({
+          title: "Generation Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -122,6 +135,24 @@ export default function Generator() {
     : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
 
   const canGenerate = resumeFile && jobDescription.trim().length >= 50 && !generateMutation.isPending;
+
+  const handleGenerateClick = () => {
+    if (!user && remainingGenerations <= 0) {
+      openAuthDialog({
+        title: "Sign in to continue",
+        description: "You've used all 3 free generations. Sign in to upgrade to Pro for unlimited generations."
+      });
+      return;
+    }
+    generateMutation.mutate();
+  };
+
+  const handleUpgradeClick = () => {
+    openAuthDialog({
+      title: "Upgrade to Pro",
+      description: "Get unlimited generations, priority support, and advanced features."
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
@@ -210,9 +241,9 @@ export default function Generator() {
                   </div>
                 </div>
 
-                <div className="mt-8 text-center">
+                <div className="mt-8 text-center space-y-4">
                   <Button
-                    onClick={() => generateMutation.mutate()}
+                    onClick={handleGenerateClick}
                     disabled={!canGenerate}
                     size="lg"
                     className="px-8 py-4"
@@ -226,6 +257,33 @@ export default function Generator() {
                       "Generate Resume & Cover Letter"
                     )}
                   </Button>
+                  
+                  {/* Usage Counter */}
+                  <div className="text-sm text-slate-600">
+                    {user?.id ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Crown className="w-4 h-4 text-yellow-500" />
+                        <span>Pro User - Unlimited generations</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-4">
+                        <span>
+                          {remainingGenerations > 0 
+                            ? `${remainingGenerations} free generations remaining`
+                            : "No free generations remaining"
+                          }
+                        </span>
+                        <Button 
+                          variant="link" 
+                          size="sm" 
+                          onClick={handleUpgradeClick}
+                          className="p-0 h-auto text-blue-600 hover:text-blue-700"
+                        >
+                          Upgrade to Pro
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -381,6 +439,13 @@ export default function Generator() {
           </div>
         </div>
       </div>
+
+      <LoginDialog 
+        open={isOpen} 
+        onOpenChange={closeAuthDialog}
+        title={dialogConfig.title}
+        description={dialogConfig.description}
+      />
     </div>
   );
 }
