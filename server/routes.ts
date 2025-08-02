@@ -3,6 +3,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
+import { exec } from "child_process";
+import { promisify } from "util";
+import fs from "fs";
+import path from "path";
+
+const execAsync = promisify(exec);
 
 // Fallback generation functions
 function generateFallbackResume(originalResume: string, jobDescription: string): string {
@@ -301,6 +307,87 @@ Best regards,
 ${resumeData.name}`;
 }
 
+// PDF text extraction function with multiple fallback methods
+async function extractTextFromPDF(buffer: Buffer): Promise<string> {
+  let extractedText = '';
+  
+  // Method 1: Try pdf-parse library
+  try {
+    const pdfParse = await import('pdf-parse');
+    const pdfData = await pdfParse.default(buffer);
+    extractedText = pdfData.text || '';
+    console.log('Method 1 (pdf-parse) extracted:', extractedText.length, 'characters');
+    
+    if (extractedText.trim().length > 20) {
+      return cleanExtractedText(extractedText);
+    }
+  } catch (error) {
+    console.log('Method 1 (pdf-parse) failed:', error.message);
+  }
+  
+  // Method 2: Try alternative PDF processing if available
+  try {
+    // Create temporary file for processing
+    const tempDir = '/tmp';
+    const tempFilePath = path.join(tempDir, `temp_${Date.now()}.pdf`);
+    
+    // Write buffer to temporary file
+    fs.writeFileSync(tempFilePath, buffer);
+    
+    // Try using pdftotext if available (common on Linux systems)
+    try {
+      const { stdout } = await execAsync(`pdftotext "${tempFilePath}" -`);
+      extractedText = stdout || '';
+      console.log('Method 2 (pdftotext) extracted:', extractedText.length, 'characters');
+      
+      // Clean up temp file
+      try { fs.unlinkSync(tempFilePath); } catch (e) {}
+      
+      if (extractedText.trim().length > 20) {
+        return cleanExtractedText(extractedText);
+      }
+    } catch (cmdError) {
+      console.log('pdftotext command not available or failed');
+    }
+    
+    // Clean up temp file if still exists
+    try { fs.unlinkSync(tempFilePath); } catch (e) {}
+    
+  } catch (error) {
+    console.log('Method 2 (alternative) failed:', error.message);
+  }
+  
+  // Method 3: Try to extract as plain text (in case it's a text file disguised as PDF)
+  try {
+    const textContent = buffer.toString('utf-8');
+    if (textContent.includes('PDF') || textContent.length < 100) {
+      throw new Error('Not a text file');
+    }
+    extractedText = textContent;
+    console.log('Method 3 (text fallback) extracted:', extractedText.length, 'characters');
+    
+    if (extractedText.trim().length > 20) {
+      return cleanExtractedText(extractedText);
+    }
+  } catch (error) {
+    console.log('Method 3 (text fallback) failed:', error.message);
+  }
+  
+  throw new Error('Unable to extract text from PDF using any available method');
+}
+
+function cleanExtractedText(text: string): string {
+  return text
+    .replace(/\r\n/g, '\n') // Normalize line endings
+    .replace(/\r/g, '\n') // Normalize line endings
+    .replace(/\f/g, '\n') // Replace form feeds with newlines
+    .replace(/\t/g, ' ') // Replace tabs with spaces
+    .replace(/\s+/g, ' ') // Collapse multiple spaces
+    .replace(/\n\s+/g, '\n') // Remove spaces at start of lines
+    .replace(/\n{3,}/g, '\n\n') // Collapse multiple newlines
+    .trim();
+}
+
 // Configure multer for file uploads
 const upload = multer({ 
   storage: multer.memoryStorage(),
@@ -379,23 +466,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Extract text from uploaded PDF resume
       let originalResume: string;
       try {
+        console.log(`Processing file: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
+        
         if (resumeFile.mimetype === 'application/pdf') {
-          const pdfParse = await import('pdf-parse');
-          const pdfData = await pdfParse.default(resumeFile.buffer);
-          originalResume = pdfData.text;
+          originalResume = await extractTextFromPDF(resumeFile.buffer);
+          console.log('Successfully extracted text from PDF:', originalResume.length, 'characters');
+          console.log('Text preview:', originalResume.substring(0, 300) + '...');
         } else {
           // Handle text files or other formats
-          originalResume = resumeFile.buffer.toString('utf-8');
+          originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
+          console.log('Processed text file:', originalResume.length, 'characters');
         }
         
-        // Fallback if extraction fails or is empty
-        if (!originalResume || originalResume.trim().length < 50) {
-          throw new Error('Resume content too short or empty');
+        // Validate extracted content
+        if (!originalResume || originalResume.trim().length < 20) {
+          throw new Error(`Extracted content too short: ${originalResume?.length || 0} characters`);
         }
+        
+        // Additional validation - check if it looks like a resume
+        const hasCommonResumeKeywords = /\b(experience|education|skills|work|employment|university|college|email|phone)\b/i.test(originalResume);
+        if (!hasCommonResumeKeywords) {
+          console.warn('Warning: Extracted text may not be a resume');
+        }
+        
       } catch (error) {
-        console.error('PDF parsing error:', error);
+        console.error('PDF processing error:', error);
         return res.status(400).json({ 
-          error: "Could not extract text from resume file. Please ensure it's a valid PDF or text file with readable content." 
+          error: `Failed to extract text from resume file: ${error.message}. Please ensure it's a valid PDF with readable text content.`
         });
       }
 
