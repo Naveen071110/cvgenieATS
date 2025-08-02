@@ -82,61 +82,223 @@ function generateEnhancedResume(originalResume: string, jobDescription: string):
   const keywords = extractKeywords(jobDescription);
   const resumeData = parseResumeData(originalResume);
   
-  return `${resumeData.name || "PROFESSIONAL RESUME"}
+  // Extract work experience from original resume
+  const workExperience = extractWorkExperience(originalResume);
+  const education = extractEducation(originalResume);
+  const skills = extractSkills(originalResume);
+  
+  return `${resumeData.name}
 
 CONTACT INFORMATION
-${resumeData.email || "email@example.com"}
-${resumeData.phone || "(555) 123-4567"}
-${resumeData.name ? resumeData.name.includes("Address") ? "" : "123 Main St, City, State 12345" : "123 Main St, City, State 12345"}
+${resumeData.email}
+${resumeData.phone}
+${extractAddress(originalResume)}
 
 PROFESSIONAL SUMMARY
-Results-driven professional with proven expertise in ${keywords.slice(0, 3).join(", ")}. Demonstrated success in delivering high-impact solutions and collaborating with cross-functional teams. Strong background in ${keywords.slice(3, 6).join(", ")} with a track record of exceeding performance targets.
+${generateOptimizedSummary(originalResume, keywords)}
 
 WORK EXPERIENCE
-
-Software Engineer | Tech Corp | 2020-2023
-• Developed and maintained web applications using modern ${keywords.includes("javascript") ? "JavaScript" : "programming"} frameworks and technologies
-• Collaborated with product managers and designers to implement user-centered solutions
-• Optimized application performance resulting in 25% improvement in load times
-• Led ${keywords.includes("team") ? "cross-functional team initiatives" : "technical initiatives"} and mentored junior developers
-
-Junior Developer | StartupCo | 2018-2020
-• Built scalable backend APIs and services using ${keywords.includes("node") ? "Node.js" : "modern technologies"}
-• Implemented database design and optimization strategies
-• Participated in agile development processes and code review sessions
-• Contributed to ${keywords.includes("testing") ? "automated testing frameworks" : "quality assurance processes"}
+${formatWorkExperience(workExperience, keywords)}
 
 EDUCATION
-
-Bachelor of Science in Computer Science
-University of Technology | 2014-2018
-• Relevant coursework: ${keywords.slice(0, 3).join(", ")}, Software Engineering, Database Systems
+${formatEducation(education)}
 
 TECHNICAL SKILLS
-• Programming: JavaScript, React, Node.js, ${keywords.includes("python") ? "Python" : "TypeScript"}
-• Technologies: ${keywords.slice(0, 4).join(", ").toUpperCase()}
-• Tools: Git, ${keywords.includes("docker") ? "Docker" : "CI/CD"}, Testing Frameworks
-• Database: SQL, ${keywords.includes("mongodb") ? "MongoDB" : "Database Design"}
+${formatSkills(skills, keywords)}
 
-This resume has been optimized for ATS systems with relevant keywords: ${keywords.slice(0, 5).join(", ")}`;
+ACHIEVEMENTS & CERTIFICATIONS
+${extractAchievements(originalResume)}`;
+}
+
+// Helper functions for resume parsing and generation
+function extractAddress(resume: string): string {
+  const lines = resume.split('\n');
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
+    const line = lines[i].trim();
+    if (line.includes('Extension') || line.includes('Street') || line.includes('Ave') || 
+        line.includes('Road') || line.includes('Delhi') || line.includes('Mumbai') || 
+        line.includes('Bangalore') || /\d{5,6}/.test(line)) {
+      return line;
+    }
+  }
+  return "";
+}
+
+function extractWorkExperience(resume: string): Array<{title: string, company: string, duration: string, bullets: string[]}> {
+  const workSection = resume.match(/(?:WORK EXPERIENCE|EXPERIENCE|EMPLOYMENT)([\s\S]*?)(?:EDUCATION|SKILLS|PROJECTS|$)/i);
+  if (!workSection) return [];
+  
+  const experiences = [];
+  const lines = workSection[1].split('\n').filter(line => line.trim());
+  
+  let currentExp = null;
+  for (const line of lines) {
+    // Check for job title line (contains company and date)
+    if (line.includes('|') || /\d{4}/.test(line)) {
+      if (currentExp) experiences.push(currentExp);
+      const parts = line.split('|').map(p => p.trim());
+      currentExp = {
+        title: (parts[0] || '').replace(/^\s*\w+\s+/, '') || 'Position',
+        company: parts[1] || 'Company',
+        duration: parts[2] || extractDateFromLine(line),
+        bullets: []
+      };
+    } else if (currentExp && (line.startsWith('•') || line.startsWith('-') || line.trim().length > 10)) {
+      currentExp.bullets.push(line.replace(/^[•\-]\s*/, '').trim());
+    }
+  }
+  if (currentExp) experiences.push(currentExp);
+  return experiences;
+}
+
+function extractEducation(resume: string): string {
+  const eduSection = resume.match(/(?:EDUCATION|ACADEMIC)([\s\S]*?)(?:WORK|EXPERIENCE|SKILLS|PROJECTS|REFERENCES|$)/i);
+  if (!eduSection) return "Bachelor's Degree";
+  
+  const lines = eduSection[1].split('\n').filter(line => line.trim());
+  return lines.slice(0, 3).join('\n').trim();
+}
+
+function extractSkills(resume: string): string[] {
+  const skillsSection = resume.match(/(?:SKILLS|TECHNICAL|TECHNOLOGY)([\s\S]*?)(?:WORK|EXPERIENCE|EDUCATION|PROJECTS|REFERENCES|$)/i);
+  if (!skillsSection) return [];
+  
+  const text = skillsSection[1];
+  const skills = text.match(/[A-Za-z][A-Za-z0-9+#\.\s]{1,30}(?=,|;|\n|\||$)/g) || [];
+  return skills.map(s => s.trim()).filter(s => s.length > 1);
+}
+
+function extractAchievements(resume: string): string {
+  const achievements = [];
+  if (resume.includes('excellence') || resume.includes('award') || resume.includes('recognition')) {
+    achievements.push('• Received recognition for outstanding performance and work excellence');
+  }
+  if (resume.includes('training') || resume.includes('mentor')) {
+    achievements.push('• Provided training and mentorship to team members');
+  }
+  return achievements.join('\n') || '• Consistently delivered high-quality results\n• Strong track record of professional excellence';
+}
+
+function generateOptimizedSummary(resume: string, keywords: string[]): string {
+  const yearsExp = extractYearsOfExperience(resume);
+  const currentRole = extractCurrentRole(resume);
+  const keySkills = keywords.slice(0, 3).join(', ');
+  
+  return `${currentRole} with ${yearsExp} of experience in ${keySkills}. Proven track record in ${keywords.slice(3, 6).join(', ')} with demonstrated ability to deliver high-impact solutions. Strong expertise in ${keywords.includes('sql') ? 'database development' : keywords[0]} and collaborative problem-solving.`;
+}
+
+function formatWorkExperience(experiences: Array<{title: string, company: string, duration: string, bullets: string[]}>, keywords: string[]): string {
+  return experiences.map(exp => {
+    const optimizedBullets = exp.bullets.map(bullet => optimizeBulletPoint(bullet, keywords));
+    return `${exp.title} | ${exp.company} | ${exp.duration}\n${optimizedBullets.map(b => `• ${b}`).join('\n')}`;
+  }).join('\n\n');
+}
+
+function formatEducation(education: string): string {
+  return education || "Bachelor's Degree in Computer Science";
+}
+
+function formatSkills(skills: string[], keywords: string[]): string {
+  const relevantSkills = skills.filter(skill => 
+    keywords.some(keyword => skill.toLowerCase().includes(keyword.toLowerCase()))
+  );
+  const otherSkills = skills.filter(skill => 
+    !keywords.some(keyword => skill.toLowerCase().includes(keyword.toLowerCase()))
+  );
+  
+  return `• Core Technologies: ${relevantSkills.slice(0, 8).join(', ')}\n• Additional Skills: ${otherSkills.slice(0, 8).join(', ')}`;
+}
+
+function optimizeBulletPoint(bullet: string, keywords: string[]): string {
+  let optimized = bullet;
+  keywords.forEach(keyword => {
+    if (!optimized.toLowerCase().includes(keyword.toLowerCase()) && Math.random() < 0.3) {
+      optimized = optimized.replace(/\b(using|with|in)\b/, `$1 ${keyword} and`);
+    }
+  });
+  return optimized;
+}
+
+function extractDateFromLine(line: string): string {
+  const dateMatch = line.match(/(\d{4}.*?\d{4}|\w+\s+\d{4}.*?(?:\w+\s+\d{4}|Present))/);
+  return dateMatch ? dateMatch[0] : 'Recent';
+}
+
+function extractCurrentRole(resume: string): string {
+  const roleMatch = resume.match(/(?:Data|Software|Senior|Lead|Principal)\s+(?:Analyst|Engineer|Developer|Specialist)/i);
+  return roleMatch ? roleMatch[0] : 'Professional';
+}
+
+function extractYearsOfExperience(resume: string): string {
+  const expMatch = resume.match(/(\d+)\+?\s*years?\s*of\s*experience/i);
+  return expMatch ? `${expMatch[1]}+ years` : '3+ years';
+}
+
+function extractRelevantExperience(resume: string, keywords: string[]): string {
+  const workSection = resume.match(/(?:WORK EXPERIENCE|EXPERIENCE)([\s\S]*?)(?:EDUCATION|SKILLS|$)/i);
+  if (!workSection) return '';
+  
+  const lines = workSection[1].split('\n');
+  return lines.filter(line => 
+    keywords.some(keyword => line.toLowerCase().includes(keyword.toLowerCase()))
+  ).slice(0, 2).join(' ');
+}
+
+function extractCompanyName(jobDescription: string): string {
+  const companyMatch = jobDescription.match(/(?:at|for|with)\s+([A-Z][a-zA-Z\s&]+?)(?:\s+is|\s+has|\.|,)/);
+  if (companyMatch) return companyMatch[1].trim();
+  
+  const firstLine = jobDescription.split('\n')[0];
+  const words = firstLine.split(' ');
+  return words.find(word => word.length > 3 && /^[A-Z]/.test(word)) || 'your organization';
+}
+
+function extractJobTitle(jobDescription: string): string {
+  const titleMatch = jobDescription.match(/(?:seeking|for)\s+a\s+(?:skilled\s+)?(?:and\s+enthusiastic\s+)?([A-Z][a-zA-Z\s]+?)(?:\s+to|\s+with)/);
+  if (titleMatch) return titleMatch[1].trim();
+  
+  const commonTitles = ['Developer', 'Engineer', 'Analyst', 'Manager', 'Specialist', 'Lead'];
+  for (const title of commonTitles) {
+    if (jobDescription.toLowerCase().includes(title.toLowerCase())) {
+      return `${title}`;
+    }
+  }
+  return 'position';
+}
+
+function generatePersonalizedParagraph(currentRole: string, keywords: string[], jobDescription: string): string {
+  return `In my current role as ${currentRole}, I have developed comprehensive expertise in ${keywords.slice(0, 3).join(', ')}. My experience directly aligns with your requirements for ${keywords.slice(0, 2).join(' and ')}, and I have consistently delivered results in ${keywords.includes('performance') ? 'performance optimization' : keywords[3] || 'technical excellence'}.`;
+}
+
+function generateExperienceMatchParagraph(experience: string, keywords: string[]): string {
+  return `What particularly excites me about this opportunity is the chance to apply my proven skills in ${keywords[0]} and ${keywords[1] || 'technical problem-solving'}. My track record includes ${experience || 'successful project delivery and team collaboration'}, directly relevant to the challenges outlined in your job description.`;
+}
+
+function generateClosingParagraph(keywords: string[], companyName: string): string {
+  return `I am particularly drawn to ${companyName}'s focus on ${keywords[0]} and would welcome the opportunity to contribute to your team's success in ${keywords[1] || 'technology innovation'}.`;
 }
 
 function generateEnhancedCoverLetter(originalResume: string, jobDescription: string): string {
   const keywords = extractKeywords(jobDescription);
   const resumeData = parseResumeData(originalResume);
+  const currentRole = extractCurrentRole(originalResume);
+  const relevantExperience = extractRelevantExperience(originalResume, keywords);
+  const companyName = extractCompanyName(jobDescription);
   
   return `Dear Hiring Manager,
 
-I am writing to express my strong interest in the position outlined in your job posting. With my background in ${keywords.slice(0, 2).join(" and ")}, I am excited about the opportunity to contribute to your team's success.
+I am writing to express my strong interest in the ${extractJobTitle(jobDescription)} position at ${companyName}. With my ${extractYearsOfExperience(originalResume)} of experience in ${keywords.slice(0, 2).join(" and ")}, I am excited about the opportunity to contribute to your team's success.
 
-My experience as a Software Engineer has provided me with comprehensive expertise in ${keywords.slice(0, 3).join(", ")}. In my current role, I have successfully delivered projects involving ${keywords.slice(3, 5).join(" and ")}, directly aligning with the requirements outlined in your job description.
+${generatePersonalizedParagraph(currentRole, keywords, jobDescription)}
 
-What particularly excites me about this opportunity is the chance to apply my skills in ${keywords.slice(0, 2).join(" and ")} to help drive your organization's goals. My proven track record in ${keywords.includes("development") ? "software development" : keywords[0]} and collaborative problem-solving makes me well-positioned to make an immediate impact.
+${generateExperienceMatchParagraph(relevantExperience, keywords)}
+
+${generateClosingParagraph(keywords, companyName)}
 
 I am eager to discuss how my technical expertise and passion for ${keywords[0]} can contribute to your team's continued success. Thank you for considering my application.
 
 Best regards,
-${resumeData.name || "[Your Name]"}`;
+${resumeData.name}`;
 }
 
 // Configure multer for file uploads
@@ -214,31 +376,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let optimizedResume: string;
       let coverLetter: string;
 
-      // Extract resume text (simplified for demo - in production use proper PDF parsing)
-      const originalResume = `Sample resume content extracted from ${resumeFile.originalname}
-      
-Name: John Doe
-Email: john.doe@email.com
-Phone: (555) 123-4567
-Address: 123 Main St, City, State 12345
-
-EXPERIENCE:
-Software Engineer at Tech Corp (2020-2023)
-- Developed web applications using JavaScript and React
-- Collaborated with cross-functional teams
-- Implemented responsive design principles
-
-Junior Developer at StartupCo (2018-2020)
-- Built backend APIs using Node.js
-- Worked with databases and data modeling
-- Participated in agile development process
-
-EDUCATION:
-Bachelor of Science in Computer Science
-University of Technology (2014-2018)
-
-SKILLS:
-JavaScript, React, Node.js, HTML, CSS, SQL, Git`;
+      // Extract text from uploaded PDF resume
+      let originalResume: string;
+      try {
+        if (resumeFile.mimetype === 'application/pdf') {
+          const pdfParse = await import('pdf-parse');
+          const pdfData = await pdfParse.default(resumeFile.buffer);
+          originalResume = pdfData.text;
+        } else {
+          // Handle text files or other formats
+          originalResume = resumeFile.buffer.toString('utf-8');
+        }
+        
+        // Fallback if extraction fails or is empty
+        if (!originalResume || originalResume.trim().length < 50) {
+          throw new Error('Resume content too short or empty');
+        }
+      } catch (error) {
+        console.error('PDF parsing error:', error);
+        return res.status(400).json({ 
+          error: "Could not extract text from resume file. Please ensure it's a valid PDF or text file with readable content." 
+        });
+      }
 
       // Generate improved resume using enhanced logic
       optimizedResume = generateEnhancedResume(originalResume, jobDescription);
