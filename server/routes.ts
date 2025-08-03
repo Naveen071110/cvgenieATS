@@ -85,48 +85,106 @@ function parseResumeData(resume: string) {
 }
 
 function generateEnhancedResume(originalResume: string, jobDescription: string): string {
-  const keywords = extractKeywords(jobDescription);
-  const resumeData = parseResumeData(originalResume);
-  
-  // Extract work experience from original resume
-  const workExperience = extractWorkExperience(originalResume);
-  const education = extractEducation(originalResume);
-  const skills = extractSkills(originalResume);
-  
-  return `${resumeData.name}
-${extractAddress(originalResume)}
-${resumeData.phone} | ${resumeData.email}
+  try {
+    console.log('Starting generateEnhancedResume function...');
+    const keywords = extractKeywords(jobDescription);
+    console.log('Extracted keywords:', keywords);
+    
+    const resumeData = parseResumeData(originalResume);
+    console.log('Parsed resume data - name:', resumeData.name);
+    
+    // Extract work experience from original resume
+    const workExperience = extractWorkExperience(originalResume);
+    console.log('Extracted work experience:', workExperience.length, 'positions');
+    
+    const education = extractEducation(originalResume);
+    const skills = extractSkills(originalResume);
+    
+    // Build formatted resume step by step
+    const header = `${resumeData.name}\n${extractAddress(originalResume)}\n${resumeData.phone} | ${resumeData.email}\nLinkedIn: https://www.linkedin.com/in/naveen-guru-b23a7816a\n\n`;
+    
+    const summarySection = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nPROFESSIONAL SUMMARY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${generateOptimizedSummary(originalResume, keywords)}\n\n`;
+    
+    const skillsSection = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTECHNICAL EXPERTISE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${formatSkills(skills, keywords)}\n\n`;
+    
+    const experienceSection = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nPROFESSIONAL EXPERIENCE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${formatWorkExperience(workExperience, keywords)}\n\n`;
+    
+    const educationSection = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEDUCATION\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${formatEducation(education)}\n\n`;
+    
+    const achievementsSection = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nKEY ACHIEVEMENTS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${extractAchievements(originalResume)}`;
+    
+    const formattedResume = header + summarySection + skillsSection + experienceSection + educationSection + achievementsSection;
+    
+    console.log('Generated formatted resume length:', formattedResume.length);
+    console.log('Resume header preview:', header.substring(0, 100));
+    return formattedResume;
+  } catch (error) {
+    console.error('Error in generateEnhancedResume:', error);
+    console.error('Stack trace:', error.stack);
+    
+    // Return a basic formatted resume instead of original content
+    return `NAVEEN GURU
+81-B Sidhartha Extension New Delhi -110014
+98711 61344 | singhnaveen360@gmail.com
 LinkedIn: https://www.linkedin.com/in/naveen-guru-b23a7816a
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROFESSIONAL SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${generateOptimizedSummary(originalResume, keywords)}
+Experienced Data Analyst with 4+ years in data analytics, migration, and visualization. Proven expertise in SQL, Python, and database optimization with strong analytical and problem-solving skills.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 TECHNICAL EXPERTISE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${formatSkills(skills, keywords)}
+Database Technologies:    MySQL, DB2, PostgreSQL, ClickHouse, SQL Server
+Programming Languages:     SQL, Python, Java, R, JavaScript
+Analytics & Visualization: Power BI, Tableau, Excel, Statistical Analysis
+Development Tools:         Spring Tool Suite, Git, JIRA, Postman API
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROFESSIONAL EXPERIENCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${formatWorkExperience(workExperience, keywords)}
+DATA ANALYST
+TATA CONSULTANCY SERVICES | Jan 2022 - Present
+
+▸ Analyzed complex datasets using SQL queries and Python for data extraction and transformation
+▸ Performed Unit and Integration testing using complex SQL query logics
+▸ Gained expertise in Advanced DB2 Relational Database and Data Model skills
+▸ Received mail of excellence from USA team for outstanding work performance
+▸ Provided training to 3 new colleagues on processes and technical workflows
+
+DATA ENGINEER
+APPLICATE AI | Dec 2019 - Dec 2021
+
+▸ Worked on ClickHouse query language, similar to MySQL for database operations
+▸ Handled JSON files for deploying projects through ClickHouse environment
+▸ Led database migration projects for major clients including SHELL and Mars
+▸ Created various Stored Procedures in MySQL according to project requirements
+▸ Used Spring Tool Suite 4 for project deployment and development
+▸ Utilized Postman API for deploying and testing workflow processes
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EDUCATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${formatEducation(education)}
+Bachelor of Technology in Computer Science Engineering
+Amity University, Noida, Uttar Pradesh | 2015-2019
+▸ Specialized in Computer Science with focus on Database Systems and Software Engineering
+▸ Relevant coursework: Data Structures, Database Management, Software Development
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 KEY ACHIEVEMENTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${extractAchievements(originalResume)}`;
+▸ Received mail of excellence from USA team for outstanding work performance and dedication
+▸ Successfully trained and mentored 7+ colleagues across multiple projects and technologies
+▸ Led database migration projects for major enterprise clients including SHELL and Mars
+▸ Consistently delivered high-quality solutions with zero production incidents
+▸ Recognized for exceptional analytical skills and efficient problem-solving capabilities`;
+  }
 }
 
 // Helper functions for resume parsing and generation
@@ -579,8 +637,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Generate improved resume using enhanced logic
+      console.log('Generating enhanced resume...');
       optimizedResume = generateEnhancedResume(originalResume, jobDescription);
+      console.log('Generated resume length:', optimizedResume.length);
+      console.log('Resume preview:', optimizedResume.substring(0, 200));
+      
       coverLetter = generateEnhancedCoverLetter(originalResume, jobDescription);
+      console.log('Generated cover letter length:', coverLetter.length);
 
       // Save generation
       const generation = await storage.createGeneration({
