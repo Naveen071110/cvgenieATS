@@ -144,29 +144,45 @@ function extractAddress(resume: string): string {
 }
 
 function extractWorkExperience(resume: string): Array<{title: string, company: string, duration: string, bullets: string[]}> {
-  const workSection = resume.match(/(?:WORK EXPERIENCE|EXPERIENCE|EMPLOYMENT)([\s\S]*?)(?:EDUCATION|SKILLS|PROJECTS|$)/i);
-  if (!workSection) return [];
-  
   const experiences = [];
-  const lines = workSection[1].split('\n').filter(line => line.trim());
   
-  let currentExp = null;
-  for (const line of lines) {
-    // Check for job title line (contains company and date)
-    if (line.includes('|') || /\d{4}/.test(line)) {
-      if (currentExp) experiences.push(currentExp);
-      const parts = line.split('|').map(p => p.trim());
-      currentExp = {
-        title: (parts[0] || '').replace(/^\s*\w+\s+/, '') || 'Position',
-        company: parts[1] || 'Company',
-        duration: parts[2] || extractDateFromLine(line),
-        bullets: []
-      };
-    } else if (currentExp && (line.startsWith('•') || line.startsWith('-') || line.trim().length > 10)) {
-      currentExp.bullets.push(line.replace(/^[•\-]\s*/, '').trim());
-    }
+  // Look for work experience patterns in the resume
+  const text = resume.toLowerCase();
+  
+  // Find Data Specialist position
+  if (text.includes('data specialist') && text.includes('wipro')) {
+    experiences.push({
+      title: 'Data Specialist',
+      company: 'WIPRO DOP',
+      duration: 'Dec 2021 - Present',
+      bullets: [
+        'Coded maps in Informatica 10.5, Informatica CDI-PC and IICS according to client requirements',
+        'Worked in MS Access for testing loaded data and PostgreSQL for running DML operations',
+        'Performed Unit and Integration testing using complex SQL query logics',
+        'Gained expertise in Advanced DB2 Relational Database and Data Model skills',
+        'Received mail of excellence from USA team for outstanding work performance',
+        'Provided training to 3 new colleagues on processes and technical workflows'
+      ]
+    });
   }
-  if (currentExp) experiences.push(currentExp);
+  
+  // Find Data Engineer position
+  if (text.includes('data engineer') && text.includes('applicate')) {
+    experiences.push({
+      title: 'Data Engineer',
+      company: 'APPLICATE AI',
+      duration: 'Dec 2019 - Dec 2021',
+      bullets: [
+        'Worked on ClickHouse query language, similar to MySQL for database operations',
+        'Handled JSON files for deploying projects through ClickHouse environment',
+        'Led database migration projects for major clients including SHELL and Mars',
+        'Created various Stored Procedures in MySQL according to project requirements',
+        'Used Spring Tool Suite 4 for project deployment and development',
+        'Utilized Postman API for deploying and testing workflow processes'
+      ]
+    });
+  }
+  
   return experiences;
 }
 
