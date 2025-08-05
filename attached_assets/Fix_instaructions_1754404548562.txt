@@ -1,0 +1,204 @@
+# CVGenie Hardcoded Resume Issue - Developer Fix Guide
+
+## **Problem Analysis**
+
+### **1. Hardcoded Resume Generation (Line ~100)**
+```typescript
+function generateEnhancedResume(originalResume: string, jobDescription: string): string {
+  console.log('Generating enhanced resume - starting...');
+  
+  // Direct ATS-formatted resume without complex parsing to avoid errors
+    return `NAVEEN GURU
+81-B Sidhartha Extension New Delhi -110014
+98711 61344 | singhnaveen360@gmail.com
+LinkedIn: https://www.linkedin.com/in/naveen-guru-b23a7816a
+...`; // HARDCODED CONTENT - IGNORES PARAMETERS!
+}
+```
+
+### **2. Hardcoded PDF Extraction (Line ~400)**
+```typescript
+async function extractTextFromPDF(buffer: Buffer): Promise {
+  // For this specific PDF that keeps failing, use the known content
+  // In production, this would be handled by a more robust PDF parsing service
+  const knownResumeContent = `Naveen Guru
+81-B Sidhartha Extension New Delhi -110014
+...`; // HARDCODED CONTENT - IGNORES BUFFER!
+}
+```
+
+## **Fix Instructions for Replit Agent**
+
+### **STEP 1: Fix generateEnhancedResume Function**
+
+**Replace the entire `generateEnhancedResume` function with:**
+
+```typescript
+function generateEnhancedResume(originalResume: string, jobDescription: string): string {
+  console.log('Generating enhanced resume - starting...');
+  
+  // Extract keywords from job description
+  const keywords = extractKeywords(jobDescription);
+  
+  // Parse the original resume data
+  const resumeData = parseResumeData(originalResume);
+  const workExperience = extractWorkExperience(originalResume);
+  const education = extractEducation(originalResume);
+  const skills = extractSkills(originalResume);
+  
+  // Generate optimized sections
+  const summary = generateOptimizedSummary(originalResume, keywords);
+  const formattedExperience = formatWorkExperience(workExperience, keywords);
+  const formattedEducation = formatEducation(education);
+  const formattedSkills = formatSkills(skills, keywords);
+  const achievements = extractAchievements(originalResume);
+  
+  // Build the complete resume
+  return `${resumeData.name.toUpperCase()}
+${extractAddress(originalResume)}
+${resumeData.phone} | ${resumeData.email}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROFESSIONAL SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${summary}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TECHNICAL EXPERTISE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${formattedSkills}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROFESSIONAL EXPERIENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${formattedExperience}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EDUCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${formattedEducation}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KEY ACHIEVEMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${achievements}`;
+}
+```
+
+### **STEP 2: Fix extractTextFromPDF Function**
+
+**Replace the entire `extractTextFromPDF` function with:**
+
+```typescript
+async function extractTextFromPDF(buffer: Buffer): Promise {
+  try {
+    console.log('Attempting to extract text from PDF buffer...');
+    
+    // Try to use a PDF parsing library (you may need to install pdf-parse)
+    // For now, we'll implement a basic text extraction approach
+    
+    // Convert buffer to string and attempt basic text extraction
+    const textContent = buffer.toString('utf-8');
+    
+    // If the buffer contains readable text, return it
+    if (textContent && textContent.length > 100) {
+      console.log('Successfully extracted text from PDF');
+      return cleanExtractedText(textContent);
+    }
+    
+    // If text extraction fails, throw an error instead of returning hardcoded content
+    throw new Error('Unable to extract readable text from PDF');
+    
+  } catch (error) {
+    console.error('PDF extraction failed:', error);
+    
+    // Instead of hardcoded content, provide a helpful error message
+    throw new Error('PDF text extraction failed. Please ensure your PDF contains readable text or try uploading a different format.');
+  }
+}
+```
+
+### **STEP 3: Ensure AI Generation is Called**
+
+**In the main `/api/generate` route, make sure it calls the Deepseek API:**
+
+Find this section in your route and ensure it's using the AI generation:
+
+```typescript
+// REPLACE THIS BLOCK:
+console.log('Generating enhanced resume...');
+optimizedResume = generateEnhancedResume(originalResume, jobDescription);
+
+// WITH THIS:
+console.log('Calling Deepseek AI for resume generation...');
+try {
+  optimizedResume = await generateOptimizedResume(originalResume, jobDescription);
+} catch (error) {
+  console.error('AI generation failed, using enhanced fallback:', error);
+  optimizedResume = generateEnhancedResume(originalResume, jobDescription);
+}
+```
+
+### **STEP 4: Add PDF Parsing Library**
+
+**Add this to your package.json dependencies:**
+```json
+{
+  "pdf-parse": "^1.1.1"
+}
+```
+
+**Then install it:**
+```bash
+npm install pdf-parse
+```
+
+**Update the extractTextFromPDF function to use it:**
+```typescript
+import * as pdfParse from 'pdf-parse';
+
+async function extractTextFromPDF(buffer: Buffer): Promise {
+  try {
+    console.log('Extracting text from PDF using pdf-parse...');
+    const data = await pdfParse(buffer);
+    const extractedText = data.text;
+    
+    if (!extractedText || extractedText.trim().length < 20) {
+      throw new Error('PDF contains no readable text');
+    }
+    
+    console.log(`Successfully extracted ${extractedText.length} characters from PDF`);
+    return cleanExtractedText(extractedText);
+    
+  } catch (error) {
+    console.error('PDF parsing failed:', error);
+    throw new Error(`Failed to extract text from PDF: ${error.message}`);
+  }
+}
+```
+
+## **Testing Instructions**
+
+1. **Upload a test PDF resume** (not the hardcoded one)
+2. **Paste a job description**
+3. **Verify the generated resume contains**:
+   - The user's actual name and contact info
+   - The user's actual work experience
+   - The user's actual education
+   - Keywords from the job description
+
+## **Verification Checklist**
+
+- [ ] Remove all hardcoded resume content
+- [ ] `generateEnhancedResume` uses actual `originalResume` parameter
+- [ ] `extractTextFromPDF` processes actual PDF buffer
+- [ ] Deepseek AI generation is called properly
+- [ ] Error handling doesn't fall back to hardcoded content
+- [ ] Test with different user resumes
+
+**This fix will ensure every user gets their personalized, ATS-optimized resume instead of the hardcoded "Naveen Guru" version.**
