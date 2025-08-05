@@ -157,41 +157,59 @@ function extractAddress(resume: string): string {
 function extractWorkExperience(resume: string): Array<{title: string, company: string, duration: string, bullets: string[]}> {
   const experiences = [];
   
-  // Look for work experience patterns in the resume
-  const text = resume.toLowerCase();
+  // Look for work experience section dynamically
+  const workSection = resume.match(/(?:WORK EXPERIENCE|EXPERIENCE|EMPLOYMENT|PROFESSIONAL EXPERIENCE)([\s\S]*?)(?:EDUCATION|SKILLS|PROJECTS|REFERENCES|$)/i);
+  if (!workSection) return experiences;
   
-  // Find Data Specialist position
-  if (text.includes('data specialist') && text.includes('wipro')) {
-    experiences.push({
-      title: 'Data Specialist',
-      company: 'WIPRO DOP',
-      duration: 'Dec 2021 - Present',
-      bullets: [
-        'Coded maps in Informatica 10.5, Informatica CDI-PC and IICS according to client requirements',
-        'Worked in MS Access for testing loaded data and PostgreSQL for running DML operations',
-        'Performed Unit and Integration testing using complex SQL query logics',
-        'Gained expertise in Advanced DB2 Relational Database and Data Model skills',
-        'Received mail of excellence from USA team for outstanding work performance',
-        'Provided training to 3 new colleagues on processes and technical workflows'
-      ]
-    });
-  }
+  const workText = workSection[1];
   
-  // Find Data Engineer position
-  if (text.includes('data engineer') && text.includes('applicate')) {
-    experiences.push({
-      title: 'Data Engineer',
-      company: 'APPLICATE AI',
-      duration: 'Dec 2019 - Dec 2021',
-      bullets: [
-        'Worked on ClickHouse query language, similar to MySQL for database operations',
-        'Handled JSON files for deploying projects through ClickHouse environment',
-        'Led database migration projects for major clients including SHELL and Mars',
-        'Created various Stored Procedures in MySQL according to project requirements',
-        'Used Spring Tool Suite 4 for project deployment and development',
-        'Utilized Postman API for deploying and testing workflow processes'
-      ]
-    });
+  // Split by job entries - look for patterns like job titles followed by company info
+  const jobBlocks = workText.split(/\n(?=[A-Z][A-Za-z\s]*(?:\||–|—|\s+\d{4}|\s+\w+\s+\d{4}))/);
+  
+  for (const block of jobBlocks) {
+    const lines = block.trim().split('\n').filter(line => line.trim());
+    if (lines.length < 2) continue;
+    
+    let title = '';
+    let company = '';
+    let duration = '';
+    
+    // Extract job info from the first few lines
+    for (let i = 0; i < Math.min(3, lines.length); i++) {
+      const line = lines[i].trim();
+      
+      // Look for duration patterns
+      if (!duration && line.match(/\d{4}.*(?:present|current|\d{4})/i)) {
+        duration = line;
+        continue;
+      }
+      
+      // Look for company patterns (often contains | separator or location)
+      if (!company && (line.includes('|') || line.match(/,\s*[A-Z][a-z]+/))) {
+        company = line.split('|')[0].trim();
+        continue;
+      }
+      
+      // First meaningful line is likely the title
+      if (!title && line.length > 3 && !line.match(/^\d+$/) && !line.match(/^[•▸\-\*]/)) {
+        title = line;
+      }
+    }
+    
+    // Extract bullet points
+    const bullets = lines
+      .filter(line => line.match(/^[\s]*[•▸\-\*]/))
+      .map(line => line.replace(/^[\s]*[•▸\-\*]\s*/, '').trim())
+      .filter(bullet => bullet.length > 10);
+    
+    if (title && company && bullets.length > 0) {
+      experiences.push({
+        title: title,
+        company: company,
+        duration: duration || 'Dates not specified',
+        bullets: bullets
+      });
+    }
   }
   
   return experiences;
