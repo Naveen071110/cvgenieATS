@@ -85,60 +85,7 @@ function parseResumeData(resume: string) {
   };
 }
 
-function generateEnhancedResume(originalResume: string, jobDescription: string): string {
-  console.log('Generating enhanced resume - starting...');
-  
-  // Extract keywords from job description
-  const keywords = extractKeywords(jobDescription);
-  
-  // Parse the original resume data
-  const resumeData = parseResumeData(originalResume);
-  const workExperience = extractWorkExperience(originalResume);
-  const education = extractEducation(originalResume);
-  const skills = extractSkills(originalResume);
-  
-  // Generate optimized sections
-  const summary = generateOptimizedSummary(originalResume, keywords);
-  const formattedExperience = formatWorkExperience(workExperience, keywords);
-  const formattedEducation = formatEducation(education);
-  const formattedSkills = formatSkills(skills, keywords);
-  const achievements = extractAchievements(originalResume);
-  
-  // Build the complete resume
-  return `${resumeData.name.toUpperCase()}
-${extractAddress(originalResume)}
-${resumeData.phone} | ${resumeData.email}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PROFESSIONAL SUMMARY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${summary}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TECHNICAL EXPERTISE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${formattedSkills}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PROFESSIONAL EXPERIENCE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${formattedExperience}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EDUCATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${formattedEducation}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ACHIEVEMENTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${achievements}`;
-}
+// OLD FUNCTION REMOVED - Use generateOptimizedResume (AI-powered) instead
 
 // Helper functions for resume parsing and generation
 function extractAddress(resume: string): string {
@@ -398,28 +345,7 @@ function generateClosingParagraph(keywords: string[], companyName: string): stri
   return `I am particularly drawn to ${companyName}'s focus on ${keywords[0]} and would welcome the opportunity to contribute to your team's success in ${keywords[1] || 'technology innovation'}.`;
 }
 
-function generateEnhancedCoverLetter(originalResume: string, jobDescription: string): string {
-  const keywords = extractKeywords(jobDescription);
-  const resumeData = parseResumeData(originalResume);
-  const currentRole = extractCurrentRole(originalResume);
-  const relevantExperience = extractRelevantExperience(originalResume, keywords);
-  const companyName = extractCompanyName(jobDescription);
-  
-  return `Dear Hiring Manager,
-
-I am writing to express my strong interest in the ${extractJobTitle(jobDescription)} position at ${companyName}. With my ${extractYearsOfExperience(originalResume)} of experience in ${keywords.slice(0, 2).join(" and ")}, I am excited about the opportunity to contribute to your team's success.
-
-${generatePersonalizedParagraph(currentRole, keywords, jobDescription)}
-
-${generateExperienceMatchParagraph(relevantExperience, keywords)}
-
-${generateClosingParagraph(keywords, companyName)}
-
-I am eager to discuss how my technical expertise and passion for ${keywords[0]} can contribute to your team's continued success. Thank you for considering my application.
-
-Best regards,
-${resumeData.name}`;
-}
+// OLD FUNCTION REMOVED - Use generateCoverLetter (AI-powered) instead
 
 // Enhanced PDF text extraction using Python pdfplumber
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
@@ -722,14 +648,22 @@ ACHIEVEMENTS
         return res.status(400).json({ error: "Resume content or file is required" });
       }
 
-      // Generate improved resume using enhanced logic
-      console.log('Generating enhanced resume...');
-      optimizedResume = generateEnhancedResume(originalResume, jobDescription);
-      console.log('Generated resume length:', optimizedResume.length);
-      console.log('Resume preview:', optimizedResume.substring(0, 200));
-      
-      coverLetter = generateEnhancedCoverLetter(originalResume, jobDescription);
-      console.log('Generated cover letter length:', coverLetter.length);
+      // Generate improved resume using AI (Deepseek)
+      console.log('Calling Deepseek AI for resume generation...');
+      try {
+        optimizedResume = await generateOptimizedResume(originalResume, jobDescription);
+        coverLetter = await generateCoverLetter(originalResume, jobDescription);
+        
+        console.log('AI-generated resume length:', optimizedResume.length);
+        console.log('AI-generated cover letter length:', coverLetter.length);
+        console.log('Resume preview (AI):', optimizedResume.substring(0, 200));
+        
+      } catch (aiError) {
+        console.error('AI generation failed:', aiError);
+        return res.status(500).json({ 
+          error: "AI service temporarily unavailable. Please try again in a moment." 
+        });
+      }
 
       // Save generation
       const generation = await storage.createGeneration({
@@ -867,19 +801,20 @@ async function generateOptimizedResume(originalResume: string, jobDescription: s
           },
           {
             role: 'user',
-            content: `Create a professional resume in plain text format. Output ONLY the resume content with no additional commentary, explanation or meta-text.
+            content: `Create a professional, ATS-optimized resume in plain text format. 
 
-CRITICAL PRESERVATION REQUIREMENTS - THESE ARE ABSOLUTE AND NON-NEGOTIABLE:
+CRITICAL INSTRUCTION: Output ONLY the final, formatted resume. Do not copy the original input. Do not include summaries, explanations, or any meta-text. Just the improved ATS resume, nothing else.
+
+CRITICAL PRESERVATION REQUIREMENTS:
 - NEVER change or modify the candidate's name, phone number, email address, or physical location/address
-- NEVER change or modify company names, organization names, university names, or institution names from the original resume
+- NEVER change or modify company names, organization names, university names, or institution names
 - NEVER change or modify degree titles, certification names, or educational qualifications
 - NEVER alter dates of employment, education, or any timeline information
-- PRESERVE ALL original contact information EXACTLY as written in the source resume
+- PRESERVE ALL original contact information EXACTLY as written
 - PRESERVE ALL original institution names, company names, and degree titles EXACTLY as written
 - PRESERVE ALL addresses, cities, states, zip codes EXACTLY as written
 - PRESERVE ALL proper nouns (names of people, places, companies, schools) EXACTLY as they appear
 - Only enhance descriptions, achievements, and bullet points - NEVER change factual information
-- Do not create or invent any new companies, schools, or personal details
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers in ALL CAPS: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
