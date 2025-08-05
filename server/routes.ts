@@ -7,7 +7,7 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { exec } from 'child_process';
 import path from 'path';
-import * as pdfParse from 'pdf-parse';
+// PDF parsing will be imported dynamically to avoid module loading issues
 
 const execAsync = promisify(exec);
 
@@ -143,14 +143,21 @@ ${achievements}`;
 // Helper functions for resume parsing and generation
 function extractAddress(resume: string): string {
   const lines = resume.split('\n');
-  for (let i = 0; i < Math.min(5, lines.length); i++) {
+  
+  // Look for address patterns in the first 10 lines
+  for (let i = 0; i < Math.min(10, lines.length); i++) {
     const line = lines[i].trim();
-    if (line.includes('Extension') || line.includes('Street') || line.includes('Ave') || 
-        line.includes('Road') || line.includes('Delhi') || line.includes('Mumbai') || 
-        line.includes('Bangalore') || /\d{5,6}/.test(line)) {
+    
+    // Common address indicators
+    if (line.match(/\d+.*(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|extension|ext|boulevard|blvd)/i) ||
+        line.match(/\d{5,6}/) || // ZIP codes
+        line.match(/^[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s*[-,]\s*[A-Z]{2,}/) || // City, State pattern
+        (line.includes(',') && line.match(/\d/)) // Contains comma and numbers
+    ) {
       return line;
     }
   }
+  
   return "";
 }
 
@@ -233,13 +240,41 @@ function extractSkills(resume: string): string[] {
 }
 
 function extractAchievements(resume: string): string {
-  const achievements = [
-    '▸ Received mail of excellence from USA team for outstanding work performance and dedication',
-    '▸ Successfully trained and mentored 7+ colleagues across multiple projects and technologies',
-    '▸ Led database migration projects for major enterprise clients including SHELL and Mars',
-    '▸ Consistently delivered high-quality solutions with zero production incidents',
-    '▸ Recognized for exceptional analytical skills and efficient problem-solving capabilities'
+  const achievements = [];
+  
+  // Look for achievement keywords and patterns
+  const achievementPatterns = [
+    /received.*(?:award|recognition|excellence|acknowledgment)/gi,
+    /(?:led|managed|supervised).*(?:team|project|initiative)/gi,
+    /(?:increased|improved|reduced|optimized).*\d+/gi,
+    /trained.*\d+.*(?:colleagues|people|members)/gi,
+    /delivered.*(?:on time|under budget|successfully)/gi
   ];
+  
+  const lines = resume.split('\n');
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    
+    // Check if line contains achievement indicators
+    for (const pattern of achievementPatterns) {
+      if (pattern.test(trimmed) && trimmed.length > 20) {
+        const cleaned = trimmed.replace(/^[\s]*[•▸\-\*]\s*/, '');
+        if (!achievements.includes(cleaned) && achievements.length < 5) {
+          achievements.push(`▸ ${cleaned}`);
+        }
+      }
+    }
+  }
+  
+  // If no achievements found, create generic ones based on experience
+  if (achievements.length === 0) {
+    achievements.push(
+      '▸ Demonstrated expertise in core technical competencies relevant to target role',
+      '▸ Contributed to successful project delivery and organizational objectives'
+    );
+  }
+  
   return achievements.join('\n');
 }
 
@@ -262,10 +297,22 @@ ${optimizedBullets.map(b => `▸ ${b}`).join('\n')}`;
 }
 
 function formatEducation(education: string): string {
-  return `Bachelor of Technology in Computer Science Engineering
-Amity University, Noida, Uttar Pradesh | 2015-2019
-▸ Specialized in Computer Science with focus on Database Systems and Software Engineering
-▸ Relevant coursework: Data Structures, Database Management, Software Development`;
+  if (!education || education === "Bachelor's Degree") {
+    return `Bachelor's Degree in Related Field
+University Name | Year
+▸ Relevant academic background for the target position
+▸ Strong foundation in core subject areas`;
+  }
+  
+  // Clean and format the extracted education
+  const lines = education.split('\n').filter(line => line.trim());
+  const formatted = lines.map(line => {
+    const trimmed = line.trim();
+    if (trimmed.match(/^[•▸\-\*]/)) return trimmed;
+    return `▸ ${trimmed}`;
+  }).join('\n');
+  
+  return formatted;
 }
 
 function formatSkills(skills: string[], keywords: string[]): string {
@@ -374,10 +421,13 @@ Best regards,
 ${resumeData.name}`;
 }
 
-// PDF text extraction function - now using proper pdf-parse library
+// PDF text extraction function - using dynamic import for pdf-parse
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
     console.log('Extracting text from PDF using pdf-parse...');
+    
+    // Dynamic import to avoid module loading issues
+    const pdfParse = (await import('pdf-parse')).default;
     const data = await pdfParse(buffer);
     const extractedText = data.text;
     
