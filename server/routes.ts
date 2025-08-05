@@ -648,15 +648,23 @@ ACHIEVEMENTS
         return res.status(400).json({ error: "Resume content or file is required" });
       }
 
-      // Generate improved resume using AI (Deepseek)
-      console.log('Calling Deepseek AI for resume generation...');
+      // Generate improved resume using AI (Deepseek) - Two-step process
+      console.log('Calling Deepseek AI for resume generation (Step 1: Content optimization)...');
       try {
-        optimizedResume = await generateOptimizedResume(originalResume, jobDescription);
+        // Step 1: Generate optimized content
+        const initialResume = await generateOptimizedResume(originalResume, jobDescription);
+        console.log('Step 1 completed - Initial resume length:', initialResume.length);
+        
+        // Step 2: Ensure proper ATS formatting
+        console.log('Step 2: Applying ATS formatting...');
+        optimizedResume = await formatResumeForATS(initialResume);
+        console.log('Step 2 completed - Final formatted resume length:', optimizedResume.length);
+        
+        // Generate cover letter
         coverLetter = await generateCoverLetter(originalResume, jobDescription);
         
-        console.log('AI-generated resume length:', optimizedResume.length);
         console.log('AI-generated cover letter length:', coverLetter.length);
-        console.log('Resume preview (AI):', optimizedResume.substring(0, 200));
+        console.log('Final resume preview (ATS formatted):', optimizedResume.substring(0, 200));
         
       } catch (aiError) {
         console.error('AI generation failed:', aiError);
@@ -898,6 +906,62 @@ EDUCATION
 [Your Education Background]
 
 This resume has been optimized for ATS systems and includes relevant keywords from your target job description.`;
+  }
+}
+
+async function formatResumeForATS(generatedResume: string): Promise<string> {
+  const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || "default_key";
+
+  try {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${deepseekApiKey}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert ATS formatting specialist. Your only job is to reformat resumes into proper ATS-compliant structure.'
+          },
+          {
+            role: 'user',
+            content: `Reformat the following resume so it uses proper ATS-compliant formatting. Add section headers in all caps, use blank lines between sections, turn job duties or skills into short bullet points, and keep only the improved formatted resume—do not include any extra commentary. Here is the resume to reformat:
+
+${generatedResume}`
+          }
+        ],
+        temperature: 0.3,
+        max_tokens: 2500
+      })
+    });
+
+    if (!response.ok) {
+      console.error(`ATS formatting API error: ${response.status}`);
+      // Return the original generated resume if formatting fails
+      return generatedResume;
+    }
+
+    const data = await response.json();
+    let formattedContent = data.choices[0]?.message?.content || generatedResume;
+
+    // Clean up any instructional text that might have been added
+    formattedContent = cleanAIResponse(formattedContent);
+
+    // Ensure proper line breaks and structure
+    formattedContent = formattedContent
+      .replace(/\n{3,}/g, '\n\n') // Normalize line breaks
+      .replace(/^\s+$/gm, '') // Remove whitespace-only lines
+      .trim();
+
+    return formattedContent;
+
+  } catch (error) {
+    console.error('ATS formatting error:', error);
+    // Return the original generated resume if formatting fails
+    return generatedResume;
   }
 }
 
