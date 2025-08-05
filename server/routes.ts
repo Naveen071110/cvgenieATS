@@ -572,11 +572,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate resume and cover letter
   app.post("/api/generate", upload.single('resume'), async (req, res) => {
     try {
-      const { sessionId, jobDescription, resumeText } = req.body;
+      const { sessionId, jobDescription } = req.body;
       const resumeFile = req.file;
 
-      if (!resumeFile && !resumeText) {
-        return res.status(400).json({ error: "Resume file or text is required" });
+      if (!resumeFile) {
+        return res.status(400).json({ error: "Resume file is required" });
       }
 
       if (!jobDescription) {
@@ -609,54 +609,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let optimizedResume: string;
       let coverLetter: string;
 
-      // Use provided resume text or extract from file
+      // Extract or infer resume content
       let originalResume: string;
-      
-      if (resumeText && resumeText.trim()) {
-        // Use the edited resume text provided by the user
-        originalResume = resumeText.trim();
-        console.log('Using provided resume text:', originalResume.length, 'characters');
-      } else {
-        // Extract from file as fallback
-        try {
-          console.log(`Processing file: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
-          
-          if (resumeFile.mimetype === 'application/pdf') {
-            try {
-              originalResume = await extractTextFromPDF(resumeFile.buffer);
-              console.log('Successfully extracted text from PDF:', originalResume.length, 'characters');
-              
-              // Check if extraction yielded readable content by checking the actual extracted text
-              const sampleText = originalResume.substring(0, 1000);
-              const readableContent = sampleText.replace(/[^\x20-\x7E\n]/g, '').trim();
-              const wordCount = (readableContent.match(/\b[a-zA-Z]{3,}\b/g) || []).length;
-              const binaryChars = sampleText.length - readableContent.length;
-              const binaryRatio = binaryChars / sampleText.length;
-              
-              console.log(`Content analysis: ${readableContent.length} readable chars, ${wordCount} words, ${binaryRatio.toFixed(2)} binary ratio`);
-              
-              if (readableContent.length < 100 || wordCount < 5 || binaryRatio > 0.5) {
-                console.log(`Content appears to be binary or unreadable - switching to fallback`);
-                throw new Error('PDF extraction yielded unreadable content');
-              }
-              
-              console.log('Text preview:', readableContent.substring(0, 200) + '...');
-              
-            } catch (pdfError) {
-              console.log('PDF extraction failed, creating structured resume from filename and job description...');
-              
-              // Extract candidate name from filename
-              const nameFromFile = resumeFile.originalname
-                .replace(/[._-]/g, ' ')
-                .replace(/resume|cv|pdf/gi, '')
-                .trim()
-                .split(' ')
-                .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
-                .slice(0, 2)
-                .join(' ') || 'Candidate Name';
-              
-              // Create a basic resume structure that will be enhanced by AI
-              originalResume = `${nameFromFile}
+      try {
+        console.log(`Processing file: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
+        
+        if (resumeFile.mimetype === 'application/pdf') {
+          try {
+            originalResume = await extractTextFromPDF(resumeFile.buffer);
+            console.log('Successfully extracted text from PDF:', originalResume.length, 'characters');
+            
+            // Check if extraction yielded readable content by checking the actual extracted text
+            const sampleText = originalResume.substring(0, 1000);
+            const readableContent = sampleText.replace(/[^\x20-\x7E\n]/g, '').trim();
+            const wordCount = (readableContent.match(/\b[a-zA-Z]{3,}\b/g) || []).length;
+            const binaryChars = sampleText.length - readableContent.length;
+            const binaryRatio = binaryChars / sampleText.length;
+            
+            console.log(`Content analysis: ${readableContent.length} readable chars, ${wordCount} words, ${binaryRatio.toFixed(2)} binary ratio`);
+            
+            if (readableContent.length < 100 || wordCount < 5 || binaryRatio > 0.5) {
+              console.log(`Content appears to be binary or unreadable - switching to fallback`);
+              throw new Error('PDF extraction yielded unreadable content');
+            }
+            
+            console.log('Text preview:', readableContent.substring(0, 200) + '...');
+            
+          } catch (pdfError) {
+            console.log('PDF extraction failed, creating structured resume from filename and job description...');
+            
+            // Extract candidate name from filename
+            const nameFromFile = resumeFile.originalname
+              .replace(/[._-]/g, ' ')
+              .replace(/resume|cv|pdf/gi, '')
+              .trim()
+              .split(' ')
+              .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
+              .slice(0, 2)
+              .join(' ') || 'Candidate Name';
+            
+            // Create a basic resume structure that will be enhanced by AI
+            originalResume = `${nameFromFile}
 Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
 Phone: (555) 123-4567
 
@@ -676,26 +669,25 @@ Skills:
 - Core technical and professional competencies
 - Industry-relevant tools and technologies
 - Strong communication and problem-solving abilities`;
-              
-              console.log(`Created structured resume for: ${nameFromFile} (${originalResume.length} characters)`);
-            }
-          } else {
-            // Handle text files
-            originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
-            console.log('Processed text file:', originalResume.length, 'characters');
+            
+            console.log(`Created structured resume for: ${nameFromFile} (${originalResume.length} characters)`);
           }
-          
-          // Final validation
-          if (!originalResume || originalResume.trim().length < 50) {
-            throw new Error(`Unable to process resume content: ${originalResume?.length || 0} characters`);
-          }
-          
-        } catch (error) {
-          console.error('Resume processing error:', error);
-          return res.status(400).json({ 
-            error: `Failed to process resume file: ${error.message}. Please try uploading a different format or contact support.`
-          });
+        } else {
+          // Handle text files
+          originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
+          console.log('Processed text file:', originalResume.length, 'characters');
         }
+        
+        // Final validation
+        if (!originalResume || originalResume.trim().length < 50) {
+          throw new Error(`Unable to process resume content: ${originalResume?.length || 0} characters`);
+        }
+        
+      } catch (error) {
+        console.error('Resume processing error:', error);
+        return res.status(400).json({ 
+          error: `Failed to process resume file: ${error.message}. Please try uploading a different format or contact support.`
+        });
       }
 
       // Generate improved resume using enhanced logic
@@ -730,49 +722,6 @@ Skills:
       console.error('Generation error:', error);
       res.status(500).json({ 
         error: "Failed to generate documents. Please try again." 
-      });
-    }
-  });
-
-  // Extract resume content endpoint
-  app.post("/api/extract-resume", upload.single('resume'), async (req, res) => {
-    try {
-      const resumeFile = req.file;
-
-      if (!resumeFile) {
-        return res.status(400).json({ error: "Resume file is required" });
-      }
-
-      let extractedContent = "";
-      
-      try {
-        console.log(`Extracting content from: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
-        
-        if (resumeFile.mimetype === 'application/pdf') {
-          extractedContent = await extractTextFromPDF(resumeFile.buffer);
-        } else {
-          extractedContent = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
-        }
-        
-        console.log(`Successfully extracted ${extractedContent.length} characters`);
-        
-      } catch (error) {
-        console.error('Resume extraction error:', error);
-        return res.status(400).json({ 
-          error: `Failed to extract text from resume: ${error.message}`
-        });
-      }
-
-      res.json({
-        content: extractedContent,
-        filename: resumeFile.originalname,
-        size: resumeFile.size
-      });
-
-    } catch (error) {
-      console.error('Extract resume error:', error);
-      res.status(500).json({ 
-        error: "Failed to extract resume content. Please try again."
       });
     }
   });

@@ -27,8 +27,6 @@ interface GenerationResult {
 export default function Generator() {
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [resumeContent, setResumeContent] = useState("");
-  const [isLoadingResumeContent, setIsLoadingResumeContent] = useState(false);
   const [jobDescription, setJobDescription] = useState("");
   const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
   const [editedResume, setEditedResume] = useState("");
@@ -52,11 +50,7 @@ export default function Generator() {
       const formData = new FormData();
       formData.append("sessionId", sessionId);
       formData.append("jobDescription", jobDescription);
-      
-      // Use edited resume content if available, otherwise fall back to file
-      if (resumeContent.trim()) {
-        formData.append("resumeText", resumeContent);
-      } else if (resumeFile) {
+      if (resumeFile) {
         formData.append("resume", resumeFile);
       }
 
@@ -99,37 +93,7 @@ export default function Generator() {
     },
   });
 
-  const extractResumeContent = async (file: File) => {
-    setIsLoadingResumeContent(true);
-    try {
-      const formData = new FormData();
-      formData.append("resume", file);
-
-      const response = await fetch("/api/extract-resume", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to extract resume content");
-      }
-
-      const data = await response.json();
-      setResumeContent(data.content || "");
-    } catch (error) {
-      console.error("Resume extraction error:", error);
-      toast({
-        title: "Extraction Failed",
-        description: "Could not extract text from resume. You can still upload it to generate documents.",
-        variant: "destructive",
-      });
-      setResumeContent("");
-    } finally {
-      setIsLoadingResumeContent(false);
-    }
-  };
-
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.type !== "application/pdf") {
@@ -141,13 +105,11 @@ export default function Generator() {
         return;
       }
       setResumeFile(file);
-      await extractResumeContent(file);
     }
   };
 
   const resetGenerator = () => {
     setResumeFile(null);
-    setResumeContent("");
     setJobDescription("");
     setGenerationResult(null);
     setEditedResume("");
@@ -172,7 +134,7 @@ export default function Generator() {
     ? -1 
     : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
 
-  const canGenerate = (resumeFile || resumeContent.trim()) && jobDescription.trim().length >= 50 && !generateMutation.isPending;
+  const canGenerate = resumeFile && jobDescription.trim().length >= 50 && !generateMutation.isPending;
 
   const handleGenerateClick = () => {
     if (!user && remainingGenerations <= 0) {
@@ -223,96 +185,60 @@ export default function Generator() {
           {!generationResult ? (
             <Card className="shadow-xl border border-slate-200 floating-card">
               <CardContent className="p-8">
-                <div className="space-y-8">
-                  <div className="grid md:grid-cols-2 gap-8">
-                    {/* Resume Upload */}
-                    <div className="space-y-4">
-                      <h3 className="text-xl font-semibold text-slate-900">Upload Your Resume</h3>
-                      <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-primary transition-colors">
-                        {resumeFile ? (
-                          <div>
-                            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                            <p className="text-lg font-medium text-green-700 mb-2">File uploaded!</p>
-                            <p className="text-slate-600 mb-4">{resumeFile.name}</p>
-                            <Button
-                              variant="outline"
-                              onClick={() => document.getElementById('resume-upload')?.click()}
-                            >
-                              Choose Different File
-                            </Button>
-                          </div>
-                        ) : (
-                          <div>
-                            <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                            <p className="text-lg font-medium text-slate-700 mb-2">Upload your resume</p>
-                            <p className="text-slate-500 mb-4">PDF format only</p>
-                            <Button
-                              variant="outline"
-                              onClick={() => document.getElementById('resume-upload')?.click()}
-                            >
-                              Choose File
-                            </Button>
-                          </div>
-                        )}
-                        <input
-                          type="file"
-                          id="resume-upload"
-                          className="hidden"
-                          accept=".pdf"
-                          onChange={handleFileUpload}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Job Description */}
-                    <div className="space-y-4">
-                      <h3 className="text-xl font-semibold text-slate-900">Job Description</h3>
-                      <Textarea
-                        rows={8}
-                        value={jobDescription}
-                        onChange={(e) => setJobDescription(e.target.value)}
-                        placeholder="Paste the complete job description here... Include responsibilities, requirements, and company information for best results."
-                        className="resize-none"
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Resume Upload */}
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-slate-900">Upload Your Resume</h3>
+                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-primary transition-colors">
+                      {resumeFile ? (
+                        <div>
+                          <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                          <p className="text-lg font-medium text-green-700 mb-2">File uploaded!</p>
+                          <p className="text-slate-600 mb-4">{resumeFile.name}</p>
+                          <Button
+                            variant="outline"
+                            onClick={() => document.getElementById('resume-upload')?.click()}
+                          >
+                            Choose Different File
+                          </Button>
+                        </div>
+                      ) : (
+                        <div>
+                          <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                          <p className="text-lg font-medium text-slate-700 mb-2">Upload your resume</p>
+                          <p className="text-slate-500 mb-4">PDF format only</p>
+                          <Button
+                            variant="outline"
+                            onClick={() => document.getElementById('resume-upload')?.click()}
+                          >
+                            Choose File
+                          </Button>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        id="resume-upload"
+                        className="hidden"
+                        accept=".pdf"
+                        onChange={handleFileUpload}
                       />
-                      <p className="text-sm text-slate-500">
-                        {jobDescription.length}/50 characters minimum
-                      </p>
                     </div>
                   </div>
 
-                  {/* Resume Content Preview and Edit */}
-                  {(resumeFile && (isLoadingResumeContent || resumeContent)) && (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-semibold text-slate-900">Resume Content</h3>
-                        <p className="text-sm text-slate-500">Review and edit your resume content before generating</p>
-                      </div>
-                      
-                      {isLoadingResumeContent ? (
-                        <div className="border border-slate-200 rounded-xl p-6">
-                          <div className="flex items-center justify-center space-x-2">
-                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                            <span className="text-slate-600">Extracting text from your resume...</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="border border-slate-200 rounded-xl overflow-hidden">
-                          <Textarea
-                            value={resumeContent}
-                            onChange={(e) => setResumeContent(e.target.value)}
-                            rows={12}
-                            placeholder="Your resume content will appear here. You can edit it before generating your optimized documents."
-                            className="border-0 resize-none font-mono text-sm leading-relaxed"
-                          />
-                          <div className="bg-slate-50 px-4 py-2 border-t border-slate-200">
-                            <p className="text-xs text-slate-500">
-                              {resumeContent.length} characters • Make any edits needed before generating
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/* Job Description */}
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-slate-900">Job Description</h3>
+                    <Textarea
+                      rows={8}
+                      value={jobDescription}
+                      onChange={(e) => setJobDescription(e.target.value)}
+                      placeholder="Paste the complete job description here... Include responsibilities, requirements, and company information for best results."
+                      className="resize-none"
+                    />
+                    <p className="text-sm text-slate-500">
+                      {jobDescription.length}/50 characters minimum
+                    </p>
+                  </div>
                 </div>
 
                 <div className="mt-8 text-center space-y-4">
