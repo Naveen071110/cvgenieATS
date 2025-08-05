@@ -3,11 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
+import PDFParser from 'pdf2json';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { exec } from 'child_process';
 import path from 'path';
-// PDF parsing will be imported dynamically to avoid module loading issues
 
 const execAsync = promisify(exec);
 
@@ -421,104 +421,72 @@ Best regards,
 ${resumeData.name}`;
 }
 
-// PDF text extraction function - robust implementation for production use
+// Enhanced PDF text extraction using Python pdfplumber
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
-    console.log('Extracting text from PDF file...');
+    console.log('Extracting text from PDF using Python pdfplumber...');
     
-    // Convert buffer to string and look for readable text patterns
-    const content = buffer.toString('binary');
-    let extractedText = '';
+    // Convert buffer to base64 for Python script
+    const base64Data = buffer.toString('base64');
     
-    // Method 1: Extract text from PDF text objects (BT...ET blocks)
-    const textObjectPattern = /BT\s*(.*?)\s*ET/gs;
-    const textObjects = content.match(textObjectPattern) || [];
+    // Call Python script with the PDF data
+    const { stdout, stderr } = await execAsync(`python pdf_extractor.py "${base64Data}"`);
     
-    for (const textObject of textObjects) {
-      // Look for Tj and TJ operators which contain actual text
-      const textCommands = textObject.match(/\((.*?)\)\s*Tj|\[(.*?)\]\s*TJ/g) || [];
-      
-      for (const command of textCommands) {
-        let text = '';
-        if (command.includes('Tj')) {
-          text = command.match(/\((.*?)\)/)?.[1] || '';
-        } else if (command.includes('TJ')) {
-          const array = command.match(/\[(.*?)\]/)?.[1] || '';
-          text = array.replace(/\([^)]*\)/g, '$1').replace(/[0-9\-\s]+/g, ' ');
-        }
-        
-        if (text && text.length > 2) {
-          extractedText += text + ' ';
-        }
-      }
+    if (stderr) {
+      console.log('Python stderr:', stderr);
     }
     
-    // Method 2: Look for parentheses-enclosed text (common in PDFs)
-    const parenthesesPattern = /\(([^)]{3,})\)/g;
-    let match;
-    while ((match = parenthesesPattern.exec(content)) !== null) {
-      const text = match[1];
-      if (/[a-zA-Z]/.test(text) && !text.includes('\\')) {
-        extractedText += text + ' ';
-      }
+    // Parse the JSON response from Python script
+    const result = JSON.parse(stdout);
+    
+    if (!result.success) {
+      throw new Error(`Python PDF extraction failed: ${result.error}`);
     }
     
-    // Method 3: Look for decoded text streams
-    const streamPattern = /stream\s*([\s\S]*?)\s*endstream/g;
-    while ((match = streamPattern.exec(content)) !== null) {
-      const streamContent = match[1];
-      const readable = streamContent.replace(/[^\x20-\x7E]/g, ' ').trim();
-      if (readable.length > 20 && /[a-zA-Z]{3,}/.test(readable)) {
-        extractedText += readable + ' ';
-      }
+    console.log(`pdfplumber extracted ${result.text.length} characters from ${result.pages} pages`);
+    console.log(`Word count: ${result.word_count}, Keyword matches: ${result.keyword_matches}, Resume-like: ${result.is_resume_like}`);
+    
+    if (!result.text || result.text.trim().length < 20) {
+      throw new Error('PDF contains no readable text content');
     }
     
-    const cleanedText = cleanExtractedText(extractedText);
+    // Clean the extracted text
+    const cleanedText = cleanExtractedText(result.text);
     
-    // Check for binary/unreadable content early
-    const binaryTest = cleanedText.substring(0, 500);
-    const readableChars = binaryTest.replace(/[^\x20-\x7E\n]/g, '').length;
-    const binaryRatio = (binaryTest.length - readableChars) / binaryTest.length;
+    console.log(`Successfully extracted resume content: ${cleanedText.length} characters`);
+    console.log(`Content preview: ${cleanedText.substring(0, 300)}...`);
     
-    console.log(`Early validation: ${cleanedText?.length || 0} chars, binary ratio: ${binaryRatio.toFixed(3)}`);
-    
-    if (!cleanedText || cleanedText.trim().length < 100 || binaryRatio > 0.3) {
-      console.log('Limited extraction, using enhanced pattern matching...');
-      
-      // Enhanced fallback: look for any readable sequences
-      const readablePattern = /[A-Za-z][A-Za-z0-9@.\-\s]{10,}/g;
-      const readableMatches = content.match(readablePattern) || [];
-      const fallbackText = readableMatches
-        .filter(text => text.trim().length > 10)
-        .join(' ');
-      
-      if (fallbackText.length > 100) {
-        console.log(`Fallback extraction: ${fallbackText.length} characters`);
-        return cleanExtractedText(fallbackText);
-      }
-      
-      throw new Error('Unable to extract sufficient readable text from PDF');
-    }
-    
-    // Final validation of extracted content
-    const sampleText = cleanedText.substring(0, 1000);
-    const readableContent = sampleText.replace(/[^\x20-\x7E\n]/g, '');
-    const finalBinaryRatio = (sampleText.length - readableContent.length) / sampleText.length;
-    const wordCount = (readableContent.match(/\b[a-zA-Z]{3,}\b/g) || []).length;
-    
-    console.log(`Final validation: ${readableContent.length}/${sampleText.length} readable, ${wordCount} words, ${finalBinaryRatio.toFixed(2)} binary ratio`);
-    
-    if (finalBinaryRatio > 0.6 || wordCount < 5) {
-      console.log('Extracted content appears to be binary, using fallback approach');
-      throw new Error('Extracted content is mostly binary data');
-    }
-    
-    console.log(`Successfully extracted ${cleanedText.length} characters from PDF`);
     return cleanedText;
     
   } catch (error) {
-    console.error('PDF extraction failed:', error);
-    throw new Error(`Failed to extract text from PDF: ${error.message}`);
+    console.error('PDF extraction failed:', error.message);
+    
+    // If Python extraction fails, try a simple fallback method
+    console.log('Trying fallback PDF text extraction...');
+    try {
+      const content = buffer.toString('binary');
+      let fallbackText = '';
+      
+      // Look for parentheses-enclosed text (common in PDFs)  
+      const parenthesesPattern = /\(([^)]{5,})\)/g;
+      let match;
+      while ((match = parenthesesPattern.exec(content)) !== null) {
+        const text = match[1];
+        if (/[a-zA-Z]{3,}/.test(text) && !text.includes('\\') && !text.includes('Font') && !text.includes('Subtype')) {
+          fallbackText += text + ' ';
+        }
+      }
+      
+      if (fallbackText && fallbackText.trim().length > 100) {
+        const cleanedFallback = cleanExtractedText(fallbackText);
+        console.log(`Fallback extraction succeeded: ${cleanedFallback.length} characters`);
+        return cleanedFallback;
+      }
+    } catch (fallbackError) {
+      console.log('Fallback extraction also failed:', fallbackError.message);
+    }
+    
+    throw new Error(`Unable to extract readable text from PDF: ${error.message}`);
   }
 }
 
@@ -612,30 +580,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (resumeFile.mimetype === 'application/pdf') {
         try {
           extractedContent = await extractTextFromPDF(resumeFile.buffer);
+        } catch (pdfError) {
+          console.log('PDF extraction failed completely, creating structured template...');
           
-          // Validate extraction quality
-          const sampleText = extractedContent.substring(0, 1000);
-          const readableContent = sampleText.replace(/[^\x20-\x7E\n]/g, '').trim();
-          const wordCount = (readableContent.match(/\b[a-zA-Z]{3,}\b/g) || []).length;
-          const binaryChars = sampleText.length - readableContent.length;
-          const binaryRatio = binaryChars / sampleText.length;
+          // Extract candidate name from filename
+          const nameFromFile = resumeFile.originalname
+            .replace(/[._-]/g, ' ')
+            .replace(/resume|cv|pdf/gi, '')
+            .trim()
+            .split(' ')
+            .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
+            .slice(0, 2)
+            .join(' ') || 'Your Name';
 
-          // If extraction yielded poor quality content, use filename-based fallback
-          if (readableContent.length < 200 || wordCount < 10 || binaryRatio > 0.4 || 
-              extractedContent.includes('FlateDecode') || extractedContent.includes('endobj')) {
-            console.log('PDF extraction yielded poor content, creating structured template...');
-            
-            // Extract candidate name from filename
-            const nameFromFile = resumeFile.originalname
-              .replace(/[._-]/g, ' ')
-              .replace(/resume|cv|pdf/gi, '')
-              .trim()
-              .split(' ')
-              .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
-              .slice(0, 2)
-              .join(' ') || 'Your Name';
-
-            extractedContent = `${nameFromFile}
+          extractedContent = `${nameFromFile}
 Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
 Phone: (555) 123-4567
 
@@ -670,77 +628,15 @@ ACHIEVEMENTS
 • Project success or business impact
 • Community involvement or leadership`;
 
-            console.log(`Created structured template for: ${nameFromFile}`);
-          }
-
-        } catch (pdfError) {
-          console.error('PDF extraction failed:', pdfError);
-          return res.status(400).json({ 
-            error: "Unable to extract text from PDF. Please ensure the file is a readable PDF or try uploading a different format." 
-          });
+          console.log(`Created structured template for: ${nameFromFile}`);
         }
       } else {
         // Handle text files
         extractedContent = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
       }
 
-      // Additional English language processing and cleanup
+      // Clean up the extracted content
       extractedContent = enhanceEnglishContent(extractedContent);
-
-      // Final check: if enhanced content is still poor quality, create template
-      const finalWords = extractedContent.split(/\s+/).filter(word => word.length > 2);
-      const hasResumeContent = /\b(experience|education|skills|work|employment|university|college|email|phone|name)\b/i.test(extractedContent);
-      
-      if (finalWords.length < 50 || !hasResumeContent || extractedContent.includes('endobj') || extractedContent.includes('trailer')) {
-        console.log('Enhanced content still poor quality, creating structured template...');
-        
-        // Extract candidate name from filename
-        const nameFromFile = resumeFile.originalname
-          .replace(/[._-]/g, ' ')
-          .replace(/resume|cv|pdf/gi, '')
-          .trim()
-          .split(' ')
-          .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
-          .slice(0, 2)
-          .join(' ') || 'Your Name';
-
-        extractedContent = `${nameFromFile}
-Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
-Phone: (555) 123-4567
-
-PROFESSIONAL SUMMARY
-Experienced professional with relevant background and expertise. Proven track record of delivering results and contributing to organizational success.
-
-WORK EXPERIENCE
-
-[Current/Recent Position] | [Company Name] | [Year - Present]
-• Key responsibility or achievement
-• Another important contribution
-• Quantified result or impact
-
-[Previous Position] | [Company Name] | [Years]
-• Major accomplishment or project
-• Technical skill or expertise demonstrated
-• Team collaboration or leadership example
-
-EDUCATION
-
-[Degree] in [Field] | [University Name] | [Year]
-• Relevant coursework or academic achievements
-• GPA (if strong) or academic honors
-
-TECHNICAL SKILLS
-• Programming Languages: [List relevant languages]
-• Tools & Technologies: [List relevant tools]
-• Methodologies: [List relevant approaches]
-
-ACHIEVEMENTS
-• Professional certification or recognition
-• Project success or business impact
-• Community involvement or leadership`;
-
-        console.log(`Created structured template for: ${nameFromFile}`);
-      }
 
       res.json({ 
         filename: resumeFile.originalname,
