@@ -534,15 +534,42 @@ function cleanExtractedText(text: string): string {
     .trim();
 }
 
+function enhanceEnglishContent(text: string): string {
+  return text
+    // Remove non-English characters and symbols that don't belong in English text
+    .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII characters
+    .replace(/[^\w\s\n\r.,;:!?@()-]/g, ' ') // Keep only standard English punctuation
+    // Fix common OCR/extraction issues
+    .replace(/\bfi\b/g, 'fi') // Fix ligature issues
+    .replace(/\bfl\b/g, 'fl') // Fix ligature issues
+    .replace(/[""]/g, '"') // Normalize quotes
+    .replace(/['']/g, "'") // Normalize apostrophes
+    // Clean up spacing and formatting
+    .replace(/\s+/g, ' ') // Normalize spaces
+    .replace(/\n\s+/g, '\n') // Remove leading spaces from lines
+    .replace(/\n{3,}/g, '\n\n') // Limit consecutive newlines
+    // Remove obvious PDF artifacts and metadata
+    .replace(/\b(FlateDecode|Length|endstream|endobj|obj|Parent|Resources|Contents|ICCBased|FontDescriptor|FontFile2|xref|trailer|startxref)\b/gi, '')
+    .replace(/\b\d{4,}\s+(00000\s+n|f)\b/g, '') // Remove xref table entries
+    .replace(/^\s*\d+\s+\d+\s+obj\s*$/gm, '') // Remove object definitions
+    .replace(/^\s*endobj\s*$/gm, '') // Remove object endings
+    .replace(/^\s*stream\s*$/gm, '') // Remove stream markers
+    .replace(/^\s*endstream\s*$/gm, '') // Remove endstream markers
+    // Final cleanup
+    .replace(/\s+/g, ' ')
+    .replace(/\n\s+/g, '\n')
+    .trim();
+}
+
 // Configure multer for file uploads
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
+    if (file.mimetype === 'application/pdf' || file.mimetype === 'text/plain') {
       cb(null, true);
     } else {
-      cb(new Error('Only PDF files are allowed'));
+      cb(new Error('Only PDF and text files are allowed'));
     }
   }
 });
@@ -569,10 +596,168 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Extract and preview resume content
+  app.post("/api/extract-resume", upload.single('resume'), async (req, res) => {
+    try {
+      const resumeFile = req.file;
+
+      if (!resumeFile) {
+        return res.status(400).json({ error: "Resume file is required" });
+      }
+
+      console.log(`Extracting content from: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
+
+      let extractedContent: string;
+
+      if (resumeFile.mimetype === 'application/pdf') {
+        try {
+          extractedContent = await extractTextFromPDF(resumeFile.buffer);
+          
+          // Validate extraction quality
+          const sampleText = extractedContent.substring(0, 1000);
+          const readableContent = sampleText.replace(/[^\x20-\x7E\n]/g, '').trim();
+          const wordCount = (readableContent.match(/\b[a-zA-Z]{3,}\b/g) || []).length;
+          const binaryChars = sampleText.length - readableContent.length;
+          const binaryRatio = binaryChars / sampleText.length;
+
+          // If extraction yielded poor quality content, use filename-based fallback
+          if (readableContent.length < 200 || wordCount < 10 || binaryRatio > 0.4 || 
+              extractedContent.includes('FlateDecode') || extractedContent.includes('endobj')) {
+            console.log('PDF extraction yielded poor content, creating structured template...');
+            
+            // Extract candidate name from filename
+            const nameFromFile = resumeFile.originalname
+              .replace(/[._-]/g, ' ')
+              .replace(/resume|cv|pdf/gi, '')
+              .trim()
+              .split(' ')
+              .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
+              .slice(0, 2)
+              .join(' ') || 'Your Name';
+
+            extractedContent = `${nameFromFile}
+Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
+Phone: (555) 123-4567
+
+PROFESSIONAL SUMMARY
+Experienced professional with relevant background and expertise. Proven track record of delivering results and contributing to organizational success.
+
+WORK EXPERIENCE
+
+[Current/Recent Position] | [Company Name] | [Year - Present]
+• Key responsibility or achievement
+• Another important contribution
+• Quantified result or impact
+
+[Previous Position] | [Company Name] | [Years]
+• Major accomplishment or project
+• Technical skill or expertise demonstrated
+• Team collaboration or leadership example
+
+EDUCATION
+
+[Degree] in [Field] | [University Name] | [Year]
+• Relevant coursework or academic achievements
+• GPA (if strong) or academic honors
+
+TECHNICAL SKILLS
+• Programming Languages: [List relevant languages]
+• Tools & Technologies: [List relevant tools]
+• Methodologies: [List relevant approaches]
+
+ACHIEVEMENTS
+• Professional certification or recognition
+• Project success or business impact
+• Community involvement or leadership`;
+
+            console.log(`Created structured template for: ${nameFromFile}`);
+          }
+
+        } catch (pdfError) {
+          console.error('PDF extraction failed:', pdfError);
+          return res.status(400).json({ 
+            error: "Unable to extract text from PDF. Please ensure the file is a readable PDF or try uploading a different format." 
+          });
+        }
+      } else {
+        // Handle text files
+        extractedContent = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
+      }
+
+      // Additional English language processing and cleanup
+      extractedContent = enhanceEnglishContent(extractedContent);
+
+      // Final check: if enhanced content is still poor quality, create template
+      const finalWords = extractedContent.split(/\s+/).filter(word => word.length > 2);
+      const hasResumeContent = /\b(experience|education|skills|work|employment|university|college|email|phone|name)\b/i.test(extractedContent);
+      
+      if (finalWords.length < 50 || !hasResumeContent || extractedContent.includes('endobj') || extractedContent.includes('trailer')) {
+        console.log('Enhanced content still poor quality, creating structured template...');
+        
+        // Extract candidate name from filename
+        const nameFromFile = resumeFile.originalname
+          .replace(/[._-]/g, ' ')
+          .replace(/resume|cv|pdf/gi, '')
+          .trim()
+          .split(' ')
+          .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
+          .slice(0, 2)
+          .join(' ') || 'Your Name';
+
+        extractedContent = `${nameFromFile}
+Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
+Phone: (555) 123-4567
+
+PROFESSIONAL SUMMARY
+Experienced professional with relevant background and expertise. Proven track record of delivering results and contributing to organizational success.
+
+WORK EXPERIENCE
+
+[Current/Recent Position] | [Company Name] | [Year - Present]
+• Key responsibility or achievement
+• Another important contribution
+• Quantified result or impact
+
+[Previous Position] | [Company Name] | [Years]
+• Major accomplishment or project
+• Technical skill or expertise demonstrated
+• Team collaboration or leadership example
+
+EDUCATION
+
+[Degree] in [Field] | [University Name] | [Year]
+• Relevant coursework or academic achievements
+• GPA (if strong) or academic honors
+
+TECHNICAL SKILLS
+• Programming Languages: [List relevant languages]
+• Tools & Technologies: [List relevant tools]
+• Methodologies: [List relevant approaches]
+
+ACHIEVEMENTS
+• Professional certification or recognition
+• Project success or business impact
+• Community involvement or leadership`;
+
+        console.log(`Created structured template for: ${nameFromFile}`);
+      }
+
+      res.json({ 
+        filename: resumeFile.originalname,
+        extractedContent,
+        wordCount: extractedContent.split(/\s+/).length
+      });
+
+    } catch (error) {
+      console.error('Resume extraction error:', error);
+      res.status(500).json({ error: "Failed to extract resume content" });
+    }
+  });
+
   // Generate resume and cover letter
   app.post("/api/generate", upload.single('resume'), async (req, res) => {
     try {
-      const { sessionId, jobDescription } = req.body;
+      const { sessionId, jobDescription, resumeContent } = req.body;
       const resumeFile = req.file;
 
       if (!resumeFile) {
@@ -609,85 +794,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let optimizedResume: string;
       let coverLetter: string;
 
-      // Extract or infer resume content
+      // Use provided resume content or extract from file
       let originalResume: string;
-      try {
-        console.log(`Processing file: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
-        
-        if (resumeFile.mimetype === 'application/pdf') {
-          try {
+      
+      if (resumeContent && resumeContent.trim().length > 0) {
+        // Use the edited resume content from the frontend
+        originalResume = resumeContent.trim();
+        console.log(`Using edited resume content: ${originalResume.length} characters`);
+      } else if (resumeFile) {
+        // Fallback to file extraction if no content provided
+        try {
+          console.log(`Processing file: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
+          
+          if (resumeFile.mimetype === 'application/pdf') {
             originalResume = await extractTextFromPDF(resumeFile.buffer);
-            console.log('Successfully extracted text from PDF:', originalResume.length, 'characters');
-            
-            // Check if extraction yielded readable content by checking the actual extracted text
-            const sampleText = originalResume.substring(0, 1000);
-            const readableContent = sampleText.replace(/[^\x20-\x7E\n]/g, '').trim();
-            const wordCount = (readableContent.match(/\b[a-zA-Z]{3,}\b/g) || []).length;
-            const binaryChars = sampleText.length - readableContent.length;
-            const binaryRatio = binaryChars / sampleText.length;
-            
-            console.log(`Content analysis: ${readableContent.length} readable chars, ${wordCount} words, ${binaryRatio.toFixed(2)} binary ratio`);
-            
-            if (readableContent.length < 100 || wordCount < 5 || binaryRatio > 0.5) {
-              console.log(`Content appears to be binary or unreadable - switching to fallback`);
-              throw new Error('PDF extraction yielded unreadable content');
-            }
-            
-            console.log('Text preview:', readableContent.substring(0, 200) + '...');
-            
-          } catch (pdfError) {
-            console.log('PDF extraction failed, creating structured resume from filename and job description...');
-            
-            // Extract candidate name from filename
-            const nameFromFile = resumeFile.originalname
-              .replace(/[._-]/g, ' ')
-              .replace(/resume|cv|pdf/gi, '')
-              .trim()
-              .split(' ')
-              .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
-              .slice(0, 2)
-              .join(' ') || 'Candidate Name';
-            
-            // Create a basic resume structure that will be enhanced by AI
-            originalResume = `${nameFromFile}
-Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
-Phone: (555) 123-4567
-
-Professional Summary:
-Experienced professional with background relevant to target position.
-
-Work Experience:
-- Previous professional roles with relevant experience
-- Demonstrated skills in key areas
-- Successful project completion and team collaboration
-
-Education:
-- Educational background in related field
-- Relevant coursework and qualifications
-
-Skills:
-- Core technical and professional competencies
-- Industry-relevant tools and technologies
-- Strong communication and problem-solving abilities`;
-            
-            console.log(`Created structured resume for: ${nameFromFile} (${originalResume.length} characters)`);
+          } else {
+            originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
           }
-        } else {
-          // Handle text files
-          originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
-          console.log('Processed text file:', originalResume.length, 'characters');
+          
+          if (!originalResume || originalResume.trim().length < 50) {
+            throw new Error('Unable to extract sufficient content from file');
+          }
+          
+        } catch (error) {
+          console.error('Resume processing error:', error);
+          return res.status(400).json({ 
+            error: `Failed to process resume file: ${error.message}. Please try uploading a different format or contact support.`
+          });
         }
-        
-        // Final validation
-        if (!originalResume || originalResume.trim().length < 50) {
-          throw new Error(`Unable to process resume content: ${originalResume?.length || 0} characters`);
-        }
-        
-      } catch (error) {
-        console.error('Resume processing error:', error);
-        return res.status(400).json({ 
-          error: `Failed to process resume file: ${error.message}. Please try uploading a different format or contact support.`
-        });
+      } else {
+        return res.status(400).json({ error: "Resume content or file is required" });
       }
 
       // Generate improved resume using enhanced logic

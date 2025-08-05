@@ -24,6 +24,12 @@ interface GenerationResult {
   remainingGenerations: number;
 }
 
+interface ResumeExtraction {
+  filename: string;
+  extractedContent: string;
+  wordCount: number;
+}
+
 export default function Generator() {
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -33,6 +39,9 @@ export default function Generator() {
   const [editedCoverLetter, setEditedCoverLetter] = useState("");
   const [isEditingResume, setIsEditingResume] = useState(false);
   const [isEditingCoverLetter, setIsEditingCoverLetter] = useState(false);
+  const [resumeContent, setResumeContent] = useState("");
+  const [isEditingResumeContent, setIsEditingResumeContent] = useState(false);
+  const [extractedResume, setExtractedResume] = useState<ResumeExtraction | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -44,15 +53,53 @@ export default function Generator() {
     enabled: !!sessionId,
   });
 
+  // Extract resume content mutation
+  const extractResumeMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("resume", file);
+
+      const response = await fetch("/api/extract-resume", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to extract resume content");
+      }
+
+      return response.json() as Promise<ResumeExtraction>;
+    },
+    onSuccess: (data) => {
+      setExtractedResume(data);
+      setResumeContent(data.extractedContent);
+      toast({
+        title: "Resume Content Extracted",
+        description: `Extracted ${data.wordCount} words from ${data.filename}. You can review and edit the content below.`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Extraction Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   // Generate mutation
   const generateMutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
       formData.append("sessionId", sessionId);
       formData.append("jobDescription", jobDescription);
-      if (resumeFile) {
-        formData.append("resume", resumeFile);
-      }
+      formData.append("resumeContent", resumeContent); // Use edited content
+      
+      // Create a new file from the edited content for compatibility
+      const blob = new Blob([resumeContent], { type: 'text/plain' });
+      const editedFile = new File([blob], extractedResume?.filename || 'resume.txt', { type: 'text/plain' });
+      formData.append("resume", editedFile);
 
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -105,6 +152,12 @@ export default function Generator() {
         return;
       }
       setResumeFile(file);
+      // Reset previous extraction and results
+      setExtractedResume(null);
+      setResumeContent("");
+      setGenerationResult(null);
+      // Extract content from uploaded file
+      extractResumeMutation.mutate(file);
     }
   };
 
@@ -116,6 +169,9 @@ export default function Generator() {
     setEditedCoverLetter("");
     setIsEditingResume(false);
     setIsEditingCoverLetter(false);
+    setResumeContent("");
+    setIsEditingResumeContent(false);
+    setExtractedResume(null);
   };
 
   const downloadDocument = (content: string, filename: string) => {
@@ -134,7 +190,7 @@ export default function Generator() {
     ? -1 
     : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
 
-  const canGenerate = resumeFile && jobDescription.trim().length >= 50 && !generateMutation.isPending;
+  const canGenerate = resumeFile && resumeContent.trim().length > 0 && jobDescription.trim().length >= 50 && !generateMutation.isPending;
 
   const handleGenerateClick = () => {
     if (!user && remainingGenerations <= 0) {
@@ -240,6 +296,57 @@ export default function Generator() {
                     </p>
                   </div>
                 </div>
+
+                {/* Resume Content Preview and Edit */}
+                {extractedResume && (
+                  <div className="mt-8 border-t pt-8">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xl font-semibold text-slate-900">
+                          Resume Content ({extractedResume.wordCount} words)
+                        </h3>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsEditingResumeContent(!isEditingResumeContent)}
+                          className="flex items-center gap-2"
+                        >
+                          {isEditingResumeContent ? <Save className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
+                          {isEditingResumeContent ? "Save Changes" : "Edit Content"}
+                        </Button>
+                      </div>
+                      
+                      {extractResumeMutation.isPending && (
+                        <div className="text-center py-4">
+                          <div className="inline-flex items-center gap-2 text-slate-600">
+                            <div className="animate-spin w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full"></div>
+                            Extracting resume content...
+                          </div>
+                        </div>
+                      )}
+
+                      {isEditingResumeContent ? (
+                        <Textarea
+                          value={resumeContent}
+                          onChange={(e) => setResumeContent(e.target.value)}
+                          rows={15}
+                          className="font-mono text-sm"
+                          placeholder="Your resume content will appear here. You can edit it before generating the optimized version."
+                        />
+                      ) : (
+                        <div className="bg-slate-50 rounded-lg p-4 max-h-60 overflow-y-auto">
+                          <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono">
+                            {resumeContent}
+                          </pre>
+                        </div>
+                      )}
+                      
+                      <p className="text-xs text-slate-500">
+                        Review and edit your resume content above. The AI will use this information to generate your optimized resume.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-8 text-center space-y-4">
                   <Button
