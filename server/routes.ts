@@ -11,6 +11,35 @@ import path from 'path';
 
 const execAsync = promisify(exec);
 
+// Sample resume template to show users when PDF parsing fails
+const SAMPLE_RESUME_TEMPLATE = `JOHN DOE  
+123 Main St, City, Country | (123) 456-7890 | john.doe@email.com
+
+PROFESSIONAL SUMMARY  
+Results-driven data analyst with 4+ years of experience in analytics, migration, and reporting.
+
+SKILLS  
+• SQL • Python • Power BI • Data Visualization • Excel
+
+WORK EXPERIENCE  
+Data Analyst | XYZ Corp | 2020–2024  
+• Designed data pipelines and dashboards using SQL and Power BI  
+• Migrated data for 5+ enterprise projects  
+• Improved reporting efficiency by 30% through automated processes
+
+EDUCATION  
+Bachelor of Technology in Computer Science  
+University Name | 2015–2019`;
+
+// Create error response with sample resume
+function createSampleResumeError(errorMessage: string) {
+  return {
+    error: errorMessage,
+    sampleResume: SAMPLE_RESUME_TEMPLATE,
+    message: "Please re-upload your resume as a simple, text-based PDF similar to the example below:"
+  };
+}
+
 // Fallback generation functions
 // FALLBACK RESUME GENERATION REMOVED - No longer generate fake content
 
@@ -546,9 +575,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
           console.log(`First 300 characters of extraction attempt: "${pdfError.message}"`);
           
-          return res.status(400).json({ 
-            error: "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content. Image-based or scanned PDFs may not work properly." 
-          });
+          return res.status(400).json(createSampleResumeError(
+            "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content. Image-based or scanned PDFs may not work properly."
+          ));
         }
       } else {
         // Handle text files
@@ -563,9 +592,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!validationResult.isValid) {
         console.log(`Resume content validation failed: ${validationResult.reason}`);
         console.log(`First 300 characters of invalid content: "${extractedContent.substring(0, 300)}"`);
-        return res.status(400).json({ 
-          error: `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.` 
-        });
+        return res.status(400).json(createSampleResumeError(
+          `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
+        ));
       }
 
       res.json({ 
@@ -651,9 +680,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (!originalResume || originalResume.trim().length < 50) {
             console.error('Insufficient content extracted from file');
             console.log(`First 300 characters of failed extraction: "${originalResume?.substring(0, 300) || 'No content'}"`);
-            return res.status(400).json({ 
-              error: "We couldn't extract sufficient content from this file. Please upload a text-based resume PDF with readable content." 
-            });
+            return res.status(400).json(createSampleResumeError(
+              "We couldn't extract sufficient content from this file. Please upload a text-based resume PDF with readable content."
+            ));
           }
           
           // Validate extracted content quality
@@ -661,9 +690,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (!validationResult.isValid) {
             console.log(`Resume content validation failed: ${validationResult.reason}`);
             console.log(`First 300 characters of invalid content: "${originalResume.substring(0, 300)}"`);
-            return res.status(400).json({ 
-              error: `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.` 
-            });
+            return res.status(400).json(createSampleResumeError(
+              `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
+            ));
           }
           
         } catch (error) {

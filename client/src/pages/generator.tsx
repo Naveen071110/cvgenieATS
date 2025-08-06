@@ -30,6 +30,12 @@ interface ResumeExtraction {
   wordCount: number;
 }
 
+interface ResumeExtractionError {
+  error: string;
+  sampleResume?: string;
+  message?: string;
+}
+
 export default function Generator() {
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -42,6 +48,7 @@ export default function Generator() {
   const [resumeContent, setResumeContent] = useState("");
   const [isEditingResumeContent, setIsEditingResumeContent] = useState(false);
   const [extractedResume, setExtractedResume] = useState<ResumeExtraction | null>(null);
+  const [sampleResumeError, setSampleResumeError] = useState<ResumeExtractionError | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -66,12 +73,15 @@ export default function Generator() {
 
       if (!response.ok) {
         const error = await response.json();
+        // Store the full error response for sample resume display
+        setSampleResumeError(error);
         throw new Error(error.error || "Failed to extract resume content");
       }
 
       return response.json() as Promise<ResumeExtraction>;
     },
     onSuccess: (data) => {
+      setSampleResumeError(null); // Clear any previous error
       setExtractedResume(data);
       setResumeContent(data.extractedContent);
       toast({
@@ -156,6 +166,7 @@ export default function Generator() {
       setExtractedResume(null);
       setResumeContent("");
       setGenerationResult(null);
+      setSampleResumeError(null); // Clear any previous errors
       // Extract content from uploaded file
       extractResumeMutation.mutate(file);
     }
@@ -280,6 +291,58 @@ export default function Generator() {
                       />
                     </div>
                   </div>
+
+                  {/* Sample Resume Error Display */}
+                  {sampleResumeError && (
+                    <div className="mt-6 p-4 border border-red-200 rounded-lg bg-red-50">
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
+                            <svg className="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-medium text-red-800">Upload Failed</h4>
+                            <p className="text-sm text-red-700 mt-1">{sampleResumeError.error}</p>
+                            {sampleResumeError.message && (
+                              <p className="text-sm text-red-700 mt-2 font-medium">{sampleResumeError.message}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {sampleResumeError.sampleResume && (
+                          <div className="mt-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h5 className="text-sm font-medium text-red-800">Sample Resume Format:</h5>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(sampleResumeError.sampleResume || '');
+                                  toast({
+                                    title: "Copied",
+                                    description: "Sample resume copied to clipboard",
+                                  });
+                                }}
+                                className="text-xs h-7 px-2"
+                              >
+                                Copy Sample
+                              </Button>
+                            </div>
+                            <div className="bg-white rounded border border-red-200 p-3 max-h-60 overflow-y-auto">
+                              <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
+                                {sampleResumeError.sampleResume}
+                              </pre>
+                            </div>
+                            <p className="text-xs text-red-600 mt-2">
+                              Create a resume similar to this format and save it as a text-based PDF for best results.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Job Description */}
                   <div className="space-y-4">
