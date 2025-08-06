@@ -24,9 +24,11 @@ Preferred communication style: Simple, everyday language.
 ### Latest Bug Fixes and Validation Improvements (Latest Update - January 5, 2025)
 - **Eliminated Hardcoded Fallbacks**: Completely removed all fallback resume generation that created fake content like "John Doe" when PDF parsing failed
 - **Robust Content Validation**: Added comprehensive validation that checks for English words, resume keywords, sentence structure, and content quality
-- **Clear Error Messaging**: Users now receive specific error messages when upload fails: "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content"
+- **Sample Resume Template**: When PDF parsing fails, users now see a properly formatted sample resume template they can copy and use as a reference
+- **Enhanced Error Display**: Error messages include helpful guidance and a "Copy Sample" button for user convenience
+- **Clear Error Messaging**: Users receive specific error messages with actionable guidance: "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content"
 - **Enhanced Logging**: Added detailed logging showing first 300 characters of failed extractions for debugging
-- **Strict Anti-Fake Content**: System now returns proper errors instead of generating placeholder resumes when parsing fails
+- **Strict Anti-Fake Content**: System returns proper errors with helpful examples instead of generating placeholder resumes when parsing fails
 
 ### Previous ATS Compliance Improvements (January 5, 2025)
 - **Two-Step AI Generation**: Implemented dual-phase process - first generates optimized content, then ensures proper ATS formatting
