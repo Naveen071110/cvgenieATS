@@ -12,30 +12,48 @@ import path from 'path';
 const execAsync = promisify(exec);
 
 // Fallback generation functions
-function generateFallbackResume(originalResume: string, jobDescription: string): string {
-  return `OPTIMIZED RESUME
+// FALLBACK RESUME GENERATION REMOVED - No longer generate fake content
 
-[Name] (from uploaded resume)
-[Email] | [Phone] | [Address]
-
-PROFESSIONAL SUMMARY
-Results-driven professional with proven experience in key areas mentioned in the job description. Skilled in relevant technologies and methodologies mentioned in the posting.
-
-WORK EXPERIENCE
-[Previous Role] - [Company] | [Dates]
-• Achieved measurable results relevant to the target position
-• Utilized key technologies and skills mentioned in job description  
-• Led projects that demonstrate qualifications for this role
-
-EDUCATION
-[Degree] in [Field] - [University] | [Year]
-
-SKILLS
-• Technical skills matching job requirements
-• Industry-relevant competencies  
-• Tools and technologies from job description
-
-This resume has been optimized for ATS systems and includes relevant keywords from your target job description.`;
+// Content validation function
+function validateExtractedContent(content: string): { isValid: boolean; reason: string } {
+  // Basic length check
+  if (!content || content.trim().length < 30) {
+    return { isValid: false, reason: "Content too short (less than 30 characters)" };
+  }
+  
+  // Check for English words
+  const englishWords = content.match(/\b[a-zA-Z]{2,}\b/g) || [];
+  if (englishWords.length < 20) {
+    return { isValid: false, reason: "Insufficient English words (less than 20 words found)" };
+  }
+  
+  // Check for resume-like content
+  const resumeKeywords = [
+    'experience', 'education', 'skills', 'work', 'employment', 'degree', 'university', 'college',
+    'manager', 'developer', 'analyst', 'engineer', 'specialist', 'coordinator', 'assistant',
+    'email', 'phone', 'address', 'contact', 'name', 'summary', 'objective', 'professional'
+  ];
+  
+  const contentLower = content.toLowerCase();
+  const foundKeywords = resumeKeywords.filter(keyword => contentLower.includes(keyword));
+  
+  if (foundKeywords.length < 2) {
+    return { isValid: false, reason: "Content doesn't appear to be a resume (insufficient resume keywords found)" };
+  }
+  
+  // Check for repetitive or garbled content - look for meaningful content sections
+  const sentences = content.split(/[.!?]+/).filter(sentence => sentence.trim().length > 10);
+  if (sentences.length < 3) {
+    return { isValid: false, reason: "Content appears to be incomplete (less than 3 meaningful sentences)" };
+  }
+  
+  // Check for excessive special characters (might indicate parsing issues)
+  const specialCharRatio = (content.match(/[^\w\s.,;:()\-]/g) || []).length / content.length;
+  if (specialCharRatio > 0.3) {
+    return { isValid: false, reason: "Content contains too many special characters (might be garbled)" };
+  }
+  
+  return { isValid: true, reason: "Content validation passed" };
 }
 
 function generateFallbackCoverLetter(originalResume: string, jobDescription: string): string {
@@ -379,6 +397,14 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     // Clean the extracted text
     const cleanedText = cleanExtractedText(result.text);
     
+    // Validate extracted content quality
+    const validationResult = validateExtractedContent(cleanedText);
+    if (!validationResult.isValid) {
+      console.log(`Content validation failed: ${validationResult.reason}`);
+      console.log(`First 300 characters of extraction attempt: "${cleanedText.substring(0, 300)}"`);
+      throw new Error(`Resume content validation failed: ${validationResult.reason}`);
+    }
+    
     console.log(`Successfully extracted resume content: ${cleanedText.length} characters`);
     console.log(`Content preview: ${cleanedText.substring(0, 300)}...`);
     
@@ -405,6 +431,15 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
       
       if (fallbackText && fallbackText.trim().length > 100) {
         const cleanedFallback = cleanExtractedText(fallbackText);
+        
+        // Validate fallback content
+        const validationResult = validateExtractedContent(cleanedFallback);
+        if (!validationResult.isValid) {
+          console.log(`Fallback content validation failed: ${validationResult.reason}`);
+          console.log(`First 300 characters of fallback extraction: "${cleanedFallback.substring(0, 300)}"`);
+          throw new Error(`Fallback extraction validation failed: ${validationResult.reason}`);
+        }
+        
         console.log(`Fallback extraction succeeded: ${cleanedFallback.length} characters`);
         return cleanedFallback;
       }
@@ -507,54 +542,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           extractedContent = await extractTextFromPDF(resumeFile.buffer);
         } catch (pdfError) {
-          console.log('PDF extraction failed completely, creating structured template...');
+          console.error('PDF extraction failed completely:', pdfError.message);
+          console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
+          console.log(`First 300 characters of extraction attempt: "${pdfError.message}"`);
           
-          // Extract candidate name from filename
-          const nameFromFile = resumeFile.originalname
-            .replace(/[._-]/g, ' ')
-            .replace(/resume|cv|pdf/gi, '')
-            .trim()
-            .split(' ')
-            .filter(word => word.length > 1 && /^[A-Za-z]+$/.test(word))
-            .slice(0, 2)
-            .join(' ') || 'Your Name';
-
-          extractedContent = `${nameFromFile}
-Email: ${nameFromFile.toLowerCase().replace(/\s+/g, '.')}@email.com
-Phone: (555) 123-4567
-
-PROFESSIONAL SUMMARY
-Experienced professional with relevant background and expertise. Proven track record of delivering results and contributing to organizational success.
-
-WORK EXPERIENCE
-
-[Current/Recent Position] | [Company Name] | [Year - Present]
-• Key responsibility or achievement
-• Another important contribution
-• Quantified result or impact
-
-[Previous Position] | [Company Name] | [Years]
-• Major accomplishment or project
-• Technical skill or expertise demonstrated
-• Team collaboration or leadership example
-
-EDUCATION
-
-[Degree] in [Field] | [University Name] | [Year]
-• Relevant coursework or academic achievements
-• GPA (if strong) or academic honors
-
-TECHNICAL SKILLS
-• Programming Languages: [List relevant languages]
-• Tools & Technologies: [List relevant tools]
-• Methodologies: [List relevant approaches]
-
-ACHIEVEMENTS
-• Professional certification or recognition
-• Project success or business impact
-• Community involvement or leadership`;
-
-          console.log(`Created structured template for: ${nameFromFile}`);
+          return res.status(400).json({ 
+            error: "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content. Image-based or scanned PDFs may not work properly." 
+          });
         }
       } else {
         // Handle text files
@@ -563,6 +557,16 @@ ACHIEVEMENTS
 
       // Clean up the extracted content
       extractedContent = enhanceEnglishContent(extractedContent);
+      
+      // Validate extracted content quality
+      const validationResult = validateExtractedContent(extractedContent);
+      if (!validationResult.isValid) {
+        console.log(`Resume content validation failed: ${validationResult.reason}`);
+        console.log(`First 300 characters of invalid content: "${extractedContent.substring(0, 300)}"`);
+        return res.status(400).json({ 
+          error: `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.` 
+        });
+      }
 
       res.json({ 
         filename: resumeFile.originalname,
@@ -623,6 +627,16 @@ ACHIEVEMENTS
         // Use the edited resume content from the frontend
         originalResume = resumeContent.trim();
         console.log(`Using edited resume content: ${originalResume.length} characters`);
+        
+        // Validate edited content as well
+        const validationResult = validateExtractedContent(originalResume);
+        if (!validationResult.isValid) {
+          console.log(`Edited resume content validation failed: ${validationResult.reason}`);
+          console.log(`First 300 characters of invalid edited content: "${originalResume.substring(0, 300)}"`);
+          return res.status(400).json({ 
+            error: `The provided resume content is invalid: ${validationResult.reason}. Please provide a proper resume with readable content.` 
+          });
+        }
       } else if (resumeFile) {
         // Fallback to file extraction if no content provided
         try {
@@ -635,7 +649,21 @@ ACHIEVEMENTS
           }
           
           if (!originalResume || originalResume.trim().length < 50) {
-            throw new Error('Unable to extract sufficient content from file');
+            console.error('Insufficient content extracted from file');
+            console.log(`First 300 characters of failed extraction: "${originalResume?.substring(0, 300) || 'No content'}"`);
+            return res.status(400).json({ 
+              error: "We couldn't extract sufficient content from this file. Please upload a text-based resume PDF with readable content." 
+            });
+          }
+          
+          // Validate extracted content quality
+          const validationResult = validateExtractedContent(originalResume);
+          if (!validationResult.isValid) {
+            console.log(`Resume content validation failed: ${validationResult.reason}`);
+            console.log(`First 300 characters of invalid content: "${originalResume.substring(0, 300)}"`);
+            return res.status(400).json({ 
+              error: `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.` 
+            });
           }
           
         } catch (error) {
@@ -881,31 +909,8 @@ Remember: Your job is to enhance the CONTENT and DESCRIPTIONS while preserving A
     return atsCleanup(rawContent, keywords);
 
   } catch (error) {
-    console.error('Deepseek API error:', error);
-    // Fallback response
-    return `OPTIMIZED RESUME
-
-[Your Name]
-[Contact Information]
-
-PROFESSIONAL SUMMARY
-Results-driven professional with proven experience in key areas mentioned in the job description. Skilled in relevant technologies and methodologies with a track record of delivering impactful results.
-
-EXPERIENCE
-[Previous Role] - [Company]
-• Achieved measurable results relevant to the target position
-• Utilized key technologies and skills mentioned in job description
-• Led projects that demonstrate qualifications for this role
-
-SKILLS
-• Technical skills matching job requirements
-• Industry-relevant competencies
-• Tools and technologies from job description
-
-EDUCATION
-[Your Education Background]
-
-This resume has been optimized for ATS systems and includes relevant keywords from your target job description.`;
+    console.error('Deepseek AI generation failed:', error);
+    throw new Error(`AI resume generation failed: ${error.message}`);
   }
 }
 
