@@ -153,10 +153,22 @@ export default function Generator() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type !== "application/pdf") {
+      const allowedTypes = [
+        "application/pdf",
+        "text/plain", 
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ];
+      
+      // Check file extension for DOCX files that might be detected as octet-stream
+      const fileExtension = file.name.toLowerCase().split('.').pop();
+      const allowedExtensions = ['pdf', 'txt', 'docx'];
+      
+      const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension || '');
+      
+      if (!isValidType) {
         toast({
           title: "Invalid File Type",
-          description: "Please upload a PDF file.",
+          description: "Please upload a PDF, DOCX (Word), or TXT file.",
           variant: "destructive",
         });
         return;
@@ -273,7 +285,7 @@ export default function Generator() {
                         <div>
                           <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                           <p className="text-lg font-medium text-slate-700 mb-2">Upload your resume</p>
-                          <p className="text-slate-500 mb-4">PDF format only</p>
+                          <p className="text-slate-500 mb-4">Supported formats: PDF, DOCX (Word), TXT</p>
                           <Button
                             variant="outline"
                             onClick={() => document.getElementById('resume-upload')?.click()}
@@ -286,7 +298,7 @@ export default function Generator() {
                         type="file"
                         id="resume-upload"
                         className="hidden"
-                        accept=".pdf"
+                        accept=".pdf,.docx,.txt"
                         onChange={handleFileUpload}
                       />
                     </div>

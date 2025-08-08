@@ -4,12 +4,25 @@ import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
 import PDFParser from 'pdf2json';
+import mammoth from 'mammoth';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { exec } from 'child_process';
 import path from 'path';
 
 const execAsync = promisify(exec);
+
+// Extract text from DOCX files using mammoth
+async function extractTextFromDOCX(buffer: Buffer): Promise<string> {
+  try {
+    const result = await mammoth.extractRawText({ buffer });
+    console.log(`Mammoth extracted ${result.value.length} characters from DOCX`);
+    return cleanExtractedText(result.value);
+  } catch (error) {
+    console.error('DOCX extraction failed:', error);
+    throw new Error(`Failed to extract text from DOCX file: ${error.message}`);
+  }
+}
 
 // Sample resume template to show users when PDF parsing fails
 const SAMPLE_RESUME_TEMPLATE = `JOHN DOE  
@@ -524,10 +537,24 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf' || file.mimetype === 'text/plain') {
+    const allowedTypes = [
+      'application/pdf', 
+      'text/plain',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    
+    // Get file extension
+    const fileExtension = file.originalname.toLowerCase().split('.').pop();
+    const allowedExtensions = ['pdf', 'txt', 'docx'];
+    
+    console.log(`File upload: ${file.originalname}, detected MIME type: ${file.mimetype}, extension: ${fileExtension}`);
+    
+    // Accept file if either MIME type matches OR extension matches (for DOCX files that might be detected as octet-stream)
+    if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(fileExtension || '')) {
       cb(null, true);
     } else {
-      cb(new Error('Only PDF and text files are allowed'));
+      console.log(`Rejected file with MIME type: ${file.mimetype} and extension: ${fileExtension}`);
+      cb(new Error('Only PDF, DOCX (Word), and TXT files are allowed'));
     }
   }
 });
@@ -577,6 +604,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           return res.status(400).json(createSampleResumeError(
             "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content. Image-based or scanned PDFs may not work properly."
+          ));
+        }
+      } else if (resumeFile.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+                 (resumeFile.mimetype === 'application/octet-stream' && resumeFile.originalname.toLowerCase().endsWith('.docx'))) {
+        console.log('Processing DOCX file with mammoth...');
+        try {
+          extractedContent = await extractTextFromDOCX(resumeFile.buffer);
+        } catch (docxError) {
+          console.error('DOCX extraction failed completely:', docxError.message);
+          console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
+          console.log(`First 300 characters of extraction attempt: "${docxError.message}"`);
+          
+          return res.status(400).json(createSampleResumeError(
+            "We couldn't extract content from this DOCX file. Please ensure it's a valid Word document with readable text content."
           ));
         }
       } else {
@@ -673,6 +714,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           if (resumeFile.mimetype === 'application/pdf') {
             originalResume = await extractTextFromPDF(resumeFile.buffer);
+          } else if (resumeFile.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+                     (resumeFile.mimetype === 'application/octet-stream' && resumeFile.originalname.toLowerCase().endsWith('.docx'))) {
+            originalResume = await extractTextFromDOCX(resumeFile.buffer);
           } else {
             originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
           }
