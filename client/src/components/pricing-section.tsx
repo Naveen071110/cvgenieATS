@@ -45,58 +45,61 @@ export default function PricingSection() {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Free Plan */}
-          <Card
-            ref={freePlanAnimation.ref}
-            className={`bg-white shadow-lg floating-card pricing-card-scale ${
-              freePlanAnimation.isVisible ? 'visible' : ''
-            }`}
-          >
-            <CardContent className="p-8">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Free</h3>
-                <div className="text-4xl font-bold text-slate-900 mb-4">
-                  $0
-                  <span className="text-lg font-normal text-slate-500">/month</span>
+          <div className="mt-8">
+            <Card
+              ref={freePlanAnimation.ref}
+              className={`bg-white shadow-lg floating-card pricing-card-scale ${
+                freePlanAnimation.isVisible ? 'visible' : ''
+              }`}
+            >
+              <CardContent className="p-8">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Free</h3>
+                  <div className="text-4xl font-bold text-slate-900 mb-4">
+                    $0
+                    <span className="text-lg font-normal text-slate-500">/month</span>
+                  </div>
+                  <p className="text-slate-600">Perfect for trying out CVGenie</p>
                 </div>
-                <p className="text-slate-600">Perfect for trying out CVGenie</p>
-              </div>
 
-              <ul className="space-y-4 mb-8">
-                {freePlanFeatures.map((feature, index) => (
-                  <li key={index} className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-slate-600">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                <ul className="space-y-4 mb-8">
+                  {freePlanFeatures.map((feature, index) => (
+                    <li key={index} className="flex items-center">
+                      <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                      <span className="text-slate-600">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <Button
-                variant="outline"
-                className="w-full py-3 px-6 font-semibold"
-                onClick={() => {
-                  const element = document.getElementById("generator");
-                  if (element) {
-                    element.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
-              >
-                Get Started Free
-              </Button>
-            </CardContent>
-          </Card>
+                <Button
+                  variant="outline"
+                  className="w-full py-3 px-6 font-semibold"
+                  onClick={() => {
+                    const element = document.getElementById("generator");
+                    if (element) {
+                      element.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                >
+                  Get Started Free
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Pro Plan */}
-          <Card
-            ref={proPlanAnimation.ref}
-            className={`bg-primary text-white shadow-xl relative floating-card pricing-card-flip pricing-shimmer mt-6 ${
-              proPlanAnimation.isVisible ? 'visible' : ''
-            }`}
-          >
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="relative pt-8">
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-10">
               <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg animate-pulse">
                 ⭐ MOST POPULAR
               </div>
             </div>
+            <Card
+              ref={proPlanAnimation.ref}
+              className={`bg-primary text-white shadow-xl floating-card pricing-card-flip pricing-shimmer ${
+                proPlanAnimation.isVisible ? 'visible' : ''
+              }`}
+            >
 
             <CardContent className="p-8">
               <div className="text-center mb-8">
