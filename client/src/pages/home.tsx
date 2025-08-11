@@ -50,15 +50,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <Link to="/generator">
-                  <Button 
-                    size="lg"
-                    className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-xl hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
-                  >
-                    Start Generating Now
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </Link>
+                
               </CardContent>
             </Card>
           </div>
