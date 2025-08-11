@@ -10,7 +10,63 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import Lottie from "lottie-react";
-import genieLoading from "../assets/lotties/genie-loading.json";
+
+// Animation data for genie loading
+const genieAnimation = {
+  "v": "5.7.4",
+  "fr": 30,
+  "ip": 0,
+  "op": 60,
+  "w": 160,
+  "h": 160,
+  "nm": "Genie Loading",
+  "ddd": 0,
+  "assets": [],
+  "layers": [
+    {
+      "ddd": 0,
+      "ind": 1,
+      "ty": 4,
+      "nm": "Magic Circle",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 0,
+          "k": 100
+        },
+        "r": {
+          "a": 1,
+          "k": [
+            {"i": {"x": [0.833], "y": [0.833]}, "o": {"x": [0.167], "y": [0.167]}, "t": 0, "s": [0]},
+            {"t": 60, "s": [360]}
+          ]
+        },
+        "p": {"a": 0, "k": [80, 80, 0]},
+        "a": {"a": 0, "k": [0, 0, 0]},
+        "s": {"a": 0, "k": [100, 100, 100]}
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ty": "el",
+              "p": {"a": 0, "k": [0, 0]},
+              "s": {"a": 0, "k": [60, 60]}
+            },
+            {
+              "ty": "st",
+              "c": {"a": 0, "k": [0.2, 0.6, 1, 1]},
+              "o": {"a": 0, "k": 100},
+              "w": {"a": 0, "k": 4}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
 
 interface UsageSession {
   id: string;
@@ -475,19 +531,11 @@ export default function Generator() {
                 {generateMutation.isPending && (
                   <div className="flex flex-col items-center mt-8 md:mt-12 mb-8 px-4">
                     <div className="relative">
-                      {genieLoading ? (
-                        <Lottie 
-                          animationData={genieLoading} 
-                          loop={true} 
-                          className="w-32 h-32 md:w-40 md:h-40 drop-shadow-lg"
-                          onError={() => console.warn('Lottie animation failed to load')}
-                        />
-                      ) : (
-                        // Fallback spinner if Lottie fails
-                        <div className="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
-                          <Loader2 className="w-12 h-12 md:w-16 md:h-16 animate-spin text-blue-500" />
-                        </div>
-                      )}
+                      <Lottie 
+                        animationData={genieAnimation} 
+                        loop={true} 
+                        className="w-32 h-32 md:w-40 md:h-40 drop-shadow-lg"
+                      />
                     </div>
                     <div className="text-center mt-4 md:mt-6 space-y-2 max-w-sm md:max-w-md">
                       <p className="text-blue-700 font-semibold text-lg md:text-xl animate-pulse">
