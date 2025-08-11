@@ -22,7 +22,7 @@ export default {
           foreground: "var(--popover-foreground)",
         },
         primary: {
-          DEFAULT: "var(--primary)",
+          DEFAULT: "var(--primary)", /* CVATS Deep Professional Blue #0050B3 */
           foreground: "var(--primary-foreground)",
         },
         secondary: {
