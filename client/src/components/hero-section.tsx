@@ -75,14 +75,15 @@ export default function HeroSection() {
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
-        <Button
-              size="lg"
-              variant="accent"
-              className="cta-button cta-pulse text-lg px-8 py-4"
-              onClick={() => navigate('/generator')}
-            >
-              Start Generating Now
-            </Button>
+        <Link to="/generator">
+          <Button
+            size="lg"
+            variant="accent"
+            className="cta-button cta-pulse text-lg px-8 py-4"
+          >
+            Start Generating Now
+          </Button>
+        </Link>
 
       </div>
     </section>
