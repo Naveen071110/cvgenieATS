@@ -107,7 +107,7 @@ export default function Generator() {
       formData.append("sessionId", sessionId);
       formData.append("jobDescription", jobDescription);
       formData.append("resumeContent", resumeContent); // Use edited content
-      
+
       // Create a new file from the edited content for compatibility
       const blob = new Blob([resumeContent], { type: 'text/plain' });
       const editedFile = new File([blob], extractedResume?.filename || 'resume.txt', { type: 'text/plain' });
@@ -160,13 +160,13 @@ export default function Generator() {
         "text/plain", 
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       ];
-      
+
       // Check file extension for DOCX files that might be detected as octet-stream
       const fileExtension = file.name.toLowerCase().split('.').pop();
       const allowedExtensions = ['pdf', 'txt', 'docx'];
-      
+
       const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension || '');
-      
+
       if (!isValidType) {
         toast({
           title: "Invalid File Type",
@@ -324,7 +324,7 @@ export default function Generator() {
                             )}
                           </div>
                         </div>
-                        
+
                         {sampleResumeError.sampleResume && (
                           <div className="mt-4">
                             <div className="flex items-center justify-between mb-2">
@@ -392,7 +392,7 @@ export default function Generator() {
                           {isEditingResumeContent ? "Save Changes" : "Edit Content"}
                         </Button>
                       </div>
-                      
+
                       {extractResumeMutation.isPending && (
                         <div className="text-center py-4">
                           <div className="inline-flex items-center gap-2 text-slate-600">
@@ -417,7 +417,7 @@ export default function Generator() {
                           </pre>
                         </div>
                       )}
-                      
+
                       <p className="text-xs text-slate-500">
                         Review and edit your resume content above. The AI will use this information to generate your optimized resume.
                       </p>
@@ -431,6 +431,7 @@ export default function Generator() {
                     disabled={!canGenerate}
                     size="lg"
                     className="px-8 py-4"
+                    variant="accent"
                   >
                     {generateMutation.isPending ? (
                       <>
@@ -441,7 +442,7 @@ export default function Generator() {
                       "Generate Resume & Cover Letter"
                     )}
                   </Button>
-                  
+
                   {/* Usage Counter */}
                   <div className="text-sm text-slate-600">
                     {user?.id ? (

@@ -51,6 +51,19 @@ export default {
           "4": "var(--chart-4)",
           "5": "var(--chart-5)",
         },
+        // Secondary accent colors for visual interest
+        accent2: {
+          DEFAULT: "var(--accent2)",
+          foreground: "var(--accent2-foreground)",
+        },
+        "accent-orange": {
+          DEFAULT: "var(--accent-orange)",
+          foreground: "var(--accent-orange-foreground)",
+        },
+        "accent-green": {
+          DEFAULT: "var(--accent-green)",
+          foreground: "var(--accent-green-foreground)",
+        },
         sidebar: {
           DEFAULT: "var(--sidebar-background)",
           foreground: "var(--sidebar-foreground)",

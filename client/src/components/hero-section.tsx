@@ -7,7 +7,7 @@ const rotatingTexts = ['Any Job', 'Tech Roles', 'Creative Positions', 'Leadershi
 
 // Particle component
 const Particle = ({ delay }: { delay: number }) => (
-  <div 
+  <div
     className="absolute w-1 h-1 bg-primary/20 rounded-full animate-float"
     style={{
       left: `${Math.random() * 100}%`,
@@ -46,7 +46,7 @@ export default function HeroSection() {
   return (
     <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Animated Background */}
-      <div 
+      <div
         className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 transition-all duration-1000"
         style={{
           background: `linear-gradient(${gradientShift}deg, hsl(210, 40%, 98%) 0%, hsl(0, 0%, 100%) 50%, hsl(210, 20%, 97%) 100%)`
@@ -63,7 +63,7 @@ export default function HeroSection() {
       <div className="relative max-w-7xl mx-auto text-center">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
           Transform Your Resume for{" "}
-          <span 
+          <span
             className={`text-primary inline-block min-w-0 transition-opacity duration-300 ${
               isVisible ? "opacity-100" : "opacity-0"
             }`}
@@ -72,11 +72,18 @@ export default function HeroSection() {
           </span>
         </h1>
         <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-          Generate ATS-optimized resumes and personalized cover letters in seconds using AI. 
+          Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
-        
-        
+        <Button
+              size="lg"
+              variant="accent"
+              className="cta-button cta-pulse text-lg px-8 py-4"
+              onClick={() => navigate('/generator')}
+            >
+              Start Generating Now
+            </Button>
+
       </div>
     </section>
   );

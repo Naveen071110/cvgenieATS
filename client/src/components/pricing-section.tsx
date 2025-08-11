@@ -7,7 +7,7 @@ import { LoginDialog } from "@/components/LoginDialog";
 
 const freePlanFeatures = [
   "3 resume generations per month",
-  "AI-powered resume optimization", 
+  "AI-powered resume optimization",
   "Personalized cover letters",
   "Multiple export formats",
   "ATS optimization"
@@ -31,7 +31,7 @@ export default function PricingSection() {
   return (
     <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <div 
+        <div
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -45,7 +45,7 @@ export default function PricingSection() {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Free Plan */}
-          <Card 
+          <Card
             ref={freePlanAnimation.ref}
             className={`bg-white shadow-lg floating-card pricing-card-scale ${
               freePlanAnimation.isVisible ? 'visible' : ''
@@ -60,7 +60,7 @@ export default function PricingSection() {
                 </div>
                 <p className="text-slate-600">Perfect for trying out CVGenie</p>
               </div>
-              
+
               <ul className="space-y-4 mb-8">
                 {freePlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
@@ -69,9 +69,9 @@ export default function PricingSection() {
                   </li>
                 ))}
               </ul>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="w-full py-3 px-6 font-semibold"
                 onClick={() => {
                   const element = document.getElementById("generator");
@@ -86,18 +86,18 @@ export default function PricingSection() {
           </Card>
 
           {/* Pro Plan */}
-          <Card 
+          <Card
             ref={proPlanAnimation.ref}
             className={`bg-primary text-white shadow-xl relative floating-card pricing-card-flip pricing-shimmer ${
               proPlanAnimation.isVisible ? 'visible' : ''
             }`}
           >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <span className="bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-sm font-semibold badge-pulse">
-                Most Popular
-              </span>
+              <div className="badge-accent mb-4 badge-pulse">
+                MOST POPULAR
+              </div>
             </div>
-            
+
             <CardContent className="p-8">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold mb-2">Pro</h3>
@@ -107,7 +107,7 @@ export default function PricingSection() {
                 </div>
                 <p className="opacity-80">For serious job seekers</p>
               </div>
-              
+
               <ul className="space-y-4 mb-8">
                 {proPlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
@@ -116,9 +116,11 @@ export default function PricingSection() {
                   </li>
                 ))}
               </ul>
-              
-              <Button 
-                className="w-full py-3 px-6 bg-white text-primary font-semibold hover:bg-gray-50"
+
+              <Button
+                className="w-full"
+                variant="accent"
+                size="lg"
                 onClick={() => openAuthDialog({
                   title: "Upgrade to Pro",
                   description: "Sign in to upgrade to Pro and get unlimited generations."
@@ -131,8 +133,8 @@ export default function PricingSection() {
         </div>
       </div>
 
-      <LoginDialog 
-        open={isOpen} 
+      <LoginDialog
+        open={isOpen}
         onOpenChange={closeAuthDialog}
         title={dialogConfig.title}
         description={dialogConfig.description}
