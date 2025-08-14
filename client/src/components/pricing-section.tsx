@@ -88,16 +88,10 @@ export default function PricingSection() {
           {/* Pro Plan */}
           <Card
             ref={proPlanAnimation.ref}
-            className={`bg-primary text-white shadow-xl relative floating-card pricing-card-flip pricing-shimmer mt-6 ${
+            className={`bg-primary text-white shadow-xl floating-card pricing-card-flip pricing-shimmer ${
               proPlanAnimation.isVisible ? 'visible' : ''
             }`}
           >
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg animate-pulse">
-                ⭐ MOST POPULAR
-              </div>
-            </div>
-
             <CardContent className="p-8">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold mb-2">Pro</h3>
