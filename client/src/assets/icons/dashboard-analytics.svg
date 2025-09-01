@@ -1,0 +1,49 @@
+
+<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="chartGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#0050B3;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#0050B3;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Dashboard container -->
+  <rect x="20" y="25" width="120" height="90" rx="8" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Header bar -->
+  <rect x="20" y="25" width="120" height="20" rx="8" fill="#f8fafc"/>
+  <rect x="20" y="37" width="120" height="8" rx="0"/>
+  
+  <!-- Dashboard dots -->
+  <circle cx="32" cy="35" r="3" fill="#ef4444"/>
+  <circle cx="42" cy="35" r="3" fill="#fbbf24"/>
+  <circle cx="52" cy="35" r="3" fill="#10b981"/>
+  
+  <!-- Charts -->
+  
+  <!-- Bar chart -->
+  <rect x="30" y="55" width="8" height="20" rx="2" fill="url(#chartGradient)"/>
+  <rect x="42" y="65" width="8" height="30" rx="2" fill="url(#chartGradient)"/>
+  <rect x="54" y="50" width="8" height="45" rx="2" fill="url(#chartGradient)"/>
+  <rect x="66" y="60" width="8" height="35" rx="2" fill="url(#chartGradient)"/>
+  
+  <!-- Pie chart -->
+  <circle cx="110" cy="70" r="18" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <path d="M110,52 A18,18 0 0,1 125,80 L110,70 Z" fill="#0050B3"/>
+  <path d="M125,80 A18,18 0 0,1 105,86 L110,70 Z" fill="#10b981"/>
+  <path d="M105,86 A18,18 0 0,1 110,52 L110,70 Z" fill="#fbbf24"/>
+  
+  <!-- Metrics -->
+  <text x="30" y="110" font-family="Inter" font-size="8" font-weight="600" fill="#64748b">Applications</text>
+  <text x="30" y="122" font-family="Inter" font-size="12" font-weight="700" fill="#0050B3">24</text>
+  
+  <text x="80" y="110" font-family="Inter" font-size="8" font-weight="600" fill="#64748b">Interviews</text>
+  <text x="80" y="122" font-family="Inter" font-size="12" font-weight="700" fill="#10b981">8</text>
+  
+  <text x="120" y="110" font-family="Inter" font-size="8" font-weight="600" fill="#64748b">Success Rate</text>
+  <text x="120" y="122" font-family="Inter" font-size="12" font-weight="700" fill="#059669">33%</text>
+  
+  <!-- Trending arrow -->
+  <path d="M120,50 L130,45 L125,40" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <line x1="115" y1="55" x2="125" y2="45" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+</svg>

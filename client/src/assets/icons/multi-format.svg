@@ -1,0 +1,45 @@
+
+<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="docGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f1f5f9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Central document -->
+  <rect x="60" y="40" width="40" height="50" rx="4" fill="url(#docGradient)" stroke="#0050B3" stroke-width="2"/>
+  <rect x="65" y="50" width="30" height="3" rx="1.5" fill="#0050B3" opacity="0.8"/>
+  <rect x="65" y="56" width="25" height="2" rx="1" fill="#64748b" opacity="0.6"/>
+  <rect x="65" y="60" width="28" height="2" rx="1" fill="#64748b" opacity="0.6"/>
+  <rect x="65" y="64" width="22" height="2" rx="1" fill="#64748b" opacity="0.6"/>
+  
+  <!-- PDF document -->
+  <rect x="20" y="100" width="35" height="45" rx="4" fill="#dc2626" opacity="0.1" stroke="#dc2626" stroke-width="2"/>
+  <text x="37.5" y="128" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" fill="#dc2626">PDF</text>
+  
+  <!-- Word document -->
+  <rect x="62.5" y="110" width="35" height="45" rx="4" fill="#2563eb" opacity="0.1" stroke="#2563eb" stroke-width="2"/>
+  <text x="80" y="138" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" fill="#2563eb">DOCX</text>
+  
+  <!-- TXT document -->
+  <rect x="105" y="100" width="35" height="45" rx="4" fill="#059669" opacity="0.1" stroke="#059669" stroke-width="2"/>
+  <text x="122.5" y="128" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" fill="#059669">TXT</text>
+  
+  <!-- Export arrows -->
+  <path d="M75,90 L37.5,100" stroke="#0050B3" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#exportArrow)" opacity="0.7"/>
+  <path d="M80,90 L80,110" stroke="#0050B3" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#exportArrow)" opacity="0.7"/>
+  <path d="M85,90 L122.5,100" stroke="#0050B3" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#exportArrow)" opacity="0.7"/>
+  
+  <!-- Cloud download icon -->
+  <ellipse cx="80" cy="20" rx="15" ry="8" fill="#0050B3" opacity="0.2"/>
+  <path d="M70,20 Q70,15 75,15 Q80,10 85,15 Q90,15 90,20 Q90,25 85,25 L75,25 Q70,25 70,20" fill="#0050B3" opacity="0.3"/>
+  <path d="M78,18 L80,22 L82,18" stroke="#0050B3" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <line x1="80" y1="16" x2="80" y2="22" stroke="#0050B3" stroke-width="2" stroke-linecap="round"/>
+  
+  <defs>
+    <marker id="exportArrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0050B3" opacity="0.7"/>
+    </marker>
+  </defs>
+</svg>

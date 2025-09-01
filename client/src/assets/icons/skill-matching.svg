@@ -1,0 +1,53 @@
+
+<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="matchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Job requirements (left side) -->
+  <rect x="20" y="30" width="45" height="60" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="42.5" y="25" font-family="Inter" font-size="8" font-weight="600" text-anchor="middle" fill="#64748b">Job Req</text>
+  
+  <!-- Job skill tags -->
+  <rect x="25" y="40" width="35" height="12" rx="6" fill="#fbbf24" opacity="0.2" stroke="#fbbf24"/>
+  <text x="42.5" y="48" font-family="Inter" font-size="7" text-anchor="middle" fill="#f59e0b">React</text>
+  
+  <rect x="25" y="55" width="35" height="12" rx="6" fill="#8b5cf6" opacity="0.2" stroke="#8b5cf6"/>
+  <text x="42.5" y="63" font-family="Inter" font-size="7" text-anchor="middle" fill="#7c3aed">Node.js</text>
+  
+  <rect x="25" y="70" width="35" height="12" rx="6" fill="#ef4444" opacity="0.2" stroke="#ef4444"/>
+  <text x="42.5" y="78" font-family="Inter" font-size="7" text-anchor="middle" fill="#dc2626">Python</text>
+  
+  <!-- Your skills (right side) -->
+  <rect x="95" y="30" width="45" height="60" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="117.5" y="25" font-family="Inter" font-size="8" font-weight="600" text-anchor="middle" fill="#64748b">Your Skills</text>
+  
+  <!-- Your skill tags -->
+  <rect x="100" y="40" width="35" height="12" rx="6" fill="#10b981" opacity="0.2" stroke="#10b981"/>
+  <text x="117.5" y="48" font-family="Inter" font-size="7" text-anchor="middle" fill="#059669">React</text>
+  
+  <rect x="100" y="55" width="35" height="12" rx="6" fill="#10b981" opacity="0.2" stroke="#10b981"/>
+  <text x="117.5" y="63" font-family="Inter" font-size="7" text-anchor="middle" fill="#059669">Node.js</text>
+  
+  <rect x="100" y="70" width="35" height="12" rx="6" fill="#64748b" opacity="0.2" stroke="#64748b"/>
+  <text x="117.5" y="78" font-family="Inter" font-size="7" text-anchor="middle" fill="#64748b">Java</text>
+  
+  <!-- Matching connections -->
+  <line x1="60" y1="46" x2="100" y2="46" stroke="url(#matchGradient)" stroke-width="3" opacity="0.8">
+    <animate attributeName="stroke-dasharray" values="0,100; 10,0; 0,100" dur="2s" repeatCount="indefinite"/>
+  </line>
+  <line x1="60" y1="61" x2="100" y2="61" stroke="url(#matchGradient)" stroke-width="3" opacity="0.8">
+    <animate attributeName="stroke-dasharray" values="0,100; 10,0; 0,100" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+  </line>
+  
+  <!-- AI brain center -->
+  <circle cx="80" cy="110" r="20" fill="url(#matchGradient)" opacity="0.1" stroke="url(#matchGradient)" stroke-width="2"/>
+  <text x="80" y="116" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" fill="#059669">AI</text>
+  
+  <!-- Match percentage -->
+  <circle cx="80" cy="140" r="12" fill="url(#matchGradient)"/>
+  <text x="80" y="145" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle" fill="white">92%</text>
+</svg>

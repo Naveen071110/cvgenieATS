@@ -1,0 +1,49 @@
+
+<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="atsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0050B3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Computer screen -->
+  <rect x="20" y="30" width="120" height="80" rx="8" fill="url(#screenGradient)" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Screen glow -->
+  <rect x="25" y="35" width="110" height="70" rx="4" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Resume lines -->
+  <rect x="35" y="45" width="40" height="3" rx="1.5" fill="#0050B3" opacity="0.8"/>
+  <rect x="35" y="52" width="60" height="2" rx="1" fill="#64748b" opacity="0.6"/>
+  <rect x="35" y="57" width="55" height="2" rx="1" fill="#64748b" opacity="0.6"/>
+  <rect x="35" y="62" width="45" height="2" rx="1" fill="#64748b" opacity="0.6"/>
+  
+  <!-- ATS scanner beam -->
+  <rect x="90" y="45" width="35" height="25" rx="4" fill="url(#atsGradient)" opacity="0.1"/>
+  <rect x="95" y="50" width="25" height="3" rx="1.5" fill="#0050B3">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,15; 0,0" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Checkmarks -->
+  <circle cx="45" cy="85" r="8" fill="#10b981" opacity="0.9"/>
+  <path d="M41,85 L44,88 L49,82" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <circle cx="75" cy="85" r="8" fill="#10b981" opacity="0.9"/>
+  <path d="M71,85 L74,88 L79,82" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <circle cx="105" cy="85" r="8" fill="#10b981" opacity="0.9"/>
+  <path d="M101,85 L104,88 L109,82" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <!-- Base -->
+  <rect x="60" y="110" width="40" height="6" rx="3" fill="#64748b" opacity="0.3"/>
+  <rect x="70" y="116" width="20" height="20" rx="4" fill="#334155"/>
+  
+  <!-- Floating keywords -->
+  <text x="25" y="140" font-family="Inter" font-size="8" fill="#0050B3" opacity="0.7">Keywords</text>
+  <text x="110" y="25" font-family="Inter" font-size="8" fill="#0050B3" opacity="0.7">ATS Ready</text>
+</svg>
