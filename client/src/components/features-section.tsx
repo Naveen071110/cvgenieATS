@@ -1,6 +1,6 @@
 import { CheckCircle, Mail, Download, Zap, Target, FileText, Package, ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { Link } from "react-router-dom";
+import { Link } from "wouter";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import DocumentTransformIcon from "../assets/icons/document-transform.svg?react"
