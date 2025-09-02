@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { FileUpload } from '@/components/file-upload';
 
 interface UsageSession {
   id: string;
@@ -111,8 +112,8 @@ export default function ResumeGenerator() {
     URL.revokeObjectURL(url);
   };
 
-  const remainingGenerations = usageSession?.isPro 
-    ? -1 
+  const remainingGenerations = usageSession?.isPro
+    ? -1
     : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
 
   return (
@@ -182,44 +183,17 @@ export default function ResumeGenerator() {
             {step === 1 && (
               <div className="space-y-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 1: Upload Your Current Resume</h3>
-                  <p className="text-slate-600">We'll extract the text to optimize it for your target job</p>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 1: Upload Your Resume</h3>
+                  <p className="text-slate-600">Upload your current resume in PDF, DOC, or DOCX format</p>
                 </div>
 
-                <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-primary transition-colors">
-                  {resumeFile ? (
-                    <div>
-                      <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                      <p className="text-lg font-medium text-green-700 mb-2">File uploaded successfully!</p>
-                      <p className="text-slate-600 mb-4">{resumeFile.name}</p>
-                      <Button
-                        variant="outline"
-                        onClick={() => document.getElementById('resume-upload')?.click()}
-                      >
-                        Choose Different File
-                      </Button>
-                    </div>
-                  ) : (
-                    <div>
-                      <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                      <p className="text-lg font-medium text-slate-700 mb-2">Drag and drop your resume here</p>
-                      <p className="text-slate-500 mb-4">or click to browse files (PDF format)</p>
-                      <Button
-                        variant="outline"
-                        onClick={() => document.getElementById('resume-upload')?.click()}
-                      >
-                        Choose File
-                      </Button>
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    id="resume-upload"
-                    className="hidden"
-                    accept=".pdf"
-                    onChange={handleFileUpload}
-                  />
-                </div>
+                <FileUpload
+                  onFileSelect={(file) => setResumeFile(file)}
+                  onFileRemove={() => setResumeFile(null)}
+                  selectedFile={resumeFile}
+                  acceptedTypes={['.pdf', '.doc', '.docx']}
+                  maxSize={10}
+                />
 
                 <div className="text-center">
                   <Button
@@ -301,7 +275,7 @@ export default function ResumeGenerator() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                      
+
                       <div className="border border-slate-200 rounded-lg p-6 text-center">
                         <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
                         <h4 className="font-semibold text-slate-900 mb-2">Optimized Resume</h4>
@@ -362,8 +336,8 @@ export default function ResumeGenerator() {
               "Unlimited generations with Pro plan"
             ) : (
               <>
-                <span className="font-semibold">{remainingGenerations}</span> free generations remaining this month. 
-                <button 
+                <span className="font-semibold">{remainingGenerations}</span> free generations remaining this month.
+                <button
                   onClick={() => {
                     const element = document.getElementById("pricing");
                     if (element) {

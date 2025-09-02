@@ -13,6 +13,7 @@ import Lottie from "lottie-react";
 import DocumentUploadIcon from '@/assets/icons/document-upload.svg?react';
 import AtsOptimizationIcon from '@/assets/icons/ats-optimization.svg?react';
 import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
+import { FileUpload } from "@/components/file-upload";
 
 // Animation data for genie loading
 const genieAnimation = {
@@ -212,38 +213,35 @@ export default function Generator() {
     },
   });
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const allowedTypes = [
-        "application/pdf",
-        "text/plain", 
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ];
+  const handleFileUpload = (file: File) => {
+    const allowedTypes = [
+      "application/pdf",
+      "text/plain", 
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
 
-      // Check file extension for DOCX files that might be detected as octet-stream
-      const fileExtension = file.name.toLowerCase().split('.').pop();
-      const allowedExtensions = ['pdf', 'txt', 'docx'];
+    // Check file extension for DOCX files that might be detected as octet-stream
+    const fileExtension = file.name.toLowerCase().split('.').pop();
+    const allowedExtensions = ['pdf', 'txt', 'docx'];
 
-      const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension || '');
+    const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension || '');
 
-      if (!isValidType) {
-        toast({
-          title: "Invalid File Type",
-          description: "Please upload a PDF, DOCX (Word), or TXT file.",
-          variant: "destructive",
-        });
-        return;
-      }
-      setResumeFile(file);
-      // Reset previous extraction and results
-      setExtractedResume(null);
-      setResumeContent("");
-      setGenerationResult(null);
-      setSampleResumeError(null); // Clear any previous errors
-      // Extract content from uploaded file
-      extractResumeMutation.mutate(file);
+    if (!isValidType) {
+      toast({
+        title: "Invalid File Type",
+        description: "Please upload a PDF, DOCX (Word), or TXT file.",
+        variant: "destructive",
+      });
+      return;
     }
+    setResumeFile(file);
+    // Reset previous extraction and results
+    setExtractedResume(null);
+    setResumeContent("");
+    setGenerationResult(null);
+    setSampleResumeError(null); // Clear any previous errors
+    // Extract content from uploaded file
+    extractResumeMutation.mutate(file);
   };
 
   const resetGenerator = () => {
@@ -331,33 +329,20 @@ export default function Generator() {
                   {/* Resume Upload */}
                   <div className="space-y-4">
                     <h3 className="text-xl font-semibold text-slate-900">Upload Your Resume</h3>
-                    <div className="upload-zone border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50/50 hover:border-slate-400 transition-all duration-300">
-                      <DocumentUploadIcon className="w-12 h-12 text-slate-400 mx-auto mb-4 transition-all duration-300 group-hover:text-primary group-hover:scale-110" />
-                      <div className="mb-4">
-                        <p className="text-lg font-medium text-slate-700 mb-2">
-                          Drop your resume here or click to browse
-                        </p>
-                        <p className="text-sm text-slate-500">
-                          Supports PDF, DOC, DOCX files up to 10MB
-                        </p>
-                      </div>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                      />
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="border-slate-300 text-slate-600 hover:bg-slate-100 transition-all duration-200 hover:-translate-y-0.5"
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        Choose File
-                      </Button>
-                    </div>
+                    <FileUpload
+                      onFileSelect={handleFileUpload}
+                      onFileRemove={() => {
+                        setExtractedResume(null);
+                        setResumeContent('');
+                        setIsEditingResumeContent(false);
+                      }}
+                      selectedFile={extractedResume ? new File([], extractedResume.fileName) : null}
+                      isUploading={extractResumeMutation.isPending}
+                      uploadProgress={extractResumeMutation.isPending ? 50 : 0}
+                      uploadStage={extractResumeMutation.isPending ? 'extracting' : ''}
+                      acceptedTypes={['.pdf', '.doc', '.docx']}
+                      maxSize={10}
+                    />
                   </div>
 
                   {/* Sample Resume Error Display */}
