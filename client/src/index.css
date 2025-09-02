@@ -2,22 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Primary Color Palette */
+/* 60-30-10 Color Rule Implementation */
+  --primary-blue: #2563eb;
+  --gray-light: #f3f4f6;
+  --accent-green: #10b981;
+  --accent-orange: #fb923c;
+
+  /* Primary Color Palette (60% - Main colors) */
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
   --color-primary-300: #93c5fd;
   --color-primary-400: #60a5fa;
   --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
+  --color-primary-600: var(--primary-blue);
   --color-primary-700: #1d4ed8;
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
 
-  /* Secondary Grays */
+  /* Secondary Grays (30% - Supporting colors) */
   --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
+  --color-gray-100: var(--gray-light);
   --color-gray-200: #e5e7eb;
   --color-gray-300: #d1d5db;
   --color-gray-400: #9ca3af;
@@ -27,10 +32,10 @@
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
 
-  /* Accent Colors */
-  --color-success-500: #10b981;
+  /* Accent Colors (10% - Accent/highlight colors) */
+  --color-success-500: var(--accent-green);
   --color-success-600: #059669;
-  --color-warning-500: #f59e0b;
+  --color-warning-500: var(--accent-orange);
   --color-error-500: #ef4444;
 
   /* Gradients */
@@ -38,34 +43,34 @@
   --gradient-success: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
   --gradient-hero: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 
-  /* Updated design system variables using new color palette */
-  --background: var(--color-gray-50);
-  --foreground: var(--color-gray-900);
+  /* Updated design system variables using 60-30-10 color palette */
+  --background: var(--gray-light);
+  --foreground: #1e293b;
   --muted: var(--color-gray-100);
   --muted-foreground: var(--color-gray-500);
   --popover: #ffffff;
-  --popover-foreground: var(--color-gray-900);
+  --popover-foreground: #1e293b;
   --card: #ffffff;
-  --card-foreground: var(--color-gray-900);
+  --card-foreground: #1e293b;
   --border: var(--color-gray-200);
   --input: var(--color-gray-200);
-  --primary: var(--color-primary-600);
+  --primary: var(--primary-blue);
   --primary-foreground: #ffffff;
   --secondary: var(--color-gray-100);
-  --secondary-foreground: var(--color-gray-900);
+  --secondary-foreground: #1e293b;
   --accent: var(--color-primary-100);
   --accent-foreground: var(--color-primary-900);
   --destructive: var(--color-error-500);
   --destructive-foreground: #ffffff;
-  --ring: var(--color-primary-600);
+  --ring: var(--primary-blue);
   --radius: 0.5rem;
 
-  /* Enhanced accent colors using new palette */
-  --accent2: var(--color-warning-500);
+  /* Enhanced accent colors using 60-30-10 palette */
+  --accent2: var(--accent-orange);
   --accent2-foreground: #ffffff;
-  --accent-orange: var(--color-warning-500);
+  --accent-orange: var(--accent-orange);
   --accent-orange-foreground: #ffffff;
-  --accent-green: var(--color-success-500);
+  --accent-green: var(--accent-green);
   --accent-green-foreground: #ffffff;
 
   /* Font sizes */
@@ -135,7 +140,7 @@
   --card-foreground: var(--color-gray-50);
   --border: var(--color-gray-700);
   --input: var(--color-gray-700);
-  --primary: var(--color-primary-500);
+  --primary: var(--primary-blue);
   --primary-foreground: #ffffff;
   --secondary: var(--color-gray-800);
   --secondary-foreground: var(--color-gray-50);
@@ -143,14 +148,14 @@
   --accent-foreground: var(--color-gray-50);
   --destructive: var(--color-error-500);
   --destructive-foreground: #ffffff;
-  --ring: var(--color-primary-400);
+  --ring: var(--primary-blue);
 
-  /* Enhanced accent colors for dark mode */
-  --accent2: var(--color-warning-500);
+  /* Enhanced accent colors for dark mode using 60-30-10 palette */
+  --accent2: var(--accent-orange);
   --accent2-foreground: var(--color-gray-900);
-  --accent-orange: var(--color-warning-500);
+  --accent-orange: var(--accent-orange);
   --accent-orange-foreground: var(--color-gray-900);
-  --accent-green: var(--color-success-500);
+  --accent-green: var(--accent-green);
   --accent-green-foreground: var(--color-gray-900);
 }
 
@@ -164,7 +169,9 @@
     min-width: 320px;
     min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    @apply antialiased bg-background text-foreground;
+    background: var(--gray-light);
+    color: #1e293b;
+    @apply antialiased;
     /* Inter for body text - professional and highly legible */
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     overflow-x: hidden;
@@ -333,9 +340,64 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
 
+  /* 60-30-10 Color Rule Button Classes */
+  .button-primary {
+    background: var(--primary-blue);
+    color: #fff;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--space-2);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.2s ease-in-out;
+    transform: translateY(0);
+    border: none;
+    cursor: pointer;
+  }
+
+  .button-primary:hover {
+    background-color: var(--color-primary-700);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+  }
+
+  .button-success {
+    background: var(--accent-green);
+    color: #fff;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--space-2);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.2s ease-in-out;
+    transform: translateY(0);
+    border: none;
+    cursor: pointer;
+  }
+
+  .button-success:hover {
+    background-color: var(--color-success-600);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+  }
+
+  .button-warning {
+    background: var(--accent-orange);
+    color: #fff;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--space-2);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.2s ease-in-out;
+    transform: translateY(0);
+    border: none;
+    cursor: pointer;
+  }
+
+  .button-warning:hover {
+    background-color: #ea7c32;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(251, 146, 60, 0.3);
+  }
+
   .btn-primary {
-    background-color: var(--color-primary-600);
-    color: var(--primary-foreground);
+    background-color: var(--primary-blue);
+    color: #fff;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--space-2);
     font-weight: var(--font-weight-medium);
@@ -346,7 +408,7 @@
   .btn-primary:hover {
     background-color: var(--color-primary-700);
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
   }
 
   .btn-secondary {
@@ -381,8 +443,8 @@
   }
 
   .btn-accent-orange {
-    background-color: var(--color-warning-500);
-    color: var(--accent-orange-foreground);
+    background-color: var(--accent-orange);
+    color: #fff;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--space-2);
     font-weight: var(--font-weight-medium);
@@ -390,14 +452,14 @@
   }
 
   .btn-accent-orange:hover {
-    background-color: #d97706;
+    background-color: #ea7c32;
     transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 10px 25px rgba(251, 146, 60, 0.3);
   }
 
   .btn-accent-green {
-    background-color: var(--color-success-500);
-    color: var(--accent-green-foreground);
+    background-color: var(--accent-green);
+    color: #fff;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--space-2);
     font-weight: var(--font-weight-medium);
