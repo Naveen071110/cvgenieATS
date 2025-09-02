@@ -1,5 +1,6 @@
-import { Star } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { Link } from "wouter";
 import {
   Carousel,
   CarouselContent,
