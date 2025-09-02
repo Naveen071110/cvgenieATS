@@ -39,41 +39,73 @@ export default function Header() {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        isScrolled ? "bg-white/90 backdrop-blur-md border-b border-slate-200" : "bg-white/80 backdrop-blur-md border-b border-slate-200"
-      }`}>
+        isScrolled ? "backdrop-blur-md" : "backdrop-blur-md"
+      }`}
+        style={{
+          backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.8)',
+          borderBottom: `1px solid var(--color-gray-200)`
+        }}
+      >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ background: var(--gradient-primary) }}
+              >
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
-              <span className="typography-subheader text-primary">CVGenie</span>
+              <span className="typography-subheader" style={{ color: var(--color-primary-600) }}>CVGenie</span>
             </div>
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
               <Link 
                 to="/generator"
-                className="typography-body text-slate-600 hover:text-primary transition-colors"
+                className="typography-body transition-colors"
+                style={{ 
+                  color: var(--color-gray-600),
+                  '--hover-color': var(--color-primary-600)
+                }}
+                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
+                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
               >
                 Generator
               </Link>
               <button 
                 onClick={() => scrollToSection("features")}
-                className="typography-body text-slate-600 hover:text-primary transition-colors"
+                className="typography-body transition-colors"
+                style={{ 
+                  color: var(--color-gray-600),
+                  '--hover-color': var(--color-primary-600)
+                }}
+                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
+                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
               >
                 How it Works
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
-                className="typography-body text-slate-600 hover:text-primary transition-colors"
+                className="typography-body transition-colors"
+                style={{ 
+                  color: var(--color-gray-600),
+                  '--hover-color': var(--color-primary-600)
+                }}
+                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
+                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
               >
                 Pricing
               </button>
               <button 
                 onClick={() => scrollToSection("faq")}
-                className="typography-body text-slate-600 hover:text-primary transition-colors"
+                className="typography-body transition-colors"
+                style={{ 
+                  color: var(--color-gray-600),
+                  '--hover-color': var(--color-primary-600)
+                }}
+                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
+                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
               >
                 FAQ
               </button>

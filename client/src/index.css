@@ -3,34 +3,70 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(222.2, 84%, 4.9%);
-  --muted: hsl(210, 40%, 96%);
-  --muted-foreground: hsl(215.4, 16.3%, 46.9%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(222.2, 84%, 4.9%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(222.2, 84%, 4.9%);
-  --border: hsl(214.3, 31.8%, 91.4%);
-  --input: hsl(214.3, 31.8%, 91.4%);
-  --primary: hsl(212, 100%, 35%); /* #0050B3 - CVATS Deep Professional Blue */
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(210, 40%, 96%);
-  --secondary-foreground: hsl(222.2, 84%, 4.9%);
-  --accent: hsl(210, 40%, 96%);
-  --accent-foreground: hsl(222.2, 84%, 4.9%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --ring: hsl(222.2, 84%, 4.9%);
+  /* Primary Color Palette */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  /* Secondary Grays */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Accent Colors */
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-warning-500: #f59e0b;
+  --color-error-500: #ef4444;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  --gradient-hero: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+  /* Updated design system variables using new color palette */
+  --background: var(--color-gray-50);
+  --foreground: var(--color-gray-900);
+  --muted: var(--color-gray-100);
+  --muted-foreground: var(--color-gray-500);
+  --popover: #ffffff;
+  --popover-foreground: var(--color-gray-900);
+  --card: #ffffff;
+  --card-foreground: var(--color-gray-900);
+  --border: var(--color-gray-200);
+  --input: var(--color-gray-200);
+  --primary: var(--color-primary-600);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-gray-100);
+  --secondary-foreground: var(--color-gray-900);
+  --accent: var(--color-primary-100);
+  --accent-foreground: var(--color-primary-900);
+  --destructive: var(--color-error-500);
+  --destructive-foreground: #ffffff;
+  --ring: var(--color-primary-600);
   --radius: 0.5rem;
 
-  /* Secondary accent colors for enhanced visual interest */
-  --accent2: hsl(30, 100%, 65%); /* Orange accent - primary choice */
-  --accent2-foreground: hsl(0, 0%, 100%);
-  --accent-orange: hsl(30, 100%, 65%); /* #FFA500 equivalent */
-  --accent-orange-foreground: hsl(0, 0%, 100%);
-  --accent-green: hsl(120, 100%, 25%); /* #008000 equivalent */
-  --accent-green-foreground: hsl(0, 0%, 100%);
+  /* Enhanced accent colors using new palette */
+  --accent2: var(--color-warning-500);
+  --accent2-foreground: #ffffff;
+  --accent-orange: var(--color-warning-500);
+  --accent-orange-foreground: #ffffff;
+  --accent-green: var(--color-success-500);
+  --accent-green-foreground: #ffffff;
 
   /* Font sizes */
   --font-size-xs: 0.75rem; /* 12px */
@@ -68,33 +104,33 @@
 }
 
 .dark {
-  --background: hsl(222.2, 84%, 4.9%);
-  --foreground: hsl(210, 40%, 98%);
-  --muted: hsl(217.2, 32.6%, 17.5%);
-  --muted-foreground: hsl(215, 20.2%, 65.1%);
-  --popover: hsl(222.2, 84%, 4.9%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --card: hsl(222.2, 84%, 4.9%);
-  --card-foreground: hsl(210, 40%, 98%);
-  --border: hsl(217.2, 32.6%, 17.5%);
-  --input: hsl(217.2, 32.6%, 17.5%);
-  --primary: hsl(212, 100%, 40%); /* Slightly brighter for dark mode visibility */
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(217.2, 32.6%, 17.5%);
-  --secondary-foreground: hsl(210, 40%, 98%);
-  --accent: hsl(217.2, 32.6%, 17.5%);
-  --accent-foreground: hsl(210, 40%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --ring: hsl(212.7, 26.8%, 83.9%);
+  --background: var(--color-gray-900);
+  --foreground: var(--color-gray-50);
+  --muted: var(--color-gray-800);
+  --muted-foreground: var(--color-gray-400);
+  --popover: var(--color-gray-900);
+  --popover-foreground: var(--color-gray-50);
+  --card: var(--color-gray-900);
+  --card-foreground: var(--color-gray-50);
+  --border: var(--color-gray-700);
+  --input: var(--color-gray-700);
+  --primary: var(--color-primary-500);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-gray-800);
+  --secondary-foreground: var(--color-gray-50);
+  --accent: var(--color-gray-800);
+  --accent-foreground: var(--color-gray-50);
+  --destructive: var(--color-error-500);
+  --destructive-foreground: #ffffff;
+  --ring: var(--color-primary-400);
 
-  /* Secondary accent colors for dark mode */
-  --accent2: hsl(30, 100%, 60%); /* Slightly dimmed orange for dark mode */
-  --accent2-foreground: hsl(222.2, 84%, 4.9%);
-  --accent-orange: hsl(30, 100%, 60%);
-  --accent-orange-foreground: hsl(222.2, 84%, 4.9%);
-  --accent-green: hsl(120, 100%, 40%); /* Brighter green for dark mode visibility */
-  --accent-green-foreground: hsl(222.2, 84%, 4.9%);
+  /* Enhanced accent colors for dark mode */
+  --accent2: var(--color-warning-500);
+  --accent2-foreground: var(--color-gray-900);
+  --accent-orange: var(--color-warning-500);
+  --accent-orange-foreground: var(--color-gray-900);
+  --accent-green: var(--color-success-500);
+  --accent-green-foreground: var(--color-gray-900);
 }
 
 @layer base {
@@ -179,16 +215,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(210, 40%, 96%);
+    background: var(--color-gray-100);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(215.4, 16.3%, 46.9%);
+    background: var(--color-gray-400);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(222.2, 84%, 4.9%);
+    background: var(--color-gray-600);
   }
 }
 
@@ -233,71 +269,88 @@
   }
 
   .hero-gradient {
-    background: linear-gradient(135deg, hsl(210, 40%, 98%) 0%, hsl(0, 0%, 100%) 100%);
+    background: var(--gradient-hero);
   }
 
   .feature-card {
-    @apply bg-white rounded-2xl shadow-lg border border-slate-200 p-8 hover:shadow-xl transition-shadow duration-300;
+    background-color: var(--card);
+    border: 1px solid var(--color-gray-200);
+    @apply rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300;
   }
 
   .btn-primary {
-    @apply bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300;
+    background-color: var(--color-primary-600);
+    color: var(--primary-foreground);
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
   }
 
   .btn-primary:hover {
-    background-color: hsl(212, 100%, 30%); /* Darker shade of the new primary blue */
+    background-color: var(--color-primary-700);
     transform: scale(1.05);
-    box-shadow: 0 10px 25px hsl(212, 100%, 35%, 0.3); /* Updated shadow color */
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
   }
 
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300;
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-900);
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
   }
 
   .btn-secondary:hover {
-    background-color: hsl(210, 40%, 92%);
+    background-color: var(--color-gray-200);
     transform: scale(1.05);
-    box-shadow: 0 8px 20px hsl(210, 40%, 20%, 0.15);
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.15);
   }
 
   /* Accent color button styles */
   .btn-accent {
-    @apply bg-accent2 text-accent2-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300;
+    background-color: var(--color-warning-500);
+    color: var(--accent2-foreground);
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
   }
 
   .btn-accent:hover {
-    background-color: hsl(30, 100%, 60%);
+    background-color: #d97706;
     transform: scale(1.05);
-    box-shadow: 0 10px 25px hsl(30, 100%, 65%, 0.3);
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
   }
 
   .btn-accent-orange {
-    @apply bg-accent-orange text-accent-orange-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300;
+    background-color: var(--color-warning-500);
+    color: var(--accent-orange-foreground);
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
   }
 
   .btn-accent-orange:hover {
-    background-color: hsl(30, 100%, 60%);
+    background-color: #d97706;
     transform: scale(1.05);
-    box-shadow: 0 10px 25px hsl(30, 100%, 65%, 0.3);
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
   }
 
   .btn-accent-green {
-    @apply bg-accent-green text-accent-green-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300;
+    background-color: var(--color-success-500);
+    color: var(--accent-green-foreground);
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
   }
 
   .btn-accent-green:hover {
-    background-color: hsl(120, 100%, 20%);
+    background-color: var(--color-success-600);
     transform: scale(1.05);
-    box-shadow: 0 10px 25px hsl(120, 100%, 25%, 0.3);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
   }
 
   /* Accent highlights and badges */
   .highlight-accent {
-    @apply bg-accent2/10 text-accent2 border border-accent2/20 px-3 py-1 rounded-full text-sm font-medium;
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--color-warning-500);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    @apply px-3 py-1 rounded-full text-sm font-medium;
   }
 
   .badge-accent {
-    @apply bg-accent2 text-accent2-foreground px-2 py-1 rounded-md text-xs font-semibold;
+    background-color: var(--color-warning-500);
+    color: var(--accent2-foreground);
+    @apply px-2 py-1 rounded-md text-xs font-semibold;
   }
 
   /* Feature hover effects */
@@ -306,7 +359,7 @@
   }
 
   .feature-icon-hover:hover {
-    background-color: hsl(212, 100%, 35%, 0.15); /* Updated hover background */
+    background-color: rgba(37, 99, 235, 0.15);
   }
 
   .feature-mockup-hover {
@@ -434,7 +487,7 @@
 
 /* Focus styles for accessibility */
 *:focus {
-  outline: 2px solid hsl(212, 100%, 35%); /* Updated focus outline */
+  outline: 2px solid var(--color-primary-600);
   outline-offset: 2px;
 }
 
@@ -456,11 +509,11 @@
 @keyframes ctaPulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 12px rgba(4, 128, 255, 0.15); /* Updated shadow color */
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
   }
   50% {
     transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(4, 128, 255, 0.25); /* Updated shadow color */
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
   }
 }
 

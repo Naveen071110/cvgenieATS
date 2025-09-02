@@ -172,22 +172,22 @@ export default function FeaturesSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section id="features" className="py-12 sm:py-20 bg-slate-50 overflow-hidden">
+    <section id="features" className="py-12 sm:py-20 overflow-hidden" style={{ backgroundColor: var(--color-gray-50) }}>
       <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
-          className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          className={`text-center mb-12 sm:mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="typography-section-header text-slate-900 mb-4">
+          <h2 className="typography-section-header mb-4" style={{ color: var(--color-gray-900) }}>
             Why Choose CVGenie?
           </h2>
-          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
+          <p className="typography-body max-w-2xl mx-auto text-lg" style={{ color: var(--color-gray-600) }}>
             Our AI-powered platform combines cutting-edge technology with professional expertise
             to create resumes that stand out in today's competitive job market.
           </p>
         </div>
 
-        <div className="space-y-20">
+        <div className="space-y-16 sm:space-y-20">
           {features.map((feature, index) => {
             const featureAnimation = useScrollAnimation({ threshold: 0.1 });
             const isEven = index % 2 === 0;
@@ -197,31 +197,40 @@ export default function FeaturesSection() {
             <div
               key={index}
               ref={featureAnimation.ref}
-              className={`grid lg:grid-cols-2 gap-12 items-center ${slideDirection} ${
+              className={`grid lg:grid-cols-2 gap-8 sm:gap-12 items-center ${slideDirection} ${
                 featureAnimation.isVisible ? 'visible' : ''
               } ${feature.reverse ? 'lg:grid-flow-col-dense' : ''}`}
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className={feature.reverse ? 'lg:col-start-2' : ''}>
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer">
-                  <feature.icon className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
+              <div className={`${feature.reverse ? 'lg:col-start-2' : ''} px-2 sm:px-0`}>
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer"
+                  style={{ backgroundColor: `rgba(37, 99, 235, 0.1)` }}
+                >
+                  <feature.icon 
+                    className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" 
+                    style={{ color: var(--color-primary-600) }}
+                  />
                 </div>
-                <h3 className="typography-subheader text-slate-900 mb-3">
+                <h3 className="typography-subheader mb-3" style={{ color: var(--color-gray-900) }}>
                   {feature.title}
                 </h3>
-                <p className="typography-body text-slate-600 leading-relaxed">
+                <p className="typography-body leading-relaxed mb-4" style={{ color: var(--color-gray-600) }}>
                   {feature.description}
                 </p>
                 <ul className="space-y-3">
                   {feature.benefits.map((benefit, benefitIndex) => (
-                    <li key={benefitIndex} className="flex items-center text-slate-600">
-                      <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                      {benefit}
+                    <li key={benefitIndex} className="flex items-center" style={{ color: var(--color-gray-600) }}>
+                      <CheckCircle 
+                        className="w-5 h-5 mr-3 flex-shrink-0" 
+                        style={{ color: var(--color-success-500) }}
+                      />
+                      <span className="text-sm sm:text-base">{benefit}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className={`${feature.reverse ? 'lg:col-start-1' : ''} feature-mockup-hover`}>
+              <div className={`${feature.reverse ? 'lg:col-start-1' : ''} feature-mockup-hover px-2 sm:px-0`}>
                 {feature.mockup}
               </div>
             </div>
