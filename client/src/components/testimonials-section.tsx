@@ -133,6 +133,22 @@ export default function TestimonialsSection() {
         <div className="flex justify-center mt-6 md:hidden">
           <p className="text-sm text-slate-500">← Swipe to see more →</p>
         </div>
+
+        {/* CTA after testimonials */}
+        <div className="text-center mt-16">
+          <p className="text-lg text-slate-600 mb-6 max-w-2xl mx-auto">
+            Join thousands of professionals who've already transformed their careers
+          </p>
+          <Link to="/generator">
+            <button
+              className="cta-primary group"
+              aria-label="Join successful professionals - Start your free resume"
+            >
+              Start Free Today
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+            </button>
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -253,13 +253,13 @@ export function ResumeComparison() {
             {/* CTA Button */}
             <div className="text-center mt-8">
               <Link to="/generator">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 px-8"
+                <button 
+                  className="cta-primary group"
+                  aria-label="Start transforming your resume for free"
                 >
-                  Transform My Resume Now
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                  Start Free
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                </button>
               </Link>
             </div>
           </CardContent>

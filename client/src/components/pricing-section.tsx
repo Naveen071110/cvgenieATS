@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import { LoginDialog } from "@/components/LoginDialog";
+import { Link } from "react-router-dom";
+
 
 const freePlanFeatures = [
   "3 resume generations per month",
@@ -136,19 +138,14 @@ export default function PricingSection() {
                 ))}
               </ul>
 
-              <Button
-                variant="outline"
-                className="w-full font-semibold border-gray-300 text-gray-700"
-                style={{ padding: 'var(--space-3) var(--space-6)' }}
-                onClick={() => {
-                  const element = document.getElementById("generator");
-                  if (element) {
-                    element.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
-              >
-                Get Started Free
-              </Button>
+              <Link to="/generator" className="w-full">
+                <button
+                  className="cta-primary w-full"
+                  aria-label="Start free plan - Begin creating your resume"
+                >
+                  Start Free
+                </button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -223,18 +220,14 @@ export default function PricingSection() {
                 ))}
               </ul>
 
-              <Button
-                className="w-full bg-yellow-500 text-white hover:bg-yellow-600"
-                variant="accent"
-                size="lg"
-                style={{ padding: 'var(--space-3) var(--space-6)' }}
-                onClick={() => openAuthDialog({
-                  title: "Upgrade to Pro",
-                  description: "Sign in to upgrade to Pro and get unlimited generations."
-                })}
-              >
-                Upgrade to Pro
-              </Button>
+              <Link to="/generator" className="w-full">
+                <button
+                  className="cta-primary w-full"
+                  aria-label="Upgrade to Pro plan - Access premium features"
+                >
+                  Start Pro Trial
+                </button>
+              </Link>
             </CardContent>
           </Card>
         </div>

@@ -30,12 +30,21 @@ export default function Home() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                  Ready to Transform Your Resume?
+                <h2 className="text-3xl font-bold text-slate-900 mb-4">
+                  Ready to Create Your Perfect Resume?
                 </h2>
-                <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
-                  Upload your current resume and paste any job description. Our AI will create an ATS-optimized resume and personalized cover letter in seconds.
+                <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+                  Join thousands of professionals who have landed their dream jobs with our AI-powered resume generator.
                 </p>
+                <Link to="/generator">
+                  <button
+                    className="cta-primary group shadow-xl hover:shadow-2xl cta-pulse"
+                    aria-label="Start your free resume creation process"
+                  >
+                    Start Free
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                  </button>
+                </Link>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600">

@@ -88,6 +88,25 @@ export default function FAQSection() {
             </div>
           ))}
         </div>
+
+        {/* CTA after FAQ */}
+        <div className="text-center mt-16">
+          <h3 className="text-2xl font-bold text-slate-900 mb-4">
+            Still have questions? Try it risk-free!
+          </h3>
+          <p className="text-lg text-slate-600 mb-6 max-w-xl mx-auto">
+            Get started with our free plan and see the difference for yourself
+          </p>
+          <Link to="/generator">
+            <button
+              className="cta-primary group"
+              aria-label="Try risk-free - Start your free resume generation"
+            >
+              Try Risk-Free
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+            </button>
+          </Link>
+        </div>
       </div>
     </section>
   );

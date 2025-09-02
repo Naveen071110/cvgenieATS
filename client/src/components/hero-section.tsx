@@ -164,19 +164,17 @@ export default function HeroSection() {
               <span className="text-sm text-gray-500">Generating your resume...</span>
             </div>
           ) : (
-            <Button
-              size="lg"
-              className="cta-button group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 btn-ripple"
-              asChild
-              onClick={handleCreateResume}
-              aria-label="Start creating your resume - Go to generator page"
-            >
-              <Link to="/generator">
+            <Link to="/generator">
+              <button
+                className="cta-primary group relative shadow-xl hover:shadow-2xl cta-pulse"
+                onClick={handleCreateResume}
+                aria-label="Start your free resume generation - Go to generator page"
+              >
                 <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
-                Start Creating Now
+                Start Free
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-              </Link>
-            </Button>
+              </button>
+            </Link>
           )}
           <div
             className="flex items-center text-gray-600"

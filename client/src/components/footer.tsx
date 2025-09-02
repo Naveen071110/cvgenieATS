@@ -1,4 +1,4 @@
-import { Twitter, Linkedin, Github } from "lucide-react";
+import { Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
 import { Link } from "wouter"
 import SecurityLockIcon from "../assets/icons/security-lock.svg?react";
 
@@ -36,7 +36,7 @@ export default function Footer() {
             <h4 className="typography-body font-semibold text-slate-900 mb-4">Product</h4>
             <ul className="space-y-2">
               <li>
-                <button 
+                <button
                   onClick={() => {
                     const element = document.getElementById("features");
                     if (element) element.scrollIntoView({ behavior: "smooth" });
@@ -47,7 +47,7 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => {
                     const element = document.getElementById("pricing");
                     if (element) element.scrollIntoView({ behavior: "smooth" });
@@ -66,7 +66,7 @@ export default function Footer() {
             <h4 className="typography-body font-semibold text-slate-900 mb-4">Resources</h4>
             <ul className="space-y-2">
               <li>
-                <button 
+                <button
                   onClick={() => {
                     const element = document.getElementById("faq");
                     if (element) element.scrollIntoView({ behavior: "smooth" });
@@ -110,7 +110,15 @@ export default function Footer() {
             © 2025 CVGenie. All rights reserved.
           </p>
           <p className="typography-small text-slate-400 text-sm mt-4 sm:mt-0">
-            Made with ❤️ for job seekers worldwide
+            <Link to="/generator">
+              <button
+                className="cta-primary group shadow-lg hover:shadow-xl"
+                aria-label="Get started free - Begin your resume transformation"
+              >
+                Start Free
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+              </button>
+            </Link>
           </p>
         </div>
       </div>

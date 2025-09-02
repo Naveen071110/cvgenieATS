@@ -73,7 +73,7 @@
   --accent-orange-foreground: #ffffff;
   --accent-green: var(--accent-green);
   --accent-green-foreground: #ffffff;
-  
+
   /* Improved contrast colors for accessibility */
   --text-high-contrast: #1f2937; /* gray-800 for better contrast */
   --text-medium-contrast: #374151; /* gray-700 for medium emphasis */
@@ -165,7 +165,7 @@
   --accent-orange-foreground: var(--color-gray-900);
   --accent-green: var(--accent-green);
   --accent-green-foreground: var(--color-gray-900);
-  
+
   /* Dark mode improved contrast colors */
   --text-high-contrast: #f9fafb; /* gray-50 for high contrast */
   --text-medium-contrast: #e5e7eb; /* gray-200 for medium emphasis */
@@ -859,11 +859,11 @@ select:focus,
 @keyframes ctaPulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 4px 12px rgba(251, 146, 60, 0.15);
   }
   50% {
     transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    box-shadow: 0 6px 16px rgba(251, 146, 60, 0.25);
   }
 }
 

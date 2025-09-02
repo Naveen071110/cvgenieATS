@@ -23,6 +23,27 @@ export default function GeneratorCTA() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+              <Link to="/generator">
+                <button
+                  className="cta-primary group"
+                  aria-label="Start your free resume transformation"
+                >
+                  Start Free
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                </button>
+              </Link>
+              <Link to="/pricing">
+                <button
+                  className="cta-secondary group"
+                  aria-label="View pricing plans and features"
+                >
+                  View Plans
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                </button>
+              </Link>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
               <div className="flex items-center text-green-600">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                 <span className="text-sm font-medium">3 free generations per month</span>
