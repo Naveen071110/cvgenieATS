@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Zap, Target, FileText, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
@@ -61,8 +61,8 @@ export default function HeroSection() {
       </div>
 
       <div className="relative max-w-7xl mx-auto text-center">
-        <h1 className="typography-headline text-slate-900 mb-6">
-          Transform Your Resume for{" "}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
+          Transform Your Career with{" "}
           <span
             className={`text-primary inline-block min-w-0 transition-opacity duration-300 ${
               isVisible ? "opacity-100" : "opacity-0"
@@ -71,18 +71,18 @@ export default function HeroSection() {
             {rotatingTexts[currentTextIndex]}
           </span>
         </h1>
-        <p className="typography-body text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed text-lg">
+        <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8 w-full">
           <Link to="/generator">
             <Button
               size="lg"
-              variant="accent"
-              className="cta-button cta-pulse text-lg px-8 py-4"
+              className="btn-primary cta-button text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 cta-pulse w-full sm:w-auto"
             >
-              Start Generating Now
+              Create Resume Now
+              <FileText className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Button>
           </Link>
           <div className="flex items-center gap-3 text-slate-600">

@@ -104,14 +104,13 @@
 
   body {
     margin: 0;
-    display: flex;
-    place-items: center;
     min-width: 320px;
     min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     @apply antialiased bg-background text-foreground;
     /* Inter for body text - professional and highly legible */
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    overflow-x: hidden;
   }
 
   /* Poppins for headings - modern and distinctive */
@@ -142,9 +141,36 @@
     font-weight: 500;
   }
 
-  /* Smooth scrolling */
+  /* Smooth scrolling and mobile viewport fix */
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  /* Prevent horizontal scrolling on mobile */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Mobile-first container utilities */
+  .container-mobile {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-mobile {
+      padding: 0 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-mobile {
+      max-width: 1200px;
+      padding: 0 3rem;
+    }
   }
 
   /* Custom scrollbar */

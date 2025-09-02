@@ -172,8 +172,8 @@ export default function FeaturesSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
-      <div className="max-w-7xl mx-auto">
+    <section id="features" className="py-12 sm:py-20 bg-slate-50 overflow-hidden">
+      <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}

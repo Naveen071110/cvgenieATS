@@ -29,8 +29,8 @@ export default function PricingSection() {
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   return (
-    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
-      <div className="max-w-7xl mx-auto">
+    <section id="pricing" className="py-12 sm:py-20 bg-slate-50 overflow-hidden">
+      <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
@@ -43,7 +43,7 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 max-w-6xl mx-auto">
           {/* Free Plan */}
           <Card
             ref={freePlanAnimation.ref}
