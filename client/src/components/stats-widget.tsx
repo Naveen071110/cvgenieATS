@@ -17,7 +17,7 @@ interface StatsWidgetProps {
 const defaultStats: StatItem[] = [
   { value: 12847, label: 'Resumes Generated Today' },
   { value: 94, label: 'ATS Pass Rate', suffix: '%' },
-  { value: 50000, label: 'Total Users', suffix: '+' },
+  { value: 100, label: 'Total Users', suffix: '+' },
   { value: 98, label: 'User Satisfaction', suffix: '%' }
 ];
 
