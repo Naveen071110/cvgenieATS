@@ -4,6 +4,7 @@ import { Check, ArrowRight, FileText, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Link } from 'wouter';
 
 interface Improvement {
   icon: React.ReactNode;
@@ -251,13 +252,15 @@ export function ResumeComparison() {
 
             {/* CTA Button */}
             <div className="text-center mt-8">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 px-8"
-              >
-                Transform My Resume Now
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              <Link to="/generator">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 px-8"
+                >
+                  Transform My Resume Now
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
