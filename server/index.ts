@@ -1,10 +1,27 @@
 import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { setupVite, serveStatic } from "./vite";
+import path from "path";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// Enable compression middleware early in the stack
+app.use(compression({
+  level: 6, // Compression level (1-9)
+  threshold: 1024, // Only compress responses larger than 1KB
+  filter: (req, res) => {
+    // Don't compress responses if the request includes a cache-control header to prevent compression
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    // Use compression filter function
+    return compression.filter(req, res);
+  }
+}));
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -33,6 +50,26 @@ app.use((req, res, next) => {
     }
   });
 
+  next();
+});
+
+// Configure caching headers for static assets
+app.use('/assets', (req, res, next) => {
+  // Cache static assets for 1 year
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  res.setHeader('Expires', new Date(Date.now() + 31536000000).toUTCString());
+  next();
+});
+
+// Cache CSS and JS files for 1 hour with revalidation
+app.use(/\.(css|js)$/, (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  next();
+});
+
+// Cache images for 1 week
+app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=604800');
   next();
 });
 

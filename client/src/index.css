@@ -165,6 +165,33 @@
     @apply border-border;
   }
 
+  /* Performance optimizations */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Enable hardware acceleration for animations */
+  .animate-fade-in-up,
+  .floating-card,
+  .animate-float,
+  .feature-card,
+  .cta-button,
+  .interactive-card {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Optimize image loading */
+  img {
+    content-visibility: auto;
+    contain-intrinsic-size: 300px 200px;
+  }
+
+  /* Critical rendering path optimization */
+  .above-fold {
+    contain: layout style paint;
+  }
+
   body {
     margin: 0;
     min-width: 320px;
