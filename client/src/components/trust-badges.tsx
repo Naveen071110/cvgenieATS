@@ -53,7 +53,7 @@ export function TrustBadges({ className }: TrustBadgesProps) {
         </p>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-center max-w-4xl mx-auto">
         {trustBadges.map((badge, index) => (
           <div
             key={index}
