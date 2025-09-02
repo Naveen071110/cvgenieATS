@@ -170,7 +170,7 @@
     min-width: 320px;
     min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    background: var(--gray-light);
+    background-color: var(--gray-light) !important;
     color: #1e293b;
     @apply antialiased;
     /* Inter for body text - professional and highly legible */
