@@ -324,11 +324,13 @@
     border-radius: var(--space-6);
     padding: var(--space-8);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+    transform: translateY(0);
   }
 
   .feature-card:hover {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
 
   .btn-primary {
@@ -337,13 +339,14 @@
     padding: var(--space-3) var(--space-6);
     border-radius: var(--space-2);
     font-weight: var(--font-weight-medium);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-in-out;
+    transform: translateY(0);
   }
 
   .btn-primary:hover {
     background-color: var(--color-primary-700);
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
   }
 
   .btn-secondary {
@@ -559,6 +562,42 @@
   opacity: 0;
 }
 
+/* SVG icon improvements */
+svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.icon-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* SVG hover effects */
+.icon-hover {
+  transition: all 0.3s ease;
+}
+
+.icon-hover:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* Ensure SVG icons are clearly visible */
+.feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.feature-icon svg {
+  color: currentColor;
+  stroke: currentColor;
+  fill: none;
+}
+
 /* Focus styles for accessibility */
 *:focus {
   outline: 2px solid var(--color-primary-600);
@@ -577,6 +616,106 @@
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Branded loading spinner */
+@keyframes brandedSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.branded-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-gray-200);
+  border-top: 3px solid var(--color-primary-600);
+  border-radius: 50%;
+  animation: brandedSpin 1s linear infinite;
+}
+
+.branded-spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gray-200);
+  border-top: 2px solid var(--color-primary-600);
+  border-radius: 50%;
+  animation: brandedSpin 1s linear infinite;
+}
+
+/* Loading skeleton animations */
+@keyframes skeletonWave {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-loading {
+  background: linear-gradient(90deg, var(--color-gray-200) 25%, var(--color-gray-100) 50%, var(--color-gray-200) 75%);
+  background-size: 200% 100%;
+  animation: skeletonWave 1.5s infinite;
+  border-radius: var(--space-1);
+}
+
+/* Progress bar animations */
+@keyframes progressFill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: var(--progress-width, 0%);
+  }
+}
+
+.progress-animated {
+  animation: progressFill 0.5s ease-out forwards;
+}
+
+/* File upload hover effects */
+.upload-zone {
+  transition: all 0.3s ease;
+  border: 2px dashed var(--color-gray-300);
+  background-color: var(--color-gray-50);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+  transform: scale(1.02);
+}
+
+/* Button ripple effect */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-ripple:active::before {
+  width: 300px;
+  height: 300px;
 }
 
 /* CTA button animations */
@@ -735,5 +874,79 @@
 @media (max-width: 768px) {
   .carousel-item {
     scroll-snap-align: start;
+  }
+}
+
+/* Interactive card effects */
+.interactive-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+}
+
+.interactive-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced button interactions */
+.btn-enhanced {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-enhanced::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.btn-enhanced:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Loading states for forms */
+.form-loading {
+  pointer-events: none;
+  opacity: 0.7;
+  position: relative;
+}
+
+.form-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Smooth page transitions */
+.page-transition {
+  animation: pageSlideIn 0.4s ease-out;
+}
+
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

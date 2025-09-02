@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save, Crown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -114,6 +114,7 @@ export default function Generator() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
 
   // Get usage session
   const { data: usageSession } = useQuery<UsageSession>({
@@ -330,39 +331,32 @@ export default function Generator() {
                   {/* Resume Upload */}
                   <div className="space-y-4">
                     <h3 className="text-xl font-semibold text-slate-900">Upload Your Resume</h3>
-                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-primary transition-colors">
-                      {resumeFile ? (
-                        <div>
-                          <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                          <p className="text-lg font-medium text-green-700 mb-2">File uploaded!</p>
-                          <p className="text-slate-600 mb-4">{resumeFile.name}</p>
-                          <Button
-                            variant="outline"
-                            onClick={() => document.getElementById('resume-upload')?.click()}
-                          >
-                            Choose Different File
-                          </Button>
-                        </div>
-                      ) : (
-                        <div>
-                          <DocumentUploadIcon className="w-12 h-12 mx-auto mb-4" />
-                          <p className="text-lg font-medium text-slate-700 mb-2">Upload your resume</p>
-                          <p className="text-slate-500 mb-4">Supported formats: PDF, DOCX (Word), TXT</p>
-                          <Button
-                            variant="outline"
-                            onClick={() => document.getElementById('resume-upload')?.click()}
-                          >
-                            Choose File
-                          </Button>
-                        </div>
-                      )}
+                    <div className="upload-zone border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50/50 hover:border-slate-400 transition-all duration-300">
+                      <DocumentUploadIcon className="w-12 h-12 text-slate-400 mx-auto mb-4 transition-all duration-300 group-hover:text-primary group-hover:scale-110" />
+                      <div className="mb-4">
+                        <p className="text-lg font-medium text-slate-700 mb-2">
+                          Drop your resume here or click to browse
+                        </p>
+                        <p className="text-sm text-slate-500">
+                          Supports PDF, DOC, DOCX files up to 10MB
+                        </p>
+                      </div>
                       <input
+                        ref={fileInputRef}
                         type="file"
-                        id="resume-upload"
-                        className="hidden"
-                        accept=".pdf,.docx,.txt"
+                        accept=".pdf,.doc,.docx"
                         onChange={handleFileUpload}
+                        className="hidden"
                       />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-slate-300 text-slate-600 hover:bg-slate-100 transition-all duration-200 hover:-translate-y-0.5"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Choose File
+                      </Button>
                     </div>
                   </div>
 
