@@ -61,7 +61,7 @@ export default function HeroSection() {
       </div>
 
       <div className="relative max-w-7xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
+        <h1 className="typography-headline text-slate-900 mb-6">
           Transform Your Resume for{" "}
           <span
             className={`text-primary inline-block min-w-0 transition-opacity duration-300 ${
@@ -71,7 +71,7 @@ export default function HeroSection() {
             {rotatingTexts[currentTextIndex]}
           </span>
         </h1>
-        <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed">
+        <p className="typography-body text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed text-lg">
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>

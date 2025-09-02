@@ -35,10 +35,10 @@ export default function PricingSection() {
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="typography-section-header text-slate-900 mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
             Start for free, upgrade when you need unlimited access
           </p>
         </div>
@@ -53,19 +53,19 @@ export default function PricingSection() {
           >
             <CardContent className="p-8">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Free</h3>
-                <div className="text-4xl font-bold text-slate-900 mb-4">
+                <h3 className="typography-subheader text-slate-900 mb-2">Free</h3>
+                <div className="typography-headline text-slate-900 mb-4 text-4xl">
                   $0
-                  <span className="text-lg font-normal text-slate-500">/month</span>
+                  <span className="typography-body font-normal text-slate-500">/month</span>
                 </div>
-                <p className="text-slate-600">Perfect for trying out CVGenie</p>
+                <p className="typography-body text-slate-600">Perfect for trying out CVGenie</p>
               </div>
 
               <ul className="space-y-4 mb-8">
                 {freePlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-slate-600">{feature}</span>
+                    <span className="typography-body text-slate-600">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -94,19 +94,19 @@ export default function PricingSection() {
           >
             <CardContent className="p-8">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-2">Pro</h3>
-                <div className="text-4xl font-bold mb-4">
+                <h3 className="typography-subheader mb-2">Pro</h3>
+                <div className="typography-headline mb-4 text-4xl">
                   $9.99
-                  <span className="text-lg font-normal opacity-80">/month</span>
+                  <span className="typography-body font-normal opacity-80">/month</span>
                 </div>
-                <p className="opacity-80">For serious job seekers</p>
+                <p className="typography-body opacity-80">For serious job seekers</p>
               </div>
 
               <ul className="space-y-4 mb-8">
                 {proPlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <Check className="w-5 h-5 text-green-300 mr-3 flex-shrink-0" />
-                    <span>{feature}</span>
+                    <span className="typography-body">{feature}</span>
                   </li>
                 ))}
               </ul>

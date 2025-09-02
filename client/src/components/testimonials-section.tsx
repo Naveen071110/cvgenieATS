@@ -1,4 +1,3 @@
-
 import { Star } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import {
@@ -70,10 +69,10 @@ export default function TestimonialsSection() {
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="typography-section-header text-slate-900 mb-4">
             Trusted by Job Seekers Worldwide
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
             See how CVGenie has helped professionals land their dream jobs
           </p>
         </div>
@@ -104,12 +103,12 @@ export default function TestimonialsSection() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-slate-600 mb-6">
+                    <p className="typography-body text-slate-600 mb-6 leading-relaxed">
                       "{testimonial.content}"
                     </p>
                     <div className="flex items-center">
                       <div 
-                        className={`w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-semibold mr-4 avatar-pop ${
+                        className={`w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4 avatar-pop ${
                           testimonialAnimation.isVisible ? 'visible' : ''
                         }`}
                         style={{ animationDelay: `${(index % 3) * 0.2 + 0.3}s` }}
@@ -117,8 +116,8 @@ export default function TestimonialsSection() {
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-900">{testimonial.name}</p>
-                        <p className="text-sm text-slate-500">{testimonial.role}</p>
+                        <p className="typography-body font-semibold text-slate-900">{testimonial.name}</p>
+                        <p className="typography-small text-slate-500">{testimonial.role}</p>
                       </div>
                     </div>
                   </div>

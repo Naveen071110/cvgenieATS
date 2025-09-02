@@ -48,11 +48,11 @@ export default function FAQSection() {
     <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="typography-section-header text-slate-900 mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-slate-600">
-            Everything you need to know about CVGenie
+          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
+            Get answers to common questions about CVGenie and our AI-powered resume creation
           </p>
         </div>
 
@@ -63,8 +63,8 @@ export default function FAQSection() {
                 className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-50 transition-colors duration-200"
                 onClick={() => toggleFAQ(index)}
               >
-                <span className="font-semibold text-slate-900 pr-4">{faq.question}</span>
-                <ChevronDown 
+                <span className="typography-body text-left font-semibold pr-4">{faq.question}</span>
+                <ChevronDown
                   className={`w-5 h-5 text-slate-500 transform transition-transform duration-300 flex-shrink-0 ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
@@ -80,7 +80,7 @@ export default function FAQSection() {
                 }}
               >
                 <div className="px-6 pb-4">
-                  <p className="text-slate-600 leading-relaxed">
+                  <p className="typography-body text-slate-600 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>

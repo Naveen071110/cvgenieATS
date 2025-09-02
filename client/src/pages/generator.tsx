@@ -314,11 +314,12 @@ export default function Generator() {
       <div className="pt-8 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-              Generate Your Perfect Resume
+            <h1 className="typography-headline text-slate-900 mb-4">
+              AI-Powered Resume Generator
             </h1>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Upload your current resume and paste the job description to get an ATS-optimized resume and personalized cover letter
+            <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
+              Upload your current resume or enter your information to create an optimized,
+              ATS-friendly resume tailored to your target job.
             </p>
           </div>
 

@@ -8,7 +8,7 @@ const features = [
     description: "Upload your resume and paste any job description. Our AI instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
     benefits: [
       "Keyword optimization for ATS systems",
-      "Smart skill matching and prioritization", 
+      "Smart skill matching and prioritization",
       "Experience reframing for maximum impact"
     ],
     mockup: (
@@ -135,7 +135,7 @@ const features = [
             </div>
             <Download className="w-5 h-5 text-slate-400" />
           </div>
-          
+
           <div className="flex items-center justify-between p-3 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors cursor-pointer">
             <div className="flex items-center">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
@@ -148,7 +148,7 @@ const features = [
             </div>
             <Download className="w-5 h-5 text-slate-400" />
           </div>
-          
+
           <div className="flex items-center justify-between p-3 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors cursor-pointer">
             <div className="flex items-center">
               <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
@@ -174,15 +174,16 @@ export default function FeaturesSection() {
   return (
     <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <div 
+        <div
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="typography-section-header text-slate-900 mb-4">
             Why Choose CVGenie?
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Our AI-powered platform combines cutting-edge technology with proven hiring strategies
+          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
+            Our AI-powered platform combines cutting-edge technology with professional expertise
+            to create resumes that stand out in today's competitive job market.
           </p>
         </div>
 
@@ -191,10 +192,10 @@ export default function FeaturesSection() {
             const featureAnimation = useScrollAnimation({ threshold: 0.1 });
             const isEven = index % 2 === 0;
             const slideDirection = isEven ? 'slide-in-left' : 'slide-in-right';
-            
+
             return (
-            <div 
-              key={index} 
+            <div
+              key={index}
               ref={featureAnimation.ref}
               className={`grid lg:grid-cols-2 gap-12 items-center ${slideDirection} ${
                 featureAnimation.isVisible ? 'visible' : ''
@@ -205,8 +206,10 @@ export default function FeaturesSection() {
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer">
                   <feature.icon className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
-                <p className="text-lg text-slate-600 mb-6 leading-relaxed">
+                <h3 className="typography-subheader text-slate-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="typography-body text-slate-600 leading-relaxed">
                   {feature.description}
                 </p>
                 <ul className="space-y-3">

@@ -32,7 +32,7 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <h4 className="font-semibold mb-4">Product</h4>
+            <h4 className="typography-body font-semibold text-slate-900 mb-4">Product</h4>
             <ul className="space-y-2">
               <li>
                 <button 
@@ -40,7 +40,7 @@ export default function Footer() {
                     const element = document.getElementById("features");
                     if (element) element.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="typography-body text-slate-600 hover:text-primary transition-colors"
                 >
                   Features
                 </button>
@@ -51,7 +51,7 @@ export default function Footer() {
                     const element = document.getElementById("pricing");
                     if (element) element.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="typography-body text-slate-600 hover:text-primary transition-colors"
                 >
                   Pricing
                 </button>
@@ -62,7 +62,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="font-semibold mb-4">Resources</h4>
+            <h4 className="typography-body font-semibold text-slate-900 mb-4">Resources</h4>
             <ul className="space-y-2">
               <li>
                 <button 
@@ -70,45 +70,45 @@ export default function Footer() {
                     const element = document.getElementById("faq");
                     if (element) element.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="typography-body text-slate-600 hover:text-primary transition-colors"
                 >
                   FAQ
                 </button>
               </li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Resume Tips</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Career Advice</a></li>
+              <li><a href="#" className="typography-body text-slate-600 hover:text-primary transition-colors">Resume Tips</a></li>
+              <li><a href="#" className="typography-body text-slate-600 hover:text-primary transition-colors">Career Advice</a></li>
             </ul>
           </div>
 
           {/* Legal */}
           <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
+            <h4 className="typography-body font-semibold text-slate-900 mb-4">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy" className="text-slate-400 hover:text-white transition-colors">
+                <Link to="/privacy" className="typography-body text-slate-600 hover:text-primary transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-slate-400 hover:text-white transition-colors">
+                <Link to="/terms" className="typography-body text-slate-600 hover:text-primary transition-colors">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/pricing-policy" className="text-slate-400 hover:text-white transition-colors">
+                <Link to="/pricing-policy" className="typography-body text-slate-600 hover:text-primary transition-colors">
                   Pricing Policy
                 </Link>
               </li>
-              <li><a href="mailto:support@cvgenie.com" className="text-slate-400 hover:text-white transition-colors">Contact</a></li>
+              <li><a href="mailto:support@cvgenie.com" className="typography-body text-slate-600 hover:text-primary transition-colors">Contact</a></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-slate-400 text-sm">
+          <p className="typography-small text-slate-400 text-sm">
             © 2024 CVGenie. All rights reserved.
           </p>
-          <p className="text-slate-400 text-sm mt-4 sm:mt-0">
+          <p className="typography-small text-slate-400 text-sm mt-4 sm:mt-0">
             Made with ❤️ for job seekers worldwide
           </p>
         </div>

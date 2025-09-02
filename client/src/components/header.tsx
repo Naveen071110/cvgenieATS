@@ -48,36 +48,36 @@ export default function Header() {
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
-              <span className="text-xl font-bold text-slate-900">CVGenie</span>
+              <span className="typography-subheader text-primary">CVGenie</span>
             </div>
-            
+
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
               <Link 
                 to="/generator"
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
+                className="typography-body text-slate-600 hover:text-primary transition-colors"
               >
                 Generator
               </Link>
               <button 
                 onClick={() => scrollToSection("features")}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
+                className="typography-body text-slate-600 hover:text-primary transition-colors"
               >
                 How it Works
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
+                className="typography-body text-slate-600 hover:text-primary transition-colors"
               >
                 Pricing
               </button>
               <button 
                 onClick={() => scrollToSection("faq")}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
+                className="typography-body text-slate-600 hover:text-primary transition-colors"
               >
                 FAQ
               </button>
-              
+
               {/* Auth Section */}
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -109,7 +109,7 @@ export default function Header() {
                 </Button>
               )}
             </div>
-            
+
             {/* Mobile Menu Button */}
             <div className="md:hidden">
               <Button
@@ -154,7 +154,7 @@ export default function Header() {
             >
               FAQ
             </button>
-            
+
             {/* Mobile Auth Section */}
             <div className="mt-8 pt-8 border-t border-slate-200">
               {user ? (
