@@ -41,18 +41,40 @@ export default function Header() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 backdrop-blur-md border-b border-gray-200 ${
         isScrolled ? "bg-white/90" : "bg-white/80"
       }`}>
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <nav 
+          style={{ 
+            maxWidth: 'var(--container-2xl)',
+            margin: '0 auto',
+            paddingLeft: 'var(--space-4)',
+            paddingRight: 'var(--space-4)'
+          }}
+        >
+          <div 
+            className="flex items-center justify-between"
+            style={{ height: 'var(--space-16)' }}
+          >
             {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+            <div 
+              className="flex items-center"
+              style={{ gap: 'var(--space-2)' }}
+            >
+              <div 
+                className="rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600"
+                style={{ 
+                  width: 'var(--space-8)',
+                  height: 'var(--space-8)'
+                }}
+              >
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
               <span className="text-card-title text-primary">CVGenie</span>
             </div>
 
             {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div 
+              className="hidden md:flex items-center"
+              style={{ gap: 'var(--space-8)' }}
+            >
               <Link 
                 to="/generator"
                 className="text-body transition-colors text-gray-600 hover:text-primary"
@@ -74,12 +96,35 @@ export default function Header() {
               
               {/* Auth Section */}
               {isLoading ? (
-                <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+                <div 
+                  className="rounded-full bg-gray-200 animate-pulse"
+                  style={{ 
+                    width: 'var(--space-8)',
+                    height: 'var(--space-8)'
+                  }}
+                ></div>
               ) : user ? (
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
-                      <User className="w-4 h-4" />
+                <div 
+                  className="flex items-center"
+                  style={{ gap: 'var(--space-3)' }}
+                >
+                  <div 
+                    className="flex items-center"
+                    style={{ gap: 'var(--space-2)' }}
+                  >
+                    <div 
+                      className="rounded-full bg-primary text-white flex items-center justify-center"
+                      style={{ 
+                        width: 'var(--space-8)',
+                        height: 'var(--space-8)'
+                      }}
+                    >
+                      <User 
+                        style={{ 
+                          width: 'var(--space-4)',
+                          height: 'var(--space-4)'
+                        }}
+                      />
                     </div>
                     <span className="text-sm text-gray-700">{user.email}</span>
                   </div>
@@ -89,7 +134,13 @@ export default function Header() {
                     onClick={() => signOut()}
                     className="text-gray-600 hover:text-gray-900"
                   >
-                    <LogOut className="w-4 h-4 mr-1" />
+                    <LogOut 
+                      style={{ 
+                        width: 'var(--space-4)',
+                        height: 'var(--space-4)',
+                        marginRight: 'var(--space-1)'
+                      }}
+                    />
                     Sign Out
                   </Button>
                 </div>
@@ -103,7 +154,13 @@ export default function Header() {
                   })}
                   className="text-gray-700 border-gray-300 hover:bg-gray-50"
                 >
-                  <User className="w-4 h-4 mr-1" />
+                  <User 
+                    style={{ 
+                      width: 'var(--space-4)',
+                      height: 'var(--space-4)',
+                      marginRight: 'var(--space-1)'
+                    }}
+                  />
                   Sign In
                 </Button>
               )}
@@ -129,38 +186,80 @@ export default function Header() {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+            <div 
+              style={{ 
+                padding: 'var(--space-2)',
+                paddingTop: 'var(--space-2)',
+                paddingBottom: 'var(--space-3)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'var(--space-1)'
+              }}
+            >
               <Link
                 to="/generator"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                style={{ padding: 'var(--space-3)' }}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Generator
               </Link>
               <button
                 onClick={() => scrollToSection("features")}
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                style={{ padding: 'var(--space-3)' }}
               >
                 Features
               </button>
               <button
                 onClick={() => scrollToSection("pricing")}
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                style={{ padding: 'var(--space-3)' }}
               >
                 Pricing
               </button>
               
               {/* Mobile Auth Section */}
-              <div className="border-t border-gray-200 pt-4 mt-4">
+              <div 
+                className="border-t border-gray-200"
+                style={{ 
+                  paddingTop: 'var(--space-4)',
+                  marginTop: 'var(--space-4)'
+                }}
+              >
                 {isLoading ? (
-                  <div className="px-3 py-2">
-                    <div className="w-full h-8 rounded bg-gray-200 animate-pulse"></div>
+                  <div style={{ padding: 'var(--space-3)' }}>
+                    <div 
+                      className="w-full rounded bg-gray-200 animate-pulse"
+                      style={{ height: 'var(--space-8)' }}
+                    ></div>
                   </div>
                 ) : user ? (
-                  <div className="px-3 py-2 space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
-                        <User className="w-4 h-4" />
+                  <div 
+                    style={{ 
+                      padding: 'var(--space-3)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 'var(--space-3)'
+                    }}
+                  >
+                    <div 
+                      className="flex items-center"
+                      style={{ gap: 'var(--space-3)' }}
+                    >
+                      <div 
+                        className="rounded-full bg-primary text-white flex items-center justify-center"
+                        style={{ 
+                          width: 'var(--space-8)',
+                          height: 'var(--space-8)'
+                        }}
+                      >
+                        <User 
+                          style={{ 
+                            width: 'var(--space-4)',
+                            height: 'var(--space-4)'
+                          }}
+                        />
                       </div>
                       <span className="text-sm text-gray-700">{user.email}</span>
                     </div>
@@ -173,12 +272,18 @@ export default function Header() {
                       }}
                       className="w-full justify-start text-gray-600 hover:text-gray-900"
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
+                      <LogOut 
+                        style={{ 
+                          width: 'var(--space-4)',
+                          height: 'var(--space-4)',
+                          marginRight: 'var(--space-2)'
+                        }}
+                      />
                       Sign Out
                     </Button>
                   </div>
                 ) : (
-                  <div className="px-3 py-2">
+                  <div style={{ padding: 'var(--space-3)' }}>
                     <Button
                       variant="outline"
                       size="sm"
@@ -191,7 +296,13 @@ export default function Header() {
                       }}
                       className="w-full justify-start text-gray-700 border-gray-300 hover:bg-gray-50"
                     >
-                      <User className="w-4 h-4 mr-2" />
+                      <User 
+                        style={{ 
+                          width: 'var(--space-4)',
+                          height: 'var(--space-4)',
+                          marginRight: 'var(--space-2)'
+                        }}
+                      />
                       Sign In
                     </Button>
                   </div>

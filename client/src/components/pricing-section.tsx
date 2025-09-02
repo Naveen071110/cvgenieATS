@@ -29,13 +29,24 @@ export default function PricingSection() {
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   return (
-    <section id="pricing" className="py-12 sm:py-20 overflow-hidden bg-gray-50">
+    <section 
+      id="pricing" 
+      className="overflow-hidden bg-gray-50"
+      style={{ 
+        paddingTop: 'var(--space-12)',
+        paddingBottom: 'var(--space-20)'
+      }}
+    >
       <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
-          className={`text-center mb-12 sm:mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          className={`text-center scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          style={{ marginBottom: 'var(--space-16)' }}
         >
-          <h2 className="text-section-title mb-4 text-gray-900">
+          <h2 
+            className="text-section-title text-gray-900"
+            style={{ marginBottom: 'var(--space-4)' }}
+          >
             Simple, Transparent Pricing
           </h2>
           <p className="text-body-large max-w-2xl mx-auto text-gray-600">
@@ -43,7 +54,14 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto"
+          style={{ 
+            gap: 'var(--space-6)',
+            paddingLeft: 'var(--space-4)',
+            paddingRight: 'var(--space-4)'
+          }}
+        >
           {/* Free Plan */}
           <Card
             ref={freePlanAnimation.ref}
@@ -51,21 +69,44 @@ export default function PricingSection() {
               freePlanAnimation.isVisible ? 'visible' : ''
             }`}
           >
-            <CardContent className="p-6 sm:p-8">
-              <div className="text-center mb-6 sm:mb-8">
-                <h3 className="text-card-title mb-2 text-gray-900">Free</h3>
-                <div className="font-bold mb-4 text-3xl sm:text-4xl text-gray-900">
+            <CardContent style={{ padding: 'var(--space-6)' }}>
+              <div 
+                className="text-center"
+                style={{ marginBottom: 'var(--space-8)' }}
+              >
+                <h3 
+                  className="text-card-title text-gray-900"
+                  style={{ marginBottom: 'var(--space-2)' }}
+                >
+                  Free
+                </h3>
+                <div 
+                  className="font-bold text-3xl sm:text-4xl text-gray-900"
+                  style={{ marginBottom: 'var(--space-4)' }}
+                >
                   $0
                   <span className="text-body font-normal text-base sm:text-lg text-gray-500">/month</span>
                 </div>
                 <p className="text-body text-gray-600">Perfect for trying out CVGenie</p>
               </div>
 
-              <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <ul 
+                style={{ 
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-3)',
+                  marginBottom: 'var(--space-8)'
+                }}
+              >
                 {freePlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <Check 
-                      className="w-4 h-4 sm:w-5 sm:h-5 mr-3 flex-shrink-0 text-green-500"
+                      className="flex-shrink-0 text-green-500"
+                      style={{ 
+                        width: 'var(--space-5)',
+                        height: 'var(--space-5)',
+                        marginRight: 'var(--space-3)'
+                      }}
                     />
                     <span className="text-body text-sm sm:text-base text-gray-600">{feature}</span>
                   </li>
@@ -74,7 +115,8 @@ export default function PricingSection() {
 
               <Button
                 variant="outline"
-                className="w-full py-3 px-6 font-semibold border-gray-300 text-gray-700"
+                className="w-full font-semibold border-gray-300 text-gray-700"
+                style={{ padding: 'var(--space-3) var(--space-6)' }}
                 onClick={() => {
                   const element = document.getElementById("generator");
                   if (element) {
@@ -94,21 +136,44 @@ export default function PricingSection() {
               proPlanAnimation.isVisible ? 'visible' : ''
             }`}
           >
-            <CardContent className="p-6 sm:p-8">
-              <div className="text-center mb-6 sm:mb-8">
-                <h3 className="text-card-title mb-2 text-white">Pro</h3>
-                <div className="font-bold mb-4 text-3xl sm:text-4xl text-white">
+            <CardContent style={{ padding: 'var(--space-6)' }}>
+              <div 
+                className="text-center"
+                style={{ marginBottom: 'var(--space-8)' }}
+              >
+                <h3 
+                  className="text-card-title text-white"
+                  style={{ marginBottom: 'var(--space-2)' }}
+                >
+                  Pro
+                </h3>
+                <div 
+                  className="font-bold text-3xl sm:text-4xl text-white"
+                  style={{ marginBottom: 'var(--space-4)' }}
+                >
                   $9.99
                   <span className="text-body font-normal opacity-80 text-base sm:text-lg">/month</span>
                 </div>
                 <p className="text-body opacity-80">For serious job seekers</p>
               </div>
 
-              <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <ul 
+                style={{ 
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-3)',
+                  marginBottom: 'var(--space-8)'
+                }}
+              >
                 {proPlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <Check 
-                      className="w-4 h-4 sm:w-5 sm:h-5 mr-3 flex-shrink-0 text-green-400"
+                      className="flex-shrink-0 text-green-400"
+                      style={{ 
+                        width: 'var(--space-5)',
+                        height: 'var(--space-5)',
+                        marginRight: 'var(--space-3)'
+                      }}
                     />
                     <span className="text-body text-sm sm:text-base text-white">{feature}</span>
                   </li>
@@ -119,6 +184,7 @@ export default function PricingSection() {
                 className="w-full bg-yellow-500 text-white hover:bg-yellow-600"
                 variant="accent"
                 size="lg"
+                style={{ padding: 'var(--space-3) var(--space-6)' }}
                 onClick={() => openAuthDialog({
                   title: "Upgrade to Pro",
                   description: "Sign in to upgrade to Pro and get unlimited generations."

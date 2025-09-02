@@ -172,13 +172,24 @@ export default function FeaturesSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section id="features" className="py-12 sm:py-20 overflow-hidden bg-gray-50">
+    <section 
+      id="features" 
+      className="overflow-hidden bg-gray-50"
+      style={{ 
+        paddingTop: 'var(--space-12)',
+        paddingBottom: 'var(--space-20)'
+      }}
+    >
       <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
-          className={`text-center mb-12 sm:mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          className={`text-center scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          style={{ marginBottom: 'var(--space-16)' }}
         >
-          <h2 className="text-section-title mb-4 text-gray-900">
+          <h2 
+            className="text-section-title text-gray-900"
+            style={{ marginBottom: 'var(--space-4)' }}
+          >
             Why Choose CVGenie?
           </h2>
           <p className="text-body-large max-w-2xl mx-auto text-gray-600">
@@ -187,7 +198,7 @@ export default function FeaturesSection() {
           </p>
         </div>
 
-        <div className="space-y-16 sm:space-y-20">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-16)' }}>
           {features.map((feature, index) => {
             const featureAnimation = useScrollAnimation({ threshold: 0.1 });
             const isEven = index % 2 === 0;
@@ -197,37 +208,70 @@ export default function FeaturesSection() {
             <div
               key={index}
               ref={featureAnimation.ref}
-              className={`grid lg:grid-cols-2 gap-8 sm:gap-12 items-center ${slideDirection} ${
+              className={`grid lg:grid-cols-2 items-center ${slideDirection} ${
                 featureAnimation.isVisible ? 'visible' : ''
               } ${feature.reverse ? 'lg:grid-flow-col-dense' : ''}`}
-              style={{ animationDelay: `${index * 0.2}s` }}
+              style={{ 
+                gap: 'var(--space-8)',
+                animationDelay: `${index * 0.2}s`
+              }}
             >
-              <div className={`${feature.reverse ? 'lg:col-start-2' : ''} px-2 sm:px-0`}>
+              <div 
+                className={`${feature.reverse ? 'lg:col-start-2' : ''}`}
+                style={{ 
+                  paddingLeft: 'var(--space-2)',
+                  paddingRight: 'var(--space-2)'
+                }}
+              >
                 <div 
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer bg-primary/10"
+                  className="flex items-center justify-center feature-icon-hover group cursor-pointer bg-primary/10"
+                  style={{ 
+                    width: 'var(--space-16)',
+                    height: 'var(--space-16)',
+                    borderRadius: 'var(--space-6)',
+                    marginBottom: 'var(--space-6)'
+                  }}
                 >
                   <feature.icon 
-                    className="w-8 h-8 transition-transform duration-300 group-hover:scale-110 text-primary"
+                    className="transition-transform duration-300 group-hover:scale-110 text-primary"
+                    style={{ width: 'var(--space-8)', height: 'var(--space-8)' }}
                   />
                 </div>
-                <h3 className="text-card-title mb-3 text-gray-900">
+                <h3 
+                  className="text-card-title text-gray-900"
+                  style={{ marginBottom: 'var(--space-3)' }}
+                >
                   {feature.title}
                 </h3>
-                <p className="text-body leading-relaxed mb-4 text-gray-600">
+                <p 
+                  className="text-body leading-relaxed text-gray-600"
+                  style={{ marginBottom: 'var(--space-4)' }}
+                >
                   {feature.description}
                 </p>
-                <ul className="space-y-3">
+                <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                   {feature.benefits.map((benefit, benefitIndex) => (
                     <li key={benefitIndex} className="flex items-center text-gray-600">
                       <CheckCircle 
-                        className="w-5 h-5 mr-3 flex-shrink-0 text-green-500"
+                        className="flex-shrink-0 text-green-500"
+                        style={{ 
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
                       />
                       <span className="text-sm sm:text-base">{benefit}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className={`${feature.reverse ? 'lg:col-start-1' : ''} feature-mockup-hover px-2 sm:px-0`}>
+              <div 
+                className={`${feature.reverse ? 'lg:col-start-1' : ''} feature-mockup-hover`}
+                style={{ 
+                  paddingLeft: 'var(--space-2)',
+                  paddingRight: 'var(--space-2)'
+                }}
+              >
                 {feature.mockup}
               </div>
             </div>
