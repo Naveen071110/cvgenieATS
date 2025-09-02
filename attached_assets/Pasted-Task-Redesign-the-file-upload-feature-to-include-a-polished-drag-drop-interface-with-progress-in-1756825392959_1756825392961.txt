@@ -1,0 +1,61 @@
+Task:
+Redesign the file upload feature to include a polished drag & drop interface with progress indicators and status messaging, enhancing user experience and clarity.
+
+Implementation Details:
+
+Drag & Drop Interface
+
+Build a React component FileUpload managing drag state with useState.
+
+Structure the upload zone to visually highlight when a file is dragged over using CSS classes (dragging).
+
+Display a clear call to action:
+
+Icon (e.g., <UploadIcon />)
+
+Headline: “Drag & drop your resume here”
+
+Alternative browse button for manual file selection
+
+Supported file formats: PDF, DOC, DOCX, TXT
+
+Handle drag events (onDragOver, onDragLeave, onDrop) properly to update UI and prevent default browser behaviors.
+
+File Drop Handling
+
+Implement handleFileDrop(event) function to extract file data and start upload process.
+
+Validate file types and size before proceeding.
+
+Progress Indicators
+
+Show an upload progress bar that visualizes file upload percentage in real time.
+
+Display descriptive steps for AI processing stages, e.g., “Uploading”, “Analyzing Resume”, “Optimizing Content”.
+
+Provide estimated completion time to manage user expectations.
+
+Status Messaging
+
+Show success message upon completion with a clear next step (e.g., “Resume uploaded successfully! Proceed to generate.”)
+
+Display user-friendly error messages with instructions on issues like unsupported formats, size limits, or upload failures.
+
+Styling and Accessibility
+
+Use brand colors and consistent styling for drag states, buttons, and messages.
+
+Make sure drag & drop area is keyboard accessible.
+
+Use ARIA live regions to announce progress and status changes to screen readers.
+
+Testing
+
+Test drag & drop UX across browsers and devices.
+
+Validate progress bar accuracy and transitions.
+
+Confirm error/success messages display correctly for all cases.
+
+Goal:
+Deliver a modern, intuitive, and informative file upload experience that reduces friction and increases user confidence in submitting resumes.
