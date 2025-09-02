@@ -66,13 +66,20 @@
   --ring: var(--primary-blue);
   --radius: 0.5rem;
 
-  /* Enhanced accent colors using 60-30-10 palette */
+  /* Enhanced accent colors using 60-30-10 palette - improved contrast */
   --accent2: var(--accent-orange);
   --accent2-foreground: #ffffff;
   --accent-orange: var(--accent-orange);
   --accent-orange-foreground: #ffffff;
   --accent-green: var(--accent-green);
   --accent-green-foreground: #ffffff;
+  
+  /* Improved contrast colors for accessibility */
+  --text-high-contrast: #1f2937; /* gray-800 for better contrast */
+  --text-medium-contrast: #374151; /* gray-700 for medium emphasis */
+  --text-low-contrast: #6b7280; /* gray-500 for lower emphasis */
+  --link-color: #1d4ed8; /* blue-700 for better contrast */
+  --link-hover-color: #1e3a8a; /* blue-900 for hover state */
 
   /* Font sizes */
   --font-size-xs: 0.75rem; /* 12px */
@@ -151,13 +158,20 @@
   --destructive-foreground: #ffffff;
   --ring: var(--primary-blue);
 
-  /* Enhanced accent colors for dark mode using 60-30-10 palette */
+  /* Enhanced accent colors for dark mode using 60-30-10 palette - improved contrast */
   --accent2: var(--accent-orange);
   --accent2-foreground: var(--color-gray-900);
   --accent-orange: var(--accent-orange);
   --accent-orange-foreground: var(--color-gray-900);
   --accent-green: var(--accent-green);
   --accent-green-foreground: var(--color-gray-900);
+  
+  /* Dark mode improved contrast colors */
+  --text-high-contrast: #f9fafb; /* gray-50 for high contrast */
+  --text-medium-contrast: #e5e7eb; /* gray-200 for medium emphasis */
+  --text-low-contrast: #9ca3af; /* gray-400 for lower emphasis */
+  --link-color: #60a5fa; /* blue-400 for better contrast in dark mode */
+  --link-hover-color: #93c5fd; /* blue-300 for hover state */
 }
 
 @layer base {
@@ -688,10 +702,43 @@ svg {
   fill: none;
 }
 
-/* Focus styles for accessibility */
+/* Enhanced focus styles for accessibility */
 *:focus {
   outline: 2px solid var(--color-primary-600);
   outline-offset: 2px;
+}
+
+/* Improved focus styles for interactive elements */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus,
+[role="button"]:focus,
+[role="menuitem"]:focus {
+  outline: 3px solid var(--color-primary-600);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
+}
+
+/* High contrast focus for critical elements */
+.btn-primary:focus,
+.button-primary:focus {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--color-primary-600);
+}
+
+/* Focus visible for keyboard navigation only */
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--color-primary-600);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
 }
 
 /* Loading animation */

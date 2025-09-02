@@ -53,7 +53,7 @@ export default function HeroSection() {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -108,6 +108,8 @@ export default function HeroSection() {
         paddingLeft: 'var(--space-4)',
         paddingRight: 'var(--space-4)'
       }}
+      role="banner"
+      aria-labelledby="hero-title"
     >
       {/* Animated Background */}
       <div
@@ -131,6 +133,7 @@ export default function HeroSection() {
         }}
       >
         <h1
+          id="hero-title"
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900"
           style={{ marginBottom: 'var(--space-6)' }}
         >
@@ -166,11 +169,12 @@ export default function HeroSection() {
               className="cta-button group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 btn-ripple"
               asChild
               onClick={handleCreateResume}
+              aria-label="Start creating your resume - Go to generator page"
             >
               <Link to="/generator">
-                <FileText className="w-5 h-5 mr-2" />
+                <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
                 Start Creating Now
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </Link>
             </Button>
           )}
@@ -178,7 +182,7 @@ export default function HeroSection() {
             className="flex items-center text-gray-600"
             style={{ gap: 'var(--space-3)' }}
           >
-            <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" />
+            <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" aria-hidden="true" />
             <span className="text-sm font-medium">Generated in 10-15 seconds</span>
           </div>
         </div>
@@ -186,22 +190,22 @@ export default function HeroSection() {
         {/* Feature Cards Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
           <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <AIBrainIcon className="w-12 h-12 text-primary mb-4" />
+            <AIBrainIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
             <h3 className="text-xl font-bold text-gray-800 mb-2">AI Powered</h3>
             <p className="text-gray-600">Leverage advanced AI to craft perfect resumes and cover letters.</p>
           </div>
           <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <ATSShieldIcon className="w-12 h-12 text-primary mb-4" />
+            <ATSShieldIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
             <h3 className="text-xl font-bold text-gray-800 mb-2">ATS Friendly</h3>
             <p className="text-gray-600">Ensure your resume passes through Applicant Tracking Systems.</p>
           </div>
           <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <SpeedOptimizationIcon className="w-12 h-12 text-primary mb-4" />
+            <SpeedOptimizationIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
             <h3 className="text-xl font-bold text-gray-800 mb-2">Fast & Efficient</h3>
             <p className="text-gray-600">Generate professional documents in minutes, not hours.</p>
           </div>
           <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <MailIcon className="w-12 h-12 text-primary mb-4" />
+            <MailIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
             <h3 className="text-xl font-bold text-gray-800 mb-2">Personalized</h3>
             <p className="text-gray-600">Tailor your application to each specific job description.</p>
           </div>

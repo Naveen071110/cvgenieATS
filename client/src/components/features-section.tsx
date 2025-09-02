@@ -175,28 +175,21 @@ const features = [
 ];
 
 export default function FeaturesSection() {
-  const headerAnimation = useScrollAnimation({ threshold: 0.2 });
+  const scrollFadeInRef = useScrollAnimation();
 
   return (
     <section 
       id="features" 
-      className="overflow-hidden bg-gray-50"
-      style={{ 
-        paddingTop: 'var(--space-12)',
-        paddingBottom: 'var(--space-20)'
-      }}
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-white"
+      aria-labelledby="features-title"
     >
-      <div className="container-mobile">
-        <div
-          ref={headerAnimation.ref}
-          className={`text-center scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
-          style={{ marginBottom: 'var(--space-16)' }}
-        >
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16" ref={scrollFadeInRef}>
           <h2 
-            className="text-section-title text-gray-900"
-            style={{ marginBottom: 'var(--space-4)' }}
+            id="features-title"
+            className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4"
           >
-            Why Choose CVGenie?
+            Powerful Features for Perfect Resumes
           </h2>
           <p className="text-body-large max-w-2xl mx-auto text-gray-600">
             Our AI-powered platform combines cutting-edge technology with professional expertise

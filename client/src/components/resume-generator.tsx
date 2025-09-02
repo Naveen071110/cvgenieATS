@@ -117,24 +117,28 @@ export default function ResumeGenerator() {
     : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
 
   return (
-    <section id="generator" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-            Generate Your Perfect Resume
-          </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Follow these simple steps to create an ATS-optimized resume tailored to your target job
-          </p>
-        </div>
+    <main role="main" aria-labelledby="generator-title">
+      <section id="generator" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h1 id="generator-title" className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+              Generate Your Perfect Resume
+            </h1>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Follow these simple steps to create an ATS-optimized resume tailored to your target job
+            </p>
+          </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-12">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                step >= 1 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
-              }`}>
+        <nav aria-label="Resume generation progress" className="flex items-center justify-center mb-12">
+          <ol className="flex items-center space-x-4" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3}>
+            <li className="flex items-center">
+              <div 
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                  step >= 1 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
+                }`}
+                aria-label={`Step 1: Upload Resume${step >= 1 ? ' (completed)' : ''}`}
+              >
                 1
               </div>
               <span className={`ml-2 font-medium ${
@@ -142,14 +146,17 @@ export default function ResumeGenerator() {
               }`}>
                 Upload Resume
               </span>
-            </div>
+            </li>
             <div className={`w-16 h-1 rounded ${
               step >= 2 ? "bg-primary" : "bg-slate-200"
             }`}></div>
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                step >= 2 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
-              }`}>
+            <li className="flex items-center">
+              <div 
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                  step >= 2 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
+                }`}
+                aria-label={`Step 2: Job Description${step >= 2 ? ' (completed)' : ''}`}
+              >
                 2
               </div>
               <span className={`ml-2 font-medium ${
@@ -157,14 +164,17 @@ export default function ResumeGenerator() {
               }`}>
                 Job Description
               </span>
-            </div>
+            </li>
             <div className={`w-16 h-1 rounded ${
               step >= 3 ? "bg-primary" : "bg-slate-200"
-            }`}></div>
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                step >= 3 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
-              }`}>
+            }`} aria-hidden="true"></div>
+            <li className="flex items-center">
+              <div 
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                  step >= 3 ? "bg-primary text-white" : "bg-slate-200 text-slate-500"
+                }`}
+                aria-label={`Step 3: Generate${step >= 3 ? ' (completed)' : ''}`}
+              >
                 3
               </div>
               <span className={`ml-2 font-medium ${
@@ -172,9 +182,9 @@ export default function ResumeGenerator() {
               }`}>
                 Generate
               </span>
-            </div>
-          </div>
-        </div>
+            </li>
+          </ol>
+        </nav>
 
         {/* Generator Form */}
         <Card className="shadow-xl border border-slate-200">
@@ -233,7 +243,12 @@ export default function ResumeGenerator() {
                     onChange={(e) => setJobDescription(e.target.value)}
                     placeholder="Paste the complete job description here... Include responsibilities, requirements, and company information for best results."
                     className="resize-none"
+                    aria-describedby="job-description-help"
+                    aria-required="true"
                   />
+                  <div id="job-description-help" className="sr-only">
+                    Enter a detailed job description including responsibilities, requirements, and company information for best optimization results. Minimum 50 characters required.
+                  </div>
                 </div>
 
                 <div className="flex justify-between">
@@ -360,6 +375,7 @@ export default function ResumeGenerator() {
           </p>
         </div>
       </div>
-    </section>
+      </section>
+    </main>
   );
 }

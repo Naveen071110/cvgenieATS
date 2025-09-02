@@ -387,6 +387,8 @@ export function FileUpload({
               handleBrowseClick();
             }
           }}
+          aria-live="polite"
+          aria-describedby={validationError ? "file-upload-error" : "file-upload-instructions"}
         >
           <input
             ref={fileInputRef}
@@ -411,14 +413,28 @@ export function FileUpload({
                     : "bg-gray-200"
             )}>
               {validationError ? (
-                <AlertCircle className="w-8 h-8 text-red-500" />
+                <AlertCircle 
+                  className="w-8 h-8 text-red-500" 
+                  aria-hidden="true"
+                  role="img"
+                  aria-label="Error indicator"
+                />
               ) : isValidated ? (
-                <CheckCircle className="w-8 h-8 text-green-500" />
+                <CheckCircle 
+                  className="w-8 h-8 text-green-500"
+                  aria-hidden="true" 
+                  role="img"
+                  aria-label="Success indicator"
+                />
               ) : (
                 <Upload className={cn(
                   "w-8 h-8 transition-colors duration-300",
                   isDragging ? "text-primary" : "text-gray-500"
-                )} />
+                )} 
+                aria-hidden="true"
+                role="img"
+                aria-label="Upload indicator"
+                />
               )}
             </div>
 
@@ -480,13 +496,19 @@ export function FileUpload({
               </p>
             </div>
           )}
+
+          {/* Hidden instructions for screen readers */}
+          <div id="file-upload-instructions" className="sr-only">
+            Upload your resume in PDF format. Maximum file size is {maxSize}MB. 
+            You can drag and drop a file or click to browse for files.
+          </div>
         </div>
       </form>
 
       {/* Real-time Validation Error Message */}
       {validationError && (
         <div 
-          id="resume-error"
+          id="file-upload-error"
           className="bg-red-50 border border-red-200 rounded-lg p-4 error-label"
           role="alert"
           aria-live="assertive"

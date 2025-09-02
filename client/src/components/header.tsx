@@ -48,6 +48,7 @@ export default function Header() {
             paddingLeft: 'var(--space-4)',
             paddingRight: 'var(--space-4)'
           }}
+          aria-label="Main navigation"
         >
           <div 
             className="flex items-center justify-between"
@@ -64,6 +65,8 @@ export default function Header() {
                   width: 'var(--space-8)',
                   height: 'var(--space-8)'
                 }}
+                role="img"
+                aria-label="CVGenie logo"
               >
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
@@ -78,22 +81,25 @@ export default function Header() {
               <Link 
                 to="/generator"
                 className="text-body transition-colors text-gray-600 hover:text-primary"
+                aria-label="Go to Generator page"
               >
                 Generator
               </Link>
               <button 
                 onClick={() => scrollToSection("features")}
                 className="text-body transition-colors text-gray-600 hover:text-primary"
+                aria-label="Scroll to Features section"
               >
                 Features
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
                 className="text-body transition-colors text-gray-600 hover:text-primary"
+                aria-label="Scroll to Pricing section"
               >
                 Pricing
               </button>
-              
+
               {/* Auth Section */}
               {isLoading ? (
                 <div 
@@ -102,6 +108,8 @@ export default function Header() {
                     width: 'var(--space-8)',
                     height: 'var(--space-8)'
                   }}
+                  role="img"
+                  aria-label="Loading user profile"
                 ></div>
               ) : user ? (
                 <div 
@@ -118,12 +126,15 @@ export default function Header() {
                         width: 'var(--space-8)',
                         height: 'var(--space-8)'
                       }}
+                      role="img"
+                      aria-label="User avatar"
                     >
                       <User 
                         style={{ 
                           width: 'var(--space-4)',
                           height: 'var(--space-4)'
                         }}
+                        aria-hidden="true"
                       />
                     </div>
                     <span className="text-sm text-gray-700">{user.email}</span>
@@ -133,6 +144,7 @@ export default function Header() {
                     size="sm"
                     onClick={() => signOut()}
                     className="text-gray-600 hover:text-gray-900"
+                    aria-label="Sign Out"
                   >
                     <LogOut 
                       style={{ 
@@ -140,6 +152,7 @@ export default function Header() {
                         height: 'var(--space-4)',
                         marginRight: 'var(--space-1)'
                       }}
+                      aria-hidden="true"
                     />
                     Sign Out
                   </Button>
@@ -153,6 +166,7 @@ export default function Header() {
                     description: "Access your account to manage your generations."
                   })}
                   className="text-gray-700 border-gray-300 hover:bg-gray-50"
+                  aria-label="Sign In"
                 >
                   <User 
                     style={{ 
@@ -160,6 +174,7 @@ export default function Header() {
                       height: 'var(--space-4)',
                       marginRight: 'var(--space-1)'
                     }}
+                    aria-hidden="true"
                   />
                   Sign In
                 </Button>
@@ -171,7 +186,7 @@ export default function Header() {
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-gray-600 hover:text-gray-900 transition-colors"
-                aria-label="Toggle menu"
+                aria-label="Toggle navigation menu"
               >
                 {isMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -201,6 +216,7 @@ export default function Header() {
                 className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
                 onClick={() => setIsMenuOpen(false)}
+                aria-label="Go to Generator page"
               >
                 Generator
               </Link>
@@ -208,6 +224,7 @@ export default function Header() {
                 onClick={() => scrollToSection("features")}
                 className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
+                aria-label="Scroll to Features section"
               >
                 Features
               </button>
@@ -215,10 +232,11 @@ export default function Header() {
                 onClick={() => scrollToSection("pricing")}
                 className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
+                aria-label="Scroll to Pricing section"
               >
                 Pricing
               </button>
-              
+
               {/* Mobile Auth Section */}
               <div 
                 className="border-t border-gray-200"
@@ -232,6 +250,8 @@ export default function Header() {
                     <div 
                       className="w-full rounded bg-gray-200 animate-pulse"
                       style={{ height: 'var(--space-8)' }}
+                      role="img"
+                      aria-label="Loading user profile"
                     ></div>
                   </div>
                 ) : user ? (
@@ -253,12 +273,15 @@ export default function Header() {
                           width: 'var(--space-8)',
                           height: 'var(--space-8)'
                         }}
+                        role="img"
+                        aria-label="User avatar"
                       >
                         <User 
                           style={{ 
                             width: 'var(--space-4)',
                             height: 'var(--space-4)'
                           }}
+                          aria-hidden="true"
                         />
                       </div>
                       <span className="text-sm text-gray-700">{user.email}</span>
@@ -271,6 +294,7 @@ export default function Header() {
                         setIsMenuOpen(false);
                       }}
                       className="w-full justify-start text-gray-600 hover:text-gray-900"
+                      aria-label="Sign Out"
                     >
                       <LogOut 
                         style={{ 
@@ -278,6 +302,7 @@ export default function Header() {
                           height: 'var(--space-4)',
                           marginRight: 'var(--space-2)'
                         }}
+                        aria-hidden="true"
                       />
                       Sign Out
                     </Button>
@@ -295,6 +320,7 @@ export default function Header() {
                         setIsMenuOpen(false);
                       }}
                       className="w-full justify-start text-gray-700 border-gray-300 hover:bg-gray-50"
+                      aria-label="Sign In"
                     >
                       <User 
                         style={{ 
@@ -302,6 +328,7 @@ export default function Header() {
                           height: 'var(--space-4)',
                           marginRight: 'var(--space-2)'
                         }}
+                        aria-hidden="true"
                       />
                       Sign In
                     </Button>
