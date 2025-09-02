@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight, CheckCircle, Clock, Users, FileText, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { StatsWidget } from "./stats-widget";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
@@ -52,13 +53,7 @@ export default function HeroSection() {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Dummy data for stats
-  const stats = [
-    { value: '10k+', label: 'Resumes Generated' },
-    { value: '98%', label: 'ATS Optimized' },
-    { value: '500+', label: 'Happy Users' },
-    { value: 'Instant', label: 'AI Insights' },
-  ];
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -217,21 +212,7 @@ export default function HeroSection() {
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
             Trusted by Thousands
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-              {stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 transition-all duration-300 hover:bg-white/15 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
-                >
-                  <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-white/80 text-sm">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
+          <StatsWidget />
         </div>
       </div>
     </section>

@@ -9,6 +9,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
+import { TrustIndicatorsSection } from "@/components/trust-indicators-section";
 
 export default function Home() {
   return (
@@ -50,13 +51,14 @@ export default function Home() {
                   </div>
                 </div>
 
-                
+
               </CardContent>
             </Card>
           </div>
         </section>
 
         <FeaturesSection />
+        <TrustIndicatorsSection />
         <TestimonialsSection />
         <PricingSection />
         <FAQSection />
