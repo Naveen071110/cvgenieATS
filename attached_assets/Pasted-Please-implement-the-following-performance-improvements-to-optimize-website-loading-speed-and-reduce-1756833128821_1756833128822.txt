@@ -1,0 +1,43 @@
+Please implement the following performance improvements to optimize website loading speed and reduce server response times:
+
+Compress all images using modern formats such as WebP or AVIF to reduce file sizes without quality loss. Convert existing images accordingly.
+
+Minify and bundle all JavaScript and CSS files into single optimized files to reduce HTTP requests and improve caching. Ensure the bundling process produces files like app.min.js and app.min.css.
+
+Update all script tags in HTML to use defer or async loading attributes to avoid blocking page rendering. For example:
+
+xml
+<script src="/static/app.min.js" defer></script>
+On the backend (Node.js with Express), enable HTTP response compression middleware to reduce payload size by using the compression package:
+
+js
+const compression = require('compression');
+app.use(compression());
+Ensure this middleware is applied early in the middleware stack.
+
+Serve all static assets through a Content Delivery Network (CDN) configured for caching and global distribution.
+
+Please confirm after each step that the build runs correctly and the site loads faster while maintaining functionality.
+
+This prompt provides clear technical tasks and example code snippets for effective performance optimization.Here is a clear, detailed prompt to provide to the Replit assistant for implementing the performance optimizations:
+
+Please implement the following performance improvements to optimize website loading speed and reduce server response times:
+
+Compress all images using modern formats such as WebP or AVIF to reduce file sizes without quality loss. Convert existing images accordingly.
+
+Minify and bundle all JavaScript and CSS files into single optimized files to reduce HTTP requests and improve caching. Ensure the bundling process produces files like app.min.js and app.min.css.
+
+Update all script tags in HTML to use defer or async loading attributes to avoid blocking page rendering. For example:
+
+xml
+<script src="/static/app.min.js" defer></script>
+On the backend (Node.js with Express), enable HTTP response compression middleware to reduce payload size by using the compression package:
+
+js
+const compression = require('compression');
+app.use(compression());
+Ensure this middleware is applied early in the middleware stack.
+
+Serve all static assets through a Content Delivery Network (CDN) configured for caching and global distribution.
+
+Please confirm after each step that the build runs correctly and the site loads faster while maintaining functionality.
