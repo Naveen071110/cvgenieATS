@@ -998,6 +998,8 @@ svg {
   position: relative;
   overflow: hidden;
   transition: all 0.2s ease-in-out;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .btn-enhanced::after {
@@ -1016,6 +1018,183 @@ svg {
 .btn-enhanced:hover::after {
   width: 300px;
   height: 300px;
+}
+
+/* Mobile-first responsive utilities */
+
+/* Touch targets - ensure all interactive elements meet 44px minimum */
+button,
+a,
+.interactive-element,
+.clickable,
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile navigation and header adjustments */
+.mobile-nav-item {
+  padding: 16px 12px;
+  min-height: 48px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Form elements responsive sizing */
+input,
+textarea,
+select {
+  min-height: 44px;
+  padding: 12px 16px;
+  font-size: 1rem; /* Prevent zoom on iOS */
+  border-radius: var(--space-2);
+}
+
+/* Mobile-first spacing adjustments */
+.section-padding {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+.content-spacing {
+  margin-bottom: var(--space-8);
+}
+
+/* Mobile breakpoint: 375px (small phones) */
+@media (min-width: 375px) {
+  .text-hero {
+    font-size: 2.25rem; /* 36px */
+  }
+
+  .section-padding {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+
+  .content-spacing {
+    margin-bottom: var(--space-10);
+  }
+
+  input,
+  textarea,
+  select {
+    padding: 14px 18px;
+  }
+}
+
+/* Portrait tablets/small screens: 600px */
+@media (min-width: 600px) {
+  .section-padding {
+    padding-top: var(--space-20);
+    padding-bottom: var(--space-20);
+  }
+
+  .content-spacing {
+    margin-bottom: var(--space-12);
+  }
+
+  .mobile-nav-item {
+    padding: 18px 16px;
+    font-size: 1.125rem;
+  }
+
+  /* Grid layouts become more spacious */
+  .grid-responsive {
+    gap: var(--space-6);
+  }
+
+  /* Better hover effects on larger screens */
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Tablets/smaller desktops: 900px */
+@media (min-width: 900px) {
+  .section-padding {
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
+  }
+
+  .content-spacing {
+    margin-bottom: var(--space-16);
+  }
+
+  .mobile-nav-item {
+    padding: 20px 18px;
+    font-size: 1.25rem;
+  }
+
+  .grid-responsive {
+    gap: var(--space-8);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-6px);
+  }
+
+  /* More pronounced hover effects on desktop */
+  .feature-card:hover,
+  .interactive-card:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+/* Large screens optimizations */
+@media (min-width: 1200px) {
+  .section-padding {
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
+  }
+
+  .grid-responsive {
+    gap: var(--space-10);
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  .feature-card:hover,
+  .interactive-card:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .button-primary:hover,
+  .button-success:hover,
+  .button-warning:hover {
+    transform: none;
+    box-shadow: initial;
+  }
+
+  /* Increase touch targets further on touch devices */
+  button,
+  a,
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 16px;
+  }
+
+  /* Larger tap areas for small interactive elements */
+  .icon-button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Optimize for retina displays */
+  border-width: 0.5px;
+
+  .feature-card,
+  .interactive-card {
+    box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.08), 0 3px 5px -1px rgba(0, 0, 0, 0.04);
+  }
 }
 
 /* Loading states for forms */
