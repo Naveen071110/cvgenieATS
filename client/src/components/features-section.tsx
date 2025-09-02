@@ -1,9 +1,15 @@
-import { Zap, CheckCircle, Mail, Download } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+
+// Import custom SVG icons
+import AtsOptimizationIcon from "@/assets/icons/ats-optimization.svg?react";
+import AiPoweredIcon from "@/assets/icons/ai-powered.svg?react";
+import CoverLetterIcon from "@/assets/icons/cover-letter.svg?react";
+import MultiFormatIcon from "@/assets/icons/multi-format.svg?react";
 
 const features = [
   {
-    icon: Zap,
+    icon: AiPoweredIcon,
     title: "One-Click Tailoring",
     description: "Upload your resume and paste any job description. Our AI instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
     benefits: [
@@ -38,7 +44,7 @@ const features = [
     reverse: false
   },
   {
-    icon: CheckCircle,
+    icon: AtsOptimizationIcon,
     title: "ATS-Optimized Formatting",
     description: "Most resumes get rejected by Applicant Tracking Systems before human eyes see them. Our AI ensures your resume passes through ATS filters with proper formatting, structure, and keyword placement.",
     benefits: [
@@ -78,7 +84,7 @@ const features = [
     reverse: true
   },
   {
-    icon: Mail,
+    icon: CoverLetterIcon,
     title: "AI-Personalized Cover Letters",
     description: "Don't send generic cover letters. Our AI crafts personalized cover letters that connect your experience directly to the company's needs, mentioning specific requirements and showing genuine interest.",
     benefits: [
@@ -111,7 +117,7 @@ const features = [
     reverse: false
   },
   {
-    icon: Download,
+    icon: MultiFormatIcon,
     title: "Multiple Export Formats",
     description: "Get your documents in the format you need. Whether you're applying online, emailing directly, or printing for in-person interviews, we've got you covered with multiple professional formats.",
     benefits: [
@@ -203,7 +209,7 @@ export default function FeaturesSection() {
             >
               <div className={feature.reverse ? 'lg:col-start-2' : ''}>
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer">
-                  <feature.icon className="w-8 h-8 text-primary transition-transform duration-300 group-hover:scale-110" />
+                  <feature.icon className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
                 <p className="text-lg text-slate-600 mb-6 leading-relaxed">

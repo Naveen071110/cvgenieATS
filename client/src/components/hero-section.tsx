@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import SpeedOptimizationIcon from "@/assets/icons/speed-optimization.svg?react";
 
 const rotatingTexts = ['Any Job', 'Tech Roles', 'Creative Positions', 'Leadership Roles', 'Remote Work'];
 
@@ -75,15 +76,21 @@ export default function HeroSection() {
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
-        <Link to="/generator">
-          <Button
-            size="lg"
-            variant="accent"
-            className="cta-button cta-pulse text-lg px-8 py-4"
-          >
-            Start Generating Now
-          </Button>
-        </Link>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
+          <Link to="/generator">
+            <Button
+              size="lg"
+              variant="accent"
+              className="cta-button cta-pulse text-lg px-8 py-4"
+            >
+              Start Generating Now
+            </Button>
+          </Link>
+          <div className="flex items-center gap-3 text-slate-600">
+            <SpeedOptimizationIcon className="w-8 h-8" />
+            <span className="text-sm font-medium">Generated in 10-15 seconds</span>
+          </div>
+        </div>
 
       </div>
     </section>

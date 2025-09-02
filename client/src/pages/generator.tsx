@@ -10,6 +10,9 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import Lottie from "lottie-react";
+import DocumentUploadIcon from '@/assets/icons/document-upload.svg?react';
+import AtsOptimizationIcon from '@/assets/icons/ats-optimization.svg?react';
+import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
 
 // Animation data for genie loading
 const genieAnimation = {
@@ -341,7 +344,7 @@ export default function Generator() {
                         </div>
                       ) : (
                         <div>
-                          <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                          <DocumentUploadIcon className="w-12 h-12 mx-auto mb-4" />
                           <p className="text-lg font-medium text-slate-700 mb-2">Upload your resume</p>
                           <p className="text-slate-500 mb-4">Supported formats: PDF, DOCX (Word), TXT</p>
                           <Button
@@ -567,7 +570,7 @@ export default function Generator() {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center">
-                      <FileText className="w-5 h-5 text-blue-500 mr-2" />
+                      <AtsOptimizationIcon className="w-5 h-5 text-blue-500 mr-2" />
                       Optimized Resume
                     </CardTitle>
                     <div className="flex gap-2">
@@ -614,8 +617,8 @@ export default function Generator() {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center">
-                      <Mail className="w-5 h-5 text-green-500 mr-2" />
-                      Cover Letter
+                      <CoverLetterIcon className="w-5 h-5 mr-2" />
+                      Personalized Cover Letter
                     </CardTitle>
                     <div className="flex gap-2">
                       <Button
