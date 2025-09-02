@@ -1,0 +1,65 @@
+Task:
+Add credibility and trust indicators to the CVGenie app by implementing a real-time statistics widget, trust badges, and a company logos section.
+
+Implementation Details:
+
+Real-time Statistics Widget
+
+Create a React component that displays dynamic user statistics with animated counters:
+
+jsx
+const StatsWidget = () => {
+  return (
+    <div className="stats-widget flex gap-8 justify-center">
+      <div className="stat text-center">
+        <span className="number text-4xl font-semibold" data-counter="12847">12,847</span>
+        <span className="label block mt-1 text-gray-600">Resumes Generated Today</span>
+      </div>
+      <div className="stat text-center">
+        <span className="number text-4xl font-semibold" data-counter="94">94%</span>
+        <span className="label block mt-1 text-gray-600">ATS Pass Rate</span>
+      </div>
+    </div>
+  );
+};
+Animate the numbers briefly on page load for enhanced user engagement.
+
+Ensure the widget is responsive and visually consistent with the app design.
+
+Trust Badges
+
+Add a section to prominently display the following badges/icons, either as images or SVGs:
+
+SSL certificate badge
+
+Privacy policy compliance badge
+
+GDPR compliance badge
+
+No data sharing guarantee badge
+
+Secure payment processing badge (e.g., Stripe logo)
+
+Arrange badges horizontally with consistent spacing and tooltips explaining each.
+
+Company Logos Section
+
+Implement a horizontal marquee or grid displaying logos of major companies where CVGenie users have been hired, or well-known industry-standard companies.
+
+Add a headline text:
+"Trusted by professionals at:"
+
+Ensure logos scale responsively and include alt text for accessibility.
+
+Additional Notes:
+
+Use consistent brand colors and styling for all elements.
+
+Make sure accessibility best practices are followed (aria-labels, alt text).
+
+The trust badges and company logos should link to their respective verification or policy pages where applicable.
+
+Design spacing and layout to complement the existing page style without overwhelming content.
+
+Goal:
+Increase user trust and credibility by visibly demonstrating CVGenie’s reliability and industry acceptance through dynamic stats, official trust badges, and reputable company logos.
