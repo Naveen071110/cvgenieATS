@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, CheckCircle, Clock, Users } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, Users, FileText, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
