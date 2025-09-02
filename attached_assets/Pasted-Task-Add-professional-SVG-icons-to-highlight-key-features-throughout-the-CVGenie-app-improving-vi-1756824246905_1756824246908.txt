@@ -1,0 +1,71 @@
+Task:
+Add professional SVG icons to highlight key features throughout the CVGenie app, improving visual appeal and breaking up text-heavy content. Where SVG icons already exist, assess each card and decide whether to replace the icon with the new design or leave it as is for visual consistency.
+
+Instructions:
+
+Required Icons
+Add or update the following icons as SVG files with these specifications:
+
+Icon Name	Purpose
+AI Brain Icon	Represent AI-powered features
+ATS Shield Icon	Represent ATS optimization
+Document Transform Icon	Represent resume tailoring
+Multi-format Export Icon	Represent multiple export formats
+Analytics Dashboard Icon	Represent insights and analytics
+Security Lock Icon	Represent privacy and security
+Speed/Lightning Icon	Represent quick generation
+Target/Bullseye Icon	Represent precision matching
+Technical Specifications for SVGs
+
+Base dimensions: 24x24 pixels
+
+Style: Outline style with 2px stroke width
+
+Colors: Use CSS custom properties for stroke color, e.g., stroke="var(--color-primary-600)"
+
+Optimize SVGs for minimal paths and clean structure
+
+Provide SVG code snippets using the below format:
+
+text
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="..."/>
+</svg>
+Implementation Conditions
+
+For each location/card where an icon is to be placed:
+
+If there is no existing SVG icon, insert the corresponding new SVG icon.
+
+If there is an existing SVG icon, review its style and relevance:
+
+If the existing icon matches the brand and is visually consistent, leave it as is.
+
+If the existing icon is generic, outdated, or low quality, replace it with the new SVG icon maintaining brand consistency.
+
+Component Integration
+
+Update the React component(s) rendering these feature cards to import/use the new SVG icons where replacements are required.
+
+Use CSS variables for icon stroke color so colors adapt easily with theme changes.
+
+Ensure icons have proper aria-label or role="img" and descriptive title or desc tags for accessibility.
+
+Visual Consistency
+
+Maintain uniform spacing between icons and text in cards.
+
+Align icons vertically with text baseline.
+
+Test responsiveness of icons on various screen sizes.
+
+Testing
+
+Verify all new icons appear correctly across all major browsers.
+
+Validate that replaced icons appear crisp and consistent with brand colors.
+
+Confirm no layout shifts occur due to icon size changes.
+
+Goal:
+Boost app professionalism by introducing a cohesive set of custom SVG icons that enhance clarity, user understanding, and visual appeal, while respecting existing design assets when appropriate.
