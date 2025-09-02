@@ -188,11 +188,18 @@ export default function ResumeGenerator() {
                 </div>
 
                 <FileUpload
-                  onFileSelect={(file) => setResumeFile(file)}
-                  onFileRemove={() => setResumeFile(null)}
+                  onFileSelect={(file) => {
+                    setResumeFile(file);
+                    setStep(2);
+                  }}
+                  onFileRemove={() => {
+                    setResumeFile(null);
+                    setStep(1);
+                  }}
                   selectedFile={resumeFile}
-                  acceptedTypes={['.pdf', '.doc', '.docx']}
-                  maxSize={10}
+                  error={""} // Assuming FileUpload handles its own error display
+                  enableSteps={true}
+                  className="mb-6"
                 />
 
                 <div className="text-center">

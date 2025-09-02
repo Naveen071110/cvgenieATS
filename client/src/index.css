@@ -1184,6 +1184,17 @@ select {
     min-width: 48px;
     padding: 12px;
   }
+
+  /* File upload touch optimizations */
+  .upload-zone {
+    min-height: 200px;
+    padding: 24px 16px;
+  }
+
+  /* Step progress indicator mobile adjustments */
+  .step-indicator {
+    padding: 8px;
+  }
 }
 
 /* High DPI displays */
@@ -1195,6 +1206,102 @@ select {
   .interactive-card {
     box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.08), 0 3px 5px -1px rgba(0, 0, 0, 0.04);
   }
+}
+
+/* Error label styling for form validation */
+.error-label {
+  display: block;
+  color: #dc2626; /* red-600 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  line-height: 1.25rem;
+  margin-top: 0.5rem;
+  animation: fadeInError 0.3s ease-in-out;
+}
+
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form validation states */
+.form-field-error {
+  border-color: #dc2626 !important; /* red-600 */
+  background-color: #fef2f2; /* red-50 */
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-field-success {
+  border-color: #059669 !important; /* green-600 */
+  background-color: #f0fdf4; /* green-50 */
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+/* Validation icon animations */
+.validation-icon-enter {
+  animation: validationIconEnter 0.3s ease-out;
+}
+
+@keyframes validationIconEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Progressive form step indicators */
+.step-indicator {
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.step-indicator-line {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 100%;
+  height: 2px;
+  background-color: #e5e7eb; /* gray-200 */
+  transform: translateY(-50%);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.step-indicator-line.completed {
+  background-color: var(--primary-blue);
+}
+
+/* Form accessibility improvements */
+.form-field[aria-invalid="true"] {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-field[aria-invalid="false"] {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Loading states for forms */

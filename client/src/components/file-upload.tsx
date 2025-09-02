@@ -1,6 +1,6 @@
 
 import { useState, useRef, useCallback } from 'react';
-import { Upload, FileText, AlertCircle, CheckCircle, X } from 'lucide-react';
+import { Upload, FileText, AlertCircle, CheckCircle, X, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -16,10 +16,16 @@ interface FileUploadProps {
   error?: string;
   selectedFile?: File | null;
   className?: string;
+  enableSteps?: boolean;
 }
 
-const defaultAcceptedTypes = ['.pdf', '.doc', '.docx', '.txt'];
+const defaultAcceptedTypes = ['.pdf'];
 const defaultMaxSize = 10; // 10MB
+
+interface ValidationError {
+  type: 'file-type' | 'file-size' | 'file-missing';
+  message: string;
+}
 
 export function FileUpload({
   onFileSelect,
@@ -31,34 +37,98 @@ export function FileUpload({
   uploadStage = '',
   error = '',
   selectedFile = null,
-  className
+  className,
+  enableSteps = true
 }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [validationError, setValidationError] = useState<ValidationError | null>(null);
+  const [isValidated, setIsValidated] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateFile = (file: File): string | null => {
-    // Check file type
+  const totalSteps = enableSteps ? 3 : 1;
+  const steps = [
+    { id: 1, title: 'Select Resume', description: 'Upload your PDF resume file' },
+    { id: 2, title: 'Validate File', description: 'Verify file format and content' },
+    { id: 3, title: 'Ready to Process', description: 'Your resume is ready for optimization' }
+  ];
+
+  const validateFile = (file: File): ValidationError | null => {
+    // Check if file exists
+    if (!file) {
+      return {
+        type: 'file-missing',
+        message: 'Please select a file to upload.'
+      };
+    }
+
+    // Check MIME type for PDF (primary validation)
+    if (file.type !== 'application/pdf') {
+      return {
+        type: 'file-type',
+        message: 'Please upload a PDF file. Only PDF format is supported.'
+      };
+    }
+
+    // Fallback: Check file extension
     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-    if (!acceptedTypes.includes(fileExtension)) {
-      return `File type not supported. Please upload: ${acceptedTypes.join(', ')}`;
+    if (fileExtension !== '.pdf') {
+      return {
+        type: 'file-type',
+        message: 'Please upload a PDF file. File extension must be .pdf'
+      };
     }
 
     // Check file size
     const fileSizeMB = file.size / (1024 * 1024);
     if (fileSizeMB > maxSize) {
-      return `File size too large. Maximum size is ${maxSize}MB`;
+      return {
+        type: 'file-size',
+        message: `File size too large. Maximum size is ${maxSize}MB. Your file is ${fileSizeMB.toFixed(1)}MB.`
+      };
+    }
+
+    // Check minimum file size (empty files)
+    if (file.size < 1024) { // Less than 1KB
+      return {
+        type: 'file-size',
+        message: 'File appears to be empty or corrupted. Please select a valid PDF file.'
+      };
     }
 
     return null;
   };
 
-  const handleFileSelection = (file: File) => {
-    const validationError = validateFile(file);
-    if (validationError) {
+  const clearValidationError = () => {
+    setValidationError(null);
+  };
+
+  const handleRealTimeValidation = (file: File | null) => {
+    if (!file) {
+      clearValidationError();
+      setIsValidated(false);
       return;
     }
-    onFileSelect(file);
+
+    const error = validateFile(file);
+    setValidationError(error);
+    setIsValidated(!error);
+
+    // Auto-advance to next step if validation passes and steps are enabled
+    if (!error && enableSteps && currentStep === 1) {
+      setTimeout(() => setCurrentStep(2), 500);
+      setTimeout(() => setCurrentStep(3), 1500);
+    }
+  };
+
+  const handleFileSelection = (file: File) => {
+    handleRealTimeValidation(file);
+    
+    const error = validateFile(file);
+    if (!error) {
+      onFileSelect(file);
+    }
   };
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
@@ -103,6 +173,8 @@ export function FileUpload({
     const files = e.target.files;
     if (files && files.length > 0) {
       handleFileSelection(files[0]);
+    } else {
+      handleRealTimeValidation(null);
     }
   };
 
@@ -114,7 +186,16 @@ export function FileUpload({
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    clearValidationError();
+    setIsValidated(false);
+    setCurrentStep(1);
     onFileRemove?.();
+  };
+
+  const handleStepNavigation = (step: number) => {
+    if (step >= 1 && step <= totalSteps) {
+      setCurrentStep(step);
+    }
   };
 
   const getUploadStageMessage = () => {
@@ -141,9 +222,69 @@ export function FileUpload({
     return 'Almost done...';
   };
 
+  // Step Progress Indicator
+  const StepProgressIndicator = () => {
+    if (!enableSteps) return null;
+
+    return (
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          {steps.map((step, index) => (
+            <div key={step.id} className="flex items-center flex-1">
+              <div className="flex flex-col items-center">
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300",
+                    currentStep >= step.id
+                      ? "bg-primary text-white shadow-lg"
+                      : "bg-gray-200 text-gray-500"
+                  )}
+                  role="progressbar"
+                  aria-valuenow={currentStep}
+                  aria-valuemin={1}
+                  aria-valuemax={totalSteps}
+                  aria-label={`Step ${step.id} of ${totalSteps}: ${step.title}`}
+                >
+                  {currentStep > step.id ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    step.id
+                  )}
+                </div>
+                <div className="mt-2 text-center">
+                  <p
+                    className={cn(
+                      "text-xs font-medium transition-colors duration-300",
+                      currentStep >= step.id ? "text-primary" : "text-gray-500"
+                    )}
+                  >
+                    {step.title}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1 max-w-20">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+              {index < steps.length - 1 && (
+                <div
+                  className={cn(
+                    "flex-1 h-0.5 mx-4 transition-colors duration-300",
+                    currentStep > step.id ? "bg-primary" : "bg-gray-200"
+                  )}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
+      </div>
+    );
+  };
+
   if (selectedFile && !isUploading) {
     return (
       <div className={cn("space-y-4", className)}>
+        <StepProgressIndicator />
         <div className="border border-green-200 bg-green-50 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -153,7 +294,7 @@ export function FileUpload({
               <div>
                 <p className="font-medium text-green-900">{selectedFile.name}</p>
                 <p className="text-sm text-green-600">
-                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF Format
                 </p>
               </div>
             </div>
@@ -164,11 +305,19 @@ export function FileUpload({
                 size="sm"
                 onClick={handleRemoveFile}
                 className="text-green-600 hover:text-green-800 hover:bg-green-100"
+                aria-label="Remove selected file"
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
+          {enableSteps && currentStep === 3 && (
+            <div className="mt-4 pt-4 border-t border-green-200">
+              <p className="text-sm text-green-700 font-medium">
+                ✓ Resume validated and ready for optimization
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -177,6 +326,7 @@ export function FileUpload({
   if (isUploading) {
     return (
       <div className={cn("space-y-6", className)}>
+        <StepProgressIndicator />
         <div className="border border-blue-200 bg-blue-50 rounded-lg p-6">
           <div className="text-center space-y-4">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto">
@@ -209,108 +359,153 @@ export function FileUpload({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div
-        className={cn(
-          "relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 cursor-pointer",
-          "hover:border-primary/50 hover:bg-primary/5",
-          isDragging 
-            ? "border-primary bg-primary/10 scale-105" 
-            : "border-gray-300 bg-gray-50",
-          error && "border-red-300 bg-red-50"
-        )}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onClick={handleBrowseClick}
-        role="button"
-        tabIndex={0}
-        aria-label="Upload resume file"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleBrowseClick();
-          }
-        }}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept={acceptedTypes.join(',')}
-          onChange={handleFileInputChange}
-          className="hidden"
-          aria-hidden="true"
-        />
+      <StepProgressIndicator />
+      
+      <form id="resume-upload-form" noValidate>
+        <div
+          className={cn(
+            "relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 cursor-pointer",
+            "hover:border-primary/50 hover:bg-primary/5",
+            isDragging 
+              ? "border-primary bg-primary/10 scale-105" 
+              : "border-gray-300 bg-gray-50",
+            validationError && "border-red-300 bg-red-50",
+            isValidated && "border-green-300 bg-green-50"
+          )}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onClick={handleBrowseClick}
+          role="button"
+          tabIndex={0}
+          aria-label="Upload resume file"
+          aria-describedby={validationError ? "resume-error" : undefined}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleBrowseClick();
+            }
+          }}
+        >
+          <input
+            ref={fileInputRef}
+            id="resume"
+            type="file"
+            accept="application/pdf,.pdf"
+            onChange={handleFileInputChange}
+            className="hidden"
+            aria-hidden="true"
+            required
+          />
 
         <div className="space-y-4">
-          <div className={cn(
-            "w-16 h-16 mx-auto rounded-lg flex items-center justify-center transition-all duration-300",
-            isDragging 
-              ? "bg-primary/20 scale-110" 
-              : "bg-gray-200",
-            error && "bg-red-100"
-          )}>
-            {error ? (
-              <AlertCircle className="w-8 h-8 text-red-500" />
-            ) : (
-              <Upload className={cn(
-                "w-8 h-8 transition-colors duration-300",
-                isDragging ? "text-primary" : "text-gray-500"
-              )} />
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <h3 className={cn(
-              "text-lg font-semibold transition-colors duration-300",
-              isDragging ? "text-primary" : "text-gray-900",
-              error && "text-red-600"
+            <div className={cn(
+              "w-16 h-16 mx-auto rounded-lg flex items-center justify-center transition-all duration-300",
+              isDragging 
+                ? "bg-primary/20 scale-110" 
+                : isValidated
+                  ? "bg-green-100"
+                  : validationError 
+                    ? "bg-red-100"
+                    : "bg-gray-200"
             )}>
-              {isDragging 
-                ? "Drop your resume here" 
-                : error 
-                  ? "Upload Error"
-                  : "Drag & drop your resume here"
-              }
-            </h3>
-            
-            {!error && (
-              <p className="text-sm text-gray-600">
-                or{' '}
-                <span className="font-medium text-primary hover:text-primary/80">
-                  browse files
-                </span>
-              </p>
+              {validationError ? (
+                <AlertCircle className="w-8 h-8 text-red-500" />
+              ) : isValidated ? (
+                <CheckCircle className="w-8 h-8 text-green-500" />
+              ) : (
+                <Upload className={cn(
+                  "w-8 h-8 transition-colors duration-300",
+                  isDragging ? "text-primary" : "text-gray-500"
+                )} />
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <h3 className={cn(
+                "text-lg font-semibold transition-colors duration-300",
+                isDragging ? "text-primary" : 
+                isValidated ? "text-green-600" :
+                validationError ? "text-red-600" : "text-gray-900"
+              )}>
+                {isDragging 
+                  ? "Drop your PDF resume here" 
+                  : isValidated
+                    ? "PDF Resume Ready"
+                    : validationError 
+                      ? "Invalid File"
+                      : enableSteps && currentStep === 1
+                        ? "Step 1: Select your PDF resume"
+                        : "Upload your PDF resume"
+                }
+              </h3>
+              
+              {!validationError && !isValidated && (
+                <p className="text-sm text-gray-600">
+                  or{' '}
+                  <span className="font-medium text-primary hover:text-primary/80">
+                    browse files
+                  </span>
+                </p>
+              )}
+
+              {isValidated && (
+                <p className="text-sm text-green-600 font-medium">
+                  ✓ Valid PDF file selected
+                </p>
+              )}
+            </div>
+
+            {!isDragging && !validationError && !isValidated && (
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-4 touch-target"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleBrowseClick();
+                }}
+              >
+                Choose PDF File
+              </Button>
             )}
           </div>
-
-          {!isDragging && !error && (
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-4"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleBrowseClick();
-              }}
-            >
-              Choose File
-            </Button>
-          )}
-        </div>
 
         {/* File Requirements */}
-        {!error && (
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500">
-              Supports: {acceptedTypes.join(', ')} • Max size: {maxSize}MB
-            </p>
-          </div>
-        )}
-      </div>
+          {!validationError && !isValidated && (
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <p className="text-xs text-gray-500">
+                Supports: PDF files only • Max size: {maxSize}MB
+              </p>
+            </div>
+          )}
+        </div>
+      </form>
 
-      {/* Error Message */}
-      {error && (
+      {/* Real-time Validation Error Message */}
+      {validationError && (
+        <div 
+          id="resume-error"
+          className="bg-red-50 border border-red-200 rounded-lg p-4 error-label"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="flex items-center space-x-2">
+            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-red-700">{validationError.message}</p>
+              <p className="text-xs text-red-600 mt-1">
+                Please select a valid PDF file to continue.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legacy Error Message Support */}
+      {error && !validationError && (
         <div 
           className="bg-red-50 border border-red-200 rounded-lg p-4"
           role="alert"
@@ -323,11 +518,41 @@ export function FileUpload({
         </div>
       )}
 
+      {/* Step Navigation (if applicable) */}
+      {enableSteps && currentStep > 1 && !isUploading && (
+        <div className="flex justify-between items-center pt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleStepNavigation(currentStep - 1)}
+            className="touch-target"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Previous
+          </Button>
+          {currentStep < totalSteps && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleStepNavigation(currentStep + 1)}
+              disabled={!isValidated}
+              className="touch-target"
+            >
+              Next
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          )}
+        </div>
+      )}
+
       {/* Success State Hint */}
-      {!selectedFile && !error && !isUploading && (
+      {!selectedFile && !validationError && !error && !isUploading && (
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            Upload your resume to get started with AI-powered optimization
+            {enableSteps 
+              ? "Follow the steps above to upload and validate your PDF resume"
+              : "Upload your PDF resume to get started with AI-powered optimization"
+            }
           </p>
         </div>
       )}
