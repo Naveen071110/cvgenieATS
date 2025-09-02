@@ -1,0 +1,112 @@
+Upgrade the typography system throughout the CVGenie app to establish clear visual hierarchy and a modern, professional feel using the Inter font family.
+
+Instructions:
+
+Font Integration
+
+Import Inter font weights (400–800) via Google Fonts in the main CSS or root layout.
+
+Remove other font imports if they conflict.
+
+CSS Variables
+
+In your global CSS, define the following variables:
+
+css
+:root {
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  --font-size-5xl: 48px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+}
+Apply Typography System
+
+Update components and main sections to use these standards:
+
+Main Headline:
+
+font-family: Inter;
+
+font-size: var(--font-size-5xl);
+
+font-weight: var(--font-weight-bold);
+
+line-height: 1.2;
+
+letter-spacing: -0.025em;
+
+Section Headers:
+
+font-family: Inter;
+
+font-size: var(--font-size-3xl);
+
+font-weight: var(--font-weight-semibold);
+
+line-height: var(--leading-tight);
+
+Subheaders:
+
+font-family: Inter;
+
+font-size: var(--font-size-2xl);
+
+font-weight: var(--font-weight-medium);
+
+line-height: var(--leading-snug);
+
+Body Text:
+
+font-family: Inter;
+
+font-size: var(--font-size-base);
+
+font-weight: var(--font-weight-normal);
+
+line-height: var(--leading-normal);
+
+Small Text:
+
+font-family: Inter;
+
+font-size: var(--font-size-sm);
+
+font-weight: var(--font-weight-medium);
+
+line-height: var(--leading-normal);
+
+Review All Pages
+
+Scan for headings, body text, and captions that do not follow the hierarchy and update.
+
+Use Tailwind's config or custom classes if preferred for consistency.
+
+Accessibility
+
+Ensure text color contrast meets WCAG standards.
+
+Check font size and weight for readability on mobile and desktop.
+
+Testing
+
+After implementation, test all main pages (Home, Generator, Pricing, FAQ) to confirm hierarchy and clarity improve and there are no regressions.
+
+Goal:
+Create a clear visual hierarchy and a modern, premium look by standardizing typography with the Inter font across the app.
