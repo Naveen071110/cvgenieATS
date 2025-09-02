@@ -1,9 +1,15 @@
 import { CheckCircle, Mail, Download, Zap, Target, FileText, Package } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import AIBrainIcon from "../assets/icons/ai-brain.svg?react"
+import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
+import DocumentTransformIcon from "../assets/icons/document-transform.svg?react"
+import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
+import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
+import TargetBullseyeIcon from "../assets/icons/target-bullseye.svg?react"
 
 const features = [
   {
-    icon: Zap,
+    icon: AIBrainIcon,
     title: "One-Click Tailoring",
     description: "Upload your resume and paste any job description. Our AI instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
     benefits: [
@@ -38,7 +44,7 @@ const features = [
     reverse: false
   },
   {
-    icon: Target,
+    icon: ATSShieldIcon,
     title: "ATS-Optimized Formatting",
     description: "Most resumes get rejected by Applicant Tracking Systems before human eyes see them. Our AI ensures your resume passes through ATS filters with proper formatting, structure, and keyword placement.",
     benefits: [
@@ -111,7 +117,7 @@ const features = [
     reverse: false
   },
   {
-    icon: Package,
+    icon: MultiFormatExportIcon,
     title: "Multiple Export Formats",
     description: "Get your documents in the format you need. Whether you're applying online, emailing directly, or printing for in-person interviews, we've got you covered with multiple professional formats.",
     benefits: [

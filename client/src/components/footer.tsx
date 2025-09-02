@@ -1,5 +1,6 @@
 import { Twitter, Linkedin, Github } from "lucide-react";
-import { Link } from "wouter";
+import { Link } from "wouter"
+import SecurityLockIcon from "../assets/icons/security-lock.svg?react";
 
 export default function Footer() {
   return (

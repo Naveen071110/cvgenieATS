@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, Zap, Target, FileText, Package } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
+import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
+import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
+import MailIcon from "../assets/icons/mail.svg?react";
 
 const rotatingTexts = ['Any Job', 'Tech Roles', 'Creative Positions', 'Leadership Roles', 'Remote Work'];
 

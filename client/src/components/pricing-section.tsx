@@ -1,4 +1,7 @@
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react"
+import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
+import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
+import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
@@ -29,10 +32,10 @@ export default function PricingSection() {
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   return (
-    <section 
-      id="pricing" 
+    <section
+      id="pricing"
       className="overflow-hidden bg-gray-50"
-      style={{ 
+      style={{
         paddingTop: 'var(--space-12)',
         paddingBottom: 'var(--space-20)'
       }}
@@ -43,7 +46,7 @@ export default function PricingSection() {
           className={`text-center scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
           style={{ marginBottom: 'var(--space-16)' }}
         >
-          <h2 
+          <h2
             className="text-section-title text-gray-900"
             style={{ marginBottom: 'var(--space-4)' }}
           >
@@ -54,9 +57,9 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div 
+        <div
           className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto"
-          style={{ 
+          style={{
             gap: 'var(--space-6)',
             paddingLeft: 'var(--space-4)',
             paddingRight: 'var(--space-4)'
@@ -70,17 +73,17 @@ export default function PricingSection() {
             }`}
           >
             <CardContent style={{ padding: 'var(--space-6)' }}>
-              <div 
+              <div
                 className="text-center"
                 style={{ marginBottom: 'var(--space-8)' }}
               >
-                <h3 
+                <h3
                   className="text-card-title text-gray-900"
                   style={{ marginBottom: 'var(--space-2)' }}
                 >
                   Free
                 </h3>
-                <div 
+                <div
                   className="font-bold text-3xl sm:text-4xl text-gray-900"
                   style={{ marginBottom: 'var(--space-4)' }}
                 >
@@ -90,8 +93,8 @@ export default function PricingSection() {
                 <p className="text-body text-gray-600">Perfect for trying out CVGenie</p>
               </div>
 
-              <ul 
-                style={{ 
+              <ul
+                style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 'var(--space-3)',
@@ -100,14 +103,34 @@ export default function PricingSection() {
               >
                 {freePlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
-                    <Check 
-                      className="flex-shrink-0 text-green-500"
-                      style={{ 
-                        width: 'var(--space-5)',
-                        height: 'var(--space-5)',
-                        marginRight: 'var(--space-3)'
-                      }}
-                    />
+                    {feature === "ATS optimization" ? (
+                      <ATSShieldIcon
+                        className="flex-shrink-0 text-green-500"
+                        style={{
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
+                      />
+                    ) : feature === "Multiple export formats" ? (
+                      <MultiFormatExportIcon
+                        className="flex-shrink-0 text-green-500"
+                        style={{
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
+                      />
+                    ) : (
+                      <Check
+                        className="flex-shrink-0 text-green-500"
+                        style={{
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
+                      />
+                    )}
                     <span className="text-body text-sm sm:text-base text-gray-600">{feature}</span>
                   </li>
                 ))}
@@ -137,17 +160,17 @@ export default function PricingSection() {
             }`}
           >
             <CardContent style={{ padding: 'var(--space-6)' }}>
-              <div 
+              <div
                 className="text-center"
                 style={{ marginBottom: 'var(--space-8)' }}
               >
-                <h3 
+                <h3
                   className="text-card-title text-white"
                   style={{ marginBottom: 'var(--space-2)' }}
                 >
                   Pro
                 </h3>
-                <div 
+                <div
                   className="font-bold text-3xl sm:text-4xl text-white"
                   style={{ marginBottom: 'var(--space-4)' }}
                 >
@@ -157,8 +180,8 @@ export default function PricingSection() {
                 <p className="text-body opacity-80">For serious job seekers</p>
               </div>
 
-              <ul 
-                style={{ 
+              <ul
+                style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 'var(--space-3)',
@@ -167,14 +190,34 @@ export default function PricingSection() {
               >
                 {proPlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
-                    <Check 
-                      className="flex-shrink-0 text-green-400"
-                      style={{ 
-                        width: 'var(--space-5)',
-                        height: 'var(--space-5)',
-                        marginRight: 'var(--space-3)'
-                      }}
-                    />
+                    {feature === "Advanced AI optimizations" ? (
+                      <AnalyticsDashboardIcon
+                        className="flex-shrink-0 text-green-400"
+                        style={{
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
+                      />
+                    ) : feature === "Premium export formats" ? (
+                      <MultiFormatExportIcon
+                        className="flex-shrink-0 text-green-400"
+                        style={{
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
+                      />
+                    ) : (
+                      <Check
+                        className="flex-shrink-0 text-green-400"
+                        style={{
+                          width: 'var(--space-5)',
+                          height: 'var(--space-5)',
+                          marginRight: 'var(--space-3)'
+                        }}
+                      />
+                    )}
                     <span className="text-body text-sm sm:text-base text-white">{feature}</span>
                   </li>
                 ))}
