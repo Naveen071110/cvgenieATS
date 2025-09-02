@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
 /* 60-30-10 Color Rule Implementation */
   --primary-blue: #2563eb;
   --gray-light: #f3f4f6;
