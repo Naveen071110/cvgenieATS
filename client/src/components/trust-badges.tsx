@@ -22,12 +22,7 @@ const trustBadges: Badge[] = [
     description: 'We never share your personal information',
     link: '/privacy'
   },
-  {
-    icon: <UserCheck className="w-6 h-6" />,
-    label: 'GDPR Compliant',
-    description: 'Full compliance with European data protection',
-    link: '#'
-  },
+  
   {
     icon: <Eye className="w-6 h-6" />,
     label: 'No Data Sharing',
