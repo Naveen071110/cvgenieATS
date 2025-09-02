@@ -47,10 +47,7 @@ export default function HeroSection() {
     <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Animated Background */}
       <div
-        className="absolute inset-0 transition-all duration-1000"
-        style={{
-          background: `linear-gradient(${gradientShift}deg, var(--color-primary-50) 0%, #ffffff 50%, var(--color-gray-50) 100%)`
-        }}
+        className="absolute inset-0 transition-all duration-1000 bg-gradient-to-br from-blue-50 via-white to-gray-50"
       />
 
       {/* Floating Particles */}
@@ -61,18 +58,17 @@ export default function HeroSection() {
       </div>
 
       <div className="relative w-full max-w-7xl mx-auto text-center px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" style={{ color: var(--color-gray-900) }}>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-gray-900">
           Transform Your Career with{" "}
           <span
-            className={`inline-block min-w-0 transition-opacity duration-300 ${
+            className={`inline-block min-w-0 transition-opacity duration-300 text-primary ${
               isVisible ? "opacity-100" : "opacity-0"
             }`}
-            style={{ color: var(--color-primary-600) }}
           >
             {rotatingTexts[currentTextIndex]}
           </span>
         </h1>
-        <p className="text-base sm:text-lg mb-8 max-w-2xl mx-auto leading-relaxed" style={{ color: var(--color-gray-600) }}>
+        <p className="text-base sm:text-lg mb-8 max-w-2xl mx-auto leading-relaxed text-gray-600">
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
@@ -86,8 +82,8 @@ export default function HeroSection() {
               <FileText className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Button>
           </Link>
-          <div className="flex items-center gap-3" style={{ color: var(--color-gray-600) }}>
-            <Zap className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: var(--color-warning-500) }} />
+          <div className="flex items-center gap-3 text-gray-600">
+            <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" />
             <span className="text-sm font-medium">Generated in 10-15 seconds</span>
           </div>
         </div>

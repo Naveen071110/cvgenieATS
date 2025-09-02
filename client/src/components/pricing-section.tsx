@@ -29,16 +29,16 @@ export default function PricingSection() {
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
   return (
-    <section id="pricing" className="py-12 sm:py-20 overflow-hidden" style={{ backgroundColor: var(--color-gray-50) }}>
+    <section id="pricing" className="py-12 sm:py-20 overflow-hidden bg-gray-50">
       <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
           className={`text-center mb-12 sm:mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="typography-section-header mb-4" style={{ color: var(--color-gray-900) }}>
+          <h2 className="text-section-title mb-4 text-gray-900">
             Simple, Transparent Pricing
           </h2>
-          <p className="typography-body max-w-2xl mx-auto text-lg" style={{ color: var(--color-gray-600) }}>
+          <p className="text-body-large max-w-2xl mx-auto text-gray-600">
             Start for free, upgrade when you need unlimited access
           </p>
         </div>
@@ -47,40 +47,34 @@ export default function PricingSection() {
           {/* Free Plan */}
           <Card
             ref={freePlanAnimation.ref}
-            className={`shadow-lg floating-card pricing-card-scale ${
+            className={`shadow-lg floating-card pricing-card-scale bg-white ${
               freePlanAnimation.isVisible ? 'visible' : ''
             }`}
-            style={{ backgroundColor: '#ffffff' }}
           >
             <CardContent className="p-6 sm:p-8">
               <div className="text-center mb-6 sm:mb-8">
-                <h3 className="typography-subheader mb-2" style={{ color: var(--color-gray-900) }}>Free</h3>
-                <div className="typography-headline mb-4 text-3xl sm:text-4xl" style={{ color: var(--color-gray-900) }}>
+                <h3 className="text-card-title mb-2 text-gray-900">Free</h3>
+                <div className="font-bold mb-4 text-3xl sm:text-4xl text-gray-900">
                   $0
-                  <span className="typography-body font-normal text-base sm:text-lg" style={{ color: var(--color-gray-500) }}>/month</span>
+                  <span className="text-body font-normal text-base sm:text-lg text-gray-500">/month</span>
                 </div>
-                <p className="typography-body" style={{ color: var(--color-gray-600) }}>Perfect for trying out CVGenie</p>
+                <p className="text-body text-gray-600">Perfect for trying out CVGenie</p>
               </div>
 
               <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                 {freePlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <Check 
-                      className="w-4 h-4 sm:w-5 sm:h-5 mr-3 flex-shrink-0" 
-                      style={{ color: var(--color-success-500) }}
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-3 flex-shrink-0 text-green-500"
                     />
-                    <span className="typography-body text-sm sm:text-base" style={{ color: var(--color-gray-600) }}>{feature}</span>
+                    <span className="text-body text-sm sm:text-base text-gray-600">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Button
                 variant="outline"
-                className="w-full py-3 px-6 font-semibold"
-                style={{ 
-                  borderColor: var(--color-gray-300),
-                  color: var(--color-gray-700)
-                }}
+                className="w-full py-3 px-6 font-semibold border-gray-300 text-gray-700"
                 onClick={() => {
                   const element = document.getElementById("generator");
                   if (element) {
@@ -96,43 +90,35 @@ export default function PricingSection() {
           {/* Pro Plan */}
           <Card
             ref={proPlanAnimation.ref}
-            className={`text-white shadow-xl floating-card pricing-card-flip pricing-shimmer ${
+            className={`text-white shadow-xl floating-card pricing-card-flip pricing-shimmer bg-gradient-to-br from-blue-500 to-purple-600 ${
               proPlanAnimation.isVisible ? 'visible' : ''
             }`}
-            style={{ 
-              background: var(--gradient-primary)
-            }}
           >
             <CardContent className="p-6 sm:p-8">
               <div className="text-center mb-6 sm:mb-8">
-                <h3 className="typography-subheader mb-2">Pro</h3>
-                <div className="typography-headline mb-4 text-3xl sm:text-4xl">
+                <h3 className="text-card-title mb-2 text-white">Pro</h3>
+                <div className="font-bold mb-4 text-3xl sm:text-4xl text-white">
                   $9.99
-                  <span className="typography-body font-normal opacity-80 text-base sm:text-lg">/month</span>
+                  <span className="text-body font-normal opacity-80 text-base sm:text-lg">/month</span>
                 </div>
-                <p className="typography-body opacity-80">For serious job seekers</p>
+                <p className="text-body opacity-80">For serious job seekers</p>
               </div>
 
               <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                 {proPlanFeatures.map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <Check 
-                      className="w-4 h-4 sm:w-5 sm:h-5 mr-3 flex-shrink-0" 
-                      style={{ color: var(--color-success-500) }}
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-3 flex-shrink-0 text-green-400"
                     />
-                    <span className="typography-body text-sm sm:text-base">{feature}</span>
+                    <span className="text-body text-sm sm:text-base text-white">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Button
-                className="w-full"
+                className="w-full bg-yellow-500 text-white hover:bg-yellow-600"
                 variant="accent"
                 size="lg"
-                style={{
-                  backgroundColor: var(--color-warning-500),
-                  color: '#ffffff'
-                }}
                 onClick={() => openAuthDialog({
                   title: "Upgrade to Pro",
                   description: "Sign in to upgrade to Pro and get unlimited generations."

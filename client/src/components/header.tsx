@@ -38,193 +38,172 @@ export default function Header() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        isScrolled ? "backdrop-blur-md" : "backdrop-blur-md"
-      }`}
-        style={{
-          backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.8)',
-          borderBottom: `1px solid var(--color-gray-200)`
-        }}
-      >
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 backdrop-blur-md border-b border-gray-200 ${
+        isScrolled ? "bg-white/90" : "bg-white/80"
+      }`}>
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-2">
-              <div 
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: var(--gradient-primary) }}
-              >
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
-              <span className="typography-subheader" style={{ color: var(--color-primary-600) }}>CVGenie</span>
+              <span className="text-card-title text-primary">CVGenie</span>
             </div>
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
               <Link 
                 to="/generator"
-                className="typography-body transition-colors"
-                style={{ 
-                  color: var(--color-gray-600),
-                  '--hover-color': var(--color-primary-600)
-                }}
-                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
-                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
+                className="text-body transition-colors text-gray-600 hover:text-primary"
               >
                 Generator
               </Link>
               <button 
                 onClick={() => scrollToSection("features")}
-                className="typography-body transition-colors"
-                style={{ 
-                  color: var(--color-gray-600),
-                  '--hover-color': var(--color-primary-600)
-                }}
-                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
-                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
+                className="text-body transition-colors text-gray-600 hover:text-primary"
               >
-                How it Works
+                Features
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
-                className="typography-body transition-colors"
-                style={{ 
-                  color: var(--color-gray-600),
-                  '--hover-color': var(--color-primary-600)
-                }}
-                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
-                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
+                className="text-body transition-colors text-gray-600 hover:text-primary"
               >
                 Pricing
               </button>
-              <button 
-                onClick={() => scrollToSection("faq")}
-                className="typography-body transition-colors"
-                style={{ 
-                  color: var(--color-gray-600),
-                  '--hover-color': var(--color-primary-600)
-                }}
-                onMouseEnter={(e) => e.target.style.color = var(--color-primary-600)}
-                onMouseLeave={(e) => e.target.style.color = var(--color-gray-600)}
-              >
-                FAQ
-              </button>
-
+              
               {/* Auth Section */}
-              {user ? (
-                <div className="flex items-center space-x-4">
+              {isLoading ? (
+                <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+              ) : user ? (
+                <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4 text-slate-600" />
-                    <span className="text-sm text-slate-600">
-                      {user.user_metadata?.full_name || user.email}
-                    </span>
+                    <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <span className="text-sm text-gray-700">{user.email}</span>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={signOut}
-                    disabled={isLoading}
-                    className="text-slate-600 hover:text-slate-900"
+                    onClick={() => signOut()}
+                    className="text-gray-600 hover:text-gray-900"
                   >
-                    <LogOut className="h-4 w-4 mr-1" />
+                    <LogOut className="w-4 h-4 mr-1" />
                     Sign Out
                   </Button>
                 </div>
               ) : (
                 <Button
-                  onClick={() => openAuthDialog()}
-                  variant="default"
+                  variant="outline"
                   size="sm"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  onClick={() => openAuthDialog({
+                    title: "Sign In",
+                    description: "Access your account to manage your generations."
+                  })}
+                  className="text-gray-700 border-gray-300 hover:bg-gray-50"
                 >
+                  <User className="w-4 h-4 mr-1" />
                   Sign In
                 </Button>
               )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile menu button */}
             <div className="md:hidden">
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+                aria-label="Toggle menu"
               >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </Button>
+                {isMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
             </div>
           </div>
         </nav>
-      </header>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden">
-          <div className="flex flex-col h-full pt-20 px-6">
-            <Link 
-              to="/generator"
-              className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left block"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Generator
-            </Link>
-            <button 
-              onClick={() => scrollToSection("features")}
-              className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left"
-            >
-              How it Works
-            </button>
-            <button 
-              onClick={() => scrollToSection("pricing")}
-              className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left"
-            >
-              Pricing
-            </button>
-            <button 
-              onClick={() => scrollToSection("faq")}
-              className="py-4 text-lg font-medium text-slate-700 border-b border-slate-200 text-left"
-            >
-              FAQ
-            </button>
-
-            {/* Mobile Auth Section */}
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              {user ? (
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4 text-slate-600" />
-                    <span className="text-sm text-slate-600">
-                      {user.user_metadata?.full_name || user.email}
-                    </span>
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <Link
+                to="/generator"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Generator
+              </Link>
+              <button
+                onClick={() => scrollToSection("features")}
+                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+              >
+                Features
+              </button>
+              <button
+                onClick={() => scrollToSection("pricing")}
+                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+              >
+                Pricing
+              </button>
+              
+              {/* Mobile Auth Section */}
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                {isLoading ? (
+                  <div className="px-3 py-2">
+                    <div className="w-full h-8 rounded bg-gray-200 animate-pulse"></div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    onClick={signOut}
-                    disabled={isLoading}
-                    className="w-full justify-start text-slate-600 hover:text-slate-900"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  onClick={() => {
-                    openAuthDialog();
-                    setIsMenuOpen(false);
-                  }}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                >
-                  Sign In
-                </Button>
-              )}
+                ) : user ? (
+                  <div className="px-3 py-2 space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm text-gray-700">{user.email}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        signOut();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-start text-gray-600 hover:text-gray-900"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="px-3 py-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        openAuthDialog({
+                          title: "Sign In",
+                          description: "Access your account to manage your generations."
+                        });
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-start text-gray-700 border-gray-300 hover:bg-gray-50"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Sign In
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </header>
 
-      <LoginDialog 
-        open={isOpen} 
+      <LoginDialog
+        open={isOpen}
         onOpenChange={closeAuthDialog}
         title={dialogConfig.title}
         description={dialogConfig.description}

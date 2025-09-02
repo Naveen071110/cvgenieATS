@@ -172,16 +172,16 @@ export default function FeaturesSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section id="features" className="py-12 sm:py-20 overflow-hidden" style={{ backgroundColor: var(--color-gray-50) }}>
+    <section id="features" className="py-12 sm:py-20 overflow-hidden bg-gray-50">
       <div className="container-mobile">
         <div
           ref={headerAnimation.ref}
           className={`text-center mb-12 sm:mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="typography-section-header mb-4" style={{ color: var(--color-gray-900) }}>
+          <h2 className="text-section-title mb-4 text-gray-900">
             Why Choose CVGenie?
           </h2>
-          <p className="typography-body max-w-2xl mx-auto text-lg" style={{ color: var(--color-gray-600) }}>
+          <p className="text-body-large max-w-2xl mx-auto text-gray-600">
             Our AI-powered platform combines cutting-edge technology with professional expertise
             to create resumes that stand out in today's competitive job market.
           </p>
@@ -204,26 +204,23 @@ export default function FeaturesSection() {
             >
               <div className={`${feature.reverse ? 'lg:col-start-2' : ''} px-2 sm:px-0`}>
                 <div 
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer"
-                  style={{ backgroundColor: `rgba(37, 99, 235, 0.1)` }}
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 feature-icon-hover group cursor-pointer bg-primary/10"
                 >
                   <feature.icon 
-                    className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" 
-                    style={{ color: var(--color-primary-600) }}
+                    className="w-8 h-8 transition-transform duration-300 group-hover:scale-110 text-primary"
                   />
                 </div>
-                <h3 className="typography-subheader mb-3" style={{ color: var(--color-gray-900) }}>
+                <h3 className="text-card-title mb-3 text-gray-900">
                   {feature.title}
                 </h3>
-                <p className="typography-body leading-relaxed mb-4" style={{ color: var(--color-gray-600) }}>
+                <p className="text-body leading-relaxed mb-4 text-gray-600">
                   {feature.description}
                 </p>
                 <ul className="space-y-3">
                   {feature.benefits.map((benefit, benefitIndex) => (
-                    <li key={benefitIndex} className="flex items-center" style={{ color: var(--color-gray-600) }}>
+                    <li key={benefitIndex} className="flex items-center text-gray-600">
                       <CheckCircle 
-                        className="w-5 h-5 mr-3 flex-shrink-0" 
-                        style={{ color: var(--color-success-500) }}
+                        className="w-5 h-5 mr-3 flex-shrink-0 text-green-500"
                       />
                       <span className="text-sm sm:text-base">{benefit}</span>
                     </li>
