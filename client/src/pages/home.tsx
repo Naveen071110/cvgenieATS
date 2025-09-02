@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { TrustIndicatorsSection } from "@/components/trust-indicators-section";
+import { ResumeComparison } from "@/components/resume-comparison";
 
 export default function Home() {
   return (
@@ -58,6 +59,7 @@ export default function Home() {
         </section>
 
         <FeaturesSection />
+        <ResumeComparison />
         <TrustIndicatorsSection />
         <TestimonialsSection />
         <PricingSection />
