@@ -1,0 +1,79 @@
+Task:
+Develop an interactive Resume Comparison component for CVGenie that visually demonstrates the before and after states of the resume optimization service, improving user understanding and engagement.
+
+Implementation Details:
+
+Component Structure
+
+Create a React functional component called ResumeComparison using hooks for state management:
+
+jsx
+import { useState } from 'react';
+import { CheckIcon } from '@heroicons/react/solid'; // or appropriate icon library
+
+const ResumeComparison = () => {
+  const [activeView, setActiveView] = useState('before');
+
+  return (
+    <div className="resume-comparison max-w-5xl mx-auto p-6 bg-white rounded-md shadow-md">
+      
+      <div className="toggle-controls flex justify-center mb-6 space-x-4">
+        <button
+          className={`px-4 py-2 rounded ${activeView === 'before' ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          onClick={() => setActiveView('before')}
+        >
+          Original Resume
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${activeView === 'after' ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          onClick={() => setActiveView('after')}
+        >
+          CVGenie Optimized
+        </button>
+      </div>
+
+      <div className="resume-display border p-4 mb-6">
+        {activeView === 'before' ? <OriginalResume /> : <OptimizedResume />}
+      </div>
+
+      <div className="improvements-list grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="improvement flex items-center space-x-2 text-green-600">
+          <CheckIcon className="w-6 h-6" />
+          <span>Added 15 relevant keywords</span>
+        </div>
+        <div className="improvement flex items-center space-x-2 text-green-600">
+          <CheckIcon className="w-6 h-6" />
+          <span>Improved ATS compatibility by 89%</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+Supporting Components
+
+Ensure the OriginalResume and OptimizedResume components display the respective resume versions. These may use formatted text or PDF viewers.
+
+Styling
+
+Use consistent spacing, colors from the design system, and rounded corners for cards and buttons.
+
+Add subtle hover/focus states on toggle buttons.
+
+Make the component responsive for mobile and desktop.
+
+Accessibility
+
+Add aria-pressed attributes to toggle buttons to indicate active state.
+
+Ensure keyboard navigation is smooth.
+
+Testing
+
+Verify switching views toggles the correct resume display.
+
+Confirm improvements list is clear and visually linked to the optimized resume.
+
+Test on multiple device widths and screen readers.
+
+Goal:
+Provide users with a clear and engaging way to compare their original resume with the optimized version, demonstrating tangible improvements visually and encouraging trust in CVGenie's AI-powered optimization.
