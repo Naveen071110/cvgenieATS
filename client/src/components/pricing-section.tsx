@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import { LoginDialog } from "@/components/LoginDialog";
-import { Link } from "react-router-dom";
+import { Link } from "wouter";
 
 
 const freePlanFeatures = [
