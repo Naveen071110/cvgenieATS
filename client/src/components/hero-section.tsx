@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import SpeedOptimizationIcon from "@/assets/icons/speed-optimization.svg?react";
 
 const rotatingTexts = ['Any Job', 'Tech Roles', 'Creative Positions', 'Leadership Roles', 'Remote Work'];
 
@@ -87,7 +86,7 @@ export default function HeroSection() {
             </Button>
           </Link>
           <div className="flex items-center gap-3 text-slate-600">
-            <SpeedOptimizationIcon className="w-8 h-8" />
+            <Zap className="w-8 h-8 text-yellow-500" />
             <span className="text-sm font-medium">Generated in 10-15 seconds</span>
           </div>
         </div>

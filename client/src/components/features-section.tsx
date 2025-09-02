@@ -1,15 +1,9 @@
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Mail, Download, Zap, Target, FileText, Package } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-
-// Import custom SVG icons
-import AtsOptimizationIcon from "@/assets/icons/ats-optimization.svg?react";
-import AiPoweredIcon from "@/assets/icons/ai-powered.svg?react";
-import CoverLetterIcon from "@/assets/icons/cover-letter.svg?react";
-import MultiFormatIcon from "@/assets/icons/multi-format.svg?react";
 
 const features = [
   {
-    icon: AiPoweredIcon,
+    icon: Zap,
     title: "One-Click Tailoring",
     description: "Upload your resume and paste any job description. Our AI instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
     benefits: [
@@ -44,7 +38,7 @@ const features = [
     reverse: false
   },
   {
-    icon: AtsOptimizationIcon,
+    icon: Target,
     title: "ATS-Optimized Formatting",
     description: "Most resumes get rejected by Applicant Tracking Systems before human eyes see them. Our AI ensures your resume passes through ATS filters with proper formatting, structure, and keyword placement.",
     benefits: [
@@ -84,7 +78,7 @@ const features = [
     reverse: true
   },
   {
-    icon: CoverLetterIcon,
+    icon: Mail,
     title: "AI-Personalized Cover Letters",
     description: "Don't send generic cover letters. Our AI crafts personalized cover letters that connect your experience directly to the company's needs, mentioning specific requirements and showing genuine interest.",
     benefits: [
@@ -117,7 +111,7 @@ const features = [
     reverse: false
   },
   {
-    icon: MultiFormatIcon,
+    icon: Package,
     title: "Multiple Export Formats",
     description: "Get your documents in the format you need. Whether you're applying online, emailing directly, or printing for in-person interviews, we've got you covered with multiple professional formats.",
     benefits: [
