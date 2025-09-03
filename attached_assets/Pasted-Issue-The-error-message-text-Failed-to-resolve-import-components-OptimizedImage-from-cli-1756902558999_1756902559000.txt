@@ -1,0 +1,74 @@
+Issue:
+The error message:
+
+text
+Failed to resolve import "@/components/OptimizedImage" from "client/src/components/testimonials-section.tsx". Does the file exist?
+Indicates that the module import path @/components/OptimizedImage cannot be resolved by Vite, likely because the file does not exist at that path or the alias @ is not properly configured.
+
+Steps to Fix:
+
+Verify File Existence:
+
+Check that the file OptimizedImage.tsx or OptimizedImage.jsx actually exists inside the client/src/components/ folder.
+
+If the file was moved, rename the import to the correct relative or absolute path.
+
+Check Alias Configuration:
+
+The alias @ usually maps to src/ or client/src/. Ensure your Vite config has the alias properly set up.
+
+In vite.config.ts or vite.config.js, look for:
+
+ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'client/src'), // Confirm this matches your folder structure
+    },
+  },
+});
+Adjust Import Statements if Needed:
+
+If aliasing is not configured or problematic, replace:
+
+ts
+import OptimizedImage from '@/components/OptimizedImage';
+with relative import path, for example:
+
+ts
+import OptimizedImage from './OptimizedImage';
+or
+
+ts
+import OptimizedImage from '../components/OptimizedImage';
+depending on the relative location of the importing file.
+
+Clear Cache and Restart:
+
+Stop the development server.
+
+Run the following to clear potential cache issues:
+
+text
+rm -rf node_modules/.vite
+Restart the dev server with:
+
+text
+npm run dev
+or
+
+text
+yarn dev
+Verify Application:
+
+Confirm that the import error is resolved.
+
+Test related components relying on OptimizedImage to confirm correct functionality.
+
+Goal:
+Restore proper module resolution for OptimizedImage component imports either by fixing file location or alias config, ensuring no build errors, and successful app startup.
