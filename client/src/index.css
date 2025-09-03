@@ -1185,18 +1185,18 @@ select:focus,
   .progress-indicator .step {
     margin: 0 4px;
   }
-  
+
   .progress-indicator .step-circle {
     width: 36px;
     height: 36px;
     font-size: 0.875rem;
   }
-  
+
   .progress-indicator .step-label {
     font-size: 0.75rem;
     margin-top: 8px;
   }
-  
+
   .progress-indicator .step-description {
     display: none;
   }
@@ -1770,5 +1770,111 @@ select {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ===== FAQ SECTION ===== */
+.faq-container {
+  position: relative;
+}
+
+.faq-search-input {
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.faq-search-input:focus {
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.faq-accordion {
+  position: relative;
+}
+
+.faq-item {
+  transition: all 0.2s ease;
+  border: 1px solid var(--gray-200);
+  background: white;
+}
+
+.faq-item:hover {
+  border-color: var(--primary-200);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.faq-question:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.faq-question:hover {
+  background-color: var(--gray-50);
+}
+
+.faq-icon {
+  transition: transform 0.3s ease;
+  color: var(--gray-500);
+}
+
+.faq-answer {
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-answer.open {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* FAQ Search Results Animation */
+.faq-item[style*="display: none"] {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Mobile Responsive FAQ */
+@media (max-width: 768px) {
+  .faq-container {
+    padding: 0 var(--spacing-4);
+  }
+
+  .faq-question {
+    padding: var(--spacing-4);
+  }
+
+  .faq-search-input {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }

@@ -1,112 +1,261 @@
-import { useState, useRef, useEffect } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
-import { Link } from "wouter";
 
-const faqs = [
+import React, { useState, useCallback, useMemo } from 'react';
+import { ChevronDown, Search, HelpCircle } from 'lucide-react';
+import { Input } from './ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { cn } from '@/lib/utils';
+
+interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  keywords?: string[];
+}
+
+const faqData: FAQItem[] = [
   {
-    question: "What is an ATS, and why does my resume need to be \"ATS-compliant\"?",
-    answer: "An Applicant Tracking System (ATS) is software used by most employers to automatically screen, filter, and rank job applications. A resume that's not ATS-friendly might be rejected before a human ever sees it. CVGenie helps you create resumes that are specifically formatted for ATSs—using the right keywords, section headers, and layouts—so your application reaches real recruiters."
+    id: 'file-formats',
+    question: 'What file formats do you support?',
+    answer: 'We support PDF, DOC, DOCX, TXT, and RTF files. PDF files provide the best results for our AI analysis. You can also paste your resume content directly into the text area.',
+    keywords: ['pdf', 'doc', 'docx', 'txt', 'rtf', 'format', 'upload', 'file']
   },
   {
-    question: "How is my data used in CVGenie? Do you store my personal information or resume?",
-    answer: "Your data privacy is important to us. CVGenie processes your resume and job description only to generate your tailored documents. We do not store or reuse your uploaded resumes, job descriptions, or generated outputs unless you create an account and explicitly save them. For free and anonymous users, all data is deleted after generation."
+    id: 'ats-optimization',
+    question: 'How does ATS optimization work?',
+    answer: 'Our AI analyzes job descriptions and optimizes your resume with relevant keywords, proper formatting, and ATS-friendly structure. We ensure your resume passes through Applicant Tracking Systems used by most companies.',
+    keywords: ['ats', 'applicant tracking system', 'optimization', 'keywords', 'formatting']
   },
   {
-    question: "What makes CVGenie's resumes better than free templates or generic AI tools?",
-    answer: "CVGenie's AI is fine-tuned to produce resumes and cover letters that are optimized for ATS software. Unlike generic tools, it analyzes your target job description, matches keywords, and formats results according to best industry practices—giving you a better shot at interviews with large companies."
+    id: 'generation-time',
+    question: 'How long does it take to generate an optimized resume?',
+    answer: 'Resume optimization typically takes 30-60 seconds. Our AI analyzes your content, matches it with the job description, and generates an optimized version with improved keywords and formatting.',
+    keywords: ['time', 'duration', 'speed', 'fast', 'generate']
   },
   {
-    question: "How many times can I use CVGenie for free?",
-    answer: "You can generate up to 3 resumes or cover letters per month at no cost, with no signup required. If you need more generations or want premium features (like unlimited usage or priority support), consider upgrading to our Pro plan."
+    id: 'pricing-plans',
+    question: 'What are your pricing plans?',
+    answer: 'We offer both free and premium plans. Free users get 3 resume generations per month. Premium users enjoy unlimited generations, advanced templates, and priority processing for just $9.99/month.',
+    keywords: ['pricing', 'cost', 'free', 'premium', 'plans', 'subscription']
   },
   {
-    question: "What file formats can I download? Will my formatting remain \"ATS-safe\"?",
-    answer: "You can download your documents as plain text (TXT) or rich text (RTF). Both formats are designed to avoid common ATS issues—no tables, columns, images, or fancy graphics—so your submission remains machine-readable and recruiter-friendly."
+    id: 'data-security',
+    question: 'Is my resume data secure?',
+    answer: 'Absolutely. We use enterprise-grade encryption to protect your data. Your resumes are processed securely and never shared with third parties. You can delete your data anytime from your account.',
+    keywords: ['security', 'privacy', 'data', 'safe', 'encryption', 'protection']
+  },
+  {
+    id: 'multiple-jobs',
+    question: 'Can I optimize my resume for multiple job applications?',
+    answer: 'Yes! You can optimize your resume for different job descriptions. Each optimization creates a tailored version specific to that role, maximizing your chances of getting interviews.',
+    keywords: ['multiple', 'jobs', 'different', 'applications', 'tailor', 'customize']
+  },
+  {
+    id: 'download-formats',
+    question: 'What download formats are available?',
+    answer: 'You can download your optimized resume as PDF, DOC, or DOCX. PDF is recommended for most applications, while DOC/DOCX formats allow further editing if needed.',
+    keywords: ['download', 'export', 'pdf', 'doc', 'docx', 'format']
+  },
+  {
+    id: 'ai-accuracy',
+    question: 'How accurate is the AI optimization?',
+    answer: 'Our AI has been trained on thousands of successful resumes and job descriptions. It achieves a 94% ATS pass rate and significantly improves keyword matching for better visibility to recruiters.',
+    keywords: ['ai', 'accuracy', 'success', 'rate', 'effective', 'results']
+  },
+  {
+    id: 'refund-policy',
+    question: 'What is your refund policy?',
+    answer: 'We offer a 30-day money-back guarantee. If you\'re not satisfied with our service, contact support within 30 days of purchase for a full refund.',
+    keywords: ['refund', 'money back', 'guarantee', 'cancel', 'return']
+  },
+  {
+    id: 'support',
+    question: 'How can I get support?',
+    answer: 'Our support team is available via email at support@cvgenie.com. Premium users also get priority support with faster response times. We typically respond within 24 hours.',
+    keywords: ['support', 'help', 'contact', 'email', 'assistance', 'customer service']
   }
 ];
 
-export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
+interface FAQAccordionItemProps {
+  item: FAQItem;
+  isOpen: boolean;
+  onToggle: () => void;
+}
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+function FAQAccordionItem({ item, isOpen, onToggle }: FAQAccordionItemProps) {
+  return (
+    <Card className="faq-item overflow-hidden transition-all duration-200 hover:shadow-md">
+      <button
+        className="faq-question w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={`faq-${item.id}`}
+        id={`faq-${item.id}-button`}
+      >
+        <CardHeader className="py-5 px-6 hover:bg-gray-50 transition-colors duration-200">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg font-semibold text-gray-900 leading-6">
+              {item.question}
+            </CardTitle>
+            <ChevronDown
+              className={cn(
+                "faq-icon w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ml-4",
+                isOpen && "rotate-180"
+              )}
+              aria-hidden="true"
+            />
+          </div>
+        </CardHeader>
+      </button>
+      <div
+        id={`faq-${item.id}`}
+        className={cn(
+          "faq-answer overflow-hidden transition-all duration-300 ease-in-out",
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        )}
+        role="region"
+        aria-labelledby={`faq-${item.id}-button`}
+      >
+        <CardContent className="px-6 pb-6 pt-0">
+          <div className="prose prose-sm text-gray-700 leading-relaxed">
+            {item.answer}
+          </div>
+        </CardContent>
+      </div>
+    </Card>
+  );
+}
 
-  useEffect(() => {
-    contentRefs.current.forEach((ref, index) => {
-      if (ref) {
-        if (openIndex === index) {
-          ref.style.maxHeight = ref.scrollHeight + "px";
-        } else {
-          ref.style.maxHeight = "0px";
-        }
+export function FAQSection() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+
+  // Filter FAQs based on search query
+  const filteredFAQs = useMemo(() => {
+    if (!searchQuery.trim()) return faqData;
+
+    const query = searchQuery.toLowerCase();
+    return faqData.filter(item => 
+      item.question.toLowerCase().includes(query) ||
+      item.answer.toLowerCase().includes(query) ||
+      (item.keywords && item.keywords.some(keyword => keyword.includes(query)))
+    );
+  }, [searchQuery]);
+
+  // Handle accordion toggle
+  const toggleItem = useCallback((itemId: string) => {
+    setOpenItems(prev => {
+      const newOpenItems = new Set(prev);
+      if (newOpenItems.has(itemId)) {
+        newOpenItems.delete(itemId);
+      } else {
+        // Close all other items (accordion behavior)
+        newOpenItems.clear();
+        newOpenItems.add(itemId);
       }
+      return newOpenItems;
     });
-  }, [openIndex]);
+  }, []);
+
+  // Handle search input
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    // Close all items when searching
+    setOpenItems(new Set());
+  }, []);
 
   return (
-    <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-4xl mx-auto">
+    <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="typography-section-header text-slate-900 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+            <HelpCircle className="w-8 h-8 text-primary" />
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
-            Get answers to common questions about CVGenie and our AI-powered resume creation
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Find answers to common questions about CVGenie and our AI-powered resume optimization
           </p>
         </div>
 
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div key={index} className="border border-slate-200 rounded-xl overflow-hidden">
-              <button
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-50 transition-colors duration-200"
-                onClick={() => toggleFAQ(index)}
-              >
-                <span className="typography-body text-left font-semibold pr-4">{faq.question}</span>
-                <ChevronDown
-                  className={`w-5 h-5 text-slate-500 transform transition-transform duration-300 flex-shrink-0 ${
-                    openIndex === index ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-              <div
-                ref={(el) => {
-                  contentRefs.current[index] = el;
-                }}
-                className="accordion-content overflow-hidden transition-all duration-300 ease-in-out"
-                style={{
-                  maxHeight: openIndex === index ? 'auto' : '0px'
-                }}
-              >
-                <div className="px-6 pb-4">
-                  <p className="typography-body text-slate-600 leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </div>
-              </div>
+        <div className="faq-container max-w-4xl mx-auto">
+          {/* Search Input */}
+          <div className="faq-search mb-12">
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search FAQs..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="faq-search-input pl-12 pr-4 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                aria-label="Search frequently asked questions"
+              />
             </div>
-          ))}
-        </div>
+            {searchQuery && (
+              <p className="text-center text-gray-600 mt-4">
+                {filteredFAQs.length} result{filteredFAQs.length !== 1 ? 's' : ''} found
+                {filteredFAQs.length === 0 && ' - try a different search term'}
+              </p>
+            )}
+          </div>
 
-        {/* CTA after FAQ */}
-        <div className="text-center mt-16">
-          <h3 className="text-2xl font-bold text-slate-900 mb-4">
-            Still have questions? Try it risk-free!
-          </h3>
-          <p className="text-lg text-slate-600 mb-6 max-w-xl mx-auto">
-            Get started with our free plan and see the difference for yourself
-          </p>
-          <Link to="/generator">
-            <button
-              className="cta-primary group"
-              aria-label="Try risk-free - Start your free resume generation"
-            >
-              Try Risk-Free
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-            </button>
-          </Link>
+          {/* FAQ Accordion */}
+          <div className="faq-accordion space-y-4">
+            {filteredFAQs.length > 0 ? (
+              filteredFAQs.map((item) => (
+                <FAQAccordionItem
+                  key={item.id}
+                  item={item}
+                  isOpen={openItems.has(item.id)}
+                  onToggle={() => toggleItem(item.id)}
+                />
+              ))
+            ) : (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <HelpCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    No FAQs found
+                  </h3>
+                  <p className="text-gray-500">
+                    Try adjusting your search terms or{' '}
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="text-primary hover:underline focus:outline-none focus:underline"
+                    >
+                      clear the search
+                    </button>
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Help Section */}
+          <div className="mt-16 text-center">
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="py-8 px-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  Still have questions?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Can't find the answer you're looking for? Our support team is here to help.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <a
+                    href="mailto:support@cvgenie.com"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  >
+                    Contact Support
+                  </a>
+                  <button className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                    Live Chat
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </section>
