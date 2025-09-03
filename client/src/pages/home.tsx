@@ -37,15 +37,7 @@ export default function Home() {
                 <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
                   Join thousands of professionals who have landed their dream jobs with our AI-powered resume generator.
                 </p>
-                <Link to="/generator">
-                  <button
-                    className="cta-primary group shadow-xl hover:shadow-2xl cta-pulse"
-                    aria-label="Start your free resume creation process"
-                  >
-                    Start Free
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                  </button>
-                </Link>
+                
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600">
