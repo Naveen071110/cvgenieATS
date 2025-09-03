@@ -135,6 +135,14 @@
   --container-lg: 1024px;
   --container-xl: 1280px;
   --container-2xl: 1536px;
+
+  /* Enhanced Color Palette */
+  --primary-blue: #2563eb;
+  --accent-vibrant: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-success: #059669;
+  --gray-base: #f8fafc;
+  --gray-text: #475569;
 }
 
 .dark {
@@ -549,6 +557,67 @@
 
   .feature-mockup-hover > * {
     @apply transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:-translate-y-2;
+  }
+
+  /* Button Enhancement Styles */
+  .cta-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  }
+
+  .cta-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+  }
+
+  /* Vibrant CTA Styles */
+  .cta-vibrant {
+    background: linear-gradient(135deg, var(--accent-vibrant), #059669);
+    color: white;
+    padding: 18px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .cta-vibrant:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    text-decoration: none;
+    color: white;
+  }
+
+  /* Mobile enhancement for CTAs */
+  @media (max-width: 768px) {
+    .cta-vibrant {
+      padding: 20px 36px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+  }
+
+  /* Fade-in animation for CTAs */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .cta-animate {
+    animation: fadeInUp 0.6s ease-out;
   }
 }
 

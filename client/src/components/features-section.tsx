@@ -282,12 +282,9 @@ export default function FeaturesSection() {
         {/* CTA after features */}
         <div className="text-center mt-16">
           <Link to="/generator">
-            <button
-              className="cta-primary group"
-              aria-label="Start creating your optimized resume for free"
-            >
-              Create My Resume
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+            <button className="mt-6 cta-vibrant cta-animate">
+              Try It Now
+              <ArrowRight className="w-5 h-5 ml-2" />
             </button>
           </Link>
         </div>

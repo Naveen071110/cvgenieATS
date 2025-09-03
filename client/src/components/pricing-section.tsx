@@ -33,6 +33,13 @@ export default function PricingSection() {
   const proPlanAnimation = useScrollAnimation({ threshold: 0.3 });
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
 
+  // Placeholder for handleUpgradeClick, assuming it's defined elsewhere or will be added.
+  // In a real scenario, this would likely involve logic to open a payment modal or redirect.
+  const handleUpgradeClick = () => {
+    console.log("Upgrade button clicked");
+    // Example: openAuthDialog({ title: "Upgrade to Pro", description: "Complete your upgrade." });
+  };
+
   return (
     <section
       id="pricing"
@@ -222,10 +229,10 @@ export default function PricingSection() {
 
               <Link to="/generator" className="w-full">
                 <button
-                  className="cta-primary w-full"
-                  aria-label="Upgrade to Pro plan - Access premium features"
+                  onClick={handleUpgradeClick}
+                  className="w-full cta-vibrant cta-animate"
                 >
-                  Start Pro Trial
+                  Upgrade to Pro
                 </button>
               </Link>
             </CardContent>
