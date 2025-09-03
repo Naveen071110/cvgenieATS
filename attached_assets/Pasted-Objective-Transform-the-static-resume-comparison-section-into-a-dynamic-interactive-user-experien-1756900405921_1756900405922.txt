@@ -1,0 +1,95 @@
+Objective:
+Transform the static resume comparison section into a dynamic, interactive user experience inspired by Text2Resume.com.
+
+Implementation Guidelines:
+
+If similar functionality or UI components already exist, update or replace them carefully to avoid duplication or conflicts. Remove obsolete code to maintain code hygiene and prevent errors.
+
+Tasks:
+
+Create Step-by-Step Visual Process:
+Implement a visually clear, three-step process UI on the homepage or relevant section, with these HTML elements:
+
+xml
+<div class="interactive-process">
+  <div class="process-step active" data-step="1">
+    <div class="step-icon">📄</div>
+    <h3>Upload Resume</h3>
+    <p>Any format - PDF, DOC, or image</p>
+  </div>
+  <div class="process-step" data-step="2">
+    <div class="step-icon">🎯</div>
+    <h3>Paste Job Description</h3>
+    <p>From any job board or website</p>
+  </div>
+  <div class="process-step" data-step="3">
+    <div class="step-icon">✨</div>
+    <h3>Get Optimized Resume</h3>
+    <p>ATS-friendly and tailored</p>
+  </div>
+</div>
+Style the active step distinctly.
+
+Add hover or click states that highlight steps.
+
+Ensure accessibility and responsive layout.
+
+Build Interactive Demo with Real-time Updates:
+Develop a demo form component where users can:
+
+Upload or paste parts of a resume/job description.
+
+See AI-generated suggestions or mock improvements live as they type.
+
+View ATS score updates in real-time with progress bars or counters.
+
+Functional requirements for demo form:
+
+Live text input with debounce to simulate asynchronous AI suggestion updates.
+
+Display a section highlighting smart keyword additions or formatting improvements dynamically.
+
+Show an animated ATS score bar that adjusts as mock input changes.
+
+Example structure:
+
+jsx
+function DemoForm() {
+  const [input, setInput] = React.useState('');
+  const [atsScore, setAtsScore] = React.useState(45);
+  const [improvements, setImprovements] = React.useState([]);
+
+  React.useEffect(() => {
+    // Simulate AI update with debounce
+    const timeout = setTimeout(() => {
+      setImprovements(generateMockImprovements(input));
+      setAtsScore(calculateMockScore(input));
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [input]);
+
+  return (
+    <div>
+      <textarea value={input} onChange={e => setInput(e.target.value)} />
+      <div className="ats-score-bar" style={{ width: `${atsScore}%` }}>
+        ATS Score: {atsScore}%
+      </div>
+      <ul>
+        {improvements.map((imp, idx) => (
+          <li key={idx}>{imp}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+Testing and Cleanup:
+
+Remove old static comparison UI components to avoid duplication.
+
+Ensure mobile responsiveness and accessibility compliance.
+
+Verify smooth transitions and live feedback reliability.
+
+Goal:
+Deliver an engaging, real-time interactive demo and stepwise process UI that educates and excites users about the value CVGenie brings, strengthening trust and conversion.
