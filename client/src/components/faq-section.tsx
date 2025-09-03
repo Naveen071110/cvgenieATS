@@ -164,9 +164,9 @@ export function FAQSection() {
   }, []);
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+    <section className="py-12 bg-gradient-to-br from-gray-50 to-white">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
             <HelpCircle className="w-8 h-8 text-primary" />
           </div>
@@ -180,7 +180,7 @@ export function FAQSection() {
 
         <div className="faq-container max-w-4xl mx-auto">
           {/* Search Input */}
-          <div className="faq-search mb-12">
+          <div className="faq-search mb-8">
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
@@ -232,30 +232,7 @@ export function FAQSection() {
             )}
           </div>
 
-          {/* Help Section */}
-          <div className="mt-16 text-center">
-            <Card className="bg-primary/5 border-primary/20">
-              <CardContent className="py-8 px-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Still have questions?
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Can't find the answer you're looking for? Our support team is here to help.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="mailto:support@cvgenie.com"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  >
-                    Contact Support
-                  </a>
-                  <button className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                    Live Chat
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          
         </div>
       </div>
     </section>
