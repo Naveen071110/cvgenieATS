@@ -1,0 +1,70 @@
+Issue:
+Runtime error:
+
+text
+[plugin:runtime-error-plugin] QueryClient is not defined
+This occurs because the React Query QueryClient instance is either not imported, not declared, or the app is missing the required React Query context provider.
+
+Fix Instructions:
+
+Import Correct Dependencies:
+Make sure to import QueryClient and QueryClientProvider from the correct package, typically @tanstack/react-query (for React Query v4+) or react-query (v3.x):
+
+tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// Or if using older version:
+// import { QueryClient, QueryClientProvider } from 'react-query';
+Declare and Instantiate QueryClient:
+Create a queryClient instance outside your component tree to ensure referential stability:
+
+tsx
+const queryClient = new QueryClient();
+Wrap Your App Component with QueryClientProvider:
+Ensure that in your top-level render or root component (e.g., App.tsx or main.tsx), your app is wrapped inside QueryClientProvider and passes in the queryClient instance:
+
+tsx
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* Your app components here */}
+    </QueryClientProvider>
+  );
+}
+Check React Query Version Consistency:
+Verify your package.json to confirm you are importing from the matching React Query version. Mixing old and new versions causes this error.
+
+Restart Your Development Server:
+Stop and restart to clear any stale caches after these changes.
+
+Goal:
+Provide a properly defined and correctly imported QueryClient instance, wrapped by QueryClientProvider, so that React Query hooks function without errors in your app.
+
+This prompt ensures that your React app has the correct React Query core setup to fix the "QueryClient is not defined" error effectively.Here’s a precise prompt for the Replit assistant to fix the “QueryClient is not defined” error in your React app:
+
+Issue:
+The error indicates that the React Query QueryClient is missing or not properly defined and used in your app.
+
+Fix steps:
+
+Import both QueryClient and QueryClientProvider from the correct package (usually @tanstack/react-query):
+
+tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+Instantiate a queryClient object outside your component:
+
+tsx
+const queryClient = new QueryClient();
+Wrap your app or root component with QueryClientProvider, passing the queryClient instance:
+
+tsx
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* Your app components */}
+    </QueryClientProvider>
+  );
+}
+Ensure your React Query package version matches the import style to avoid conflicts.
+
+Restart the development server after applying the changes.
+
