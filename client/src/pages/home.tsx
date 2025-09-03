@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { TrustIndicatorsSection } from "@/components/trust-indicators-section";
 import { ResumeComparison } from "@/components/resume-comparison";
+import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
 
 export default function Home() {
   return (
@@ -68,7 +69,7 @@ export default function Home() {
         </section>
 
         <FeaturesSection />
-        <ResumeComparison />
+        <InteractiveDemo /> {/* Replaced ResumeComparison with InteractiveDemo */}
         <TrustIndicatorsSection />
         <TestimonialsSection />
         <PricingSection />

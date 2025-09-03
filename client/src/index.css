@@ -824,6 +824,74 @@ select:focus,
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Fade in up animation for interactive elements */
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Interactive button enhancements */
+.interactive-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+}
+
+.interactive-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.interactive-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Loading spinner for interactive demo */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: brandedSpin 1s linear infinite;
+}
+
+/* Process step animations */
+.process-step {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.process-step:hover {
+  transform: translateY(-4px);
+}
+
+.process-step.active {
+  transform: translateY(-8px) scale(1.05);
+}
+
+/* Interactive demo specific animations */
+.demo-improvement-enter {
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ATS Score bar animation */
+.ats-score-transition {
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Branded loading spinner */
 @keyframes brandedSpin {
   0% {
