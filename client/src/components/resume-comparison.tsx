@@ -379,10 +379,13 @@ export function ResumeComparison({ className }: ResumeComparisonProps) {
             <button 
               onClick={handleToggle}
               disabled={isTransitioning}
-              className="cta-vibrant cta-animate group disabled:opacity-50"
+              className="cta-vibrant interactive-button cta-animate group disabled:opacity-50 disabled:hover:transform-none disabled:hover:scale-100"
             >
               {isTransitioning ? (
-                "Transforming..."
+                <>
+                  <span className="loading-spinner inline-block mr-2"></span>
+                  Transforming...
+                </>
               ) : (
                 <>
                   See {currentView === 'before' ? 'Optimized' : 'Original'} Version

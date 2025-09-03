@@ -59,10 +59,13 @@ export default function GeneratorCTA() {
             </div>
 
             <Link to="/generator">
-              <button className="cta-vibrant cta-animate">
-                Start Generating Now
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </button>
+              <button
+                  className="cta-vibrant interactive-button group"
+                  aria-label="Start generating your optimized resume now"
+                >
+                  Start Generating Now
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </button>
             </Link>
           </CardContent>
         </Card>

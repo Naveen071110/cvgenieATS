@@ -147,7 +147,7 @@ export default function PricingSection() {
 
               <Link to="/generator" className="w-full">
                 <button
-                  className="cta-primary w-full"
+                  className="cta-primary w-full interactive-button"
                   aria-label="Start free plan - Begin creating your resume"
                 >
                   Start Free
@@ -230,7 +230,7 @@ export default function PricingSection() {
               <Link to="/generator" className="w-full">
                 <button
                   onClick={handleUpgradeClick}
-                  className="w-full cta-vibrant cta-animate"
+                  className="w-full cta-vibrant cta-animate interactive-button"
                 >
                   Upgrade to Pro
                 </button>

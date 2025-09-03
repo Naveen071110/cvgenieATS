@@ -282,9 +282,12 @@ export default function FeaturesSection() {
         {/* CTA after features */}
         <div className="text-center mt-16">
           <Link to="/generator">
-            <button className="mt-6 cta-vibrant cta-animate">
-              Try It Now
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <button 
+              className="cta-vibrant interactive-button group"
+              aria-label="Get started with AI-powered resume optimization"
+            >
+              Get Started Now
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
           </Link>
         </div>

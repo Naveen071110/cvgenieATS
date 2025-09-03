@@ -134,7 +134,7 @@ export default function HeroSection() {
       >
         <h1
           id="hero-title"
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
           style={{ marginBottom: 'var(--space-6)' }}
         >
           Transform Your Career with{" "}
@@ -147,15 +147,15 @@ export default function HeroSection() {
           </span>
         </h1>
         <p
-          className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600"
-          style={{ marginBottom: 'var(--space-8)' }}
+          className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
+          style={{ marginBottom: 'var(--space-8)', animationDelay: '0.2s' }}
         >
           Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
           Upload your current resume, paste a job description, and let our AI do the magic.
         </p>
         <div
-          className="flex flex-col sm:flex-row justify-center items-center w-full"
-          style={{ gap: 'var(--space-4)', marginBottom: 'var(--space-8)' }}
+          className="flex flex-col sm:flex-row justify-center items-center w-full fade-in-up"
+          style={{ gap: 'var(--space-4)', marginBottom: 'var(--space-8)', animationDelay: '0.4s' }}
         >
           {isLoading ? (
             <div className="w-full sm:w-auto flex flex-col items-center gap-4">
@@ -285,6 +285,17 @@ export default function HeroSection() {
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 */
