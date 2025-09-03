@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
+import { ImagePerformanceMonitor } from "@/components/ui/image-performance-monitor";
 import Home from "@/pages/home";
 
 // Lazy load non-critical pages
