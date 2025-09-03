@@ -1,0 +1,275 @@
+Objective:
+Expand the current file upload system to support PDF, DOCX, and TXT formats for upload, and implement PDF/DOCX export functionality for generated resumes and cover letters.
+
+Current Issues to Address:
+
+File upload currently restricts to PDF only
+
+Export functionality is limited and inconsistent with marketing promises
+
+Need to add document parsing libraries for DOCX and TXT files
+
+Implementation Tasks:
+
+1. Frontend Upload Component Updates
+File Input Enhancement:
+
+typescript
+// Update file upload component to accept multiple formats
+const ACCEPTED_FILE_TYPES = {
+  'application/pdf': ['.pdf'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+  'text/plain': ['.txt']
+};
+
+// Update file validation
+const validateFile = (file: File) => {
+  const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  
+  if (!validTypes.includes(file.type)) {
+    return { valid: false, error: 'Please upload PDF, DOCX, or TXT files only' };
+  }
+  
+  if (file.size > maxSize) {
+    return { valid: false, error: 'File size must be less than 10MB' };
+  }
+  
+  return { valid: true };
+};
+UI Updates:
+
+xml
+<!-- Update the upload area text -->
+<div class="upload-instructions">
+  <p>Supports: PDF, DOCX, TXT files • Max size: 10MB</p>
+  <p>Upload your resume in PDF, Word, or text format</p>
+</div>
+2. Backend Dependencies Installation
+Install required packages for document processing:
+
+bash
+npm install mammoth officegen docx pdf-lib pdfkit fs-extra
+3. Backend File Processing Enhancement
+Document Parser Service:
+
+javascript
+// services/documentParser.js
+const mammoth = require('mammoth');
+const fs = require('fs');
+
+class DocumentParser {
+  async extractText(filePath, mimeType) {
+    switch (mimeType) {
+      case 'application/pdf':
+        return await this.extractFromPDF(filePath);
+        
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        return await this.extractFromDOCX(filePath);
+        
+      case 'text/plain':
+        return await this.extractFromTXT(filePath);
+        
+      default:
+        throw new Error('Unsupported file format');
+    }
+  }
+  
+  async extractFromDOCX(filePath) {
+    try {
+      const result = await mammoth.extractRawText({ path: filePath });
+      return {
+        content: result.value,
+        wordCount: result.value.split(/\s+/).length,
+        isValid: result.value.length > 100
+      };
+    } catch (error) {
+      throw new Error(`Failed to extract DOCX content: ${error.message}`);
+    }
+  }
+  
+  async extractFromTXT(filePath) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return {
+        content: content,
+        wordCount: content.split(/\s+/).length,
+        isValid: content.length > 50
+      };
+    } catch (error) {
+      throw new Error(`Failed to read TXT file: ${error.message}`);
+    }
+  }
+  
+  // Keep existing extractFromPDF method
+}
+
+module.exports = new DocumentParser();
+4. Export Functionality Implementation
+Document Generator Service:
+
+javascript
+// services/documentGenerator.js
+const PDFDocument = require('pdfkit');
+const officegen = require('officegen');
+const fs = require('fs');
+
+class DocumentGenerator {
+  async generatePDF(content, outputPath) {
+    const doc = new PDFDocument();
+    doc.pipe(fs.createWriteStream(outputPath));
+    
+    // Add content formatting for resume
+    doc.fontSize(16).text('Resume', 50, 50);
+    doc.fontSize(12).text(content, 50, 80, {
+      width: 500,
+      align: 'left'
+    });
+    
+    doc.end();
+    return outputPath;
+  }
+  
+  async generateDOCX(content, outputPath) {
+    const docx = officegen('docx');
+    
+    // Add content to document
+    const pObj = docx.createP();
+    pObj.addText(content);
+    
+    return new Promise((resolve, reject) => {
+      const out = fs.createWriteStream(outputPath);
+      
+      out.on('error', reject);
+      out.on('close', () => resolve(outputPath));
+      
+      docx.generate(out);
+    });
+  }
+  
+  async generateMultipleFormats(resumeContent, coverLetterContent, baseFilename) {
+    const outputs = {};
+    
+    // Generate PDF versions
+    outputs.resumePDF = await this.generatePDF(resumeContent, `${baseFilename}_resume.pdf`);
+    outputs.coverLetterPDF = await this.generatePDF(coverLetterContent, `${baseFilename}_cover_letter.pdf`);
+    
+    // Generate DOCX versions
+    outputs.resumeDOCX = await this.generateDOCX(resumeContent, `${baseFilename}_resume.docx`);
+    outputs.coverLetterDOCX = await this.generateDOCX(coverLetterContent, `${baseFilename}_cover_letter.docx`);
+    
+    return outputs;
+  }
+}
+
+module.exports = new DocumentGenerator();
+5. API Endpoint Updates
+Enhanced Generation Endpoint:
+
+javascript
+// routes/generate.js
+app.post('/api/generate', upload.single('resume'), async (req, res) => {
+  try {
+    const { jobDescription, exportFormat = 'both' } = req.body;
+    const file = req.file;
+    
+    // Extract content based on file type
+    const extractedContent = await documentParser.extractText(file.path, file.mimetype);
+    
+    // Generate optimized resume and cover letter
+    const aiResponse = await generateWithAI(extractedContent.content, jobDescription);
+    
+    // Generate export files based on requested format
+    let downloadLinks = {};
+    
+    if (exportFormat === 'pdf' || exportFormat === 'both') {
+      downloadLinks.resumePDF = await documentGenerator.generatePDF(
+        aiResponse.resume, 
+        `temp/resume_${Date.now()}.pdf`
+      );
+      downloadLinks.coverLetterPDF = await documentGenerator.generatePDF(
+        aiResponse.coverLetter, 
+        `temp/cover_letter_${Date.now()}.pdf`
+      );
+    }
+    
+    if (exportFormat === 'docx' || exportFormat === 'both') {
+      downloadLinks.resumeDOCX = await documentGenerator.generateDOCX(
+        aiResponse.resume, 
+        `temp/resume_${Date.now()}.docx`
+      );
+      downloadLinks.coverLetterDOCX = await documentGenerator.generateDOCX(
+        aiResponse.coverLetter, 
+        `temp/cover_letter_${Date.now()}.docx`
+      );
+    }
+    
+    res.json({
+      success: true,
+      resume: aiResponse.resume,
+      coverLetter: aiResponse.coverLetter,
+      downloads: downloadLinks
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+6. Frontend Export UI Enhancement
+Export Options Component:
+
+tsx
+// components/ExportOptions.tsx
+const ExportOptions = ({ onExport, isGenerating }) => {
+  const exportOptions = [
+    { format: 'pdf', label: 'PDF', icon: '📄', description: 'Professional format' },
+    { format: 'docx', label: 'Word Document', icon: '📝', description: 'Easy to edit' },
+    { format: 'both', label: 'Both Formats', icon: '📋', description: 'PDF + DOCX' }
+  ];
+
+  return (
+    <div className="export-options">
+      <h3>Choose Export Format</h3>
+      <div className="format-grid">
+        {exportOptions.map(option => (
+          <button 
+            key={option.format}
+            onClick={() => onExport(option.format)}
+            disabled={isGenerating}
+            className="format-option"
+          >
+            <span className="icon">{option.icon}</span>
+            <span className="label">{option.label}</span>
+            <span className="description">{option.description}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+7. Testing & Validation
+Test Cases to Implement:
+
+Upload validation for each file type (PDF, DOCX, TXT)
+
+Content extraction accuracy for all formats
+
+Export generation for both PDF and DOCX formats
+
+File size limits and error handling
+
+Cross-browser compatibility for downloads
+
+8. Error Handling & User Feedback
+Enhanced Error Messages:
+
+javascript
+const FILE_ERROR_MESSAGES = {
+  INVALID_TYPE: 'Please upload PDF, DOCX, or TXT files only',
+  FILE_TOO_LARGE: 'File size must be less than 10MB',
+  EXTRACTION_FAILED: 'Could not read file content. Please ensure the file is not corrupted',
+  NO_CONTENT: 'File appears to be empty or unreadable',
+  GENERATION_FAILED: 'Failed to generate documents. Please try again'
+};
+Goal:
+Provide users with flexible file upload options (PDF/DOCX/TXT) and professional export capabilities (PDF/DOCX) while maintaining the current user experience and ATS optimization features.
