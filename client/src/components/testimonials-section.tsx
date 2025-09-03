@@ -8,8 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import OptimizedImage from "@/components/OptimizedImage"; // Assuming OptimizedImage component is in this path
-import useResponsiveImageSizes from "@/hooks/useResponsiveImageSizes"; // Assuming this hook exists
+import { OptimizedImage, useResponsiveImageSizes } from "@/components/ui/optimized-image";
 
 const testimonials = [
   {
@@ -129,7 +128,7 @@ export default function TestimonialsSection() {
                           width={64}
                           height={64}
                           sizes={imageSizes.avatar}
-                          className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                          className="w-12 h-12 rounded-full object-cover"
                         />
                       </div>
                       <div>
