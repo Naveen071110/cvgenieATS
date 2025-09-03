@@ -137,7 +137,7 @@ export default function HeroSection() {
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
           style={{ marginBottom: 'var(--space-6)' }}
         >
-          Transform Your Career with{" "}
+          Transform Your Resume for{" "}
           <span
             className={`inline-block min-w-0 transition-opacity duration-300 text-primary ${
               isVisible ? "opacity-100" : "opacity-0"
