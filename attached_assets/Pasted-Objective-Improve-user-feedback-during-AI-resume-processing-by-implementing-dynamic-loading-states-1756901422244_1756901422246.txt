@@ -1,0 +1,53 @@
+Objective:
+Improve user feedback during AI resume processing by implementing dynamic loading states and progress indicators.
+
+Implementation Instructions:
+
+If a loading indicator system for AI processing already exists, please update or replace it carefully to avoid duplicate loaders or conflicting UI elements. Remove any obsolete or redundant code related to existing loading states to ensure clean integration.
+
+Create a LoadingStateManager class with the following methods:
+
+javascript
+class LoadingStateManager {
+  showAIProcessing() {
+    const loader = `
+      <div class="ai-processing-loader">
+        <div class="ai-brain-animation">
+          <div class="synapse"></div>
+          <div class="synapse"></div>
+          <div class="synapse"></div>
+        </div>
+        <h3>AI is analyzing your resume...</h3>
+        <p class="processing-step">Extracting content and structure</p>
+        <div class="processing-progress">
+          <div class="progress-bar" style="width: 33%"></div>
+        </div>
+      </div>
+    `;
+    document.querySelector('.main-content').innerHTML = loader;
+  }
+
+  updateProgress(step, percentage) {
+    const steps = [
+      'Extracting content and structure',
+      'Analyzing job requirements',
+      'Generating optimizations',
+      'Formatting final resume'
+    ];
+    
+    document.querySelector('.processing-step').textContent = steps[step];
+    document.querySelector('.progress-bar').style.width = `${percentage}%`;
+  }
+}
+Integrate showAIProcessing() to display the loader as soon as AI processing starts (e.g., upon form submission).
+
+Use updateProgress(step, percentage) periodically to update the status message and progress bar width reflecting the current AI process stage.
+
+Style the loader and progress bar appropriately in CSS to ensure clear, professional visuals and responsiveness.
+
+Test interaction flow carefully, ensuring loader content replaces main content only during processing and restores original content afterward.
+
+Ensure compatibility with existing app state management or DOM structure. Adjust selectors (.main-content etc.) if needed for your app layout.
+
+Goal:
+Provide clear, real-time feedback during AI tasks so users are informed of progress, reducing uncertainty and improving UX while ensuring no redundant or conflicting loading states exist.
