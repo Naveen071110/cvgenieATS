@@ -1,0 +1,43 @@
+Objective:
+Create a clear visual hierarchy and improve the prominence of CTAs by implementing a modern, vibrant accent color and bold, eye-catching button styles.
+
+Instructions:
+
+Add the following enhanced color palette CSS variables to the :root, ensuring they are accessible site-wide:
+
+css
+:root {
+  --primary-blue: #2563eb;
+  --accent-vibrant: #10b981;  /* For primary CTAs */
+  --accent-warning: #f59e0b;  /* For secondary actions */
+  --accent-success: #059669;  /* For success states */
+  --gray-base: #f8fafc;
+  --gray-text: #475569;
+}
+Create or update a .cta-vibrant class for primary CTAs, and apply it to all key action buttons (e.g., “Start Free”, “Get Started”):
+
+css
+.cta-vibrant {
+  background: linear-gradient(135deg, var(--accent-vibrant), #059669);
+  color: white;
+  padding: 18px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+}
+.cta-vibrant:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+}
+Replace any legacy or less prominent CTA classes on key buttons with .cta-vibrant to make the primary action visually dominant across the app.
+
+Audit button placement to ensure CTAs appear immediately after main value proposition sections and that contrasting colors/size draw the user’s attention (“above the fold” and at the end of conversion pathways).
+
+Review all pages/components where CTAs are used and confirm the new .cta-vibrant class is applied and renders correctly with brand-compliant spacing and responsiveness.
+
+Bonus: For added hierarchy, consider slightly increasing the size or weight of CTAs on mobile devices and/or adding a mild animation (e.g., fade/slide in on viewport entry).
+
+Goal:
+CTAs should be unmistakably prominent, consistent, and visually attractive, guiding the user clearly through each key action on the platform and improving conversion rate through best-in-class UI hierarchy practices.
