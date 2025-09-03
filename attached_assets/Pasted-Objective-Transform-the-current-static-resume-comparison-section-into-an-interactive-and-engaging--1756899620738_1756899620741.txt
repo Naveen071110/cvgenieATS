@@ -1,0 +1,56 @@
+Objective:
+Transform the current static resume comparison section into an interactive and engaging UI that better demonstrates resume improvements and ATS optimization.
+
+Implementation Guidelines:
+
+If any of these improvements already exist in the current code, update the existing code instead of duplicating or conflicting! Remove any obsolete or redundant elements for clarity and to prevent errors.
+
+Tasks:
+
+Animated Transitions:
+Add smooth, animated transitions between the “before” and “after” states of the resume comparison.
+
+Use CSS transitions or a React animation library (like Framer Motion or React Spring).
+
+The transition should visually highlight key changes (such as sections rearranged, keywords added, or bullet points reformatted).
+
+ATS Score Visualization:
+Integrate a dynamic ATS score display, ideally shown as a progress bar or animated counter that updates as the user switches from “before” to “after.”
+
+Use a color-coded progress bar (red/yellow/green) or a number counter.
+
+The progress bar and score should update in sync with the before/after state changes.
+
+Example:
+
+jsx
+<div className="ats-score-section">
+  <span>ATS Score</span>
+  <div className="ats-score-bar" style={{ width: `${score}%` }}>{score}%</div>
+</div>
+Details on Hover:
+Add hover effects to highlight and reveal additional details about what exactly improved (such as “+ ATS Keywords”, “Better Formatting”, “Achievements Quantified”).
+
+Show tooltips, overlays, or slide-outs with descriptions.
+
+Use ARIA attributes and ensure focus/keyboard visibility for accessibility.
+
+Example:
+
+jsx
+<div className="improvement-highlight" tabIndex={0} aria-label="Show details">
+  <span>+15 relevant keywords</span>
+  <div className="improvement-details-tooltip">
+    Improved keyword match with job posting
+  </div>
+</div>
+Testing & Cleanup:
+
+Ensure all new interactive elements work on both desktop and mobile.
+
+Remove or replace any previous resume comparison or ATS scoring UI to avoid duplication.
+
+Review and update class names and styles to prevent conflicts.
+
+Goal:
+Provide users with an engaging, animated, and transparent way to see exactly how their resume improves—simulating the experience of modern, visually compelling SaaS tools. All enhancements should replace older code if already present and maintain site stability.
