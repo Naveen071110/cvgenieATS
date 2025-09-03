@@ -1,0 +1,71 @@
+Objective:
+Create a more polished and engaging user experience by adding well-crafted CSS animations for page load, button interactions, and loading states.
+
+Implementation Guidelines:
+
+If any of these animation classes or keyframes already exist in the codebase, carefully review and replace/update them with the new code below to avoid duplication, style conflicts, or unexpected errors. Remove any obsolete or redundant code.
+
+Tasks:
+
+Page Load Animation:
+
+Add a .fade-in-up class and its @keyframes for smooth entrance effects on hero text, main CTAs, or important content sections.
+
+css
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+Apply .fade-in-up to key elements that should animate into view on page load.
+
+Interactive Button Hover States:
+
+Add or update the .interactive-button class:
+
+css
+.interactive-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.interactive-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+Add this class to all major CTA and action buttons, ensuring consistent interactive feedback for users.
+
+Loading State Animation:
+
+Replace or create the .loading-spinner class for use during form submissions or async content loading:
+
+css
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+Integrate .loading-spinner wherever loading indicators are required in the UI.
+
+Testing & Cleanup:
+
+Ensure no style or animation conflicts exist, and all updated classes are applied only once per element.
+
+Test all animations on both desktop and mobile devices for smoothness and accessibility.
+
+Confirm that replaced/updated code does not break existing layouts or cause flickers/jank.
+
+Goal:
+Provide a seamless, modern, and visually engaging site experience with animation best practices—ensuring code is updated safely, without redundancy or regression errors.
