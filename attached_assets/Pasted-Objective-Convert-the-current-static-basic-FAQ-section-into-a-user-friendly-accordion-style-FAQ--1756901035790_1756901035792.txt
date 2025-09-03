@@ -1,0 +1,257 @@
+Objective:
+Convert the current static, basic FAQ section into a user-friendly, accordion-style FAQ with search functionality for quick question filtering.
+
+Implementation Instructions:
+
+If accordion or searchable FAQ features already exist, update or replace them carefully while avoiding duplication or conflicts. Remove any outdated FAQ code to ensure a clean implementation without errors.
+
+Accordion Structure and Style:
+Use the following HTML template for the accordion FAQ container and items:
+
+xml
+<div class="faq-container">
+  <div class="faq-search">
+    <input type="text" placeholder="Search FAQs..." class="faq-search-input" aria-label="Search FAQs">
+  </div>
+  <div class="faq-accordion">
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq1" id="faq1-button">
+        <span>What file formats do you support?</span>
+        <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      <div id="faq1" class="faq-answer" role="region" aria-labelledby="faq1-button">
+        <p>We support PDF, DOC, DOCX, TXT, and image files...</p>
+      </div>
+    </div>
+    <!-- Repeat faq-item as needed -->
+  </div>
+</div>
+Style the accordion with the following CSS snippet for smooth transitions and clear visual feedback:
+
+css
+.faq-accordion {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.faq-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  padding: 20px;
+  text-align: left;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+.faq-question:hover {
+  background-color: #f9fafb;
+}
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-item.open .faq-answer {
+  max-height: 200px;
+  padding: 0 20px 20px;
+}
+Accordion Functionality:
+Add JavaScript to handle toggling open/close of FAQ items and maintaining ARIA attributes for accessibility, for example:
+
+js
+const faqItems = document.querySelectorAll('.faq-item button.faq-question');
+
+faqItems.forEach(button => {
+  button.addEventListener('click', () => {
+    const faqItem = button.parentElement;
+    const isOpen = faqItem.classList.contains('open');
+
+    // Close all items
+    document.querySelectorAll('.faq-item.open').forEach(item => {
+      item.classList.remove('open');
+      item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+    });
+
+    // Toggle current item
+    if (!isOpen) {
+      faqItem.classList.add('open');
+      button.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+Search Functionality:
+Implement real-time filtering of FAQ questions as the user types in the search input:
+
+js
+const searchInput = document.querySelector('.faq-search-input');
+const faqItemsContainer = document.querySelector('.faq-accordion');
+const faqItemsArray = Array.from(faqItemsContainer.children);
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase();
+
+  faqItemsArray.forEach(item => {
+    const questionText = item.querySelector('.faq-question span').textContent.toLowerCase();
+    if (questionText.includes(query)) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+});
+Accessibility Considerations:
+
+Use appropriate aria-expanded, aria-controls, and aria-labelledby attributes for better screen reader support.
+
+Make sure the FAQ items are keyboard-navigable.
+
+Testing & Cleanup:
+
+Verify accordion works on desktop and mobile devices.
+
+Ensure search filters FAQs real-time without performance issues.
+
+Remove any legacy FAQ sections or conflicting styles/scripts.
+
+Goal:
+Deliver a clean, responsive, accessible FAQ experience that users can efficiently navigate and search, enhancing site usability and reducing support burden.
+
+This prompt ensures safe, clear, and comprehensive implementation of an accordion-style searchable FAQ with all best practices covered.Here is a clear, comprehensive prompt for the Replit assistant to upgrade the current basic FAQ section into an accordion-style searchable FAQ:
+
+Objective:
+Convert the current static, basic FAQ section into a user-friendly, accordion-style FAQ with search functionality for quick question filtering.
+
+Implementation Instructions:
+
+If accordion or searchable FAQ features already exist, update or replace them carefully while avoiding duplication or conflicts. Remove any outdated FAQ code to ensure a clean implementation without errors.
+
+Accordion Structure and Style:
+Use the following HTML template for the accordion FAQ container and items:
+
+xml
+<div class="faq-container">
+  <div class="faq-search">
+    <input type="text" placeholder="Search FAQs..." class="faq-search-input" aria-label="Search FAQs">
+  </div>
+  <div class="faq-accordion">
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq1" id="faq1-button">
+        <span>What file formats do you support?</span>
+        <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      <div id="faq1" class="faq-answer" role="region" aria-labelledby="faq1-button">
+        <p>We support PDF, DOC, DOCX, TXT, and image files...</p>
+      </div>
+    </div>
+    <!-- Repeat faq-item as needed -->
+  </div>
+</div>
+Style the accordion with the following CSS snippet for smooth transitions and clear visual feedback:
+
+css
+.faq-accordion {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.faq-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  padding: 20px;
+  text-align: left;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+.faq-question:hover {
+  background-color: #f9fafb;
+}
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-item.open .faq-answer {
+  max-height: 200px;
+  padding: 0 20px 20px;
+}
+Accordion Functionality:
+Add JavaScript to handle toggling open/close of FAQ items and maintaining ARIA attributes for accessibility, for example:
+
+js
+const faqItems = document.querySelectorAll('.faq-item button.faq-question');
+
+faqItems.forEach(button => {
+  button.addEventListener('click', () => {
+    const faqItem = button.parentElement;
+    const isOpen = faqItem.classList.contains('open');
+
+    // Close all items
+    document.querySelectorAll('.faq-item.open').forEach(item => {
+      item.classList.remove('open');
+      item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+    });
+
+    // Toggle current item
+    if (!isOpen) {
+      faqItem.classList.add('open');
+      button.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+Search Functionality:
+Implement real-time filtering of FAQ questions as the user types in the search input:
+
+js
+const searchInput = document.querySelector('.faq-search-input');
+const faqItemsContainer = document.querySelector('.faq-accordion');
+const faqItemsArray = Array.from(faqItemsContainer.children);
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase();
+
+  faqItemsArray.forEach(item => {
+    const questionText = item.querySelector('.faq-question span').textContent.toLowerCase();
+    if (questionText.includes(query)) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+});
+Accessibility Considerations:
+
+Use appropriate aria-expanded, aria-controls, and aria-labelledby attributes for better screen reader support.
+
+Make sure the FAQ items are keyboard-navigable.
+
+Testing & Cleanup:
+
+Verify accordion works on desktop and mobile devices.
+
+Ensure search filters FAQs real-time without performance issues.
+
+Remove any legacy FAQ sections or conflicting styles/scripts.
+
+Goal:
+Deliver a clean, responsive, accessible FAQ experience that users can efficiently navigate and search, enhancing site usability and reducing support burden.
