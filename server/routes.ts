@@ -9,6 +9,8 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { exec } from 'child_process';
 import path from 'path';
+import documentParser from './documentParser.js';
+import documentGenerator from './documentGenerator.js';
 
 const execAsync = promisify(exec);
 
@@ -53,7 +55,6 @@ function createSampleResumeError(errorMessage: string) {
   };
 }
 
-// Fallback generation functions
 // FALLBACK RESUME GENERATION REMOVED - No longer generate fake content
 
 // Content validation function
@@ -62,39 +63,39 @@ function validateExtractedContent(content: string): { isValid: boolean; reason: 
   if (!content || content.trim().length < 30) {
     return { isValid: false, reason: "Content too short (less than 30 characters)" };
   }
-  
+
   // Check for English words
   const englishWords = content.match(/\b[a-zA-Z]{2,}\b/g) || [];
   if (englishWords.length < 20) {
     return { isValid: false, reason: "Insufficient English words (less than 20 words found)" };
   }
-  
+
   // Check for resume-like content
   const resumeKeywords = [
     'experience', 'education', 'skills', 'work', 'employment', 'degree', 'university', 'college',
     'manager', 'developer', 'analyst', 'engineer', 'specialist', 'coordinator', 'assistant',
     'email', 'phone', 'address', 'contact', 'name', 'summary', 'objective', 'professional'
   ];
-  
+
   const contentLower = content.toLowerCase();
   const foundKeywords = resumeKeywords.filter(keyword => contentLower.includes(keyword));
-  
+
   if (foundKeywords.length < 2) {
     return { isValid: false, reason: "Content doesn't appear to be a resume (insufficient resume keywords found)" };
   }
-  
+
   // Check for repetitive or garbled content - look for meaningful content sections
   const sentences = content.split(/[.!?]+/).filter(sentence => sentence.trim().length > 10);
   if (sentences.length < 3) {
     return { isValid: false, reason: "Content appears to be incomplete (less than 3 meaningful sentences)" };
   }
-  
+
   // Check for excessive special characters (might indicate parsing issues)
   const specialCharRatio = (content.match(/[^\w\s.,;:()\-]/g) || []).length / content.length;
   if (specialCharRatio > 0.3) {
     return { isValid: false, reason: "Content contains too many special characters (might be garbled)" };
   }
-  
+
   return { isValid: true, reason: "Content validation passed" };
 }
 
@@ -119,13 +120,13 @@ function extractKeywords(jobDescription: string): string[] {
   const text = jobDescription.toLowerCase();
   const words = text.split(/\W+/);
   const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among', 'is', 'are', 'was', 'were', 'been', 'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'a', 'an']);
-  
+
   const meaningfulWords = words.filter(word => word.length > 2 && !stopWords.has(word));
   const wordCounts = meaningfulWords.reduce((acc, word) => {
     acc[word] = (acc[word] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  
+
   return Object.entries(wordCounts)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 10)
@@ -136,7 +137,7 @@ function parseResumeData(resume: string) {
   const emailMatch = resume.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
   const phoneMatch = resume.match(/(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/);
   const nameMatch = resume.match(/^(.+?)(?:\n|\r)/);
-  
+
   return {
     email: emailMatch ? emailMatch[0] : "",
     phone: phoneMatch ? phoneMatch[0] : "",
@@ -150,11 +151,11 @@ function parseResumeData(resume: string) {
 // Helper functions for resume parsing and generation
 function extractAddress(resume: string): string {
   const lines = resume.split('\n');
-  
+
   // Look for address patterns in the first 10 lines
   for (let i = 0; i < Math.min(10, lines.length); i++) {
     const line = lines[i].trim();
-    
+
     // Common address indicators
     if (line.match(/\d+.*(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|extension|ext|boulevard|blvd)/i) ||
         line.match(/\d{5,6}/) || // ZIP codes
@@ -164,58 +165,58 @@ function extractAddress(resume: string): string {
       return line;
     }
   }
-  
+
   return "";
 }
 
 function extractWorkExperience(resume: string): Array<{title: string, company: string, duration: string, bullets: string[]}> {
   const experiences = [];
-  
+
   // Look for work experience section dynamically
   const workSection = resume.match(/(?:WORK EXPERIENCE|EXPERIENCE|EMPLOYMENT|PROFESSIONAL EXPERIENCE)([\s\S]*?)(?:EDUCATION|SKILLS|PROJECTS|REFERENCES|$)/i);
   if (!workSection) return experiences;
-  
+
   const workText = workSection[1];
-  
+
   // Split by job entries - look for patterns like job titles followed by company info
   const jobBlocks = workText.split(/\n(?=[A-Z][A-Za-z\s]*(?:\||–|—|\s+\d{4}|\s+\w+\s+\d{4}))/);
-  
+
   for (const block of jobBlocks) {
     const lines = block.trim().split('\n').filter(line => line.trim());
     if (lines.length < 2) continue;
-    
+
     let title = '';
     let company = '';
     let duration = '';
-    
+
     // Extract job info from the first few lines
     for (let i = 0; i < Math.min(3, lines.length); i++) {
       const line = lines[i].trim();
-      
+
       // Look for duration patterns
       if (!duration && line.match(/\d{4}.*(?:present|current|\d{4})/i)) {
         duration = line;
         continue;
       }
-      
+
       // Look for company patterns (often contains | separator or location)
       if (!company && (line.includes('|') || line.match(/,\s*[A-Z][a-z]+/))) {
         company = line.split('|')[0].trim();
         continue;
       }
-      
+
       // First meaningful line is likely the title
       if (!title && line.length > 3 && !line.match(/^\d+$/) && !line.match(/^[•▸\-\*]/)) {
         title = line;
       }
     }
-    
+
     // Extract bullet points
     const bullets = lines
       .filter(line => line.match(/^[\s]*[•▸\-\*]/))
       .map(line => line.replace(/^[\s]*[•▸\-\*]\s*/, '').trim())
       .filter(bullet => bullet.length > 10);
-    
+
     if (title && company && bullets.length > 0) {
       experiences.push({
         title: title,
@@ -225,14 +226,14 @@ function extractWorkExperience(resume: string): Array<{title: string, company: s
       });
     }
   }
-  
+
   return experiences;
 }
 
 function extractEducation(resume: string): string {
   const eduSection = resume.match(/(?:EDUCATION|ACADEMIC)([\s\S]*?)(?:WORK|EXPERIENCE|SKILLS|PROJECTS|REFERENCES|$)/i);
   if (!eduSection) return "Bachelor's Degree";
-  
+
   const lines = eduSection[1].split('\n').filter(line => line.trim());
   return lines.slice(0, 3).join('\n').trim();
 }
@@ -240,7 +241,7 @@ function extractEducation(resume: string): string {
 function extractSkills(resume: string): string[] {
   const skillsSection = resume.match(/(?:SKILLS|TECHNICAL|TECHNOLOGY)([\s\S]*?)(?:WORK|EXPERIENCE|EDUCATION|PROJECTS|REFERENCES|$)/i);
   if (!skillsSection) return [];
-  
+
   const text = skillsSection[1];
   const skills = text.match(/[A-Za-z][A-Za-z0-9+#\.\s]{1,30}(?=,|;|\n|\||$)/g) || [];
   return skills.map(s => s.trim()).filter(s => s.length > 1);
@@ -248,7 +249,7 @@ function extractSkills(resume: string): string[] {
 
 function extractAchievements(resume: string): string {
   const achievements = [];
-  
+
   // Look for achievement keywords and patterns
   const achievementPatterns = [
     /received.*(?:award|recognition|excellence|acknowledgment)/gi,
@@ -257,12 +258,12 @@ function extractAchievements(resume: string): string {
     /trained.*\d+.*(?:colleagues|people|members)/gi,
     /delivered.*(?:on time|under budget|successfully)/gi
   ];
-  
+
   const lines = resume.split('\n');
-  
+
   for (const line of lines) {
     const trimmed = line.trim();
-    
+
     // Check if line contains achievement indicators
     for (const pattern of achievementPatterns) {
       if (pattern.test(trimmed) && trimmed.length > 20) {
@@ -273,7 +274,7 @@ function extractAchievements(resume: string): string {
       }
     }
   }
-  
+
   // If no achievements found, create generic ones based on experience
   if (achievements.length === 0) {
     achievements.push(
@@ -281,7 +282,7 @@ function extractAchievements(resume: string): string {
       '▸ Contributed to successful project delivery and organizational objectives'
     );
   }
-  
+
   return achievements.join('\n');
 }
 
@@ -289,7 +290,7 @@ function generateOptimizedSummary(resume: string, keywords: string[]): string {
   const yearsExp = extractYearsOfExperience(resume);
   const currentRole = extractCurrentRole(resume);
   const keySkills = keywords.slice(0, 3).join(', ');
-  
+
   return `${currentRole} with ${yearsExp} of experience in ${keySkills}. Proven track record in ${keywords.slice(3, 6).join(', ')} with demonstrated ability to deliver high-impact solutions. Strong expertise in ${keywords.includes('sql') ? 'database development' : keywords[0]} and collaborative problem-solving.`;
 }
 
@@ -310,7 +311,7 @@ University Name | Year
 ▸ Relevant academic background for the target position
 ▸ Strong foundation in core subject areas`;
   }
-  
+
   // Clean and format the extracted education
   const lines = education.split('\n').filter(line => line.trim());
   const formatted = lines.map(line => {
@@ -318,7 +319,7 @@ University Name | Year
     if (trimmed.match(/^[•▸\-\*]/)) return trimmed;
     return `▸ ${trimmed}`;
   }).join('\n');
-  
+
   return formatted;
 }
 
@@ -328,7 +329,7 @@ function formatSkills(skills: string[], keywords: string[]): string {
   const programming = ['SQL', 'Python', 'Java', 'JavaScript', 'T-SQL', 'PL/SQL', 'R'];
   const tools = ['Informatica', 'Power BI', 'Tableau', 'Excel', 'JIRA', 'Git', 'Docker'];
   const cloud = ['AWS', 'Azure', 'Google Cloud', 'Amazon RDS', 'Snowflake'];
-  
+
   return `DATABASE SYSTEMS:     ${databases.join(' • ')}
 PROGRAMMING LANGUAGES: ${programming.join(' • ')}
 DATA & BI TOOLS:      ${tools.join(' • ')}
@@ -364,7 +365,7 @@ function extractYearsOfExperience(resume: string): string {
 function extractRelevantExperience(resume: string, keywords: string[]): string {
   const workSection = resume.match(/(?:WORK EXPERIENCE|EXPERIENCE)([\s\S]*?)(?:EDUCATION|SKILLS|$)/i);
   if (!workSection) return '';
-  
+
   const lines = workSection[1].split('\n');
   return lines.filter(line => 
     keywords.some(keyword => line.toLowerCase().includes(keyword.toLowerCase()))
@@ -374,7 +375,7 @@ function extractRelevantExperience(resume: string, keywords: string[]): string {
 function extractCompanyName(jobDescription: string): string {
   const companyMatch = jobDescription.match(/(?:at|for|with)\s+([A-Z][a-zA-Z\s&]+?)(?:\s+is|\s+has|\.|,)/);
   if (companyMatch) return companyMatch[1].trim();
-  
+
   const firstLine = jobDescription.split('\n')[0];
   const words = firstLine.split(' ');
   return words.find(word => word.length > 3 && /^[A-Z]/.test(word)) || 'your organization';
@@ -383,7 +384,7 @@ function extractCompanyName(jobDescription: string): string {
 function extractJobTitle(jobDescription: string): string {
   const titleMatch = jobDescription.match(/(?:seeking|for)\s+a\s+(?:skilled\s+)?(?:and\s+enthusiastic\s+)?([A-Z][a-zA-Z\s]+?)(?:\s+to|\s+with)/);
   if (titleMatch) return titleMatch[1].trim();
-  
+
   const commonTitles = ['Developer', 'Engineer', 'Analyst', 'Manager', 'Specialist', 'Lead'];
   for (const title of commonTitles) {
     if (jobDescription.toLowerCase().includes(title.toLowerCase())) {
@@ -411,34 +412,34 @@ function generateClosingParagraph(keywords: string[], companyName: string): stri
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
     console.log('Extracting text from PDF using Python pdfplumber...');
-    
+
     // Convert buffer to base64 for Python script
     const base64Data = buffer.toString('base64');
-    
+
     // Call Python script with the PDF data
     const { stdout, stderr } = await execAsync(`python pdf_extractor.py "${base64Data}"`);
-    
+
     if (stderr) {
       console.log('Python stderr:', stderr);
     }
-    
+
     // Parse the JSON response from Python script
     const result = JSON.parse(stdout);
-    
+
     if (!result.success) {
       throw new Error(`Python PDF extraction failed: ${result.error}`);
     }
-    
+
     console.log(`pdfplumber extracted ${result.text.length} characters from ${result.pages} pages`);
     console.log(`Word count: ${result.word_count}, Keyword matches: ${result.keyword_matches}, Resume-like: ${result.is_resume_like}`);
-    
+
     if (!result.text || result.text.trim().length < 20) {
       throw new Error('PDF contains no readable text content');
     }
-    
+
     // Clean the extracted text
     const cleanedText = cleanExtractedText(result.text);
-    
+
     // Validate extracted content quality
     const validationResult = validateExtractedContent(cleanedText);
     if (!validationResult.isValid) {
@@ -446,21 +447,21 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
       console.log(`First 300 characters of extraction attempt: "${cleanedText.substring(0, 300)}"`);
       throw new Error(`Resume content validation failed: ${validationResult.reason}`);
     }
-    
+
     console.log(`Successfully extracted resume content: ${cleanedText.length} characters`);
     console.log(`Content preview: ${cleanedText.substring(0, 300)}...`);
-    
+
     return cleanedText;
-    
+
   } catch (error) {
     console.error('PDF extraction failed:', error.message);
-    
+
     // If Python extraction fails, try a simple fallback method
     console.log('Trying fallback PDF text extraction...');
     try {
       const content = buffer.toString('binary');
       let fallbackText = '';
-      
+
       // Look for parentheses-enclosed text (common in PDFs)  
       const parenthesesPattern = /\(([^)]{5,})\)/g;
       let match;
@@ -470,10 +471,10 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
           fallbackText += text + ' ';
         }
       }
-      
+
       if (fallbackText && fallbackText.trim().length > 100) {
         const cleanedFallback = cleanExtractedText(fallbackText);
-        
+
         // Validate fallback content
         const validationResult = validateExtractedContent(cleanedFallback);
         if (!validationResult.isValid) {
@@ -481,14 +482,14 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
           console.log(`First 300 characters of fallback extraction: "${cleanedFallback.substring(0, 300)}"`);
           throw new Error(`Fallback extraction validation failed: ${validationResult.reason}`);
         }
-        
+
         console.log(`Fallback extraction succeeded: ${cleanedFallback.length} characters`);
         return cleanedFallback;
       }
     } catch (fallbackError) {
       console.log('Fallback extraction also failed:', fallbackError.message);
     }
-    
+
     throw new Error(`Unable to extract readable text from PDF: ${error.message}`);
   }
 }
@@ -542,13 +543,13 @@ const upload = multer({
       'text/plain',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
-    
+
     // Get file extension
     const fileExtension = file.originalname.toLowerCase().split('.').pop();
     const allowedExtensions = ['pdf', 'txt', 'docx'];
-    
+
     console.log(`File upload: ${file.originalname}, detected MIME type: ${file.mimetype}, extension: ${fileExtension}`);
-    
+
     // Accept file if either MIME type matches OR extension matches (for DOCX files that might be detected as octet-stream)
     if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(fileExtension || '')) {
       cb(null, true);
@@ -601,7 +602,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('PDF extraction failed completely:', pdfError.message);
           console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
           console.log(`First 300 characters of extraction attempt: "${pdfError.message}"`);
-          
+
           return res.status(400).json(createSampleResumeError(
             "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content. Image-based or scanned PDFs may not work properly."
           ));
@@ -615,7 +616,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('DOCX extraction failed completely:', docxError.message);
           console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
           console.log(`First 300 characters of extraction attempt: "${docxError.message}"`);
-          
+
           return res.status(400).json(createSampleResumeError(
             "We couldn't extract content from this DOCX file. Please ensure it's a valid Word document with readable text content."
           ));
@@ -627,7 +628,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Clean up the extracted content
       extractedContent = enhanceEnglishContent(extractedContent);
-      
+
       // Validate extracted content quality
       const validationResult = validateExtractedContent(extractedContent);
       if (!validationResult.isValid) {
@@ -653,51 +654,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate resume and cover letter
   app.post("/api/generate", upload.single('resume'), async (req, res) => {
     try {
-      const { sessionId, jobDescription, resumeContent } = req.body;
-      const resumeFile = req.file;
+      const { jobDescription, sessionId, exportFormat = 'pdf' } = req.body;
+      const file = req.file;
 
-      if (!resumeFile) {
-        return res.status(400).json({ error: "Resume file is required" });
+      if (!file) {
+        return res.status(400).json({ error: 'No file uploaded' });
       }
 
-      if (!jobDescription) {
-        return res.status(400).json({ error: "Job description is required" });
-      }
-
-      // Get usage session
-      let session = await storage.getUsageSession(sessionId);
-      if (!session) {
-        session = await storage.createUsageSession({
-          sessionId,
-          generationsUsed: 0,
-          isPro: 0
-        });
+      if (!jobDescription || !sessionId) {
+        return res.status(400).json({ error: 'Missing job description or session ID' });
       }
 
       // Check usage limits
-      if (!session.isPro && (session.generationsUsed || 0) >= 3) {
+      const session = await storage.getUsageSession(sessionId);
+      if (session && session.generationsUsed >= 3) {
         return res.status(403).json({ 
           error: "Free usage limit exceeded. Please upgrade to Pro for unlimited generations." 
         });
       }
 
-      // Call Python API for PDF extraction and AI processing
-      const formData = new FormData();
-      formData.append('resume', new Blob([resumeFile.buffer]), resumeFile.originalname);
-      formData.append('job_description', jobDescription);
-      formData.append('session_id', sessionId);
-
-      let optimizedResume: string;
-      let coverLetter: string;
-
       // Use provided resume content or extract from file
       let originalResume: string;
-      
-      if (resumeContent && resumeContent.trim().length > 0) {
+
+      if (req.body.resumeContent && req.body.resumeContent.trim().length > 0) {
         // Use the edited resume content from the frontend
-        originalResume = resumeContent.trim();
+        originalResume = req.body.resumeContent.trim();
         console.log(`Using edited resume content: ${originalResume.length} characters`);
-        
+
         // Validate edited content as well
         const validationResult = validateExtractedContent(originalResume);
         if (!validationResult.isValid) {
@@ -707,28 +690,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
             error: `The provided resume content is invalid: ${validationResult.reason}. Please provide a proper resume with readable content.` 
           });
         }
-      } else if (resumeFile) {
+      } else if (file) {
         // Fallback to file extraction if no content provided
         try {
-          console.log(`Processing file: ${resumeFile.originalname}, type: ${resumeFile.mimetype}, size: ${resumeFile.size} bytes`);
-          
-          if (resumeFile.mimetype === 'application/pdf') {
-            originalResume = await extractTextFromPDF(resumeFile.buffer);
-          } else if (resumeFile.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
-                     (resumeFile.mimetype === 'application/octet-stream' && resumeFile.originalname.toLowerCase().endsWith('.docx'))) {
-            originalResume = await extractTextFromDOCX(resumeFile.buffer);
-          } else {
-            originalResume = cleanExtractedText(resumeFile.buffer.toString('utf-8'));
+          console.log(`Processing file: ${file.originalname}, type: ${file.mimetype}, size: ${file.size} bytes`);
+
+          let extractedContent;
+          try {
+            extractedContent = await documentParser.extractText(file.path, file.mimetype);
+          } catch (error) {
+            console.error('Document extraction error:', error);
+            return res.status(400).json({ 
+              error: `Failed to extract content from file: ${error instanceof Error ? error.message : 'Unknown error'}` 
+            });
           }
-          
-          if (!originalResume || originalResume.trim().length < 50) {
-            console.error('Insufficient content extracted from file');
-            console.log(`First 300 characters of failed extraction: "${originalResume?.substring(0, 300) || 'No content'}"`);
-            return res.status(400).json(createSampleResumeError(
-              "We couldn't extract sufficient content from this file. Please upload a text-based resume PDF with readable content."
-            ));
+
+          if (!extractedContent.isValid) {
+            return res.status(400).json({ 
+              error: 'File appears to be empty or unreadable. Please ensure the file contains text content.' 
+            });
           }
-          
+
+          originalResume = extractedContent.content;
+
           // Validate extracted content quality
           const validationResult = validateExtractedContent(originalResume);
           if (!validationResult.isValid) {
@@ -738,7 +722,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
             ));
           }
-          
+
         } catch (error) {
           console.error('Resume processing error:', error);
           return res.status(400).json({ 
@@ -751,22 +735,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate improved resume using AI (Deepseek) - Two-step process
       console.log('Calling Deepseek AI for resume generation (Step 1: Content optimization)...');
+      let optimizedResume: string;
+      let coverLetter: string;
+      
       try {
         // Step 1: Generate optimized content
         const initialResume = await generateOptimizedResume(originalResume, jobDescription);
         console.log('Step 1 completed - Initial resume length:', initialResume.length);
-        
+
         // Step 2: Ensure proper ATS formatting
         console.log('Step 2: Applying ATS formatting...');
         optimizedResume = await formatResumeForATS(initialResume);
         console.log('Step 2 completed - Final formatted resume length:', optimizedResume.length);
-        
+
         // Generate cover letter
         coverLetter = await generateCoverLetter(originalResume, jobDescription);
-        
+
         console.log('AI-generated cover letter length:', coverLetter.length);
         console.log('Final resume preview (ATS formatted):', optimizedResume.substring(0, 200));
-        
+
       } catch (aiError) {
         console.error('AI generation failed:', aiError);
         return res.status(500).json({ 
@@ -774,12 +761,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Save generation
-      const generation = await storage.createGeneration({
+      // Generate export files if requested
+      let downloadLinks = {};
+      if (exportFormat && exportFormat !== 'none') {
+        try {
+          const formats = exportFormat === 'both' ? ['pdf', 'docx'] : [exportFormat];
+          const timestamp = Date.now();
+          const exports = await documentGenerator.generateMultipleFormats(
+            optimizedResume,
+            coverLetter,
+            `generated_${timestamp}`,
+            formats
+          );
+
+          // Convert file paths to download URLs
+          Object.entries(exports).forEach(([key, filePath]) => {
+            if (filePath) {
+              const filename = path.basename(filePath);
+              downloadLinks[key] = `/api/download/${filename}`;
+            }
+          });
+        } catch (error) {
+          console.error('Export generation error:', error);
+          // Don't fail the request if export fails, just log the error
+        }
+      }
+
+      // Store generation
+      await storage.storeGeneration({
         sessionId,
-        originalResume: `Resume from ${resumeFile.originalname}`,
-        jobDescription,
-        optimizedResume,
+        resume: optimizedResume,
         coverLetter
       });
 
@@ -787,10 +798,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.updateUsageSession(sessionId, (session.generationsUsed || 0) + 1);
 
       res.json({
-        id: generation.id,
-        optimizedResume: generation.optimizedResume,
-        coverLetter: generation.coverLetter,
-        remainingGenerations: session.isPro ? -1 : Math.max(0, 3 - ((session.generationsUsed || 0) + 1))
+        resume: optimizedResume,
+        coverLetter,
+        downloads: downloadLinks
       });
 
     } catch (error) {
@@ -812,8 +822,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const httpServer = createServer(app);
-  return httpServer;
+  // Download endpoint for generated files
+  app.get('/api/download/:filename', (req, res) => {
+    try {
+      const filename = req.params.filename;
+      const filePath = path.join(process.cwd(), 'tmp', filename);
+
+      // Security check - ensure file exists and is in tmp directory
+      if (!fs.existsSync(filePath) || !filePath.startsWith(path.join(process.cwd(), 'tmp'))) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      // Set appropriate content type
+      const ext = path.extname(filename).toLowerCase();
+      let contentType = 'application/octet-stream';
+
+      if (ext === '.pdf') {
+        contentType = 'application/pdf';
+      } else if (ext === '.docx') {
+        contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      }
+
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+
+      // Clean up file after download
+      fileStream.on('end', () => {
+        setTimeout(() => {
+          fs.unlink(filePath, (err) => {
+            if (err) console.error('Error cleaning up file:', err);
+          });
+        }, 5000); // Delete after 5 seconds
+      });
+
+    } catch (error) {
+      res.status(500).json({ error: 'Download failed' });
+    }
+  });
+
+  // Health check endpoint
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+  });
 }
 
 // Clean AI response function

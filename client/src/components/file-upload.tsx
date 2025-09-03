@@ -27,6 +27,51 @@ interface ValidationError {
   message: string;
 }
 
+const ACCEPTED_FILE_TYPES = {
+  'application/pdf': ['.pdf'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+  'text/plain': ['.txt']
+};
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+interface FileValidationResult {
+  isValid: boolean;
+  error?: string;
+}
+
+const validateFile = (file: File): FileValidationResult => {
+  // Check file type
+  const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+  const isValidType = validTypes.includes(file.type) ||
+    Object.values(ACCEPTED_FILE_TYPES).flat().some(ext => file.name.toLowerCase().endsWith(ext));
+
+  if (!isValidType) {
+    return {
+      isValid: false,
+      error: 'Please upload PDF, DOCX, or TXT files only'
+    };
+  }
+
+  // Check file size
+  if (file.size > MAX_FILE_SIZE) {
+    return {
+      isValid: false,
+      error: `File size exceeds the limit of ${MAX_FILE_SIZE / (1024 * 1024)}MB.`
+    };
+  }
+
+  // Check minimum file size (empty files)
+  if (file.size < 1024) { // Less than 1KB
+    return {
+      isValid: false,
+      error: 'File appears to be empty or corrupted. Please select a valid file.'
+    };
+  }
+
+  return { isValid: true };
+};
+
 export function FileUpload({
   onFileSelect,
   onFileRemove,
@@ -50,56 +95,10 @@ export function FileUpload({
 
   const totalSteps = enableSteps ? 3 : 1;
   const steps = [
-    { id: 1, title: 'Select Resume', description: 'Upload your PDF resume file' },
+    { id: 1, title: 'Select Resume', description: 'Upload your resume file' },
     { id: 2, title: 'Validate File', description: 'Verify file format and content' },
     { id: 3, title: 'Ready to Process', description: 'Your resume is ready for optimization' }
   ];
-
-  const validateFile = (file: File): ValidationError | null => {
-    // Check if file exists
-    if (!file) {
-      return {
-        type: 'file-missing',
-        message: 'Please select a file to upload.'
-      };
-    }
-
-    // Check MIME type for PDF (primary validation)
-    if (file.type !== 'application/pdf') {
-      return {
-        type: 'file-type',
-        message: 'Please upload a PDF file. Only PDF format is supported.'
-      };
-    }
-
-    // Fallback: Check file extension
-    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-    if (fileExtension !== '.pdf') {
-      return {
-        type: 'file-type',
-        message: 'Please upload a PDF file. File extension must be .pdf'
-      };
-    }
-
-    // Check file size
-    const fileSizeMB = file.size / (1024 * 1024);
-    if (fileSizeMB > maxSize) {
-      return {
-        type: 'file-size',
-        message: `File size too large. Maximum size is ${maxSize}MB. Your file is ${fileSizeMB.toFixed(1)}MB.`
-      };
-    }
-
-    // Check minimum file size (empty files)
-    if (file.size < 1024) { // Less than 1KB
-      return {
-        type: 'file-size',
-        message: 'File appears to be empty or corrupted. Please select a valid PDF file.'
-      };
-    }
-
-    return null;
-  };
 
   const clearValidationError = () => {
     setValidationError(null);
@@ -113,11 +112,11 @@ export function FileUpload({
     }
 
     const error = validateFile(file);
-    setValidationError(error);
-    setIsValidated(!error);
+    setValidationError(error.error ? { type: 'file-type', message: error.error } : null);
+    setIsValidated(!error.error);
 
     // Auto-advance to next step if validation passes and steps are enabled
-    if (!error && enableSteps && currentStep === 1) {
+    if (!error.error && enableSteps && currentStep === 1) {
       setTimeout(() => setCurrentStep(2), 500);
       setTimeout(() => setCurrentStep(3), 1500);
     }
@@ -127,7 +126,7 @@ export function FileUpload({
     handleRealTimeValidation(file);
 
     const error = validateFile(file);
-    if (!error) {
+    if (error.isValid) {
       onFileSelect(file);
     }
   };
@@ -295,7 +294,7 @@ export function FileUpload({
               <div>
                 <p className="font-medium text-green-900">{selectedFile.name}</p>
                 <p className="text-sm text-green-600">
-                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF Format
+                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {selectedFile.type.split('/')[1].toUpperCase()} Format
                 </p>
               </div>
             </div>
@@ -344,8 +343,8 @@ export function FileUpload({
             </div>
 
             <div className="space-y-2">
-              <Progress 
-                value={uploadProgress} 
+              <Progress
+                value={uploadProgress}
                 className="w-full h-2"
               />
               <p className="text-xs text-blue-500">
@@ -367,8 +366,8 @@ export function FileUpload({
           className={cn(
             "relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300",
             "hover:border-primary/50 hover:bg-primary/5",
-            isDragging 
-              ? "border-primary bg-primary/10 scale-105" 
+            isDragging
+              ? "border-primary bg-primary/10 scale-105"
               : "border-gray-300 bg-gray-50",
             validationError && "border-red-300 bg-red-50",
             isValidated && "border-green-300 bg-green-50"
@@ -395,7 +394,7 @@ export function FileUpload({
             ref={fileInputRef}
             id="resume"
             type="file"
-            accept="application/pdf,.pdf"
+            accept=".pdf,.docx,.txt"
             onChange={handleFileInputChange}
             className="hidden"
             aria-hidden="true"
@@ -406,24 +405,24 @@ export function FileUpload({
         <div className="space-y-4">
             <div className={cn(
               "w-16 h-16 mx-auto rounded-lg flex items-center justify-center transition-all duration-300",
-              isDragging 
-                ? "bg-primary/20 scale-110" 
+              isDragging
+                ? "bg-primary/20 scale-110"
                 : isValidated ? "bg-green-100" :
-                validationError 
+                validationError
                   ? "bg-red-100"
                   : "bg-gray-200"
             )}>
               {validationError ? (
-                <AlertCircle 
-                  className="w-8 h-8 text-red-500" 
+                <AlertCircle
+                  className="w-8 h-8 text-red-500"
                   aria-hidden="true"
                   role="img"
                   aria-label="Error indicator"
                 />
               ) : isValidated ? (
-                <CheckCircle 
+                <CheckCircle
                   className="w-8 h-8 text-green-500"
-                  aria-hidden="true" 
+                  aria-hidden="true"
                   role="img"
                   aria-label="Success indicator"
                 />
@@ -431,7 +430,7 @@ export function FileUpload({
                 <Upload className={cn(
                   "w-8 h-8 transition-colors duration-300",
                   isDragging ? "text-primary" : "text-gray-500"
-                )} 
+                )}
                 aria-hidden="true"
                 role="img"
                 aria-label="Upload indicator"
@@ -442,19 +441,19 @@ export function FileUpload({
             <div className="space-y-2">
               <h3 className={cn(
                 "text-lg font-semibold transition-colors duration-300",
-                isDragging ? "text-primary" : 
+                isDragging ? "text-primary" :
                 isValidated ? "text-green-600" :
                 validationError ? "text-red-600" : "text-gray-900"
               )}>
-                {isDragging 
-                  ? "Drop your PDF resume here" 
+                {isDragging
+                  ? "Drop your resume file here"
                   : isValidated
-                    ? "PDF Resume Ready"
-                    : validationError 
+                    ? "File Ready"
+                    : validationError
                       ? "Invalid File"
                       : enableSteps && currentStep === 1
-                        ? "Step 1: Select your PDF resume"
-                        : "Upload your PDF resume"
+                        ? "Step 1: Select your resume"
+                        : "Upload your resume"
                 }
               </h3>
 
@@ -469,7 +468,7 @@ export function FileUpload({
 
               {isValidated && (
                 <p className="text-sm text-green-600 font-medium">
-                  ✓ Valid PDF file selected
+                  ✓ Valid file selected
                 </p>
               )}
             </div>
@@ -485,7 +484,7 @@ export function FileUpload({
                 }}
                 disabled={isProcessing}
               >
-                Choose PDF File
+                Choose File
               </Button>
             )}
           </div>
@@ -493,15 +492,18 @@ export function FileUpload({
         {/* File Requirements */}
           {!validationError && !isValidated && (
             <div className="mt-6 pt-4 border-t border-gray-200">
-              <p className="text-xs text-gray-500">
-                Supports: PDF files only • Max size: {maxSize}MB
+              <p className="text-sm text-gray-500 mt-2">
+                Supports: PDF, DOCX, TXT files • Max size: 10MB
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Upload your resume in PDF, Word, or text format
               </p>
             </div>
           )}
 
           {/* Hidden instructions for screen readers */}
           <div id="file-upload-instructions" className="sr-only">
-            Upload your resume in PDF format. Maximum file size is {maxSize}MB. 
+            Upload your resume in PDF, DOCX, or TXT format. Maximum file size is 10MB.
             You can drag and drop a file or click to browse for files.
           </div>
         </div>
@@ -509,7 +511,7 @@ export function FileUpload({
 
       {/* Real-time Validation Error Message */}
       {validationError && (
-        <div 
+        <div
           id="file-upload-error"
           className="bg-red-50 border border-red-200 rounded-lg p-4 error-label"
           role="alert"
@@ -521,7 +523,7 @@ export function FileUpload({
             <div>
               <p className="text-sm font-medium text-red-700">{validationError.message}</p>
               <p className="text-xs text-red-600 mt-1">
-                Please select a valid PDF file to continue.
+                Please select a valid file to continue.
               </p>
             </div>
           </div>
@@ -530,7 +532,7 @@ export function FileUpload({
 
       {/* Legacy Error Message Support */}
       {error && !validationError && (
-        <div 
+        <div
           className="bg-red-50 border border-red-200 rounded-lg p-4"
           role="alert"
           aria-live="polite"
@@ -573,9 +575,9 @@ export function FileUpload({
       {!selectedFile && !validationError && !error && !isUploading && !isProcessing && (
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            {enableSteps 
-              ? "Follow the steps above to upload and validate your PDF resume"
-              : "Upload your PDF resume to get started with AI-powered optimization"
+            {enableSteps
+              ? "Follow the steps above to upload and validate your resume"
+              : "Upload your resume to get started with AI-powered optimization"
             }
           </p>
         </div>

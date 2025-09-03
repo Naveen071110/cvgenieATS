@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FileUpload } from '@/components/file-upload';
+import ExportOptions from './export-options';
 
 interface UsageSession {
   id: string;
@@ -21,6 +22,7 @@ interface GenerationResult {
   optimizedResume: string;
   coverLetter: string;
   remainingGenerations: number;
+  downloads?: Record<string, string>;
 }
 
 export default function ResumeGenerator() {
@@ -29,6 +31,9 @@ export default function ResumeGenerator() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
+  const [exportFormat, setExportFormat] = useState<string>('pdf');
+  const [copiedResume, setCopiedResume] = useState(false);
+  const [copiedCoverLetter, setCopiedCoverLetter] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -47,6 +52,7 @@ export default function ResumeGenerator() {
       if (resumeFile) {
         formData.append("resume", resumeFile);
       }
+      formData.append('exportFormat', exportFormat);
 
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -110,6 +116,21 @@ export default function ResumeGenerator() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const copyToClipboard = (text: string, type: 'resume' | 'coverLetter') => {
+    navigator.clipboard.writeText(text);
+    if (type === 'resume') {
+      setCopiedResume(true);
+      setTimeout(() => setCopiedResume(false), 2000);
+    } else {
+      setCopiedCoverLetter(true);
+      setTimeout(() => setCopiedCoverLetter(false), 2000);
+    }
+    toast({
+      title: "Copied to Clipboard",
+      description: `The ${type} has been successfully copied.`,
+    });
   };
 
   const remainingGenerations = usageSession?.isPro
@@ -251,6 +272,14 @@ export default function ResumeGenerator() {
                   </div>
                 </div>
 
+                {/* Export Options */}
+                {resumeFile && jobDescription && !generateMutation.isPending && !generationResult && (
+                  <ExportOptions 
+                    onExport={(format) => setExportFormat(format)}
+                    isGenerating={false}
+                  />
+                )}
+
                 <div className="flex justify-between">
                   <Button
                     variant="ghost"
@@ -334,6 +363,13 @@ export default function ResumeGenerator() {
                         </Button>
                       </div>
                     </div>
+
+                    {/* Download Links */}
+                    <ExportOptions 
+                      onExport={() => {}}
+                      isGenerating={false}
+                      downloads={generationResult.downloads}
+                    />
 
                     <div className="text-center">
                       <Button
