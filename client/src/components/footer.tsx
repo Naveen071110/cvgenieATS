@@ -109,17 +109,6 @@ export default function Footer() {
           <p className="typography-small text-slate-400 text-sm">
             © 2025 CVGenie. All rights reserved.
           </p>
-          <p className="typography-small text-slate-400 text-sm mt-4 sm:mt-0">
-            <Link to="/generator">
-              <button
-                className="cta-primary group shadow-lg hover:shadow-xl"
-                aria-label="Get started free - Begin your resume transformation"
-              >
-                Start Free
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-              </button>
-            </Link>
-          </p>
         </div>
       </div>
     </footer>
