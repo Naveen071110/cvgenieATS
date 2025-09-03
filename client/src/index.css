@@ -954,6 +954,254 @@ select:focus,
   animation: progressFill 0.5s ease-out forwards;
 }
 
+/* Enhanced Progress Indicator Styles */
+.progress-indicator {
+  position: relative;
+}
+
+.progress-indicator .step {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-indicator .step-circle {
+  margin: 0 auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, background-color, border-color;
+}
+
+.progress-indicator .step.completed .step-circle {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.progress-indicator .step.active .step-circle {
+  transform: scale(1.15);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  animation: pulseActive 2s ease-in-out infinite;
+}
+
+@keyframes pulseActive {
+  0%, 100% {
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.6);
+  }
+}
+
+.progress-indicator .step-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Enhanced Form Animations */
+.form-step-enter {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.form-step-exit {
+  animation: slideOutLeft 0.3s ease-in;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* Form validation states */
+.form-field-entering {
+  animation: fieldFocusIn 0.3s ease-out;
+}
+
+@keyframes fieldFocusIn {
+  from {
+    border-color: #e5e7eb;
+    box-shadow: none;
+  }
+  to {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+/* Auto-save indicator */
+.auto-save-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.auto-save-indicator.saving {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.auto-save-indicator.saved {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.auto-save-indicator.error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+/* Enhanced drag and drop styling */
+.file-drop-zone {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.file-drop-zone.drag-over {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+.file-drop-zone.drag-over::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* File preview styling */
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.file-preview .file-icon {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.file-preview .file-info {
+  flex: 1;
+}
+
+.file-preview .file-info h4 {
+  margin: 0;
+  font-weight: 600;
+  color: #374151;
+}
+
+.extraction-progress {
+  margin-top: 8px;
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.extraction-progress .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  border-radius: 3px;
+  animation: extractionProgress 2s ease-out forwards;
+}
+
+@keyframes extractionProgress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Navigation button enhancements */
+.nav-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-button:hover {
+  transform: translateY(-1px);
+}
+
+.nav-button:active {
+  transform: translateY(0);
+}
+
+.nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-button:hover::before {
+  left: 100%;
+}
+
+/* Responsive adjustments for progress indicator */
+@media (max-width: 640px) {
+  .progress-indicator .step {
+    margin: 0 4px;
+  }
+  
+  .progress-indicator .step-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  
+  .progress-indicator .step-label {
+    font-size: 0.75rem;
+    margin-top: 8px;
+  }
+  
+  .progress-indicator .step-description {
+    display: none;
+  }
+}
+
 /* File upload hover effects */
 .upload-zone {
   transition: all 0.3s ease;
