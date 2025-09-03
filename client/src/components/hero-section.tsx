@@ -181,7 +181,7 @@ export default function HeroSection() {
             style={{ gap: 'var(--space-3)' }}
           >
             <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" aria-hidden="true" />
-            <span className="text-sm font-medium">Generated in 10-15 seconds</span>
+            <span className="text-sm font-medium">Generated in 40-60 seconds</span>
           </div>
         </div>
 
