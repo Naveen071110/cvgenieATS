@@ -1,0 +1,94 @@
+Objective:
+Guide users through a clear, intuitive multi-step journey with a visual progress indicator and an engaging, progressive form experience.
+
+Current Issues:
+
+User journey is not visually represented
+
+Form process is basic and lacks engagement
+
+No progress indicators to communicate form status
+
+Required Implementations:
+
+Visual Step Indicator:
+Add a visually clear progress indicator component showing the current step, completed steps, and upcoming steps with numbers and labels. Use the following HTML structure:
+
+xml
+<div class="progress-indicator">
+  <div class="step completed">
+    <span class="step-number">1</span>
+    <span class="step-label">Upload</span>
+  </div>
+  <div class="step active">
+    <span class="step-number">2</span>
+    <span class="step-label">Optimize</span>
+  </div>
+  <div class="step">
+    <span class="step-number">3</span>
+    <span class="step-label">Download</span>
+  </div>
+</div>
+Style .completed, .active, and default .step states clearly.
+
+Ensure responsiveness and accessibility.
+
+Enhanced Multi-Step Form:
+
+Create a progressive, engaging form process based on the following structure:
+
+javascript
+// Progressive form enhancement
+class EnhancedResumeForm {
+  constructor() {
+    this.currentStep = 1;
+    this.totalSteps = 3;
+    this.initializeForm();
+  }
+  initializeForm() {
+    // Add drag-and-drop file upload support
+    this.setupDragDrop();
+    // Add real-time validation logic
+    this.setupValidation();
+    // Add auto-save or progress saving functionality
+    this.setupAutoSave();
+  }
+  setupDragDrop() {
+    const dropZone = document.querySelector('.file-drop-zone');
+    dropZone.addEventListener('dragover', this.handleDragOver);
+    dropZone.addEventListener('drop', this.handleFileDrop);
+  }
+  showPreview(file) {
+    // Display file preview with extraction progress bar
+    const preview = `
+      <div class="file-preview">
+        <div class="file-icon">📄</div>
+        <div class="file-info">
+          <h4>${file.name}</h4>
+          <div class="extraction-progress">
+            <div class="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.querySelector('.upload-area').innerHTML = preview;
+  }
+}
+Implement navigation between steps, with “Next” and “Back” buttons.
+
+Ensure real-time validation and interactive feedback for each step.
+
+Persist user input securely to prevent loss on navigation.
+
+Provide visual progress updates aligned with the progress indicator.
+
+Additional Instructions:
+
+If similar multi-step UI or form logic already exists, update or refine that code instead of duplicating. Remove obsolete or conflicting code for clarity and stability.
+
+Test on multiple devices for responsiveness, accessibility compliance, and smooth user experience.
+
+Use semantic HTML and ARIA attributes to enhance accessibility.
+
+Goal:
+Deliver a user-friendly, visually guided multi-step experience that reduces cognitive load, enhances engagement, and clearly communicates progress, ultimately driving higher form completion and conversion rates.
