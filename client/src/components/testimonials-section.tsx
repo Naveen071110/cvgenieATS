@@ -8,73 +8,65 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { OptimizedImage, useResponsiveImageSizes } from "@/components/ui/optimized-image";
 
 const testimonials = [
   {
     name: "Sarah Chen",
     role: "Software Engineer",
-    company: "TechCorp",
-    avatar: "/images/avatars/sarah-chen",
-    content: "CVGenie transformed my resume completely. I went from getting no responses to landing 3 interviews in just two weeks. The ATS optimization really works!",
-    rating: 5,
-    badge: "Landed Dream Job"
+    content: "CVGenie transformed my generic resume into a targeted masterpiece. I got 3 interview calls within a week of using it!",
+    avatar: "SC"
   },
   {
-    name: "Marcus Rodriguez",
-    role: "Product Manager",
-    company: "StartupX",
-    avatar: "/images/avatars/marcus-rodriguez",
-    content: "The AI suggestions were spot-on. It highlighted experiences I didn't even think were relevant. My resume now tells a coherent story that recruiters love.",
-    rating: 5,
-    badge: "40% More Interviews"
+    name: "Michael Rodriguez",
+    role: "Marketing Manager", 
+    content: "The cover letters are incredible! Each one feels personally written. I landed my current role thanks to CVGenie.",
+    avatar: "MR"
   },
   {
-    name: "Emily Zhang",
+    name: "Emily Johnson",
     role: "UX Designer",
-    company: "DesignStudio",
-    avatar: "/images/avatars/emily-zhang",
-    content: "I was skeptical about AI resume tools, but CVGenie exceeded my expectations. The formatting is clean, professional, and ATS-friendly. Highly recommend!",
-    rating: 5,
-    badge: "Design Professional"
+    content: "As a career changer, I was struggling to present my transferable skills. CVGenie made it effortless!",
+    avatar: "EJ"
   },
   {
-    name: "David Kim",
+    name: "David Park",
     role: "Data Scientist",
-    company: "DataCorp",
-    avatar: "/images/avatars/david-kim",
-    content: "The keyword optimization feature is incredible. My resume now passes ATS filters I couldn't get through before. Worth every penny.",
-    rating: 5,
-    badge: "ATS Expert"
+    content: "The ATS optimization feature is a game-changer. My resume now passes through filters and reaches real recruiters.",
+    avatar: "DP"
   },
   {
     name: "Lisa Thompson",
-    role: "Marketing Director",
-    company: "BrandAgency",
-    avatar: "/images/avatars/lisa-thompson",
-    content: "CVGenie helped me transition from marketing coordinator to director level. The AI understood how to position my experience for senior roles.",
-    rating: 5,
-    badge: "Career Growth"
+    role: "Product Manager",
+    content: "I've tried other resume builders, but CVGenie's AI understands context better than anything else out there.",
+    avatar: "LT"
   },
   {
-    name: "Alex Johnson",
-    role: "Full Stack Developer",
-    company: "WebSolutions",
-    avatar: "/images/avatars/alex-johnson",
-    content: "As a developer, I appreciate the clean, logical structure CVGenie created. My technical skills are now presented in a way that non-technical recruiters understand.",
-    rating: 5,
-    badge: "Tech Professional"
+    name: "James Wilson",
+    role: "Sales Director",
+    content: "Generated 5 different versions of my resume for different industries. Each one perfectly tailored. Amazing!",
+    avatar: "JW"
+  },
+  {
+    name: "Ana Martinez",
+    role: "HR Specialist",
+    content: "As someone who reviews resumes daily, I can confirm CVGenie creates professional, compelling documents.",
+    avatar: "AM"
+  },
+  {
+    name: "Kevin Zhang",
+    role: "Frontend Developer",
+    content: "The technical skills section optimization helped me highlight my expertise perfectly. Got my dream job!",
+    avatar: "KZ"
   }
 ];
 
 export default function TestimonialsSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
-  const imageSizes = useResponsiveImageSizes();
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div
+        <div 
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -98,7 +90,7 @@ export default function TestimonialsSection() {
               const testimonialAnimation = useScrollAnimation({ threshold: 0.2 });
               return (
                 <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                  <div
+                  <div 
                     ref={testimonialAnimation.ref}
                     className={`bg-slate-50 rounded-2xl p-6 border border-slate-200 floating-card testimonial-fade-in ${
                       testimonialAnimation.isVisible ? 'visible' : ''
@@ -116,20 +108,13 @@ export default function TestimonialsSection() {
                       "{testimonial.content}"
                     </p>
                     <div className="flex items-center">
-                      <div
+                      <div 
                         className={`w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4 avatar-pop ${
                           testimonialAnimation.isVisible ? 'visible' : ''
                         }`}
                         style={{ animationDelay: `${(index % 3) * 0.2 + 0.3}s` }}
                       >
-                        <OptimizedImage
-                          src={testimonial.avatar}
-                          alt={`${testimonial.name} avatar`}
-                          width={64}
-                          height={64}
-                          sizes={imageSizes.avatar}
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
+                        {testimonial.avatar}
                       </div>
                       <div>
                         <p className="typography-body font-semibold text-slate-900">{testimonial.name}</p>

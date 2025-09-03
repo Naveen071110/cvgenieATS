@@ -1,19 +1,18 @@
-import React, { lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
+import { lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ImagePerformanceMonitor, trackImageCLS, trackFCP, trackLCP } from "@/components/ui/image-performance-monitor";
-import { AuthProvider } from "./context/AuthContext";
-import Home from "./pages/home";
+import { AuthProvider } from "@/context/AuthContext";
+import Home from "@/pages/home";
 
 // Lazy load non-critical pages
-const Generator = lazy(() => import("./pages/generator"));
-const Terms = lazy(() => import("./pages/terms"));
-const Privacy = lazy(() => import("./pages/privacy"));
-const PricingPolicy = lazy(() => import("./pages/pricing-policy"));
-const NotFound = lazy(() => import("./pages/not-found"));
+const Generator = lazy(() => import("@/pages/generator"));
+const Terms = lazy(() => import("@/pages/terms"));
+const Privacy = lazy(() => import("@/pages/privacy"));
+const PricingPolicy = lazy(() => import("@/pages/pricing-policy"));
+const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
   return (
@@ -49,22 +48,14 @@ function Router() {
 }
 
 function App() {
-  // Initialize performance monitoring
-  React.useEffect(() => {
-    trackImageCLS();
-    trackFCP();
-    trackLCP();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <ImagePerformanceMonitor />
-          <Router />
           <Toaster />
-        </AuthProvider>
-      </TooltipProvider>
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
