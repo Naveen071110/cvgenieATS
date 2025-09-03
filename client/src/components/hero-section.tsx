@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle, Clock, Users, FileText, Zap } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { StatsWidget } from "./stats-widget";
+import { OptimizedImage, useResponsiveImageSizes } from "@/components/ui/optimized-image";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
@@ -52,6 +53,7 @@ export default function HeroSection() {
   const [gradientShift, setGradientShift] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const imageSizes = useResponsiveImageSizes();
 
 
 
@@ -73,6 +75,24 @@ export default function HeroSection() {
     }, 100);
 
     return () => clearInterval(gradientInterval);
+  }, []);
+
+  // Preload critical images
+  useEffect(() => {
+    // Preload hero background and critical images
+    const criticalImages = [
+      '/images/hero/hero-background.jpg',
+      '/images/hero/hero-background.webp',
+      '/images/hero/hero-background.avif'
+    ];
+    
+    criticalImages.forEach(src => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = src;
+      document.head.appendChild(link);
+    });
   }, []);
 
   // Simulate loading states and progress

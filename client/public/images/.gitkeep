@@ -1,0 +1,18 @@
+
+# This directory will contain optimized images in multiple formats:
+# 
+# /images/avatars/
+# - sarah-chen.jpg (original)
+# - sarah-chen.webp (modern format)
+# - sarah-chen.avif (best compression)
+# 
+# /images/hero/
+# - hero-background.jpg
+# - hero-background.webp
+# - hero-background.avif
+# 
+# /images/features/
+# - feature-*.jpg/webp/avif
+# 
+# /images/logos/
+# - company-*.jpg/webp/avif
