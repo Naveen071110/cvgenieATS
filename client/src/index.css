@@ -1775,72 +1775,239 @@ select {
 
 /* ===== FAQ SECTION ===== */
 .faq-container {
-  position: relative;
-}
-
-.faq-search-input {
-  background: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.faq-search-input:focus {
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-.faq-accordion {
-  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .faq-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
   transition: all 0.2s ease;
-  border: 1px solid var(--gray-200);
-  background: white;
 }
 
 .faq-item:hover {
-  border-color: var(--primary-200);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
 .faq-question {
   width: 100%;
-  background: transparent;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  background: none;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-}
-
-.faq-question:focus {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s ease;
 }
 
 .faq-question:hover {
-  background-color: var(--gray-50);
+  background-color: #f9fafb;
+}
+
+.faq-question:focus {
+  outline: none;
+  background-color: #f3f4f6;
 }
 
 .faq-icon {
-  transition: transform 0.3s ease;
-  color: var(--gray-500);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+  transition: transform 0.3s ease, color 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.faq-question:hover .faq-icon {
+  color: #3b82f6;
+}
+
+.faq-question[aria-expanded="true"] .faq-icon {
+  transform: rotate(180deg);
+  color: #3b82f6;
 }
 
 .faq-answer {
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-.faq-answer.open {
-  animation: fadeInUp 0.3s ease forwards;
+.faq-answer[data-state="open"] {
+  max-height: 500px;
+  opacity: 1;
 }
 
-@keyframes fadeInUp {
+.faq-answer[data-state="closed"] {
+  max-height: 0;
+  opacity: 0;
+}
+
+.faq-search {
+  margin-bottom: 2rem;
+}
+
+.faq-search-input {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  font-size: 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.5rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.faq-accordion {
+  max-width: 800px;
+  margin: 0 auto;
+  space-y: 1rem;
+}
+
+/* AI Processing Loader Styles */
+.ai-processing-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.ai-brain-animation {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto 2rem;
+}
+
+.ai-brain-animation::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  background: conic-gradient(from 0deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: brain-pulse 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+.synapse {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: radial-gradient(circle, #3b82f6, #1d4ed8);
+  border-radius: 50%;
+  opacity: 0;
+  animation: synapse-fire 2s ease-in-out infinite;
+}
+
+.synapse:nth-child(1) {
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.synapse:nth-child(2) {
+  top: 40%;
+  right: 20%;
+  animation-delay: 0.5s;
+}
+
+.synapse:nth-child(3) {
+  bottom: 25%;
+  left: 30%;
+  animation-delay: 1s;
+}
+
+.processing-progress {
+  width: 100%;
+  max-width: 300px;
+  margin: 1.5rem auto 0;
+}
+
+.progress-bar {
+  height: 0.5rem;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 0.25rem;
+  transition: width 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: progress-shine 2s ease-in-out infinite;
+}
+
+@keyframes brain-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes synapse-fire {
+  0%, 70%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  15%, 55% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes progress-shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* AI Processing Text Animations */
+.processing-step {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #4b5563;
+  animation: text-fade-in 0.5s ease-out;
+}
+
+@keyframes text-fade-in {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

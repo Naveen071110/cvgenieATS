@@ -1,4 +1,3 @@
-
 import { useState, useRef, useCallback } from 'react';
 import { Upload, FileText, AlertCircle, CheckCircle, X, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,7 @@ interface FileUploadProps {
   selectedFile?: File | null;
   className?: string;
   enableSteps?: boolean;
+  isProcessing?: boolean;
 }
 
 const defaultAcceptedTypes = ['.pdf'];
@@ -38,7 +38,8 @@ export function FileUpload({
   error = '',
   selectedFile = null,
   className,
-  enableSteps = true
+  enableSteps = true,
+  isProcessing = false
 }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
@@ -124,7 +125,7 @@ export function FileUpload({
 
   const handleFileSelection = (file: File) => {
     handleRealTimeValidation(file);
-    
+
     const error = validateFile(file);
     if (!error) {
       onFileSelect(file);
@@ -323,7 +324,7 @@ export function FileUpload({
     );
   }
 
-  if (isUploading) {
+  if (isUploading || isProcessing) {
     return (
       <div className={cn("space-y-6", className)}>
         <StepProgressIndicator />
@@ -332,7 +333,7 @@ export function FileUpload({
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto">
               <Upload className="w-6 h-6 text-blue-600 animate-pulse" />
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium text-blue-900">
                 {getUploadStageMessage()}
@@ -360,11 +361,11 @@ export function FileUpload({
   return (
     <div className={cn("space-y-4", className)}>
       <StepProgressIndicator />
-      
+
       <form id="resume-upload-form" noValidate>
         <div
           className={cn(
-            "relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 cursor-pointer",
+            "relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300",
             "hover:border-primary/50 hover:bg-primary/5",
             isDragging 
               ? "border-primary bg-primary/10 scale-105" 
@@ -399,6 +400,7 @@ export function FileUpload({
             className="hidden"
             aria-hidden="true"
             required
+            disabled={isProcessing}
           />
 
         <div className="space-y-4">
@@ -406,11 +408,10 @@ export function FileUpload({
               "w-16 h-16 mx-auto rounded-lg flex items-center justify-center transition-all duration-300",
               isDragging 
                 ? "bg-primary/20 scale-110" 
-                : isValidated
-                  ? "bg-green-100"
-                  : validationError 
-                    ? "bg-red-100"
-                    : "bg-gray-200"
+                : isValidated ? "bg-green-100" :
+                validationError 
+                  ? "bg-red-100"
+                  : "bg-gray-200"
             )}>
               {validationError ? (
                 <AlertCircle 
@@ -456,7 +457,7 @@ export function FileUpload({
                         : "Upload your PDF resume"
                 }
               </h3>
-              
+
               {!validationError && !isValidated && (
                 <p className="text-sm text-gray-600">
                   or{' '}
@@ -482,6 +483,7 @@ export function FileUpload({
                   e.stopPropagation();
                   handleBrowseClick();
                 }}
+                disabled={isProcessing}
               >
                 Choose PDF File
               </Button>
@@ -541,7 +543,7 @@ export function FileUpload({
       )}
 
       {/* Step Navigation (if applicable) */}
-      {enableSteps && currentStep > 1 && !isUploading && (
+      {enableSteps && currentStep > 1 && !isUploading && !isProcessing && (
         <div className="flex justify-between items-center pt-4">
           <Button
             variant="outline"
@@ -568,7 +570,7 @@ export function FileUpload({
       )}
 
       {/* Success State Hint */}
-      {!selectedFile && !validationError && !error && !isUploading && (
+      {!selectedFile && !validationError && !error && !isUploading && !isProcessing && (
         <div className="text-center">
           <p className="text-xs text-gray-500">
             {enableSteps 
