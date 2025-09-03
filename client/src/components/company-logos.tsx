@@ -22,15 +22,6 @@ interface CompanyLogosProps {
 export function CompanyLogos({ className }: CompanyLogosProps) {
   return (
     <div className={cn('company-logos overflow-hidden', className)}>
-      <div className="text-center mb-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          Trusted by professionals at:
-        </h3>
-        <p className="text-gray-600 text-sm">
-          Join thousands who've landed jobs at top companies
-        </p>
-      </div>
-      
       <div className="relative">
         {/* Gradient overlays for fade effect */}
         <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10"></div>
@@ -39,11 +30,11 @@ export function CompanyLogos({ className }: CompanyLogosProps) {
         {/* Scrolling container */}
         <div className="flex animate-marquee">
           {/* First set of logos */}
-          <div className="flex items-center space-x-8 md:space-x-12">
+          <div className="flex items-center space-x-4 md:space-x-6">
             {companies.map((company, index) => (
               <div
                 key={`first-${index}`}
-                className="flex-shrink-0 flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
+                className="flex-shrink-0 flex flex-col items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
                 title={company.name}
               >
                 <div className="text-3xl md:text-4xl mb-2">
@@ -57,11 +48,11 @@ export function CompanyLogos({ className }: CompanyLogosProps) {
           </div>
           
           {/* Duplicate set for seamless loop */}
-          <div className="flex items-center space-x-8 md:space-x-12 ml-8 md:ml-12">
+          <div className="flex items-center space-x-4 md:space-x-6 ml-4 md:ml-6">
             {companies.map((company, index) => (
               <div
                 key={`second-${index}`}
-                className="flex-shrink-0 flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
+                className="flex-shrink-0 flex flex-col items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
                 title={company.name}
               >
                 <div className="text-3xl md:text-4xl mb-2">
