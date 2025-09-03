@@ -34,12 +34,9 @@ export function CompanyLogos({ className }: CompanyLogosProps) {
             {companies.map((company, index) => (
               <div
                 key={`first-${index}`}
-                className="flex-shrink-0 flex flex-col items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
+                className="flex-shrink-0 flex items-center px-3 py-1 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
                 title={company.name}
               >
-                <div className="text-3xl md:text-4xl mb-2">
-                  {company.logo}
-                </div>
                 <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
                   {company.name}
                 </span>
@@ -52,12 +49,9 @@ export function CompanyLogos({ className }: CompanyLogosProps) {
             {companies.map((company, index) => (
               <div
                 key={`second-${index}`}
-                className="flex-shrink-0 flex flex-col items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
+                className="flex-shrink-0 flex items-center px-3 py-1 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-w-0"
                 title={company.name}
               >
-                <div className="text-3xl md:text-4xl mb-2">
-                  {company.logo}
-                </div>
                 <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
                   {company.name}
                 </span>
