@@ -3,16 +3,20 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
-import PDFParser from 'pdf2json';
+import pdfParse from 'pdf-parse';
 import mammoth from 'mammoth';
-import { promises as fs } from 'fs';
-import { promisify } from 'util';
-import { exec } from 'child_process';
+import { z } from 'zod';
+import fs from 'fs/promises';
 import path from 'path';
 import documentParser from './documentParser.js';
 import documentGenerator from './documentGenerator.js';
 
+// Placeholder for execAsync, assuming it's defined elsewhere or a mock
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
 const execAsync = promisify(exec);
+
 
 // Extract text from DOCX files using mammoth
 async function extractTextFromDOCX(buffer: Buffer): Promise<string> {
@@ -409,88 +413,44 @@ function generateClosingParagraph(keywords: string[], companyName: string): stri
 // OLD FUNCTION REMOVED - Use generateCoverLetter (AI-powered) instead
 
 // Enhanced PDF text extraction using Python pdfplumber
-async function extractTextFromPDF(buffer: Buffer): Promise<string> {
+async function extractTextFromPDF(buffer: Buffer): Promise<{ success: boolean; text?: string; error?: string }> {
   try {
-    console.log('Extracting text from PDF using Python pdfplumber...');
+    console.log('🔍 Starting PDF extraction...');
+    console.log('Buffer size:', buffer.length, 'bytes');
 
-    // Convert buffer to base64 for Python script
-    const base64Data = buffer.toString('base64');
-
-    // Call Python script with the PDF data
-    const { stdout, stderr } = await execAsync(`python pdf_extractor.py "${base64Data}"`);
-
-    if (stderr) {
-      console.log('Python stderr:', stderr);
+    if (!buffer || buffer.length === 0) {
+      throw new Error('PDF buffer is empty');
     }
 
-    // Parse the JSON response from Python script
-    const result = JSON.parse(stdout);
-
-    if (!result.success) {
-      throw new Error(`Python PDF extraction failed: ${result.error}`);
+    // Check if buffer starts with PDF signature
+    const pdfSignature = buffer.subarray(0, 4).toString();
+    if (pdfSignature !== '%PDF') {
+      throw new Error('Invalid PDF file - missing PDF signature');
     }
 
-    console.log(`pdfplumber extracted ${result.text.length} characters from ${result.pages} pages`);
-    console.log(`Word count: ${result.word_count}, Keyword matches: ${result.keyword_matches}, Resume-like: ${result.is_resume_like}`);
+    const data = await pdfParse(buffer);
 
-    if (!result.text || result.text.trim().length < 20) {
-      throw new Error('PDF contains no readable text content');
+    if (!data.text || data.text.trim().length === 0) {
+      console.warn('⚠️ PDF extracted but contains no readable text');
+      return {
+        success: true,
+        text: ''
+      };
     }
 
-    // Clean the extracted text
-    const cleanedText = cleanExtractedText(result.text);
-
-    // Validate extracted content quality
-    const validationResult = validateExtractedContent(cleanedText);
-    if (!validationResult.isValid) {
-      console.log(`Content validation failed: ${validationResult.reason}`);
-      console.log(`First 300 characters of extraction attempt: "${cleanedText.substring(0, 300)}"`);
-      throw new Error(`Resume content validation failed: ${validationResult.reason}`);
-    }
-
-    console.log(`Successfully extracted resume content: ${cleanedText.length} characters`);
-    console.log(`Content preview: ${cleanedText.substring(0, 300)}...`);
-
-    return cleanedText;
-
+    console.log('✅ PDF text extracted successfully, length:', data.text.length);
+    return {
+      success: true,
+      text: data.text
+    };
   } catch (error) {
-    console.error('PDF extraction failed:', error.message);
-
-    // If Python extraction fails, try a simple fallback method
-    console.log('Trying fallback PDF text extraction...');
-    try {
-      const content = buffer.toString('binary');
-      let fallbackText = '';
-
-      // Look for parentheses-enclosed text (common in PDFs)  
-      const parenthesesPattern = /\(([^)]{5,})\)/g;
-      let match;
-      while ((match = parenthesesPattern.exec(content)) !== null) {
-        const text = match[1];
-        if (/[a-zA-Z]{3,}/.test(text) && !text.includes('\\') && !text.includes('Font') && !text.includes('Subtype')) {
-          fallbackText += text + ' ';
-        }
-      }
-
-      if (fallbackText && fallbackText.trim().length > 100) {
-        const cleanedFallback = cleanExtractedText(fallbackText);
-
-        // Validate fallback content
-        const validationResult = validateExtractedContent(cleanedFallback);
-        if (!validationResult.isValid) {
-          console.log(`Fallback content validation failed: ${validationResult.reason}`);
-          console.log(`First 300 characters of fallback extraction: "${cleanedFallback.substring(0, 300)}"`);
-          throw new Error(`Fallback extraction validation failed: ${validationResult.reason}`);
-        }
-
-        console.log(`Fallback extraction succeeded: ${cleanedFallback.length} characters`);
-        return cleanedFallback;
-      }
-    } catch (fallbackError) {
-      console.log('Fallback extraction also failed:', fallbackError.message);
-    }
-
-    throw new Error(`Unable to extract readable text from PDF: ${error.message}`);
+    console.error('❌ PDF extraction error:', error);
+    console.error('Error type:', error.constructor.name);
+    console.error('Error message:', error.message);
+    return {
+      success: false,
+      error: `PDF extraction failed: ${error.message}`
+    };
   }
 }
 
@@ -554,7 +514,7 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(fileExtension || '')) {
       cb(null, true);
     } else {
-      console.log(`Rejected file with MIME type: ${file.mimetype} and extension: ${fileExtension}`);
+      console.log(`Rejected file with MIME type: ${file.mimetype} and extension: ${file.extension}`);
       cb(new Error('Only PDF, DOCX (Word), and TXT files are allowed'));
     }
   }
@@ -578,6 +538,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(session);
     } catch (error) {
+      console.error('Failed to get usage session:', error);
       res.status(500).json({ error: "Failed to get usage session" });
     }
   });
@@ -597,7 +558,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (resumeFile.mimetype === 'application/pdf') {
         try {
-          extractedContent = await extractTextFromPDF(resumeFile.buffer);
+          const extractResult = await extractTextFromPDF(resumeFile.buffer);
+          if (!extractResult.success) {
+            throw new Error(extractResult.error || 'Unknown PDF parsing error');
+          }
+          extractedContent = extractResult.text || '';
         } catch (pdfError) {
           console.error('PDF extraction failed completely:', pdfError.message);
           console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
@@ -652,115 +617,168 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate resume and cover letter
-  app.post("/api/generate", upload.single('resume'), async (req, res) => {
+  app.post('/api/generate', upload.single('file'), async (req, res) => {
     try {
-      const { jobDescription, sessionId, exportFormat = 'pdf' } = req.body;
-      const file = req.file;
-
-      if (!file) {
-        return res.status(400).json({ error: 'No file uploaded' });
+      console.log('📝 Resume generation request received');
+      console.log('File:', req.file ? req.file.originalname : 'No file');
+      console.log('Body keys:', Object.keys(req.body));
+      console.log('Body:', JSON.stringify(req.body, null, 2));
+    
+      const { personalInfo, jobDescription, sessionId, exportFormat = 'pdf' } = req.body;
+    
+      // Validate required fields
+      if (!personalInfo) {
+        console.error('❌ Missing personalInfo field');
+        return res.status(400).json({ 
+          error: 'Missing required field: personalInfo is required' 
+        });
       }
-
-      if (!jobDescription || !sessionId) {
-        return res.status(400).json({ error: 'Missing job description or session ID' });
+    
+      if (!jobDescription) {
+        console.error('❌ Missing jobDescription field');
+        return res.status(400).json({ 
+          error: 'Missing required field: jobDescription is required' 
+        });
       }
-
+    
+      if (!sessionId) {
+        console.error('❌ Missing sessionId field');
+        return res.status(400).json({ 
+          error: 'Missing required field: sessionId is required' 
+        });
+      }
+    
+      // Parse personalInfo if it's a string
+      let parsedPersonalInfo;
+      try {
+        parsedPersonalInfo = typeof personalInfo === 'string' ? JSON.parse(personalInfo) : personalInfo;
+        console.log('✅ PersonalInfo parsed successfully');
+      } catch (parseError) {
+        console.error('❌ Error parsing personalInfo:', parseError);
+        return res.status(400).json({ error: 'Invalid personalInfo format - must be valid JSON' });
+      }
+    
+      // Validate parsedPersonalInfo structure
+      if (!parsedPersonalInfo || typeof parsedPersonalInfo !== 'object') {
+        console.error('❌ PersonalInfo is not a valid object');
+        return res.status(400).json({ error: 'PersonalInfo must be a valid object' });
+      }
+    
+      let originalResume: string = '';
+    
+      // Handle file upload if present
+      if (req.file) {
+        console.log('📄 Processing uploaded file:', req.file.originalname);
+        console.log('File size:', req.file.size, 'bytes');
+        console.log('File mimetype:', req.file.mimetype);
+    
+        try {
+          if (req.file.mimetype === 'application/pdf') {
+            console.log('🔍 Extracting text from PDF...');
+            const extractResult = await extractTextFromPDF(req.file.buffer);
+            if (!extractResult.success) {
+              console.error('❌ PDF extraction failed:', extractResult.error);
+              return res.status(400).json({ error: `PDF extraction failed: ${extractResult.error}` });
+            }
+            originalResume = extractResult.text || '';
+            console.log('✅ PDF text extracted successfully, length:', originalResume.length);
+          } else if (req.file.mimetype === 'text/plain') {
+            console.log('📝 Processing plain text file...');
+            originalResume = req.file.buffer.toString('utf-8');
+            console.log('✅ Text file processed successfully, length:', originalResume.length);
+          } else if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            console.log('📄 Processing DOCX file...');
+            const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+            originalResume = result.value;
+            console.log('✅ DOCX file processed successfully, length:', originalResume.length);
+          } else {
+            console.error('❌ Unsupported file type:', req.file.mimetype);
+            return res.status(400).json({ 
+              error: 'Unsupported file type. Please upload PDF, DOCX, or TXT files.',
+              receivedType: req.file.mimetype
+            });
+          }
+        } catch (fileError) {
+          console.error('❌ File processing error:', fileError);
+          console.error('File processing stack:', fileError.stack);
+          return res.status(500).json({ 
+            error: `File processing failed: ${fileError.message}`,
+            details: process.env.NODE_ENV === 'development' ? fileError.stack : undefined
+          });
+        }
+      } else if (req.body.resumeContent && req.body.resumeContent.trim().length > 0) {
+        // Use the edited resume content from the frontend
+        originalResume = req.body.resumeContent.trim();
+        console.log(`Using provided resume content: ${originalResume.length} characters`);
+      } else {
+        return res.status(400).json({ error: "Resume content or file is required" });
+      }
+    
+      // Validate extracted/provided resume content quality
+      const validationResult = validateExtractedContent(originalResume);
+      if (!validationResult.isValid) {
+        console.log(`Resume content validation failed: ${validationResult.reason}`);
+        console.log(`First 300 characters of invalid content: "${originalResume.substring(0, 300)}"`);
+        return res.status(400).json(createSampleResumeError(
+          `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
+        ));
+      }
+    
       // Check usage limits
       const session = await storage.getUsageSession(sessionId);
-      if (session && session.generationsUsed >= 3) {
+      if (session && session.generationsUsed >= 3 && session.isPro !== 1) {
         return res.status(403).json({ 
           error: "Free usage limit exceeded. Please upgrade to Pro for unlimited generations." 
         });
       }
-
-      // Use provided resume content or extract from file
-      let originalResume: string;
-
-      if (req.body.resumeContent && req.body.resumeContent.trim().length > 0) {
-        // Use the edited resume content from the frontend
-        originalResume = req.body.resumeContent.trim();
-        console.log(`Using edited resume content: ${originalResume.length} characters`);
-
-        // Validate edited content as well
-        const validationResult = validateExtractedContent(originalResume);
-        if (!validationResult.isValid) {
-          console.log(`Edited resume content validation failed: ${validationResult.reason}`);
-          console.log(`First 300 characters of invalid edited content: "${originalResume.substring(0, 300)}"`);
-          return res.status(400).json({ 
-            error: `The provided resume content is invalid: ${validationResult.reason}. Please provide a proper resume with readable content.` 
-          });
-        }
-      } else if (file) {
-        // Fallback to file extraction if no content provided
-        try {
-          console.log(`Processing file: ${file.originalname}, type: ${file.mimetype}, size: ${file.size} bytes`);
-
-          let extractedContent;
-          try {
-            extractedContent = await documentParser.extractText(file.path, file.mimetype);
-          } catch (error) {
-            console.error('Document extraction error:', error);
-            return res.status(400).json({ 
-              error: `Failed to extract content from file: ${error instanceof Error ? error.message : 'Unknown error'}` 
-            });
-          }
-
-          if (!extractedContent.isValid) {
-            return res.status(400).json({ 
-              error: 'File appears to be empty or unreadable. Please ensure the file contains text content.' 
-            });
-          }
-
-          originalResume = extractedContent.content;
-
-          // Validate extracted content quality
-          const validationResult = validateExtractedContent(originalResume);
-          if (!validationResult.isValid) {
-            console.log(`Resume content validation failed: ${validationResult.reason}`);
-            console.log(`First 300 characters of invalid content: "${originalResume.substring(0, 300)}"`);
-            return res.status(400).json(createSampleResumeError(
-              `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
-            ));
-          }
-
-        } catch (error) {
-          console.error('Resume processing error:', error);
-          return res.status(400).json({ 
-            error: `Failed to process resume file: ${error.message}. Please try uploading a different format or contact support.`
-          });
-        }
-      } else {
-        return res.status(400).json({ error: "Resume content or file is required" });
-      }
-
-      // Generate improved resume using AI (Deepseek) - Two-step process
-      console.log('Calling Deepseek AI for resume generation (Step 1: Content optimization)...');
+    
+      console.log('🤖 Starting AI resume and cover letter generation...');
+      console.log('Existing resume text length:', originalResume.length);
+      console.log('Job description length:', jobDescription.length);
+    
       let optimizedResume: string;
       let coverLetter: string;
-      
+    
+      // Check if AI service is available
       try {
-        // Step 1: Generate optimized content
-        const initialResume = await generateOptimizedResume(originalResume, jobDescription);
-        console.log('Step 1 completed - Initial resume length:', initialResume.length);
-
-        // Step 2: Ensure proper ATS formatting
-        console.log('Step 2: Applying ATS formatting...');
-        optimizedResume = await formatResumeForATS(initialResume);
-        console.log('Step 2 completed - Final formatted resume length:', optimizedResume.length);
-
+        // Generate optimized resume
+        optimizedResume = await generateOptimizedResume(
+          originalResume,
+          parsedPersonalInfo,
+          jobDescription
+        );
+        console.log('✅ Optimized resume generated successfully, length:', optimizedResume.length);
+    
         // Generate cover letter
-        coverLetter = await generateCoverLetter(originalResume, jobDescription);
-
-        console.log('AI-generated cover letter length:', coverLetter.length);
-        console.log('Final resume preview (ATS formatted):', optimizedResume.substring(0, 200));
-
+        coverLetter = await generateCoverLetter(
+          originalResume,
+          jobDescription
+        );
+        console.log('✅ Cover letter generated successfully, length:', coverLetter.length);
+    
       } catch (aiError) {
-        console.error('AI generation failed:', aiError);
-        return res.status(500).json({ 
-          error: "AI service temporarily unavailable. Please try again in a moment." 
-        });
+        console.error('❌ AI generation error:', aiError);
+        console.error('AI error stack:', aiError.stack);
+    
+        // Check if it's a specific AI service error
+        if (aiError.message.includes('API key') || aiError.message.includes('unauthorized')) {
+          return res.status(503).json({ 
+            error: 'AI service configuration error',
+            details: process.env.NODE_ENV === 'development' ? aiError.message : 'Please try again later'
+          });
+        }
+    
+        if (aiError.message.includes('timeout') || aiError.message.includes('ECONNREFUSED')) {
+          return res.status(504).json({ 
+            error: 'AI service temporarily unavailable',
+            details: 'Please try again in a few moments'
+          });
+        }
+    
+        // Rethrow for general error handling if not a specific handled error
+        throw aiError; 
       }
-
+    
       // Generate export files if requested
       let downloadLinks = {};
       if (exportFormat && exportFormat !== 'none') {
@@ -773,7 +791,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             `generated_${timestamp}`,
             formats
           );
-
+    
           // Convert file paths to download URLs
           Object.entries(exports).forEach(([key, filePath]) => {
             if (filePath) {
@@ -781,32 +799,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
               downloadLinks[key] = `/api/download/${filename}`;
             }
           });
+          console.log('✅ Export files generated:', downloadLinks);
         } catch (error) {
           console.error('Export generation error:', error);
           // Don't fail the request if export fails, just log the error
         }
       }
-
+    
       // Store generation
       await storage.storeGeneration({
         sessionId,
         resume: optimizedResume,
         coverLetter
       });
-
+      console.log('✅ Generation stored successfully');
+    
       // Update usage count
       await storage.updateUsageSession(sessionId, (session.generationsUsed || 0) + 1);
-
+      console.log('✅ Usage count updated');
+    
       res.json({
         resume: optimizedResume,
         coverLetter,
-        downloads: downloadLinks
+        downloads: downloadLinks,
+        message: 'Resume and cover letter generated successfully'
       });
-
+    
     } catch (error) {
-      console.error('Generation error:', error);
+      console.error('❌ Resume generation error:', error);
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    
+      // Send detailed error response
       res.status(500).json({ 
-        error: "Failed to generate documents. Please try again." 
+        error: 'Internal server error during resume generation',
+        errorType: error.name,
+        details: process.env.NODE_ENV === 'development' ? error.message : 'An unexpected error occurred',
+        timestamp: new Date().toISOString()
       });
     }
   });
@@ -818,6 +848,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const generations = await storage.getGenerationsBySession(sessionId);
       res.json(generations);
     } catch (error) {
+      console.error('Failed to get generation history:', error);
       res.status(500).json({ error: "Failed to get generation history" });
     }
   });
@@ -828,8 +859,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filename = req.params.filename;
       const filePath = path.join(process.cwd(), 'tmp', filename);
 
+      console.log(`Attempting to download file: ${filePath}`);
+
       // Security check - ensure file exists and is in tmp directory
       if (!fs.existsSync(filePath) || !filePath.startsWith(path.join(process.cwd(), 'tmp'))) {
+        console.error(`File not found or outside tmp directory: ${filePath}`);
         return res.status(404).json({ error: 'File not found' });
       }
 
@@ -851,21 +885,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Clean up file after download
       fileStream.on('end', () => {
+        console.log(`File ${filename} streamed successfully. Scheduling cleanup.`);
         setTimeout(() => {
           fs.unlink(filePath, (err) => {
             if (err) console.error('Error cleaning up file:', err);
+            else console.log(`Successfully cleaned up temporary file: ${filePath}`);
           });
         }, 5000); // Delete after 5 seconds
       });
 
+      fileStream.on('error', (err) => {
+        console.error(`Error streaming file ${filename}:`, err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'Error streaming file' });
+        }
+      });
+
     } catch (error) {
-      res.status(500).json({ error: 'Download failed' });
+      console.error('Download failed:', error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Download failed' });
+      }
     }
   });
 
   // Health check endpoint
-  app.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
+  app.get('/api/health', (req, res) => {
+    res.json({ 
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      apiKeyConfigured: !!process.env.DEEPSEEK_API_KEY,
+      nodeVersion: process.version,
+      uptime: process.uptime()
+    });
+  });
+
+  // Detailed diagnostics endpoint (development only)
+  app.get('/api/diagnostics', (req, res) => {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(404).json({ error: 'Not found' });
+    }
+  
+    res.json({
+      environment: process.env.NODE_ENV,
+      nodeVersion: process.version,
+      platform: process.platform,
+      memory: process.memoryUsage(),
+      uptime: process.uptime(),
+      cwd: process.cwd(),
+      apiKeys: {
+        deepseek: !!process.env.DEEPSEEK_API_KEY,
+        deepseekLength: process.env.DEEPSEEK_API_KEY ? process.env.DEEPSEEK_API_KEY.length : 0
+      },
+      timestamp: new Date().toISOString()
+    });
+  });
+  
+  // Placeholder for return Server, assuming this is the intended structure
+  return createServer((req, res) => {
+    app(req, res);
   });
 }
 
@@ -941,102 +1020,112 @@ function atsCleanup(content: string, keywords: string[]): string {
 }
 
 // AI Generation Functions (using Deepseek API)
-async function generateOptimizedResume(originalResume: string, jobDescription: string): Promise<string> {
-  const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || "default_key";
-
-  // Extract keywords from job description
-  const keywords = extractKeywords(jobDescription);
-
+async function generateOptimizedResume(
+  existingResume: string,
+  personalInfo: any,
+  jobDescription: string
+): Promise<string> {
   try {
+    console.log('🤖 Calling Deepseek API for resume optimization...');
+
+    // Validate API key
+    if (!process.env.DEEPSEEK_API_KEY) {
+      throw new Error('DEEPSEEK_API_KEY environment variable is not set');
+    }
+
+    // Validate inputs
+    if (!jobDescription || jobDescription.trim().length === 0) {
+      throw new Error('Job description cannot be empty');
+    }
+
+    if (!personalInfo || Object.keys(personalInfo).length === 0) {
+      throw new Error('Personal information cannot be empty');
+    }
+
+    const prompt = `You are an expert resume writer and ATS optimization specialist. Create an optimized, professional resume based on the following information.
+
+PERSONAL INFORMATION:
+${JSON.stringify(personalInfo, null, 2)}
+
+EXISTING RESUME CONTENT (if any):
+${existingResume || 'No existing resume provided'}
+
+JOB DESCRIPTION TO OPTIMIZE FOR:
+${jobDescription}
+
+Please create a comprehensive, ATS-optimized resume that:
+1. Uses relevant keywords from the job description naturally
+2. Highlights matching skills and experiences
+3. Uses strong action verbs and quantifiable achievements
+4. Follows a clean, professional format
+5. Is optimized for Applicant Tracking Systems
+6. Includes all sections: Contact Info, Professional Summary, Skills, Experience, Education
+7. Tailors the content specifically for this job opportunity
+
+Format the resume in clean, readable text format with clear section headers and consistent formatting.`;
+
+    console.log('📤 Sending request to Deepseek API...');
+    console.log('API Key present:', !!process.env.DEEPSEEK_API_KEY);
+    console.log('Prompt length:', prompt.length);
+
+    const requestBody = {
+      model: 'deepseek-chat',
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    };
+
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${deepseekApiKey}`
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert resume writer specializing in ATS optimization. You must create ATS-compliant resumes that pass applicant tracking systems.'
-          },
-          {
-            role: 'user',
-            content: `Create a professional, ATS-optimized resume in plain text format. 
-
-CRITICAL INSTRUCTION: Output ONLY the final, formatted resume. Do not copy the original input. Do not include summaries, explanations, or any meta-text. Just the improved ATS resume, nothing else.
-
-CRITICAL PRESERVATION REQUIREMENTS:
-- NEVER change or modify the candidate's name, phone number, email address, or physical location/address
-- NEVER change or modify company names, organization names, university names, or institution names
-- NEVER change or modify degree titles, certification names, or educational qualifications
-- NEVER alter dates of employment, education, or any timeline information
-- PRESERVE ALL original contact information EXACTLY as written
-- PRESERVE ALL original institution names, company names, and degree titles EXACTLY as written
-- PRESERVE ALL addresses, cities, states, zip codes EXACTLY as written
-- PRESERVE ALL proper nouns (names of people, places, companies, schools) EXACTLY as they appear
-- Only enhance descriptions, achievements, and bullet points - NEVER change factual information
-
-FORMATTING REQUIREMENTS:
-- Use clear section headers in ALL CAPS: CONTACT INFORMATION, PROFESSIONAL SUMMARY, WORK EXPERIENCE, EDUCATION, SKILLS
-- Add blank line after each section header
-- Use bullet points with "•" symbol for list items
-- Start each bullet with action verbs
-- Include measurable achievements with numbers
-- Keep lines under 100 characters for better readability
-- Use proper spacing between sections (double line breaks)
-- No special formatting, tables, or graphics
-- Format work experience as: Job Title | Company Name | Dates
-- Include phone, email, and location in contact section
-
-WHAT YOU CAN MODIFY:
-- Enhance and improve bullet point descriptions and achievements
-- Improve professional summary language and alignment with job requirements
-- Add relevant keywords naturally within existing job descriptions
-- Strengthen skill descriptions and technical competencies
-- Quantify achievements where data supports it
-- Improve action verbs and impact statements
-
-WHAT YOU CANNOT MODIFY:
-- Any names (personal, company, university, certification names)
-- Any contact information (phone, email, address, location)
-- Any dates or timelines
-- Any degree titles or certification names
-- Any company names or organization names
-
-TARGET KEYWORDS TO INCORPORATE NATURALLY: ${keywords.join(', ')}
-
-ORIGINAL RESUME TO OPTIMIZE:
-${originalResume}
-
-JOB DESCRIPTION FOR REFERENCE:
-${jobDescription}
-
-Remember: Your job is to enhance the CONTENT and DESCRIPTIONS while preserving ALL factual information exactly as provided. Output the complete resume with proper spacing and line breaks. Do not include any introductory text, explanations, or notes.`
-          }
-        ],
-        temperature: 0.6,
-        max_tokens: 2500
-      })
+      body: JSON.stringify(requestBody)
     });
 
+    console.log('📥 Deepseek API response status:', response.status);
+    console.log('📥 Deepseek API response headers:', Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
-      throw new Error(`Deepseek API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('❌ Deepseek API error response:', errorText);
+
+      if (response.status === 401) {
+        throw new Error('Deepseek API authentication failed - check API key');
+      } else if (response.status === 429) {
+        throw new Error('Deepseek API rate limit exceeded - please try again later');
+      } else if (response.status === 500) {
+        throw new Error('Deepseek API server error - please try again later');
+      } else {
+        throw new Error(`Deepseek API error: ${response.status} ${response.statusText} - ${errorText}`);
+      }
     }
 
     const data = await response.json();
-    let rawContent = data.choices[0]?.message?.content || "Error generating optimized resume";
+    console.log('✅ Deepseek API response received');
 
-    // Remove instructional text and meta-commentary
-    rawContent = cleanAIResponse(rawContent);
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('❌ Invalid Deepseek API response structure:', data);
+      throw new Error('Invalid response from Deepseek API');
+    }
 
-    // Apply ATS cleanup
-    return atsCleanup(rawContent, keywords);
+    const generatedResume = data.choices[0].message.content;
+    console.log('✅ Resume generated successfully, length:', generatedResume.length);
+
+    return generatedResume;
 
   } catch (error) {
-    console.error('Deepseek AI generation failed:', error);
-    throw new Error(`AI resume generation failed: ${error.message}`);
+    console.error('❌ Error generating optimized resume:', error);
+    console.error('Error type:', error.constructor.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    throw error;
   }
 }
 
