@@ -8,6 +8,7 @@ import PDFParser from 'pdf2json';
 import mammoth from 'mammoth';
 import { z } from 'zod';
 import fs from 'fs/promises';
+import syncFs from 'fs';
 import path from 'path';
 import documentParser from './documentParser.js';
 import documentGenerator from './documentGenerator.js';
@@ -661,7 +662,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate resume and cover letter
-  app.post('/api/generate', upload.single('file'), async (req, res) => {
+  app.post('/api/generate', upload.single('resume'), async (req, res) => {
     try {
       console.log('📝 Resume generation request received');
       console.log('File:', req.file ? req.file.originalname : 'No file');
@@ -915,7 +916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`Attempting to download file: ${filePath}`);
 
       // Security check - ensure file exists and is in tmp directory
-      if (!fs.existsSync(filePath) || !filePath.startsWith(path.join(process.cwd(), 'tmp'))) {
+      if (!syncFs.existsSync(filePath) || !filePath.startsWith(path.join(process.cwd(), 'tmp'))) {
         console.error(`File not found or outside tmp directory: ${filePath}`);
         return res.status(404).json({ error: 'File not found' });
       }
@@ -933,14 +934,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', contentType);
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
-      const fileStream = fs.createReadStream(filePath);
+      const fileStream = syncFs.createReadStream(filePath);
       fileStream.pipe(res);
 
       // Clean up file after download
       fileStream.on('end', () => {
         console.log(`File ${filename} streamed successfully. Scheduling cleanup.`);
         setTimeout(() => {
-          fs.unlink(filePath, (err) => {
+          syncFs.unlink(filePath, (err) => {
             if (err) console.error('Error cleaning up file:', err);
             else console.log(`Successfully cleaned up temporary file: ${filePath}`);
           });

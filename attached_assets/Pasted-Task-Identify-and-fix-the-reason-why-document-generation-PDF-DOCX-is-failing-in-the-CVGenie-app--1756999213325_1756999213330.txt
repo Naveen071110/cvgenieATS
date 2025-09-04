@@ -1,0 +1,129 @@
+Task:
+Identify and fix the reason why document generation (PDF/DOCX) is failing in the CVGenie app. You have access to the core integration files: routes.ts, documentGenerator.ts, and documentParser.ts.
+
+Step-by-Step Instructions:
+
+Check All Dependencies
+
+Ensure pdfkit, officegen, and mammoth are installed:
+
+text
+npm install pdfkit officegen mammoth
+If any are missing or cause version errors, install/fix them and restart the app.
+
+Scan for Syntax & Export Issues
+
+Carefully review both documentGenerator.ts and documentParser.ts for:
+
+Unmatched {} or missing method/class endings
+
+Misplaced or duplicate export default ...
+
+Invalid TypeScript type usage or missing interface closures
+
+Permissions & Pathing
+
+Check if the tmp directory exists and fs has permission to write there.
+
+Ensure generated PDFs/DOCXs are actually being written to this folder.
+
+Backend Route Integration
+
+In /api/generate (or similar route in routes.ts):
+
+Log all incoming request fields (resumeContent, jobDescription, etc.) right before calling documentGenerator.
+
+Confirm these values are not empty or malformed.
+
+Error Handling and Logging
+
+Make sure all catch clauses log the full error stack using console.error(error.stack || error).
+
+In documentGenerator and documentParser, return detailed errors up the stack if PDF/DOCX creation fails.
+
+Test Document Generation
+
+Try generating a resume and cover letter from the front end.
+
+If document export fails, observe the new, more detailed error logs.
+
+Use the log output to pinpoint which file (or package) is failing.
+
+Common Fixes
+
+If the error is “module not found,” install the relevant package.
+
+If it’s a permission/file path error, fix the path or permissions.
+
+If input data is undefined or empty in the generator/parser, fix how data is passed.
+
+If the Error Persists:
+
+Ask for any additional files directly related to errors in the log (e.g., pdf_extractor.py if PDF extraction is the root).
+
+If the backend expects fields not present in the frontend payload, align the request schema.
+
+Goal:
+Restore full functionality to the PDF/DOCX resume/cover letter generation pipeline—ensuring users can successfully generate and download documents with no backend or export errors.
+
+If a new or unclear error is encountered, output the full stack trace, and either fix it or ask for the necessary additional information or files to finish the job.Here's a perfect prompt for the Replit agent to help them deeply understand the integration issues between your frontend and backend and efficiently fix the document generation problem:
+
+Prompt for Replit Agent
+
+Task:
+Debug and resolve the document generation failure in the CVGenie app. The main integration files are routes.ts, documentGenerator.ts, and documentParser.ts. Ensure end-to-end PDF/DOCX output works on generate.
+
+Instructions:
+
+Dependency Check
+
+Confirm that pdfkit, officegen, and mammoth are installed and accessible to the server code. Run npm install pdfkit officegen mammoth if any are missing.
+
+File and Directory Permissions
+
+Ensure the tmp directory (or equivalent) exists in the workspace and the server has full read/write permissions.
+
+Class & Export Issues
+
+Review both documentGenerator.ts and documentParser.ts for:
+
+Syntax mistakes or unbalanced braces
+
+Correct export default new DocumentGenerator(); and export default new DocumentParser();
+
+Proper closure of classes and async methods
+
+Error Logging and Handling
+
+In routes.ts, before generation, log all incoming payload values for resumeContent, jobDescription, etc.
+
+Log all errors fully with console.error(error.stack || error) in every catch block in routes, generator, and parser.
+
+Integration
+
+Make sure your /api/generate backend route:
+
+Is passing all necessary, non-empty parameters to the document generator and parser.
+
+Correctly awaits all promises, and handles promise rejections.
+
+Test the Workflow
+
+Try document generation from the frontend and review the logs for precise failure points (missing module, permission, blank inputs, etc.).
+
+If an error occurs, follow the stack to fix or ask for the required supporting files.
+
+Common Fixes Checklist
+
+If "module not found": ensure the dependency is installed and required using the correct import style (ESM/CJS as needed).
+
+If permissions or missing file: verify directory and file creation logic.
+
+If generic failure: verify all async calls are properly awaited and data is not undefined.
+
+Ask for Help
+
+If you see a backend error referring to a missing utility file or Python script, or if an input from the frontend is undefined, request the specific files or ask for a snippet of the test data.
+
+Goal:
+Restore end-to-end resume/cover letter document generation (PDF and DOCX) with robust error logging, tested both from frontend and direct POST request.
