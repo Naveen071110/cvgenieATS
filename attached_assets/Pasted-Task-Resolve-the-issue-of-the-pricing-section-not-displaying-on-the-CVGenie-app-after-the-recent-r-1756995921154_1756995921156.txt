@@ -1,0 +1,54 @@
+Task:
+Resolve the issue of the pricing section not displaying on the CVGenie app after the recent redesign of the pricing component (client/src/components/pricing-section.tsx) and related CSS (client/src/index.css).
+
+Instructions:
+
+Check for Rendering Errors:
+
+Open client/src/components/pricing-section.tsx.
+
+Ensure the component is using valid React/JSX syntax and is being exported properly.
+
+Check for any runtime errors, invalid imports, or syntax mistakes using the Replit logs/console.
+
+Verify Import & Usage:
+
+Search for the location where the PricingSection (or equivalent component) is imported and used in your app (commonly in App.tsx, Home.tsx, or main page file).
+
+Make sure the import path and component name are correct.
+
+Confirm there are no typos or misnamed exports.
+
+Check Component Export:
+
+Ensure PricingSection is exported as either a default or named export and that the import matches this (e.g., export default PricingSection).
+
+Validate CSS/Class Application:
+
+Open client/src/index.css and check that any required CSS classes used by the redesigned pricing component exist and are not accidentally hidden (e.g., display: none, opacity: 0).
+
+Look for any global styles (like .pricing-section, .hidden, .invisible) that could unintentionally hide this section.
+
+If you recently renamed classes, update the JSX to match.
+
+Check for Conditional Rendering:
+
+Review the parent component for any logic such as {showPricing && <PricingSection />}. Ensure the condition (showPricing) is set to true or removed for always-on rendering.
+
+If fetching pricing features from an API, ensure successful data load before rendering.
+
+Console the JSX:
+
+Temporarily add simple text inside the PricingSection to confirm if the component renders at all.
+
+If not, trace component tree up to the root to ensure the section isn’t getting short-circuited by an error or undefined value.
+
+Testing:
+
+Save all files, restart the app, and verify if the pricing section now renders properly.
+
+If the section is still missing, share relevant error logs or the current contents of pricing-section.tsx so further help can be provided.
+
+Goal:
+Identify and fix any code, import, or style issues preventing the pricing section from appearing—so it reliably displays after the redesign.
+
