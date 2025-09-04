@@ -1,0 +1,61 @@
+Task:
+Resolve the 500 (Internal Server Error) occurring on the /api/generate endpoint when generating a resume on the live CVGenie website.
+
+Instructions:
+
+Check Backend Server Logs
+
+View the server-side logs/error output where the API is hosted.
+
+Identify the full error message, stack trace, or cause of failure for /api/generate.
+
+Isolate the Problem
+
+Check for typical causes of 500 errors such as:
+
+Unhandled exceptions or syntax errors in the endpoint handler.
+
+Issues processing the uploaded file (format, size, etc.).
+
+Problems calling external services (e.g., AI, PDF parser).
+
+Environment variable or secrets not set (API keys for AI, etc.).
+
+Database or filesystem permission errors.
+
+Test API Locally
+
+Try hitting the /api/generate endpoint on your local development environment with similar data.
+
+See if the same error occurs, or if it is specific to live/production.
+
+Validate Request Payload
+
+Ensure the data being sent matches what the API expects (file types, field names, non-empty content).
+
+Check Dependencies & Config
+
+Verify that all required dependencies, API keys, and environment variables are present in the live environment.
+
+If using any paid/limited APIs (e.g., for AI, Deepseek), make sure the quota has not been exhausted.
+
+Debug & Add Logging
+
+Temporarily increase the logging inside /api/generate to pinpoint where the error occurs.
+
+Log incoming payloads, results from external calls, and branch points in your logic.
+
+Fix Identified Issue
+
+Once the specific error is found (file read error, missing API key, 3rd-party error, etc.), fix in the backend code or configuration.
+
+Test the fix both locally and on the live site.
+
+Deploy and Confirm
+
+Redeploy the updated backend or fix live environment config.
+
+Test resume generation again to confirm the 500 error is resolved.
+
+Goal:
+Find and fix the exact root cause of the 500 error on /api/generate so users can successfully generate resumes without encountering server errors.
