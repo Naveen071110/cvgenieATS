@@ -414,6 +414,60 @@ function generateClosingParagraph(keywords: string[], companyName: string): stri
 
 // OLD FUNCTION REMOVED - Use generateCoverLetter (AI-powered) instead
 
+// Parse personal information from resume text
+function parsePersonalInfo(resumeText: string): any {
+  const personalInfo = {
+    name: "",
+    email: "",
+    phone: "",
+    location: ""
+  };
+
+  // Extract email
+  const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+  const emailMatch = resumeText.match(emailPattern);
+  if (emailMatch) {
+    personalInfo.email = emailMatch[0];
+  }
+
+  // Extract phone
+  const phonePattern = /(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/;
+  const phoneMatch = resumeText.match(phonePattern);
+  if (phoneMatch) {
+    personalInfo.phone = phoneMatch[0];
+  }
+
+  // Simple name extraction (first non-empty line)
+  const lines = resumeText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  if (lines.length > 0) {
+    const firstLine = lines[0];
+    // Check if first line looks like a name (2-4 words, mostly alphabetic)
+    const words = firstLine.split(/\s+/);
+    if (words.length >= 2 && words.length <= 4) {
+      const isNameLike = words.every(word => /^[A-Za-z.'-]+$/.test(word));
+      if (isNameLike) {
+        personalInfo.name = firstLine;
+      }
+    }
+  }
+
+  // Try to extract location (look for common patterns)
+  const locationPatterns = [
+    /([A-Za-z\s]+,\s*[A-Za-z]{2,})/g, // City, State
+    /([A-Za-z\s]+,\s*[A-Z]{2})/g,     // City, ST
+  ];
+  
+  for (const pattern of locationPatterns) {
+    const locationMatch = resumeText.match(pattern);
+    if (locationMatch && locationMatch[0]) {
+      personalInfo.location = locationMatch[0];
+      break;
+    }
+  }
+
+  return personalInfo;
+}
+
 // Enhanced PDF text extraction using Python pdfplumber
 async function extractTextFromPDF(buffer: Buffer): Promise<{ success: boolean; text?: string; error?: string }> {
   try {
@@ -671,13 +725,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
       const { personalInfo, jobDescription, sessionId, exportFormat = 'pdf' } = req.body;
     
-      // Validate required fields
-      if (!personalInfo) {
-        console.error('❌ Missing personalInfo field');
-        return res.status(400).json({ 
-          error: 'Missing required field: personalInfo is required' 
-        });
-      }
+      // personalInfo is now optional - we'll extract it from resume if not provided
     
       if (!jobDescription) {
         console.error('❌ Missing jobDescription field');
@@ -693,20 +741,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
     
-      // Parse personalInfo if it's a string
-      let parsedPersonalInfo;
-      try {
-        parsedPersonalInfo = typeof personalInfo === 'string' ? JSON.parse(personalInfo) : personalInfo;
-        console.log('✅ PersonalInfo parsed successfully');
-      } catch (parseError) {
-        console.error('❌ Error parsing personalInfo:', parseError);
-        return res.status(400).json({ error: 'Invalid personalInfo format - must be valid JSON' });
-      }
+      // Parse personalInfo if provided, otherwise we'll extract it from resume later
+      let parsedPersonalInfo = null;
+      if (personalInfo) {
+        try {
+          parsedPersonalInfo = typeof personalInfo === 'string' ? JSON.parse(personalInfo) : personalInfo;
+          console.log('✅ PersonalInfo parsed successfully');
+        } catch (parseError) {
+          console.error('❌ Error parsing personalInfo:', parseError);
+          return res.status(400).json({ error: 'Invalid personalInfo format - must be valid JSON' });
+        }
     
-      // Validate parsedPersonalInfo structure
-      if (!parsedPersonalInfo || typeof parsedPersonalInfo !== 'object') {
-        console.error('❌ PersonalInfo is not a valid object');
-        return res.status(400).json({ error: 'PersonalInfo must be a valid object' });
+        // Validate parsedPersonalInfo structure
+        if (!parsedPersonalInfo || typeof parsedPersonalInfo !== 'object') {
+          console.error('❌ PersonalInfo is not a valid object');
+          return res.status(400).json({ error: 'PersonalInfo must be a valid object' });
+        }
       }
     
       let originalResume: string = '';
@@ -767,6 +817,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json(createSampleResumeError(
           `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
         ));
+      }
+
+      // Extract personal information from resume if not provided
+      if (!parsedPersonalInfo) {
+        console.log('🔍 Extracting personal information from resume...');
+        parsedPersonalInfo = parsePersonalInfo(originalResume);
+        console.log('✅ Personal information extracted:', {
+          name: parsedPersonalInfo.name || '[not found]',
+          email: parsedPersonalInfo.email || '[not found]',
+          phone: parsedPersonalInfo.phone || '[not found]',
+          location: parsedPersonalInfo.location || '[not found]'
+        });
+        
+        // Provide defaults if nothing was extracted
+        if (!parsedPersonalInfo.name) parsedPersonalInfo.name = "Professional";
+        if (!parsedPersonalInfo.email) parsedPersonalInfo.email = "";
+        if (!parsedPersonalInfo.phone) parsedPersonalInfo.phone = "";
+        if (!parsedPersonalInfo.location) parsedPersonalInfo.location = "";
       }
     
       // Check usage limits
