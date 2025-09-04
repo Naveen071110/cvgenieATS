@@ -3,12 +3,12 @@ import { Check, Star } from "lucide-react"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
 import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { useAuthDialog } from "@/hooks/useAuthDialog";
-import { LoginDialog } from "@/components/LoginDialog";
-import { Link } from "wouter";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { useScrollAnimation } from "@/hooks/use-scroll-animation"
+import { useAuthDialog } from "@/hooks/useAuthDialog"
+import { LoginDialog } from "@/components/LoginDialog"
+import { Link } from "wouter"
 
 const freePlanFeatures = [
   {
@@ -133,6 +133,7 @@ const PricingCard = ({
 };
 
 export default function PricingSection() {
+  console.log("PricingSection: Component is rendering");
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
   const cardsAnimation = useScrollAnimation({ threshold: 0.3 });
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
@@ -145,6 +146,7 @@ export default function PricingSection() {
     <section
       id="pricing"
       className="py-20 bg-gradient-to-br from-gray-50 to-white"
+      style={{ display: 'block', visibility: 'visible', opacity: 1 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div

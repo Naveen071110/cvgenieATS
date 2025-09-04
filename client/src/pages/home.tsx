@@ -65,6 +65,7 @@ export default function Home() {
         <TrustIndicatorsSection />
         <TestimonialsSection />
         <PricingSection />
+        {/* Debug: Pricing section should appear above this line */}
         <FAQSection />
       </main>
       <Footer />
