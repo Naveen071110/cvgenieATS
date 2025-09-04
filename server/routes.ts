@@ -940,6 +940,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.updateUsageSession(sessionId, (session.generationsUsed || 0) + 1);
       console.log('✅ Usage count updated');
     
+      // Debug the final response content
+      console.log('🔍 Final resume before sending to frontend, length:', optimizedResume ? optimizedResume.length : 'UNDEFINED');
+      console.log('🔍 Final resume first 100 chars:', optimizedResume ? optimizedResume.substring(0, 100) : 'RESUME IS UNDEFINED');
+      console.log('🔍 Cover letter length:', coverLetter ? coverLetter.length : 'UNDEFINED');
+
       res.json({
         resume: optimizedResume,
         coverLetter,
@@ -1238,7 +1243,13 @@ Format the resume in clean, readable text format with clear section headers and 
     }
 
     const generatedResume = data.choices[0].message.content;
-    console.log('✅ Resume generated successfully, length:', generatedResume.length);
+    console.log('✅ Resume generated successfully, length:', generatedResume ? generatedResume.length : 'UNDEFINED');
+    console.log('🔍 First 100 chars of generated resume:', generatedResume ? generatedResume.substring(0, 100) : 'CONTENT IS UNDEFINED');
+
+    if (!generatedResume || generatedResume.trim() === '') {
+      console.error('❌ Generated resume is empty or undefined');
+      throw new Error('AI generated empty resume content');
+    }
 
     return generatedResume;
 
