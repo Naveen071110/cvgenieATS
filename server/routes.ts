@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
-import pdfParse from 'pdf-parse';
+// import pdfParse from 'pdf-parse'; // Removed due to startup issues
 import mammoth from 'mammoth';
 import { z } from 'zod';
 import fs from 'fs/promises';
@@ -428,20 +428,12 @@ async function extractTextFromPDF(buffer: Buffer): Promise<{ success: boolean; t
       throw new Error('Invalid PDF file - missing PDF signature');
     }
 
-    const data = await pdfParse(buffer);
-
-    if (!data.text || data.text.trim().length === 0) {
-      console.warn('⚠️ PDF extracted but contains no readable text');
-      return {
-        success: true,
-        text: ''
-      };
-    }
-
-    console.log('✅ PDF text extracted successfully, length:', data.text.length);
+    // Temporarily disable PDF parsing due to library issues
+    // Use Python pdfplumber service instead
+    console.warn('⚠️ PDF parsing temporarily disabled, using Python service fallback');
     return {
-      success: true,
-      text: data.text
+      success: false,
+      error: 'PDF parsing service temporarily unavailable. Please try uploading a DOCX or TXT file instead.'
     };
   } catch (error) {
     console.error('❌ PDF extraction error:', error);
