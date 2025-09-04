@@ -3,7 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
-// import pdfParse from 'pdf-parse'; // Removed due to startup issues
+// pdf-parse has startup issues, using pdf2json instead
+import PDFParser from 'pdf2json';
 import mammoth from 'mammoth';
 import { z } from 'zod';
 import fs from 'fs/promises';
@@ -428,13 +429,64 @@ async function extractTextFromPDF(buffer: Buffer): Promise<{ success: boolean; t
       throw new Error('Invalid PDF file - missing PDF signature');
     }
 
-    // Temporarily disable PDF parsing due to library issues
-    // Use Python pdfplumber service instead
-    console.warn('⚠️ PDF parsing temporarily disabled, using Python service fallback');
-    return {
-      success: false,
-      error: 'PDF parsing service temporarily unavailable. Please try uploading a DOCX or TXT file instead.'
-    };
+    // Use pdf2json for PDF parsing
+    const pdfParser = new PDFParser();
+    
+    return new Promise((resolve) => {
+      pdfParser.on('pdfParser_dataError', (errData: any) => {
+        console.error('❌ PDF parsing error:', errData.parserError);
+        resolve({
+          success: false,
+          error: `PDF parsing failed: ${errData.parserError}`
+        });
+      });
+
+      pdfParser.on('pdfParser_dataReady', (pdfData: any) => {
+        try {
+          // Extract text from pdf2json format
+          let text = '';
+          if (pdfData.Pages) {
+            for (const page of pdfData.Pages) {
+              if (page.Texts) {
+                for (const textItem of page.Texts) {
+                  if (textItem.R) {
+                    for (const run of textItem.R) {
+                      if (run.T) {
+                        text += decodeURIComponent(run.T) + ' ';
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          text = text.trim();
+          if (!text || text.length === 0) {
+            console.warn('⚠️ PDF extracted but contains no readable text');
+            resolve({
+              success: true,
+              text: ''
+            });
+          } else {
+            console.log('✅ PDF text extracted successfully, length:', text.length);
+            resolve({
+              success: true,
+              text: text
+            });
+          }
+        } catch (parseError) {
+          console.error('❌ Error processing PDF data:', parseError);
+          resolve({
+            success: false,
+            error: `PDF processing failed: ${parseError.message}`
+          });
+        }
+      });
+
+      // Parse the buffer
+      pdfParser.parseBuffer(buffer);
+    });
   } catch (error) {
     console.error('❌ PDF extraction error:', error);
     console.error('Error type:', error.constructor.name);
@@ -717,7 +769,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     
       // Check usage limits
-      const session = await storage.getUsageSession(sessionId);
+      let session = await storage.getUsageSession(sessionId);
+      if (!session) {
+        // Create a new session if it doesn't exist
+        session = await storage.createUsageSession({
+          sessionId,
+          generationsUsed: 0,
+          isPro: 0
+        });
+      }
+      
       if (session && session.generationsUsed >= 3 && session.isPro !== 1) {
         return res.status(403).json({ 
           error: "Free usage limit exceeded. Please upgrade to Pro for unlimited generations." 
@@ -799,7 +860,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     
       // Store generation
-      await storage.storeGeneration({
+      await storage.createGeneration({
         sessionId,
         resume: optimizedResume,
         coverLetter

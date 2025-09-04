@@ -1,0 +1,55 @@
+Task:
+Resolve two critical issues in the CVGenie app:
+
+The app crashes with a Cannot find package 'pdf-parse' error and stack trace in /server/routes.ts.
+
+Previously, the /api/generate endpoint was returning a 500 error in production.
+
+Instructions:
+
+1. Fix the pdf-parse Module Not Found Error
+Confirm that pdf-parse is declared in your package.json dependencies.
+
+If missing, run npm install pdf-parse (or the appropriate PNPM/Yarn command) in the workspace root to install it.
+
+After installation, verify that pdf-parse is present in node_modules and can be imported from /server/routes.ts.
+
+If using ESM imports, ensure the import statement matches the package’s ESM/CommonJS format:
+
+For CommonJS: const pdf = require('pdf-parse');
+
+For ESM: import pdf from 'pdf-parse';
+
+Restart the app/server to ensure the import is picked up and no longer causes a crash.
+
+If your project uses a lockfile, be sure to commit/persist it after installing.
+
+2. Re-Test and Fix /api/generate 500 Error
+Once the app boots, test resume generation through /api/generate.
+
+If the error persists, leverage the enhanced logging and diagnostics previously added to view the precise failure point.
+
+Check the /api/health endpoint to verify all environment variables (especially DEEPSEEK_API_KEY) are set and accessible.
+
+Review any new errors or stack traces in the server logs or console.
+
+Apply targeted fixes based on the logged failure—commonly, these include:
+
+Missing/invalid file handling
+
+API key/config issues
+
+External service/network problems
+
+General Checklist
+Ensure all dependencies (like pdf-parse, mammoth, and others used in /api/generate) are installed and correctly imported.
+
+Confirm the environment is using the correct Node.js version compatible with your dependencies.
+
+After applying fixes, restart the server and retest all relevant endpoints for functionality and absence of errors.
+
+If any additional errors are shown during run or testing, log the stack trace and resolve missing packages or code issues in sequence as they come up.
+If you need any file contents or additional information, prompt me to upload or paste them.
+
+Goal:
+Restore the app’s ability to generate resumes without server crashes or /api/generate 500 errors by installing all needed dependencies, verifying imports, and using the robust error logging now in place.
