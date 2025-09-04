@@ -185,7 +185,7 @@ export default function FeaturesSection() {
       aria-labelledby="features-title"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16" ref={scrollFadeInRef}>
+        <div className="text-center mb-16" ref={scrollFadeInRef.ref}>
           <h2 
             id="features-title"
             className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4"

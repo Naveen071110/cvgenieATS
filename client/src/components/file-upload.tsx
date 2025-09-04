@@ -294,7 +294,7 @@ export function FileUpload({
               <div>
                 <p className="font-medium text-green-900">{selectedFile.name}</p>
                 <p className="text-sm text-green-600">
-                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {selectedFile.type.split('/')[1].toUpperCase()} Format
+                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {selectedFile.type ? selectedFile.type.split('/')[1].toUpperCase() : 'Unknown'} Format
                 </p>
               </div>
             </div>
@@ -380,7 +380,7 @@ export function FileUpload({
           role="button"
           tabIndex={0}
           aria-label="Upload resume file"
-          aria-describedby={validationError ? "resume-error" : undefined}
+          aria-describedby={validationError ? "file-upload-error" : "file-upload-instructions"}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
@@ -388,7 +388,6 @@ export function FileUpload({
             }
           }}
           aria-live="polite"
-          aria-describedby={validationError ? "file-upload-error" : "file-upload-instructions"}
         >
           <input
             ref={fileInputRef}
