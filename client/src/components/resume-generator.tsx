@@ -31,7 +31,7 @@ export default function ResumeGenerator() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
-  const [exportFormat, setExportFormat] = useState<string>('pdf');
+  const [exportFormat, setExportFormat] = useState<string>('docx');
   const [copiedResume, setCopiedResume] = useState(false);
   const [copiedCoverLetter, setCopiedCoverLetter] = useState(false);
   const { toast } = useToast();
@@ -87,10 +87,11 @@ export default function ResumeGenerator() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type !== "application/pdf") {
+      const allowedTypes = ["text/plain", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+      if (!allowedTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.docx')) {
         toast({
           title: "Invalid File Type",
-          description: "Please upload a PDF file.",
+          description: "Please upload a DOCX or TXT file.",
           variant: "destructive",
         });
         return;

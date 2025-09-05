@@ -3,8 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
-// pdf-parse has startup issues, using pdf2json instead
-import PDFParser from 'pdf2json';
+// PDF support removed as requested
 import mammoth from 'mammoth';
 import { z } from 'zod';
 import fs from 'fs/promises';
@@ -513,90 +512,7 @@ function parsePersonalInfo(resumeText: string): any {
   return personalInfo;
 }
 
-// Enhanced PDF text extraction using Python pdfplumber
-async function extractTextFromPDF(buffer: Buffer): Promise<{ success: boolean; text?: string; error?: string }> {
-  try {
-    console.log('🔍 Starting PDF extraction...');
-    console.log('Buffer size:', buffer.length, 'bytes');
-
-    if (!buffer || buffer.length === 0) {
-      throw new Error('PDF buffer is empty');
-    }
-
-    // Check if buffer starts with PDF signature
-    const pdfSignature = buffer.subarray(0, 4).toString();
-    if (pdfSignature !== '%PDF') {
-      throw new Error('Invalid PDF file - missing PDF signature');
-    }
-
-    // Use pdf2json for PDF parsing
-    const pdfParser = new PDFParser();
-    
-    return new Promise((resolve) => {
-      pdfParser.on('pdfParser_dataError', (errData: any) => {
-        console.error('❌ PDF parsing error:', errData.parserError);
-        resolve({
-          success: false,
-          error: `PDF parsing failed: ${errData.parserError}`
-        });
-      });
-
-      pdfParser.on('pdfParser_dataReady', (pdfData: any) => {
-        try {
-          // Extract text from pdf2json format
-          let text = '';
-          if (pdfData.Pages) {
-            for (const page of pdfData.Pages) {
-              if (page.Texts) {
-                for (const textItem of page.Texts) {
-                  if (textItem.R) {
-                    for (const run of textItem.R) {
-                      if (run.T) {
-                        text += decodeURIComponent(run.T) + ' ';
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          text = text.trim();
-          if (!text || text.length === 0) {
-            console.warn('⚠️ PDF extracted but contains no readable text');
-            resolve({
-              success: true,
-              text: ''
-            });
-          } else {
-            console.log('✅ PDF text extracted successfully, length:', text.length);
-            resolve({
-              success: true,
-              text: text
-            });
-          }
-        } catch (parseError) {
-          console.error('❌ Error processing PDF data:', parseError);
-          resolve({
-            success: false,
-            error: `PDF processing failed: ${parseError.message}`
-          });
-        }
-      });
-
-      // Parse the buffer
-      pdfParser.parseBuffer(buffer);
-    });
-  } catch (error) {
-    console.error('❌ PDF extraction error:', error);
-    console.error('Error type:', error.constructor.name);
-    console.error('Error message:', error.message);
-    return {
-      success: false,
-      error: `PDF extraction failed: ${error.message}`
-    };
-  }
-}
+// PDF extraction function removed as requested
 
 function cleanExtractedText(text: string): string {
   return text
@@ -643,14 +559,13 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
-      'application/pdf', 
       'text/plain',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
 
     // Get file extension
     const fileExtension = file.originalname.toLowerCase().split('.').pop();
-    const allowedExtensions = ['pdf', 'txt', 'docx'];
+    const allowedExtensions = ['txt', 'docx'];
 
     console.log(`File upload: ${file.originalname}, detected MIME type: ${file.mimetype}, extension: ${fileExtension}`);
 
@@ -659,7 +574,7 @@ const upload = multer({
       cb(null, true);
     } else {
       console.log(`Rejected file with MIME type: ${file.mimetype} and extension: ${file.extension}`);
-      cb(new Error('Only PDF, DOCX (Word), and TXT files are allowed'));
+      cb(new Error('Only DOCX (Word) and TXT files are allowed'));
     }
   }
 });
@@ -700,23 +615,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       let extractedContent: string;
 
-      if (resumeFile.mimetype === 'application/pdf') {
-        try {
-          const extractResult = await extractTextFromPDF(resumeFile.buffer);
-          if (!extractResult.success) {
-            throw new Error(extractResult.error || 'Unknown PDF parsing error');
-          }
-          extractedContent = extractResult.text || '';
-        } catch (pdfError) {
-          console.error('PDF extraction failed completely:', pdfError.message);
-          console.log(`Failed to extract content from file: ${resumeFile.originalname}`);
-          console.log(`First 300 characters of extraction attempt: "${pdfError.message}"`);
-
-          return res.status(400).json(createSampleResumeError(
-            "We couldn't extract content from this file. Please upload a text-based resume PDF with readable content. Image-based or scanned PDFs may not work properly."
-          ));
-        }
-      } else if (resumeFile.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+      if (resumeFile.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
                  (resumeFile.mimetype === 'application/octet-stream' && resumeFile.originalname.toLowerCase().endsWith('.docx'))) {
         console.log('Processing DOCX file with mammoth...');
         try {
@@ -744,7 +643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Resume content validation failed: ${validationResult.reason}`);
         console.log(`First 300 characters of invalid content: "${extractedContent.substring(0, 300)}"`);
         return res.status(400).json(createSampleResumeError(
-          `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
+          `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume with clear, readable content.`
         ));
       }
 
@@ -813,16 +712,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('File mimetype:', req.file.mimetype);
     
         try {
-          if (req.file.mimetype === 'application/pdf') {
-            console.log('🔍 Extracting text from PDF...');
-            const extractResult = await extractTextFromPDF(req.file.buffer);
-            if (!extractResult.success) {
-              console.error('❌ PDF extraction failed:', extractResult.error);
-              return res.status(400).json({ error: `PDF extraction failed: ${extractResult.error}` });
-            }
-            originalResume = extractResult.text || '';
-            console.log('✅ PDF text extracted successfully, length:', originalResume.length);
-          } else if (req.file.mimetype === 'text/plain') {
+          if (req.file.mimetype === 'text/plain') {
             console.log('📝 Processing plain text file...');
             originalResume = req.file.buffer.toString('utf-8');
             console.log('✅ Text file processed successfully, length:', originalResume.length);
@@ -834,7 +724,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } else {
             console.error('❌ Unsupported file type:', req.file.mimetype);
             return res.status(400).json({ 
-              error: 'Unsupported file type. Please upload PDF, DOCX, or TXT files.',
+              error: 'Unsupported file type. Please upload DOCX or TXT files.',
               receivedType: req.file.mimetype
             });
           }
@@ -860,7 +750,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Resume content validation failed: ${validationResult.reason}`);
         console.log(`First 300 characters of invalid content: "${originalResume.substring(0, 300)}"`);
         return res.status(400).json(createSampleResumeError(
-          `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume PDF with clear, readable content.`
+          `We couldn't process this resume: ${validationResult.reason}. Please upload a text-based resume with clear, readable content.`
         ));
       }
 
@@ -1043,9 +933,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const ext = path.extname(filename).toLowerCase();
       let contentType = 'application/octet-stream';
 
-      if (ext === '.pdf') {
-        contentType = 'application/pdf';
-      } else if (ext === '.docx') {
+      if (ext === '.docx') {
         contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
       }
 

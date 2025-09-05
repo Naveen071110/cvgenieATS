@@ -1,0 +1,102 @@
+Task:
+
+Fix the bug where the generated resume or cover letter appears as "undefined" in the user interface.
+
+Remove all PDF upload and download functionality. The app should now only support DOCX and TXT file upload and download for resumes and cover letters.
+
+Instructions:
+
+1. Fix “undefined” Resume Issue After Generation
+Review the document/post-generation logic in both the backend /api/generate handler and the frontend state management.
+
+Check all variable assignments and JSON responses for resume, optimizedResume, generatedResume, or similar keys.
+
+Ensure the backend always returns the resume and cover letter as explicit, non-empty string values (e.g., { resume: "...", coverLetter: "..." }).
+
+In the frontend (Generator.tsx or relevant file), make sure you are referencing the returned values with the correct key names. Handle missing/undefined responses gracefully with error messages if necessary.
+
+Add null/undefined handling when updating state (setEditedResume, etc.) so "undefined" is never rendered in the UI if the backend response is bad.
+
+2. Remove PDF Upload/Download Support
+Frontend:
+
+In the file upload components (FileUpload, etc.), update accepted file types to only allow .txt and .docx. Remove .pdf from all allowed extensions and MIME types.
+
+js
+accept=".docx,.txt"
+Update the file type validation logic everywhere to reflect the new allowed types only.
+
+In the download feature/logic, ensure that only DOCX and TXT download buttons are visible and PDF options are removed.
+
+Backend:
+
+In all file processing, remove logic branches related to PDF upload or PDF parsing.
+
+Update file validation/multer to only accept DOCX and TXT, rejecting PDF uploads.
+
+Remove or comment out all PDF generation code and dependencies (pdfkit, code writing PDFs to the tmp directory, etc.).
+
+Update /api/generate and any export/download endpoints to no longer serve or generate PDF files.
+
+General Clean-up:
+
+Update all user-facing text, UI labels, tooltips, and help messages to mention only DOCX or TXT (not PDF).
+
+Test the app end to end to confirm that PDF files cannot be uploaded, users can't download PDFs, and undefined resume/cover letter output is fixed.
+
+3. Test
+Attempt to upload PDF: user should get a clear error.
+
+Attempt to upload DOCX or TXT: should work.
+
+Generate documents: DOCX and TXT download should be offered; neither should be undefined; PDFs should not be present.
+
+Goal:
+Only DOCX and TXT upload/download is allowed. Resume and cover letter generation works without undefined results, and all PDF references are fully removed from the user experience.
+
+If any unexpected error or edge case is encountered, output the error and/or ask for additional related files or logs to continue the fix.Here’s a focused and actionable prompt you can give to the Replit agent:
+
+Prompt for Replit Agent
+
+Task:
+
+Fix the bug where the generated resume (or cover letter) is coming through as "undefined" after generating.
+
+Remove all PDF upload and download support from both the UI and backend; only DOCX and TXT upload/download should be allowed.
+
+Instructions:
+
+1. Fix Resume "undefined" Bug
+
+Review the backend /api/generate endpoint and make sure it always returns valid resume and coverLetter (or optimizedResume) fields in the JSON response.
+
+Ensure all async calls in the backend are correctly awaited so the values are set before responding.
+
+In the frontend (Generator or wherever you handle result), ensure the correct field names from the backend response are being used. Update state only with defined and non-empty values.
+
+Add a fallback so that if the resume or cover letter comes back as undefined, display a user-friendly error message instead of the string "undefined".
+
+2. Remove PDF Upload/Download
+
+In the file upload components and backend file validation, change accepted file types to only allow DOCX (.docx) and TXT (.txt). Remove all checks, options, and logic for PDF files.
+
+In both frontend “Choose File”, drag-and-drop, and file parsing logic, only allow selection of DOCX and TXT.
+
+Remove all PDF parsing code, dependencies (such as pdf2json), and any PDF generation logic (such as pdfkit).
+
+On the document export/download side, remove any PDF download buttons or generation logic. The user should only be able to download DOCX and TXT formats now.
+
+Update user-facing text, tooltips, and instructions everywhere (upload instructions, error messages, download labels) to reflect this restriction to DOCX and TXT only.
+
+3. Test
+
+Test uploading a PDF: the app should reject it with a clear message.
+
+Test uploading a DOCX/TXT: it should accept, parse, and process as normal.
+
+Test downloading: only DOCX and TXT should be available, no PDFs.
+
+Test document generation: resume/cover letter should never be "undefined".
+
+Goal:
+The resume and cover letter generation always returns valid, defined content. PDF upload/download is fully removed and DOCX/TXT is the only allowed format throughout the app.

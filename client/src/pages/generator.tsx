@@ -262,21 +262,20 @@ export default function Generator() {
 
   const handleFileUpload = (file: File) => {
     const allowedTypes = [
-      "application/pdf",
-      "text/plain",
+            "text/plain",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ];
 
     // Check file extension for DOCX files that might be detected as octet-stream
     const fileExtension = file.name.toLowerCase().split('.').pop();
-    const allowedExtensions = ['pdf', 'txt', 'docx'];
+    const allowedExtensions = ['txt', 'docx'];
 
     const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension || '');
 
     if (!isValidType) {
       toast({
         title: "Invalid File Type",
-        description: "Please upload a PDF, DOCX (Word), or TXT file.",
+        description: "Please upload a DOCX (Word) or TXT file.",
         variant: "destructive",
       });
       return;
@@ -390,7 +389,7 @@ export default function Generator() {
                     isUploading={extractResumeMutation.isPending}
                     uploadProgress={extractResumeMutation.isPending ? 50 : 0}
                     uploadStage={extractResumeMutation.isPending ? 'extracting' : ''}
-                    acceptedTypes={['.pdf', '.doc', '.docx']}
+                    acceptedTypes={['.doc', '.docx', '.txt']}
                     maxSize={10}
                     isProcessing={isAIProcessing}
                   />
@@ -440,7 +439,7 @@ export default function Generator() {
                             </pre>
                           </div>
                           <p className="text-xs text-red-600 mt-2">
-                            Create a resume similar to this format and save it as a text-based PDF for best results.
+                            Create a resume similar to this format and save it as a DOCX or TXT file for best results.
                           </p>
                         </div>
                       )}

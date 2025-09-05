@@ -19,13 +19,7 @@ interface ExportOptionsProps {
 
 const ExportOptions: React.FC<ExportOptionsProps> = ({ onExport, isGenerating, downloads }) => {
   const exportOptions: ExportOption[] = [
-    { 
-      format: 'pdf', 
-      label: 'PDF Only', 
-      icon: <FileText className="w-6 h-6" />, 
-      description: 'Professional format for applications' 
-    },
-    { 
+        { 
       format: 'docx', 
       label: 'Word Document', 
       icon: <File className="w-6 h-6" />, 
@@ -35,7 +29,7 @@ const ExportOptions: React.FC<ExportOptionsProps> = ({ onExport, isGenerating, d
       format: 'both', 
       label: 'Both Formats', 
       icon: <Download className="w-6 h-6" />, 
-      description: 'PDF + DOCX versions' 
+      description: 'DOCX + TXT versions' 
     }
   ];
 
@@ -48,7 +42,7 @@ const ExportOptions: React.FC<ExportOptionsProps> = ({ onExport, isGenerating, d
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {Object.entries(downloads).map(([key, url]) => {
               const isResume = key.includes('resume');
-              const isPDF = key.includes('PDF');
+              const isDOCX = key.includes('DOCX');
               
               return (
                 <a
@@ -57,9 +51,9 @@ const ExportOptions: React.FC<ExportOptionsProps> = ({ onExport, isGenerating, d
                   download
                   className="flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  {isPDF ? <FileText className="w-5 h-5" /> : <File className="w-5 h-5" />}
+                  {isDOCX ? <FileText className="w-5 h-5" /> : <File className="w-5 h-5" />}
                   <span className="font-medium">
-                    {isResume ? 'Resume' : 'Cover Letter'} ({isPDF ? 'PDF' : 'DOCX'})
+                    {isResume ? 'Resume' : 'Cover Letter'} ({isDOCX ? 'DOCX' : 'TXT'})
                   </span>
                 </a>
               );

@@ -16,8 +16,8 @@ const faqData: FAQItem[] = [
   {
     id: 'file-formats',
     question: 'What file formats do you support?',
-    answer: 'We support PDF, DOC, DOCX, TXT, and RTF files. PDF files provide the best results for our AI analysis. You can also paste your resume content directly into the text area.',
-    keywords: ['pdf', 'doc', 'docx', 'txt', 'rtf', 'format', 'upload', 'file']
+    answer: 'We support DOC, DOCX, and TXT files. DOCX files provide the best results for our AI analysis. You can also paste your resume content directly into the text area.',
+    keywords: ['doc', 'docx', 'txt', 'format', 'upload', 'file']
   },
   {
     id: 'ats-optimization',
@@ -52,8 +52,8 @@ const faqData: FAQItem[] = [
   {
     id: 'download-formats',
     question: 'What download formats are available?',
-    answer: 'You can download your optimized resume as PDF, DOC, or DOCX. PDF is recommended for most applications, while DOC/DOCX formats allow further editing if needed.',
-    keywords: ['download', 'export', 'pdf', 'doc', 'docx', 'format']
+    answer: 'You can download your optimized resume as DOCX or TXT. DOCX is recommended for most applications, while TXT format allows easy copying and pasting.',
+    keywords: ['download', 'export', 'doc', 'docx', 'txt', 'format']
   },
   {
     id: 'ai-accuracy',

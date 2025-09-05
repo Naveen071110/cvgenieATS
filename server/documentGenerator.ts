@@ -1,5 +1,5 @@
 
-import PDFDocument from 'pdfkit';
+// PDF imports removed
 import officegen from 'officegen';
 import fs from 'fs';
 import path from 'path';
@@ -8,8 +8,6 @@ import { promisify } from 'util';
 const mkdir = promisify(fs.mkdir);
 
 interface ExportFiles {
-  resumePDF?: string;
-  coverLetterPDF?: string;
   resumeDOCX?: string;
   coverLetterDOCX?: string;
 }
@@ -25,66 +23,7 @@ class DocumentGenerator {
     return tempDir;
   }
 
-  async generatePDF(content: string, outputPath: string): Promise<string> {
-    await this.ensureTempDir();
-    
-    return new Promise((resolve, reject) => {
-      try {
-        const doc = new PDFDocument({
-          margins: {
-            top: 50,
-            bottom: 50,
-            left: 50,
-            right: 50
-          }
-        });
-        
-        const stream = fs.createWriteStream(outputPath);
-        doc.pipe(stream);
-        
-        // Parse and format the content
-        const lines = content.split('\n').filter(line => line.trim());
-        let yPosition = 50;
-        
-        lines.forEach((line, index) => {
-          const trimmedLine = line.trim();
-          if (!trimmedLine) return;
-          
-          // Check if this looks like a header (all caps, short line, etc.)
-          if (trimmedLine.length < 50 && (trimmedLine.toUpperCase() === trimmedLine || trimmedLine.includes(':'))) {
-            doc.fontSize(14).font('Helvetica-Bold');
-          } else {
-            doc.fontSize(11).font('Helvetica');
-          }
-          
-          // Add some spacing before sections
-          if (trimmedLine.toUpperCase() === trimmedLine && trimmedLine.length < 50 && index > 0) {
-            yPosition += 10;
-          }
-          
-          doc.text(trimmedLine, 50, yPosition, {
-            width: 500,
-            align: 'left'
-          });
-          
-          yPosition += doc.heightOfString(trimmedLine, { width: 500 }) + 5;
-          
-          // Add page if needed
-          if (yPosition > 750) {
-            doc.addPage();
-            yPosition = 50;
-          }
-        });
-        
-        doc.end();
-        
-        stream.on('finish', () => resolve(outputPath));
-        stream.on('error', reject);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
+  // generatePDF function removed as requested
   
   async generateDOCX(content: string, outputPath: string): Promise<string> {
     await this.ensureTempDir();
@@ -126,22 +65,13 @@ class DocumentGenerator {
     resumeContent: string, 
     coverLetterContent: string, 
     baseFilename: string,
-    formats: string[] = ['pdf', 'docx']
+    formats: string[] = ['docx']
   ): Promise<ExportFiles> {
     const tempDir = await this.ensureTempDir();
     const outputs: ExportFiles = {};
     
     try {
-      if (formats.includes('pdf')) {
-        outputs.resumePDF = await this.generatePDF(
-          resumeContent, 
-          path.join(tempDir, `${baseFilename}_resume.pdf`)
-        );
-        outputs.coverLetterPDF = await this.generatePDF(
-          coverLetterContent, 
-          path.join(tempDir, `${baseFilename}_cover_letter.pdf`)
-        );
-      }
+      // PDF generation removed as requested
       
       if (formats.includes('docx')) {
         outputs.resumeDOCX = await this.generateDOCX(

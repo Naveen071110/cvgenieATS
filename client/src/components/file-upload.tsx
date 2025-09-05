@@ -19,7 +19,7 @@ interface FileUploadProps {
   isProcessing?: boolean;
 }
 
-const defaultAcceptedTypes = ['.pdf'];
+const defaultAcceptedTypes = ['.docx', '.txt'];
 const defaultMaxSize = 10; // 10MB
 
 interface ValidationError {
@@ -28,7 +28,6 @@ interface ValidationError {
 }
 
 const ACCEPTED_FILE_TYPES = {
-  'application/pdf': ['.pdf'],
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
   'text/plain': ['.txt']
 };
@@ -42,14 +41,14 @@ interface FileValidationResult {
 
 const validateFile = (file: File): FileValidationResult => {
   // Check file type
-  const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+  const validTypes = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
   const isValidType = validTypes.includes(file.type) ||
     Object.values(ACCEPTED_FILE_TYPES).flat().some(ext => file.name.toLowerCase().endsWith(ext));
 
   if (!isValidType) {
     return {
       isValid: false,
-      error: 'Please upload PDF, DOCX, or TXT files only'
+      error: 'Please upload DOCX or TXT files only'
     };
   }
 
@@ -393,7 +392,7 @@ export function FileUpload({
             ref={fileInputRef}
             id="resume"
             type="file"
-            accept=".pdf,.docx,.txt"
+            accept=".docx,.txt"
             onChange={handleFileInputChange}
             className="hidden"
             aria-hidden="true"
@@ -492,17 +491,17 @@ export function FileUpload({
           {!validationError && !isValidated && (
             <div className="mt-6 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-500 mt-2">
-                Supports: PDF, DOCX, TXT files • Max size: 10MB
+                Supports: DOCX, TXT files • Max size: 10MB
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Upload your resume in PDF, Word, or text format
+                Upload your resume in Word or text format
               </p>
             </div>
           )}
 
           {/* Hidden instructions for screen readers */}
           <div id="file-upload-instructions" className="sr-only">
-            Upload your resume in PDF, DOCX, or TXT format. Maximum file size is 10MB.
+            Upload your resume in DOCX or TXT format. Maximum file size is 10MB.
             You can drag and drop a file or click to browse for files.
           </div>
         </div>

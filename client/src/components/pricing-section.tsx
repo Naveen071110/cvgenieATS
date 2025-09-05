@@ -24,7 +24,7 @@ const freePlanFeatures = [
     description: "Match each job application perfectly"
   },
   {
-    text: "Multiple export formats (PDF, DOCX, TXT)",
+    text: "Multiple export formats (DOCX, TXT)",
     description: "Compatible with all job applications"
   },
   {
@@ -203,7 +203,7 @@ export default function PricingSection() {
             <div className="flex flex-col items-center">
               <MultiFormatExportIcon className="w-12 h-12 text-primary mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">Multiple Formats</h4>
-              <p className="text-gray-600 text-sm">Export as PDF, DOCX, or TXT</p>
+              <p className="text-gray-600 text-sm">Export as DOCX or TXT</p>
             </div>
             <div className="flex flex-col items-center">
               <AnalyticsDashboardIcon className="w-12 h-12 text-primary mb-4" />

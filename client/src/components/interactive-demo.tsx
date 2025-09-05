@@ -178,7 +178,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
       number: 1,
       icon: <Upload className="w-6 h-6" />,
       title: "Upload Resume",
-      description: "Any format - PDF, DOC, or TXT"
+      description: "Any format - DOC, DOCX, or TXT"
     },
     {
       number: 2,

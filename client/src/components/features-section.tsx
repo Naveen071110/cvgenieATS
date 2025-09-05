@@ -122,7 +122,7 @@ const features = [
     title: "Multiple Export Formats",
     description: "Get your documents in the format you need. Whether you're applying online, emailing directly, or printing for in-person interviews, we've got you covered with multiple professional formats.",
     benefits: [
-      "PDF for professional submission",
+      "DOCX for professional submission",
       "Plain text for easy copying",
       "Word document for easy editing"
     ],
@@ -133,10 +133,10 @@ const features = [
           <div className="flex items-center justify-between p-3 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors cursor-pointer">
             <div className="flex items-center">
               <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-red-600 font-bold text-sm">PDF</span>
+                <span className="text-blue-600 font-bold text-sm">DOCX</span>
               </div>
               <div>
-                <p className="font-medium text-slate-900">PDF Resume</p>
+                <p className="font-medium text-slate-900">DOCX Resume</p>
                 <p className="text-sm text-slate-500">Professional format</p>
               </div>
             </div>
