@@ -423,6 +423,8 @@ function parsePersonalInfo(resumeText: string): any {
     location: ""
   };
 
+  console.log('🔍 Debug - First 200 chars of resume for parsing:', resumeText.substring(0, 200));
+
   // Extract email
   const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
   const emailMatch = resumeText.match(emailPattern);
@@ -430,41 +432,84 @@ function parsePersonalInfo(resumeText: string): any {
     personalInfo.email = emailMatch[0];
   }
 
-  // Extract phone
-  const phonePattern = /(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/;
-  const phoneMatch = resumeText.match(phonePattern);
-  if (phoneMatch) {
-    personalInfo.phone = phoneMatch[0];
+  // Extract phone - improved pattern
+  const phonePatterns = [
+    /(\+91[-.\s]?)?(\d{5}[-.\s]?\d{5})/g, // Indian format: +91 12345 67890
+    /(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/g, // US format
+    /(\d{3}[-.\s]?\d{3}[-.\s]?\d{4})/g, // General format
+  ];
+  
+  for (const pattern of phonePatterns) {
+    const phoneMatch = resumeText.match(pattern);
+    if (phoneMatch && phoneMatch[0]) {
+      personalInfo.phone = phoneMatch[0].trim();
+      break;
+    }
   }
 
-  // Simple name extraction (first non-empty line)
+  // Improved name extraction
   const lines = resumeText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-  if (lines.length > 0) {
-    const firstLine = lines[0];
-    // Check if first line looks like a name (2-4 words, mostly alphabetic)
-    const words = firstLine.split(/\s+/);
-    if (words.length >= 2 && words.length <= 4) {
-      const isNameLike = words.every(word => /^[A-Za-z.'-]+$/.test(word));
+  
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
+    const line = lines[i];
+    
+    // Skip lines that are clearly not names
+    if (line.includes('@') || line.includes('http') || line.includes('www') || 
+        line.toLowerCase().includes('resume') || line.toLowerCase().includes('cv') ||
+        line.match(/^\d+/) || line.length > 50) {
+      continue;
+    }
+    
+    // Check if line looks like a name
+    const words = line.split(/\s+/);
+    if (words.length >= 1 && words.length <= 4) {
+      const isNameLike = words.every(word => {
+        // Allow alphabetic characters, common name punctuation, and some flexibility
+        return /^[A-Za-z.'-]+$/.test(word) && word.length > 1;
+      });
+      
       if (isNameLike) {
-        personalInfo.name = firstLine;
+        personalInfo.name = line;
+        console.log('✅ Found name:', line);
+        break;
       }
     }
   }
 
-  // Try to extract location (look for common patterns)
+  // Improved location extraction
   const locationPatterns = [
-    /([A-Za-z\s]+,\s*[A-Za-z]{2,})/g, // City, State
+    /([A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z\s]+)/g, // City, State, Country
+    /([A-Za-z\s]+,\s*[A-Za-z]{2,})/g, // City, State/Country
     /([A-Za-z\s]+,\s*[A-Z]{2})/g,     // City, ST
+    /\b(New York|Los Angeles|Chicago|Houston|Philadelphia|Phoenix|San Antonio|San Diego|Dallas|San Jose|Austin|Jacksonville|Fort Worth|Columbus|Charlotte|San Francisco|Indianapolis|Seattle|Denver|Washington|Boston|El Paso|Nashville|Detroit|Oklahoma City|Portland|Las Vegas|Memphis|Louisville|Baltimore|Milwaukee|Albuquerque|Tucson|Fresno|Sacramento|Mesa|Kansas City|Atlanta|Long Beach|Colorado Springs|Raleigh|Miami|Virginia Beach|Omaha|Oakland|Minneapolis|Tulsa|Arlington|Tampa|New Orleans|Wichita|Cleveland|Bakersfield|Aurora|Anaheim|Honolulu|Santa Ana|Corpus Christi|Riverside|Lexington|Stockton|Toledo|St. Paul|Newark|Greensboro|Plano|Henderson|Lincoln|Buffalo|Jersey City|Chula Vista|Orlando|Norfolk|Chandler|Laredo|Madison|Durham|Lubbock|Winston-Salem|Garland|Glendale|Hialeah|Reno|Baton Rouge|Irvine|Chesapeake|Irving|Scottsdale|North Las Vegas|Fremont|Gilbert|San Bernardino|Boise|Birmingham)\b[,\s]*[A-Z]{2}?\b/gi
   ];
   
   for (const pattern of locationPatterns) {
     const locationMatch = resumeText.match(pattern);
     if (locationMatch && locationMatch[0]) {
-      personalInfo.location = locationMatch[0];
+      personalInfo.location = locationMatch[0].trim();
+      console.log('✅ Found location:', locationMatch[0]);
       break;
     }
   }
 
+  // If no location found, try simple patterns in first few lines
+  if (!personalInfo.location) {
+    for (let i = 0; i < Math.min(10, lines.length); i++) {
+      const line = lines[i];
+      if (line.includes(',') && line.length < 100 && !line.includes('@') && 
+          !line.toLowerCase().includes('experience') && !line.toLowerCase().includes('summary')) {
+        // Check if it looks like a location
+        if (/[A-Za-z\s]+,\s*[A-Za-z\s]+/.test(line)) {
+          personalInfo.location = line;
+          console.log('✅ Found location (fallback):', line);
+          break;
+        }
+      }
+    }
+  }
+
+  console.log('🔍 Parsed personal info:', personalInfo);
   return personalInfo;
 }
 
