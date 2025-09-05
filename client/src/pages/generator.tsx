@@ -228,6 +228,34 @@ export default function Generator() {
       manager.updateProgress(3, 100);
 
       setTimeout(() => {
+        // Ensure we have valid data before setting state
+        if (!data.optimizedResume || data.optimizedResume.trim() === '') {
+          console.error('❌ No optimized resume received from backend');
+          toast({
+            title: "Generation Error",
+            description: "No resume content was generated. Please try again.",
+            variant: "destructive",
+          });
+          setIsAIProcessing(false);
+          manager.reset();
+          return;
+        }
+
+        if (!data.coverLetter || data.coverLetter.trim() === '') {
+          console.error('❌ No cover letter received from backend');
+          toast({
+            title: "Generation Error", 
+            description: "No cover letter content was generated. Please try again.",
+            variant: "destructive",
+          });
+          setIsAIProcessing(false);
+          manager.reset();
+          return;
+        }
+
+        console.log('✅ Generation successful - Resume length:', data.optimizedResume.length);
+        console.log('✅ Generation successful - Cover letter length:', data.coverLetter.length);
+
         setGenerationResult(data);
         setEditedResume(data.optimizedResume);
         setEditedCoverLetter(data.coverLetter);
@@ -617,8 +645,19 @@ export default function Generator() {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => downloadDocument(editedResume, 'optimized-resume.txt')}
+                      onClick={() => {
+                        if (editedResume && editedResume.trim()) {
+                          downloadDocument(editedResume, 'optimized-resume.txt');
+                        } else {
+                          toast({
+                            title: "Download Error",
+                            description: "No resume content available to download.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
                       className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      disabled={!editedResume || editedResume.trim() === ''}
                     >
                       <Download className="w-4 h-4 mr-1" />
                       Download TXT
@@ -639,7 +678,7 @@ export default function Generator() {
                 ) : (
                   <div className="bg-slate-50 p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-96 overflow-y-auto leading-relaxed">
-                      {editedResume}
+                      {editedResume || "No resume content available. Please try generating again."}
                     </pre>
                   </div>
                 )}
@@ -666,8 +705,19 @@ export default function Generator() {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => downloadDocument(editedCoverLetter, 'cover-letter.txt')}
+                      onClick={() => {
+                        if (editedCoverLetter && editedCoverLetter.trim()) {
+                          downloadDocument(editedCoverLetter, 'cover-letter.txt');
+                        } else {
+                          toast({
+                            title: "Download Error",
+                            description: "No cover letter content available to download.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
                       className="bg-green-50 text-green-700 hover:bg-green-100"
+                      disabled={!editedCoverLetter || editedCoverLetter.trim() === ''}
                     >
                       <Download className="w-4 h-4 mr-1" />
                       Download TXT
@@ -688,7 +738,7 @@ export default function Generator() {
                 ) : (
                   <div className="bg-slate-50 p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-80 overflow-y-auto">
-                      {editedCoverLetter}
+                      {editedCoverLetter || "No cover letter content available. Please try generating again."}
                     </pre>
                   </div>
                 )}
@@ -709,12 +759,30 @@ export default function Generator() {
                   </Button>
                   <Button
                     onClick={() => {
-                      downloadDocument(editedResume, 'optimized-resume.txt');
-                      downloadDocument(editedCoverLetter, 'cover-letter.txt');
+                      if (editedResume && editedResume.trim()) {
+                        downloadDocument(editedResume, 'optimized-resume.txt');
+                      } else {
+                        toast({
+                          title: "Download Error",
+                          description: "No resume content available to download.",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      
+                      if (editedCoverLetter && editedCoverLetter.trim()) {
+                        downloadDocument(editedCoverLetter, 'cover-letter.txt');
+                      } else {
+                        toast({
+                          title: "Download Error", 
+                          description: "No cover letter content available to download.",
+                          variant: "destructive",
+                        });
+                      }
                     }}
                     size="lg"
                     className="bg-primary hover:bg-primary/90"
-                    disabled={isAIProcessing}
+                    disabled={isAIProcessing || !editedResume || !editedCoverLetter}
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Both Documents
