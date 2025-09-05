@@ -783,7 +783,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      if (session && session.generationsUsed >= 3 && session.isPro !== 1) {
+      if (session && (session.generationsUsed || 0) >= 3 && session.isPro !== 1) {
         return res.status(403).json({ 
           error: "Free usage limit exceeded. Please upgrade to Pro for unlimited generations." 
         });
@@ -798,10 +798,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
       // Check if AI service is available
       try {
-        // Generate optimized resume
+        // First, extract structured data from the resume using LLM
+        const structuredData = await extractStructuredResumeData(originalResume);
+        console.log('✅ Structured data extracted successfully');
+        
+        // Generate optimized resume using structured data
         optimizedResume = await generateOptimizedResume(
           originalResume,
-          parsedPersonalInfo,
+          structuredData,
           jobDescription
         );
         console.log('✅ Optimized resume generated successfully, length:', optimizedResume.length);
@@ -866,7 +870,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store generation
       await storage.createGeneration({
         sessionId,
-        resume: optimizedResume,
+        jobDescription,
+        originalResume,
+        optimizedResume,
         coverLetter
       });
       console.log('✅ Generation stored successfully');
@@ -881,7 +887,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('🔍 Cover letter length:', coverLetter ? coverLetter.length : 'UNDEFINED');
 
       res.json({
-        resume: optimizedResume,
+        optimizedResume,
         coverLetter,
         downloads: downloadLinks,
         message: 'Resume and cover letter generated successfully'
@@ -1084,9 +1090,143 @@ function atsCleanup(content: string, keywords: string[]): string {
 }
 
 // AI Generation Functions (using Deepseek API)
+async function extractStructuredResumeData(resumeText: string): Promise<any> {
+  try {
+    console.log('🔍 Extracting structured data from resume...');
+
+    if (!process.env.DEEPSEEK_API_KEY) {
+      throw new Error('DEEPSEEK_API_KEY environment variable is not set');
+    }
+
+    const prompt = `Extract and structure the following information from this resume text. Return a JSON object with the following fields:
+
+{
+  "name": "Full name",
+  "email": "Email address",
+  "phone": "Phone number",
+  "address": "Full address or location",
+  "linkedin": "LinkedIn URL if present",
+  "summary": "Professional summary or objective",
+  "skills": ["skill1", "skill2", "skill3"],
+  "experience": [
+    {
+      "title": "Job title",
+      "company": "Company name",
+      "location": "Job location",
+      "duration": "Start date - End date",
+      "description": "Job description with key achievements"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Degree type",
+      "field": "Field of study",
+      "school": "School name",
+      "location": "School location",
+      "year": "Graduation year or duration"
+    }
+  ],
+  "certifications": ["certification1", "certification2"],
+  "projects": [
+    {
+      "name": "Project name",
+      "description": "Project description"
+    }
+  ]
+}
+
+Extract ONLY information that is explicitly mentioned in the resume. If a field is not found, use null or an empty array. Do not invent or guess any information.
+
+Resume text:
+${resumeText}
+
+Return only the JSON object, no other text.`;
+
+    const requestBody = {
+      model: 'deepseek-chat',
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.1,
+      max_tokens: 2000
+    };
+
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      console.error('❌ Extraction API error:', response.status, response.statusText);
+      throw new Error('Failed to extract structured data');
+    }
+
+    const data = await response.json();
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response from extraction API');
+    }
+
+    const extractedText = data.choices[0].message.content;
+    console.log('🔍 Raw extraction response:', extractedText.substring(0, 300));
+
+    // Parse JSON response
+    let structuredData;
+    try {
+      // Clean the response in case it has markdown formatting
+      const cleanedResponse = extractedText.replace(/```json\n?|\n?```/g, '').trim();
+      structuredData = JSON.parse(cleanedResponse);
+      console.log('✅ Successfully extracted structured data:', Object.keys(structuredData));
+      return structuredData;
+    } catch (parseError) {
+      console.error('❌ Failed to parse JSON from extraction:', parseError);
+      console.log('Raw response that failed to parse:', extractedText);
+      
+      // Return a fallback structure with basic parsing
+      return {
+        name: null,
+        email: null,
+        phone: null,
+        address: null,
+        linkedin: null,
+        summary: resumeText.substring(0, 200), // Use first 200 chars as summary
+        skills: [],
+        experience: [],
+        education: [],
+        certifications: [],
+        projects: []
+      };
+    }
+
+  } catch (error) {
+    console.error('❌ Error extracting structured resume data:', error);
+    // Return basic fallback structure
+    return {
+      name: null,
+      email: null,
+      phone: null,
+      address: null,
+      linkedin: null,
+      summary: resumeText.substring(0, 200),
+      skills: [],
+      experience: [],
+      education: [],
+      certifications: [],
+      projects: []
+    };
+  }
+}
+
 async function generateOptimizedResume(
   existingResume: string,
-  personalInfo: any,
+  structuredData: any,
   jobDescription: string
 ): Promise<string> {
   try {
@@ -1102,31 +1242,66 @@ async function generateOptimizedResume(
       throw new Error('Job description cannot be empty');
     }
 
-    if (!personalInfo || Object.keys(personalInfo).length === 0) {
-      throw new Error('Personal information cannot be empty');
+    if (!structuredData) {
+      throw new Error('Structured resume data cannot be empty');
     }
 
-    const prompt = `Create an ATS-optimized resume. Output ONLY the resume content with no introductory text, explanations, or commentary.
+    const prompt = `Create an ATS-optimized resume using the structured data below. Output ONLY the resume content with no introductory text, explanations, or commentary.
 
-PERSONAL INFORMATION:
-${JSON.stringify(personalInfo, null, 2)}
+STRUCTURED RESUME DATA:
+Name: ${structuredData.name || 'Professional'}
+Email: ${structuredData.email || ''}
+Phone: ${structuredData.phone || ''}
+Address: ${structuredData.address || ''}
+LinkedIn: ${structuredData.linkedin || ''}
 
-EXISTING RESUME CONTENT (if any):
-${existingResume || 'No existing resume provided'}
+Professional Summary: ${structuredData.summary || ''}
+
+Skills: ${Array.isArray(structuredData.skills) ? structuredData.skills.join(', ') : ''}
+
+Work Experience:
+${Array.isArray(structuredData.experience) ? structuredData.experience.map((exp: any) => 
+  `- ${exp.title} at ${exp.company} (${exp.duration})
+   Location: ${exp.location}
+   ${exp.description}`
+).join('\n\n') : 'No experience data available'}
+
+Education:
+${Array.isArray(structuredData.education) ? structuredData.education.map((edu: any) => 
+  `- ${edu.degree} in ${edu.field} from ${edu.school} (${edu.year})
+   Location: ${edu.location}`
+).join('\n') : 'No education data available'}
+
+Certifications: ${Array.isArray(structuredData.certifications) ? structuredData.certifications.join(', ') : ''}
+
+Projects:
+${Array.isArray(structuredData.projects) ? structuredData.projects.map((proj: any) => 
+  `- ${proj.name}: ${proj.description}`
+).join('\n') : ''}
 
 JOB DESCRIPTION TO OPTIMIZE FOR:
 ${jobDescription}
 
 Requirements:
-1. Use relevant keywords from the job description naturally
-2. Highlight matching skills and experiences
-3. Use strong action verbs and quantifiable achievements
-4. Follow a clean, professional format
-5. Optimize for Applicant Tracking Systems
-6. Include all sections: Contact Info, Professional Summary, Skills, Experience, Education
-7. Tailor the content specifically for this job opportunity
+1. Use ALL the extracted information from the structured data - never omit contact details, experience, or education
+2. Incorporate relevant keywords from the job description naturally throughout the resume
+3. Rewrite experience descriptions to highlight achievements that match the job requirements
+4. Use strong action verbs and quantifiable achievements where possible
+5. Follow clean ATS-compliant formatting with clear section headers
+6. Optimize the professional summary to align with the job description
+7. Rearrange skills to prioritize those mentioned in the job description
+8. Maintain all factual information exactly as provided (names, dates, companies, etc.)
 
-Start directly with the candidate's name and contact information. Do not include any introductory phrases like "Here is" or "Of course".`;
+Format the resume with these sections in order:
+1. Name and Contact Information
+2. Professional Summary
+3. Skills
+4. Work Experience
+5. Education
+6. Certifications (if any)
+7. Projects (if any)
+
+Start directly with the candidate's name and contact information. Use clean, professional formatting with clear section headers.`;
 
     console.log('📤 Sending request to Deepseek API...');
     console.log('API Key present:', !!process.env.DEEPSEEK_API_KEY);

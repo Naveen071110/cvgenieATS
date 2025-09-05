@@ -1,0 +1,54 @@
+Task:
+
+Fix the bug where the generated resume text is literally the word "undefined" instead of valid output, even though the uploaded resume has all required information.
+
+Update the backend logic so that the DeepSeek LLM first analyzes the raw uploaded resume (DOCX or TXT), automatically extracts all structured data (personal info, contact, work experience, skills, education, etc.), and then feeds this extracted information (along with the job description) into the ATS resume optimization prompt. The user should not have to enter personal info separately.
+
+Instructions:
+
+1. Fix "undefined" Resume Bug:
+
+Trace the data flow in /api/generate, especially after the DeepSeek API call.
+
+Ensure you are using data.choices.message.content from the DeepSeek API, and handle cases where it might be absent, empty, or mismatched. Never set resume/coverLetter as undefined.
+
+In the frontend, make sure you do not default to the literal string "undefined" if the field is missing from the backend response. Display a clear error message or fallback content.
+
+2. LLM-Driven Resume Data Extraction:
+
+Modify the backend so that after extracting the raw resume text from DOCX/TXT, BEFORE calling the ATS optimization prompt, call the DeepSeek LLM (or similar) with a prompt like:
+
+text
+Extract and separate the following fields from this resume text: Name, Email, Phone Number, Address, LinkedIn (if present), Skills, Work Experience (with job titles, companies, durations, bullets), Education, Certifications, Summary. Return the result as a JSON object with each field clearly labeled and all sections split out.
+[Resume text inserted here]
+Parse the returned JSON and feed those fields as structured variables into the actual ATS resume generation prompt. Include the job description as usual.
+
+Example pipeline:
+
+User uploads DOCX or TXT
+
+Extract plain text
+
+Call LLM extraction prompt to get structured JSON
+
+Use extracted data + job description in ATS optimization/generation step
+
+Add robust error handling in case the LLM does not return valid JSON; fall back gracefully and alert the user.
+
+3. Remove the Need for Manual Personal Info Input:
+
+The frontend should only require resume file and job description—no extra personal info form.
+
+Update prompts, input validation, and documentation accordingly.
+
+4. Test Thoroughly:
+
+Upload multiple resumes and confirm that fields like name, contact info, work experience, and skills are all properly extracted and included in the final, optimized resume.
+
+Make sure the resume/cover letter are always valid strings and never "undefined".
+
+Goal:
+
+Users upload just a DOCX/TXT and job description.
+
+The app reliably generates a fully structured, ATS-optimized resume using all correct extracted data and never displays "undefined".
