@@ -1079,6 +1079,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 function cleanAIResponse(content: string): string {
   // Remove common instructional phrases and meta-commentary
   const instructionalPatterns = [
+    /^Of course\.? Here is.*?:/gi,
+    /^Of course\.? Here's.*?:/gi,
+    /^Here is an? expertly crafted.*?:/gi,
+    /^Here's an? expertly crafted.*?:/gi,
     /Here's an? (optimized|ATS-compliant|professional).*?resume.*?format[:\n]/gi,
     /Here's an? (personalized|professional).*?cover letter.*?[:\n]/gi,
     /I've (created|optimized|generated).*?[:\n]/gi,
@@ -1169,7 +1173,7 @@ async function generateOptimizedResume(
       throw new Error('Personal information cannot be empty');
     }
 
-    const prompt = `You are an expert resume writer and ATS optimization specialist. Create an optimized, professional resume based on the following information.
+    const prompt = `Create an ATS-optimized resume. Output ONLY the resume content with no introductory text, explanations, or commentary.
 
 PERSONAL INFORMATION:
 ${JSON.stringify(personalInfo, null, 2)}
@@ -1180,16 +1184,16 @@ ${existingResume || 'No existing resume provided'}
 JOB DESCRIPTION TO OPTIMIZE FOR:
 ${jobDescription}
 
-Please create a comprehensive, ATS-optimized resume that:
-1. Uses relevant keywords from the job description naturally
-2. Highlights matching skills and experiences
-3. Uses strong action verbs and quantifiable achievements
-4. Follows a clean, professional format
-5. Is optimized for Applicant Tracking Systems
-6. Includes all sections: Contact Info, Professional Summary, Skills, Experience, Education
-7. Tailors the content specifically for this job opportunity
+Requirements:
+1. Use relevant keywords from the job description naturally
+2. Highlight matching skills and experiences
+3. Use strong action verbs and quantifiable achievements
+4. Follow a clean, professional format
+5. Optimize for Applicant Tracking Systems
+6. Include all sections: Contact Info, Professional Summary, Skills, Experience, Education
+7. Tailor the content specifically for this job opportunity
 
-Format the resume in clean, readable text format with clear section headers and consistent formatting.`;
+Start directly with the candidate's name and contact information. Do not include any introductory phrases like "Here is" or "Of course".`;
 
     console.log('📤 Sending request to Deepseek API...');
     console.log('API Key present:', !!process.env.DEEPSEEK_API_KEY);
@@ -1242,14 +1246,19 @@ Format the resume in clean, readable text format with clear section headers and 
       throw new Error('Invalid response from Deepseek API');
     }
 
-    const generatedResume = data.choices[0].message.content;
-    console.log('✅ Resume generated successfully, length:', generatedResume ? generatedResume.length : 'UNDEFINED');
-    console.log('🔍 First 100 chars of generated resume:', generatedResume ? generatedResume.substring(0, 100) : 'CONTENT IS UNDEFINED');
+    const rawGeneratedResume = data.choices[0].message.content;
+    console.log('✅ Resume generated successfully, length:', rawGeneratedResume ? rawGeneratedResume.length : 'UNDEFINED');
+    console.log('🔍 First 100 chars of raw generated resume:', rawGeneratedResume ? rawGeneratedResume.substring(0, 100) : 'CONTENT IS UNDEFINED');
 
-    if (!generatedResume || generatedResume.trim() === '') {
+    if (!rawGeneratedResume || rawGeneratedResume.trim() === '') {
       console.error('❌ Generated resume is empty or undefined');
       throw new Error('AI generated empty resume content');
     }
+
+    // Clean the AI response to remove instructional text
+    const generatedResume = cleanAIResponse(rawGeneratedResume);
+    console.log('✅ Resume cleaned successfully, length:', generatedResume ? generatedResume.length : 'UNDEFINED');
+    console.log('🔍 First 100 chars of cleaned resume:', generatedResume ? generatedResume.substring(0, 100) : 'CONTENT IS UNDEFINED');
 
     return generatedResume;
 
