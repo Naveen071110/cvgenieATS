@@ -549,7 +549,7 @@ export default function Generator() {
                   onClick={handleGenerateClick}
                   disabled={!canGenerate}
                   size="lg"
-                  className="px-8 py-4"
+                  className="px-8 py-4 text-black"
                   variant="accent"
                 >
                   {generateMutation.isPending ? (
@@ -558,7 +558,7 @@ export default function Generator() {
                       Generating...
                     </>
                   ) : (
-                    "Generate Resume & Cover Letter"
+                    "Generate Magic"
                   )}
                 </Button>
 
