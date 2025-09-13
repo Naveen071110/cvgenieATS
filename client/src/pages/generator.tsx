@@ -793,21 +793,7 @@ export default function Generator() {
           </div>
         )}
 
-        {/* Usage Counter */}
-        <div className="text-center mt-8 p-4 bg-slate-50 rounded-lg">
-          <p className="text-sm text-slate-600">
-            {usageSession?.isPro ? (
-              "Unlimited generations with Pro plan"
-            ) : (
-              <>
-                <span className="font-semibold">{remainingGenerations}</span> free generations remaining this month.
-                <Link to="/#pricing" className="text-primary hover:text-primary/80 font-medium ml-1">
-                  Upgrade to Pro
-                </Link> for unlimited access.
-              </>
-            )}
-          </p>
-        </div>
+        
       </main>
 
       {/* AI Processing Loading Overlay */}
