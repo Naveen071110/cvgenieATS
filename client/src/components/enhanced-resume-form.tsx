@@ -8,6 +8,7 @@ import { ProgressIndicator } from './progress-indicator';
 import { FileUpload } from './file-upload';
 import { ArrowLeft, ArrowRight, Download, Sparkles, AlertCircle, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SUPPORTED_FORMATS } from '@/lib/constants';
 
 interface FormData {
   uploadedFile?: File;

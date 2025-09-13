@@ -3,6 +3,7 @@ import { Upload, FileText, AlertCircle, CheckCircle, X, ArrowRight, ArrowLeft } 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { SUPPORTED_FORMATS } from '@/lib/constants';
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
@@ -19,20 +20,15 @@ interface FileUploadProps {
   isProcessing?: boolean;
 }
 
-const defaultAcceptedTypes = ['.docx', '.txt'];
-const defaultMaxSize = 10; // 10MB
+const defaultAcceptedTypes = SUPPORTED_FORMATS.extensions.map(ext => `.${ext}`);
+const defaultMaxSize = SUPPORTED_FORMATS.maxSizeMB;
 
 interface ValidationError {
   type: 'file-type' | 'file-size' | 'file-missing';
   message: string;
 }
 
-const ACCEPTED_FILE_TYPES = {
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-  'text/plain': ['.txt']
-};
-
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = SUPPORTED_FORMATS.maxSizeMB * 1024 * 1024;
 
 interface FileValidationResult {
   isValid: boolean;
@@ -41,14 +37,14 @@ interface FileValidationResult {
 
 const validateFile = (file: File): FileValidationResult => {
   // Check file type
-  const validTypes = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
-  const isValidType = validTypes.includes(file.type) ||
-    Object.values(ACCEPTED_FILE_TYPES).flat().some(ext => file.name.toLowerCase().endsWith(ext));
+  const fileExtension = file.name.toLowerCase().split('.').pop();
+  const isValidType = SUPPORTED_FORMATS.mimeTypes.includes(file.type) ||
+    SUPPORTED_FORMATS.extensions.includes(fileExtension || '');
 
   if (!isValidType) {
     return {
       isValid: false,
-      error: 'Please upload DOCX or TXT files only'
+      error: SUPPORTED_FORMATS.errorMessage
     };
   }
 
@@ -392,7 +388,7 @@ export function FileUpload({
             ref={fileInputRef}
             id="resume"
             type="file"
-            accept=".docx,.txt"
+            accept={SUPPORTED_FORMATS.accept}
             onChange={handleFileInputChange}
             className="hidden"
             aria-hidden="true"
@@ -491,17 +487,17 @@ export function FileUpload({
           {!validationError && !isValidated && (
             <div className="mt-6 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-500 mt-2">
-                Supports: DOCX, TXT files • Max size: 10MB
+                Supports: {SUPPORTED_FORMATS.display} • Max size: {SUPPORTED_FORMATS.maxSizeMB}MB
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Upload your resume in Word or text format
+                {SUPPORTED_FORMATS.description}
               </p>
             </div>
           )}
 
           {/* Hidden instructions for screen readers */}
           <div id="file-upload-instructions" className="sr-only">
-            Upload your resume in DOCX or TXT format. Maximum file size is 10MB.
+            {SUPPORTED_FORMATS.description}. Maximum file size is {SUPPORTED_FORMATS.maxSizeMB}MB.
             You can drag and drop a file or click to browse for files.
           </div>
         </div>

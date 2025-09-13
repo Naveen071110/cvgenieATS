@@ -16,6 +16,14 @@ import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
 import { FileUpload } from "@/components/file-upload";
 import { AILoadingState, LoadingStateManager } from "@/components/ai-loading-state";
 
+// Define supported formats
+const SUPPORTED_FORMATS = {
+  display: "DOCX, TXT files",
+  accept: ".docx,.txt",
+  description: "Upload your resume in Word (DOCX) or text (TXT) format",
+  maxSizeMB: 10
+};
+
 // Animation data for genie loading
 const genieAnimation = {
   "v": "5.7.4",
@@ -371,6 +379,9 @@ export default function Generator() {
     });
   };
 
+  // Define default accepted types based on the new constants
+  const defaultAcceptedTypes = SUPPORTED_FORMATS.accept.split(',');
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       {/* Header */}
@@ -406,6 +417,7 @@ export default function Generator() {
                 {/* Resume Upload */}
                 <div className="space-y-4">
                   <h3 className="text-xl font-semibold text-slate-900">Upload Your Resume</h3>
+                  <p className="text-sm text-slate-500">{SUPPORTED_FORMATS.description}</p>
                   <FileUpload
                     onFileSelect={handleFileUpload}
                     onFileRemove={() => {
@@ -417,8 +429,8 @@ export default function Generator() {
                     isUploading={extractResumeMutation.isPending}
                     uploadProgress={extractResumeMutation.isPending ? 50 : 0}
                     uploadStage={extractResumeMutation.isPending ? 'extracting' : ''}
-                    acceptedTypes={['.doc', '.docx', '.txt']}
-                    maxSize={10}
+                    acceptedTypes={defaultAcceptedTypes}
+                    maxSize={SUPPORTED_FORMATS.maxSizeMB}
                     isProcessing={isAIProcessing}
                   />
                 </div>
@@ -769,7 +781,7 @@ export default function Generator() {
                         });
                         return;
                       }
-                      
+
                       if (editedCoverLetter && editedCoverLetter.trim()) {
                         downloadDocument(editedCoverLetter, 'cover-letter.txt');
                       } else {
@@ -793,7 +805,7 @@ export default function Generator() {
           </div>
         )}
 
-        
+
       </main>
 
       {/* AI Processing Loading Overlay */}

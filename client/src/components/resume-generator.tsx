@@ -216,7 +216,7 @@ export default function ResumeGenerator() {
               <div className="space-y-6">
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-slate-900 mb-2">Step 1: Upload Your Resume</h3>
-                  <p className="text-slate-600">Upload your current resume in PDF, DOC, or DOCX format</p>
+                  <p className="text-slate-600">{SUPPORTED_FORMATS.description}</p>
                 </div>
 
                 <FileUpload

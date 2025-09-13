@@ -553,28 +553,32 @@ function enhanceEnglishContent(text: string): string {
     .trim();
 }
 
+// Supported file formats configuration
+const SUPPORTED_FORMATS = {
+  mimeTypes: [
+    'text/plain',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ],
+  extensions: ['txt', 'docx'],
+  errorMessage: 'Only DOCX and TXT files are supported'
+};
+
 // Configure multer for file uploads
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
-    const allowedTypes = [
-      'text/plain',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ];
-
     // Get file extension
     const fileExtension = file.originalname.toLowerCase().split('.').pop();
-    const allowedExtensions = ['txt', 'docx'];
 
     console.log(`File upload: ${file.originalname}, detected MIME type: ${file.mimetype}, extension: ${fileExtension}`);
 
     // Accept file if either MIME type matches OR extension matches (for DOCX files that might be detected as octet-stream)
-    if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(fileExtension || '')) {
+    if (SUPPORTED_FORMATS.mimeTypes.includes(file.mimetype) || SUPPORTED_FORMATS.extensions.includes(fileExtension || '')) {
       cb(null, true);
     } else {
-      console.log(`Rejected file with MIME type: ${file.mimetype} and extension: ${file.extension}`);
-      cb(new Error('Only DOCX (Word) and TXT files are allowed'));
+      console.log(`Rejected file with MIME type: ${file.mimetype} and extension: ${fileExtension}`);
+      cb(new Error(SUPPORTED_FORMATS.errorMessage));
     }
   }
 });
@@ -724,7 +728,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } else {
             console.error('❌ Unsupported file type:', req.file.mimetype);
             return res.status(400).json({ 
-              error: 'Unsupported file type. Please upload DOCX or TXT files.',
+              error: SUPPORTED_FORMATS.errorMessage,
               receivedType: req.file.mimetype
             });
           }
