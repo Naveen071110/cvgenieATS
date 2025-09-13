@@ -486,7 +486,7 @@ export default function Generator() {
                     disabled={isAIProcessing}
                   />
                   <p className="text-sm text-slate-500">
-                    {jobDescription.length}/50 characters minimum
+                    {jobDescription.length}/3000 characters minimum
                   </p>
                 </div>
               </div>
