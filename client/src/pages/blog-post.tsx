@@ -1,6 +1,5 @@
-
-import { useMemo, useState, useEffect } from "react";
-import { useRoute } from "wouter";
+import { useMemo } from "react";
+import { useRoute, useParams } from "wouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +9,8 @@ import {
   getPostBySlug, 
   getRelatedPosts, 
   formatDate, 
-  BlogPost 
+  BlogPost,
+  getAllPosts
 } from "@/lib/posts";
 import { 
   Calendar, 
@@ -19,50 +19,38 @@ import {
   ArrowLeft, 
   ArrowRight, 
   Share2,
-  Bookmark
+  Bookmark,
+  Tag
 } from "lucide-react";
 import { Link } from "wouter";
 import { BlogCard } from "@/components/blog-card";
 
 export default function BlogPost() {
-  const [match, params] = useRoute("/blog/:slug");
-  const slug = params?.slug;
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!slug) {
-      setLoading(false);
-      return;
-    }
-
+  const params = useParams();
+  const slug = params.slug as string;
+  
+  const post = useMemo(() => {
     try {
-      const foundPost = getPostBySlug(slug);
-      setPost(foundPost);
-      
-      if (foundPost) {
-        const related = getRelatedPosts(foundPost.slug, foundPost.tags, 3);
-        setRelatedPosts(related);
-      }
+      return getPostBySlug(slug);
     } catch (error) {
-      console.error('Error loading post:', error);
-    } finally {
-      setLoading(false);
+      console.error(`Error fetching post with slug "${slug}":`, error);
+      return null;
     }
   }, [slug]);
 
-  // Handle loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="branded-spinner"></div>
-      </div>
-    );
-  }
+  const relatedPosts = useMemo(() => {
+    if (!post) return [];
+    const allPosts = getAllPosts(); // Assuming getAllPosts() is efficient
+    return allPosts
+      .filter(p => p.slug !== post.slug && p.tags.some(tag => post.tags.includes(tag)))
+      .slice(0, 3);
+  }, [post]);
+
+  // Handle loading state (if needed, but removed for simplicity based on provided snippet)
+  // if (loading) { ... }
 
   // Handle not found
-  if (!match || !slug || !post) {
+  if (!post) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -89,6 +77,7 @@ export default function BlogPost() {
 
   // Simple markdown-to-HTML converter for basic formatting
   const renderContent = (content: string) => {
+    // This is a simplified renderer. For robust markdown, consider a library like 'marked' or '@mdx-js/react'
     return content
       .split('\n')
       .map((line, index) => {
@@ -174,7 +163,7 @@ export default function BlogPost() {
               <div className="flex flex-wrap items-center gap-6 text-slate-600 mb-8">
                 <div className="flex items-center gap-2">
                   <User className="w-5 h-5" />
-                  <span>{post.author.name}</span>
+                  <span>{typeof post.author === 'string' ? post.author : post.author.name}</span>
                 </div>
                 
                 <div className="flex items-center gap-2">

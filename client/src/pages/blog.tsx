@@ -1,179 +1,155 @@
-
-import { useState, useEffect, useMemo } from "react";
-import { useLocation } from "wouter";
+import { useState, useMemo } from "react";
+import { Link } from "wouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { BlogCard } from "@/components/blog-card";
 import { BlogSearch } from "@/components/blog-search";
 import { BlogTagFilter } from "@/components/blog-tag-filter";
 import { BlogPagination } from "@/components/blog-pagination";
-import { getAllPosts, getAllTags, paginatePosts, getPostsByTag, BlogPostMeta } from "@/lib/posts";
-import { BookOpen, Filter } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { getAllPosts, getPostsByTag, type PostMeta } from "@/lib/posts";
+
+const POSTS_PER_PAGE = 6;
 
 export default function Blog() {
-  const [location] = useLocation();
-  const [filteredPosts, setFilteredPosts] = useState<BlogPostMeta[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Get query parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const currentPage = parseInt(urlParams.get('page') || '1', 10);
-  const selectedTag = urlParams.get('tag') || undefined;
+  // Get all posts
+  const allPosts = getAllPosts();
 
-  // Load posts data
-  const allPosts = useMemo(() => getAllPosts(), []);
-  const allTags = useMemo(() => getAllTags(), []);
+  // Get all unique tags
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    allPosts.forEach(post => {
+      post.tags.forEach(tag => tags.add(tag));
+    });
+    return Array.from(tags).sort();
+  }, [allPosts]);
 
-  // Filter posts by tag if selected
-  const postsToDisplay = useMemo(() => {
+  // Filter posts based on search and tag
+  const filteredPosts = useMemo(() => {
+    let posts = allPosts;
+
+    // Filter by tag if selected
     if (selectedTag) {
-      return getPostsByTag(selectedTag);
+      posts = getPostsByTag(selectedTag);
     }
-    return allPosts;
-  }, [allPosts, selectedTag]);
 
-  // Initialize filtered posts
-  useEffect(() => {
-    setFilteredPosts(postsToDisplay);
-    setIsLoading(false);
-  }, [postsToDisplay]);
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      posts = posts.filter(post =>
+        post.title.toLowerCase().includes(query) ||
+        post.description.toLowerCase().includes(query) ||
+        post.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+    }
 
-  // Paginate the filtered posts
-  const paginationData = useMemo(() => {
-    return paginatePosts(filteredPosts, currentPage, 9);
-  }, [filteredPosts, currentPage]);
+    return posts;
+  }, [allPosts, selectedTag, searchQuery]);
 
-  const handleFilteredPosts = (posts: BlogPostMeta[]) => {
-    setFilteredPosts(posts);
-  };
+  // Pagination
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const currentPosts = filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="branded-spinner"></div>
-      </div>
-    );
-  }
+  // Reset to page 1 when filters change
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedTag]);
 
   return (
     <div className="min-h-screen bg-white">
-        <Header />
-        
-        <main className="py-16">
-          <div className="container mx-auto px-4">
-            {/* Hero Section */}
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-6">
-                <BookOpen className="w-8 h-8 text-primary" />
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-                Career Insights & Tips
-              </h1>
-              
-              <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-                Expert advice to help you create compelling resumes, optimize for ATS systems, 
-                and advance your career. Learn from industry professionals and land your dream job.
-              </p>
-              
-              <div className="text-lg text-slate-500">
-                {allPosts.length} article{allPosts.length !== 1 ? 's' : ''} and growing
-              </div>
+      <Header />
+
+      <main className="pt-20">
+        {/* Hero Section */}
+        <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              CVGenie Blog
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Expert career advice, resume tips, and job search strategies to help you land your dream job.
+            </p>
+          </div>
+        </section>
+
+        {/* Search and Filter Section */}
+        <section className="py-8 border-b">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <BlogSearch
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                className="w-full md:w-96"
+              />
+              <BlogTagFilter
+                selectedTag={selectedTag}
+                onTagChange={setSelectedTag}
+                tags={allTags}
+              />
             </div>
 
-            {/* Search and Filter Controls */}
-            <div className="flex flex-col lg:flex-row gap-8 mb-12">
-              <div className="lg:flex-1">
-                <BlogSearch 
-                  posts={postsToDisplay} 
-                  onFilteredPosts={handleFilteredPosts}
-                  placeholder="Search articles, tips, and guides..."
-                />
-              </div>
-              
-              <div className="lg:w-80">
-                <BlogTagFilter 
-                  allTags={allTags} 
-                  selectedTag={selectedTag}
-                />
-              </div>
+            {/* Results Summary */}
+            <div className="mt-4 text-sm text-gray-600">
+              {filteredPosts.length === 1 ? '1 post' : `${filteredPosts.length} posts`}
+              {selectedTag && ` tagged with "${selectedTag}"`}
+              {searchQuery && ` matching "${searchQuery}"`}
             </div>
+          </div>
+        </section>
 
-            {/* Results Info */}
-            {(selectedTag || filteredPosts.length !== postsToDisplay.length) && (
-              <div className="mb-8 p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center gap-2 text-slate-700">
-                  <Filter className="w-4 h-4" />
-                  <span>
-                    Showing {filteredPosts.length} of {allPosts.length} articles
-                    {selectedTag && (
-                      <span> tagged with <strong>"{selectedTag}"</strong></span>
-                    )}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Blog Posts Grid */}
-            {paginationData.posts.length > 0 ? (
+        {/* Posts Grid */}
+        <section className="py-12">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {currentPosts.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                  {paginationData.posts.map((post) => (
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {currentPosts.map((post) => (
                     <BlogCard key={post.slug} post={post} />
                   ))}
                 </div>
 
                 {/* Pagination */}
-                <BlogPagination 
-                  currentPage={paginationData.currentPage}
-                  totalPages={paginationData.totalPages}
-                  hasNext={paginationData.hasNext}
-                  hasPrev={paginationData.hasPrev}
-                />
+                {totalPages > 1 && (
+                  <div className="mt-12">
+                    <BlogPagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      hasNext={currentPage < totalPages}
+                      hasPrev={currentPage > 1}
+                    />
+                  </div>
+                )}
               </>
             ) : (
-              <Card className="text-center py-12">
-                <CardContent>
-                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <BookOpen className="w-8 h-8 text-slate-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                    No articles found
-                  </h3>
-                  <p className="text-slate-600 mb-6">
-                    {selectedTag 
-                      ? `No articles found with the tag "${selectedTag}". Try browsing other topics or clearing the filter.`
-                      : "No articles match your search. Try different keywords or browse our available topics."
-                    }
-                  </p>
-                  <Button variant="outline" onClick={() => window.location.href = '/blog'}>
-                    View all articles
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="text-center py-12">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No posts found
+                </h3>
+                <p className="text-gray-600">
+                  Try adjusting your search or filter criteria.
+                </p>
+                {(searchQuery || selectedTag) && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedTag(null);
+                    }}
+                    className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
             )}
-
-            {/* CTA Section */}
-            <div className="mt-20 text-center bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-12">
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                Ready to Create Your Perfect Resume?
-              </h2>
-              <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-                Put these tips into action with CVGenie's AI-powered resume builder. 
-                Create ATS-optimized resumes and cover letters in minutes.
-              </p>
-              <Button size="lg" className="hover:-translate-y-1 transition-transform" asChild>
-                <a href="/generator">
-                  Try CVGenie Free
-                </a>
-              </Button>
-            </div>
           </div>
-        </main>
+        </section>
+      </main>
 
-        <Footer />
-      </div>
-    );
+      <Footer />
+    </div>
+  );
 }

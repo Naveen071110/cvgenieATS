@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -85,7 +84,7 @@ export function getAllPosts(): BlogPostMeta[] {
 export function getPostBySlug(slug: string): BlogPost | null {
   try {
     const fullPath = path.join(postsDirectory, `${slug}.mdx`);
-    
+
     if (!fs.existsSync(fullPath)) {
       return null;
     }
@@ -123,13 +122,13 @@ export function getPostBySlug(slug: string): BlogPost | null {
 export function getAllTags(): string[] {
   const posts = getAllPosts();
   const tags = new Set<string>();
-  
+
   posts.forEach((post) => {
     post.tags.forEach((tag) => {
       tags.add(tag);
     });
   });
-  
+
   return Array.from(tags).sort();
 }
 
@@ -137,7 +136,7 @@ export function paginatePosts(posts: BlogPostMeta[], page: number = 1, perPage: 
   const startIndex = (page - 1) * perPage;
   const endIndex = startIndex + perPage;
   const paginatedPosts = posts.slice(startIndex, endIndex);
-  
+
   return {
     posts: paginatedPosts,
     totalPages: Math.ceil(posts.length / perPage),
@@ -149,8 +148,8 @@ export function paginatePosts(posts: BlogPostMeta[], page: number = 1, perPage: 
 
 export function getPostsByTag(tag: string): BlogPostMeta[] {
   const posts = getAllPosts();
-  return posts.filter((post) => 
-    post.tags.some((postTag) => 
+  return posts.filter((post) =>
+    post.tags.some((postTag) =>
       postTag.toLowerCase() === tag.toLowerCase()
     )
   );
@@ -163,14 +162,14 @@ export function getLatestPosts(count: number = 3): BlogPostMeta[] {
 
 export function getRelatedPosts(currentSlug: string, tags: string[], count: number = 3): BlogPostMeta[] {
   const posts = getAllPosts();
-  
+
   const relatedPosts = posts
     .filter((post) => post.slug !== currentSlug)
-    .filter((post) => 
+    .filter((post) =>
       post.tags.some((tag) => tags.includes(tag))
     )
     .slice(0, count);
-  
+
   return relatedPosts;
 }
 
@@ -185,11 +184,11 @@ function generateExcerpt(content: string, length: number = 160): string {
     .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links
     .replace(/\n/g, ' ') // Replace newlines with spaces
     .trim();
-  
+
   if (plainText.length <= length) {
     return plainText;
   }
-  
+
   return plainText.substring(0, length).replace(/\s+\S*$/, '') + '...';
 }
 
@@ -217,28 +216,28 @@ function normalizeAuthor(author: any): { name: string; avatar?: string } {
 export function validatePost(slug: string): { isValid: boolean; errors: string[] } {
   const post = getPostBySlug(slug);
   const errors: string[] = [];
-  
+
   if (!post) {
     errors.push('Post not found');
     return { isValid: false, errors };
   }
-  
+
   if (!post.title || post.title.trim() === '') {
     errors.push('Title is required');
   }
-  
+
   if (!post.description || post.description.trim() === '') {
     errors.push('Description is required');
   }
-  
+
   if (!post.date) {
     errors.push('Date is required');
   }
-  
-  if (!post.author || post.author.trim() === '') {
+
+  if (!post.author || typeof post.author === 'string' && post.author.trim() === '') {
     errors.push('Author is required');
   }
-  
+
   return { isValid: errors.length === 0, errors };
 }
 
