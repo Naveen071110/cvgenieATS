@@ -1,0 +1,208 @@
+Create a scalable blog for CVGenie at /blog with MDX posts, dynamic routing (/blog/[slug]), SEO metadata (title, description, canonical, JSON‑LD), an index page with pagination and tags, and a header/footer link from the homepage. New posts should be added by dropping .mdx files with frontmatter—no code edits required.
+
+Requirements
+
+Tech: Next.js (App or Pages router — detect and use the project’s current router). Use MDX for posts.
+
+Content source: /content/posts/*.mdx with frontmatter.
+
+Routes:
+
+/blog → index with latest posts, tags filter, pagination
+
+/blog/[slug] → individual post page rendered from MDX
+
+/sitemap.xml and /rss.xml including blog entries
+
+SEO:
+
+Use frontmatter fields: title, description, slug, date, updated, author, tags, ogImage
+
+Inject head tags and canonical
+
+Add Article JSON-LD schema
+
+UX:
+
+List cards with title, excerpt, date, tags
+
+Search box (client-side fuzzy search over titles/excerpts/tags)
+
+Tag filter (query param ?tag=design)
+
+Pagination (page param)
+
+Code-friendly prose styles (use @tailwindcss/typography if Tailwind)
+
+Navigation:
+
+Add “Blog” to the main navigation
+
+On homepage, add a “From the blog” section with the 3 latest posts and a “Read all” link
+
+Theming:
+
+Reuse site theme classes; inherit typography styles into prose
+
+Implementation steps
+
+Dependencies
+
+If using App Router: add @next/mdx and configure per official docs.
+
+If using Pages Router: add @next/mdx, next-mdx-remote, gray-matter.
+
+Add remark/rehype plugins: remark-gfm, rehype-slug, rehype-autolink-headings.
+
+If Tailwind is present, ensure @tailwindcss/typography is installed and enabled.
+
+MDX and content structure
+
+Create /content/posts directory.
+
+Example post frontmatter template:
+title: "ATS Resume: Complete 2025 Guide"
+slug: "ats-resume-guide"
+description: "Learn how to build an ATS-friendly resume with examples and templates."
+date: "2025-09-15"
+updated: "2025-09-15"
+author: "CVGenie Editorial"
+tags: ["ats", "resume", "templates"]
+ogImage: "/images/blog/ats-guide.png"
+Include 2–3 starter posts using this template.
+
+Data layer utilities
+
+Implement lib/posts.ts (or app/lib/posts.ts) with:
+
+getAllPosts(): read MDX frontmatter + excerpt
+
+getPostBySlug(slug)
+
+getAllTags()
+
+paginatePosts(posts, page, perPage)
+
+Ensure sorting by date desc.
+
+Routes
+
+Blog index (/blog):
+
+Grid of post cards (title, excerpt, date, tags)
+
+Search input (client-side filter)
+
+Tag filter (links to /blog?tag=xyz)
+
+Pagination (page query param; default perPage=10)
+
+Blog post (/blog/[slug]):
+
+Render MDX with prose classes
+
+Title, metadata (date/updated/author, tags)
+
+Prev/Next links (by date)
+
+CTA block: “Try CVGenie free” → /generator
+
+SEO
+
+For each post, set:
+
+<title>, <meta name="description">
+<link rel="canonical" href="https://cvgenie.com/blog/[slug]">
+OG tags (og:title, og:description, og:image, og:url)
+
+JSON-LD Article schema using frontmatter
+
+Generate /sitemap.xml including blog URLs
+
+Generate /rss.xml (title, description, items)
+
+Homepage integration
+
+Add a “Blog” link to the header nav.
+
+Add a “From the Blog” section on the homepage (3 latest posts, with titles and dates; button “Read the blog” linking to /blog).
+
+DX and content safety
+
+Add a content:check script that validates required frontmatter (title, slug, date) and warns on duplicates.
+
+Ignore drafts starting with draft: true.
+
+Document “How to add a post” in README:
+
+Create /content/posts/my-article.mdx with frontmatter
+
+Use tags from a recommended list
+
+Add ogImage under /public/images/blog
+
+Commit; ISR/SSG will publish
+
+Optional (if App Router)
+
+Use MDX via next-mdx with app/blog/[slug]/page.mdx or server rendered MDX approach.
+
+Add generateStaticParams for slugs.
+
+Add revalidate for ISR (e.g., 3600 seconds).
+
+Acceptance criteria
+
+/blog renders with seed posts, search, tags, and pagination
+
+/blog/[slug] renders MDX with proper SEO tags and JSON-LD
+
+Homepage shows latest 3 posts
+
+New posts added under /content/posts/*.mdx appear automatically in /blog after build/ISR
+
+sitemap.xml and rss.xml include the posts
+
+Files to create/update (detect actual paths)
+
+content/posts/*.mdx
+
+lib/posts.(ts|js)
+
+pages/blog/index.(tsx|js) and pages/blog/[slug].(tsx|js) OR app/blog/page.tsx and app/blog/[slug]/page.tsx
+
+next.config.js (MDX integration)
+
+components/BlogCard.tsx, components/Tag.tsx, components/SearchBox.tsx
+
+pages/sitemap.xml.ts (or app/sitemap.ts)
+
+pages/rss.xml.ts (or app/rss/route.ts)
+
+Header/Nav component to add “Blog”
+
+Homepage section for latest posts
+
+Notes
+
+Preserve existing styling and theme; use .prose classes for article content for consistent typography.
+
+Keep URLs lowercase, kebab-case slugs.
+
+Do not break existing routes or the generator.
+
+Ensure no “DOC” or “PDF” claims in posts; use “DOCX” and “TXT” per site policy.
+
+After completion, please reply with:
+
+List of created/modified files
+
+How to add a new post
+
+Any follow-up steps for deployment (if ISR needs revalidate setting)
+
+References
+
+Next.js dynamic routes and MDX patterns
+
+MDX blog scaffolding examples with SEO and ISR
