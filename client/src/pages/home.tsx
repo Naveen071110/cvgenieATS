@@ -14,7 +14,7 @@ import { ResumeComparison } from "@/components/resume-comparison";
 import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
 import { LatestBlogPosts } from "@/components/latest-blog-posts";
 import { getLatestPosts } from "@/lib/posts";
-import { Helmet } from "react-helmet"; // Assuming react-helmet is used for SEO
+// SEO can be added later when needed
 
 export default function Home() {
   const latestPosts = getLatestPosts(3);
