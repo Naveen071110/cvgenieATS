@@ -55,9 +55,11 @@ export default function Header() {
             style={{ height: 'var(--space-16)' }}
           >
             {/* Logo */}
-            <div 
-              className="flex items-center"
+            <Link 
+              to="/"
+              className="flex items-center hover:opacity-80 transition-opacity"
               style={{ gap: 'var(--space-2)' }}
+              aria-label="Go to home page"
             >
               <div 
                 className="rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600"
@@ -71,7 +73,7 @@ export default function Header() {
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
               <span className="text-card-title text-primary">CVGenie</span>
-            </div>
+            </Link>
 
             {/* Navigation Links */}
             <div 
