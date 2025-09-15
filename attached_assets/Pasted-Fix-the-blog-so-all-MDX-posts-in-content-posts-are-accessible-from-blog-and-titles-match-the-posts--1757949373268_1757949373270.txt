@@ -1,0 +1,73 @@
+Fix the blog so all MDX posts in content/posts are accessible from /blog and titles match the posts’ frontmatter.
+
+Verify router and MDX:
+
+Detect whether the project uses Next.js Pages or App Router. If Pages, ensure next-mdx integration is configured and .mdx files are parsed at build time; if App Router, ensure MDX is configured and pageExtensions or mdx config is set.
+
+Confirm a dynamic route exists: pages/blog/[slug].tsx (Pages Router) or app/blog/[slug]/page.tsx (App Router).
+
+Data layer:
+
+In lib/posts.(ts|js), read content/posts/*.mdx with gray-matter to extract frontmatter: title, slug, description, date, updated, tags, ogImage; build an array of PostMeta. 
+
+Ensure each post has a slug; if missing, derive from the filename (kebab-case) and return it as the slug used for routing.
+
+Export getAllPosts(), getPostBySlug(slug), getAllSlugs() helpers used by the index and dynamic page.
+
+Blog index (/blog):
+
+Render list cards using frontmatter.title (not filename) and an excerpt.
+
+Build links with <Link href={/blog/${post.slug}}>…</Link>; remove any duplicated “/blog/blog/” or absolute paths.
+
+If there’s client-side search/tags, keep using the PostMeta fields; do not change routing.
+
+Dynamic post page (/blog/[slug]):
+
+For Pages Router: implement getStaticPaths() returning { paths: getAllSlugs().map(s => ({ params: { slug: s } })), fallback: false } and getStaticProps({ params }) that loads content by slug and serializes MDX.
+
+For App Router: implement export async function generateStaticParams() { return getAllSlugs().map(slug => ({ slug })); } and load/compile the MDX by slug in the page component; optionally add export const revalidate = 3600 for ISR.
+
+Title consistency:
+
+Ensure the index displays frontmatter.title and the post page <h1> also uses frontmatter.title; do not show filename-derived titles.
+
+If any of the 4 posts lack a title in frontmatter, set title to a prettified version of the filename at build time, but prefer adding proper titles to frontmatter.
+
+Test and fix:
+
+Rebuild and visit /blog to see all 4 posts listed; click each to confirm it opens at /blog/{slug}.
+
+Confirm the index and each post page show the same title pulled from frontmatter.
+
+Guardrails:
+
+Add a “content:check” script that scans content/posts/*.mdx to ensure each has a unique slug, a title, and a date; log actionable warnings for any violations.
+
+Provide a diff of modified/created files (lib/posts, blog index, dynamic page, MDX config) and note any posts that needed frontmatter updates.”
+
+Minimal code patterns to reference
+Pages Router getStaticPaths/getStaticProps:
+
+ts
+export async function getStaticPaths() {
+  const slugs = await getAllSlugs();
+  return { paths: slugs.map(slug => ({ params: { slug } })), fallback: false };
+}
+export async function getStaticProps({ params }) {
+  const post = await getPostBySlug(params.slug);
+  return { props: { post } };
+}
+App Router generateStaticParams:
+
+ts
+export async function generateStaticParams() {
+  const slugs = await getAllSlugs();
+  return slugs.map(slug => ({ slug }));
+}
+Link building on the index:
+
+tsx
+<Link href={`/blog/${post.slug}`} className="group">
+  <h3 className="...">{post.title}</h3>
+</Link>
