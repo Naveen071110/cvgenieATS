@@ -99,6 +99,9 @@ export default function Header() {
               >
                 Pricing
               </button>
+              <Link href="/blog" className="font-medium text-slate-700 hover:text-primary transition-colors">
+                Blog
+              </Link>
 
               {/* Auth Section */}
               {isLoading ? (
@@ -236,6 +239,12 @@ export default function Header() {
               >
                 Pricing
               </button>
+              <Link href="/blog" className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                style={{ padding: 'var(--space-3)' }}
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="Go to Blog page">
+                Blog
+              </Link>
 
               {/* Mobile Auth Section */}
               <div 
