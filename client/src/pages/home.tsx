@@ -12,13 +12,8 @@ import { Link } from "wouter";
 import { TrustIndicatorsSection } from "@/components/trust-indicators-section";
 import { ResumeComparison } from "@/components/resume-comparison";
 import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
-import { LatestBlogPosts } from "@/components/latest-blog-posts";
-import { getLatestPosts } from "@/lib/posts";
-// SEO can be added later when needed
 
 export default function Home() {
-  const latestPosts = getLatestPosts(3);
-
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -42,7 +37,7 @@ export default function Home() {
                 <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
                   Join thousands of professionals who have landed their dream jobs with our AI-powered resume generator.
                 </p>
-
+                
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600">
@@ -68,9 +63,9 @@ export default function Home() {
         <FeaturesSection />
         <InteractiveDemo /> {/* Replaced ResumeComparison with InteractiveDemo */}
         <TrustIndicatorsSection />
-
-        <LatestBlogPosts posts={latestPosts} />
-
+        <TestimonialsSection />
+        <PricingSection />
+        {/* Debug: Pricing section should appear above this line */}
         <FAQSection />
       </main>
       <Footer />

@@ -55,11 +55,9 @@ export default function Header() {
             style={{ height: 'var(--space-16)' }}
           >
             {/* Logo */}
-            <Link 
-              to="/"
-              className="flex items-center hover:opacity-80 transition-opacity"
+            <div 
+              className="flex items-center"
               style={{ gap: 'var(--space-2)' }}
-              aria-label="Go to home page"
             >
               <div 
                 className="rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600"
@@ -73,7 +71,7 @@ export default function Header() {
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
               <span className="text-card-title text-primary">CVGenie</span>
-            </Link>
+            </div>
 
             {/* Navigation Links */}
             <div 
@@ -101,9 +99,6 @@ export default function Header() {
               >
                 Pricing
               </button>
-              <Link href="/blog" className="font-medium text-slate-700 hover:text-primary transition-colors">
-                Blog
-              </Link>
 
               {/* Auth Section */}
               {isLoading ? (
@@ -241,12 +236,6 @@ export default function Header() {
               >
                 Pricing
               </button>
-              <Link href="/blog" className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
-                style={{ padding: 'var(--space-3)' }}
-                onClick={() => setIsMenuOpen(false)}
-                aria-label="Go to Blog page">
-                Blog
-              </Link>
 
               {/* Mobile Auth Section */}
               <div 

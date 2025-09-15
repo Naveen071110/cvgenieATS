@@ -10,8 +10,6 @@ import Home from "@/pages/home";
 
 // Lazy load non-critical pages
 const Generator = lazy(() => import("@/pages/generator"));
-const Blog = lazy(() => import("@/pages/blog"));
-const BlogPost = lazy(() => import("@/pages/blog-post"));
 const Terms = lazy(() => import("@/pages/terms"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const PricingPolicy = lazy(() => import("@/pages/pricing-policy"));
@@ -25,20 +23,6 @@ function Router() {
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
           <Generator />
         </Suspense>
-      </Route>
-      <Route path="/blog" nest>
-        <Switch>
-          <Route path="/">
-            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
-              <Blog />
-            </Suspense>
-          </Route>
-          <Route path="/:slug">
-            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
-              <BlogPost />
-            </Suspense>
-          </Route>
-        </Switch>
       </Route>
       <Route path="/terms">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
