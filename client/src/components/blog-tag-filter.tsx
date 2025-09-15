@@ -5,12 +5,24 @@ import { X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 interface BlogTagFilterProps {
-  allTags: string[];
+  allTags?: string[];
   selectedTag?: string;
+  onTagChange?: (tag: string | null) => void;
 }
 
-export function BlogTagFilter({ allTags, selectedTag }: BlogTagFilterProps) {
+export function BlogTagFilter({ 
+  allTags = [], 
+  selectedTag,
+  onTagChange 
+}: BlogTagFilterProps) {
   const [location] = useLocation();
+
+  // Defensive locals
+  const safeAllTags = Array.isArray(allTags) ? allTags : [];
+  const tagCount = safeAllTags?.length ?? 0;
+  
+  // Safe callback wrapper
+  const emitTagChange = typeof onTagChange === 'function' ? onTagChange : () => {};
 
   const getTagUrl = (tag: string) => {
     const url = new URL(window.location.href);
@@ -26,7 +38,15 @@ export function BlogTagFilter({ allTags, selectedTag }: BlogTagFilterProps) {
     return `${url.pathname}${url.search}`;
   };
 
-  if (allTags.length === 0) {
+  const handleTagClick = (tag: string) => {
+    emitTagChange(tag);
+  };
+
+  const handleClearFilter = () => {
+    emitTagChange(null);
+  };
+
+  if (tagCount === 0) {
     return null;
   }
 
@@ -35,7 +55,12 @@ export function BlogTagFilter({ allTags, selectedTag }: BlogTagFilterProps) {
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-slate-900">Filter by Topic</h3>
         {selectedTag && (
-          <Button variant="ghost" size="sm" asChild>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleClearFilter}
+            asChild
+          >
             <Link href={clearTagUrl()}>
               <X className="w-4 h-4 mr-1" />
               Clear filter
@@ -45,7 +70,7 @@ export function BlogTagFilter({ allTags, selectedTag }: BlogTagFilterProps) {
       </div>
       
       <div className="flex flex-wrap gap-2">
-        {allTags.map((tag) => {
+        {safeAllTags.map((tag) => {
           const isSelected = selectedTag === tag;
           
           return (
@@ -57,6 +82,7 @@ export function BlogTagFilter({ allTags, selectedTag }: BlogTagFilterProps) {
                   ? "bg-primary text-primary-foreground" 
                   : "hover:bg-primary hover:text-primary-foreground"
               }`}
+              onClick={() => handleTagClick(tag)}
               asChild
             >
               <Link href={getTagUrl(tag)}>

@@ -18,11 +18,17 @@ export default function Blog() {
   // Get all posts
   const allPosts = getAllPosts();
 
-  // Get all unique tags
+  // Get all unique tags with defensive handling
   const allTags = useMemo(() => {
     const tags = new Set<string>();
-    allPosts.forEach(post => {
-      post.tags.forEach(tag => tags.add(tag));
+    const safePosts = Array.isArray(allPosts) ? allPosts : [];
+    safePosts.forEach(post => {
+      const postTags = Array.isArray(post?.tags) ? post.tags : [];
+      postTags.forEach(tag => {
+        if (typeof tag === 'string' && tag.trim()) {
+          tags.add(tag.trim());
+        }
+      });
     });
     return Array.from(tags).sort();
   }, [allPosts]);
@@ -87,9 +93,9 @@ export default function Blog() {
                 className="w-full md:w-96"
               />
               <BlogTagFilter
+                allTags={allTags}
                 selectedTag={selectedTag}
                 onTagChange={setSelectedTag}
-                tags={allTags}
               />
             </div>
 
