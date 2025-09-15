@@ -6,7 +6,7 @@ import { BlogCard } from "@/components/blog-card";
 import { BlogSearch } from "@/components/blog-search";
 import { BlogTagFilter } from "@/components/blog-tag-filter";
 import { BlogPagination } from "@/components/blog-pagination";
-import { getAllPosts, getPostsByTag, type PostMeta } from "@/lib/posts";
+import { getAllPosts, getPostsByTag, type BlogPostMeta, usePostsData } from "@/lib/posts";
 
 const POSTS_PER_PAGE = 6;
 
@@ -15,8 +15,8 @@ export default function Blog() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Get all posts
-  const allPosts = getAllPosts();
+  // Get all posts using the hook
+  const { posts: allPosts, loading, error } = usePostsData();
 
   // Get all unique tags with defensive handling
   const allTags = useMemo(() => {
@@ -64,6 +64,40 @@ export default function Blog() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedTag]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="pt-20">
+          <div className="container mx-auto px-4 py-16 text-center">
+            <div className="branded-spinner mx-auto mb-4"></div>
+            <p className="text-lg text-slate-600">Loading blog posts...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="pt-20">
+          <div className="container mx-auto px-4 py-16 text-center">
+            <h1 className="text-4xl font-bold text-slate-900 mb-4">Unable to Load Blog</h1>
+            <p className="text-lg text-slate-600 mb-8">
+              We're having trouble loading the blog posts. Please try again later.
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">

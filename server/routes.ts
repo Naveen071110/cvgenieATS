@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { getAllPosts, getPostBySlug, getAllTags } from '../lib/posts';
 import { insertGenerationSchema, insertUsageSessionSchema } from "@shared/schema";
 import multer from "multer";
 // PDF support removed as requested
@@ -976,6 +977,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!res.headersSent) {
         res.status(500).json({ error: 'Download failed' });
       }
+    }
+  });
+
+  // Blog API endpoints
+  app.get('/api/blog/posts', async (req, res) => {
+    try {
+      const posts = getAllPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+      res.status(500).json({ error: 'Failed to fetch blog posts' });
+    }
+  });
+
+  app.get('/api/blog/posts/:slug', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const post = getPostBySlug(slug);
+      
+      if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+      }
+      
+      res.json(post);
+    } catch (error) {
+      console.error(`Error fetching post ${req.params.slug}:`, error);
+      res.status(500).json({ error: 'Failed to fetch blog post' });
+    }
+  });
+
+  app.get('/api/blog/tags', async (req, res) => {
+    try {
+      const tags = getAllTags();
+      res.json(tags);
+    } catch (error) {
+      console.error('Error fetching blog tags:', error);
+      res.status(500).json({ error: 'Failed to fetch blog tags' });
     }
   });
 

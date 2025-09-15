@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRoute, useParams } from "wouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -10,7 +10,7 @@ import {
   getRelatedPosts, 
   formatDate, 
   BlogPost,
-  getAllPosts
+  usePostsData
 } from "@/lib/posts";
 import { 
   Calendar, 
@@ -28,26 +28,49 @@ import { BlogCard } from "@/components/blog-card";
 export default function BlogPost() {
   const params = useParams();
   const slug = params.slug as string;
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
   
-  const post = useMemo(() => {
-    try {
-      return getPostBySlug(slug);
-    } catch (error) {
-      console.error(`Error fetching post with slug "${slug}":`, error);
-      return null;
-    }
+  // Fetch the post by slug
+  useEffect(() => {
+    if (!slug) return;
+    
+    getPostBySlug(slug)
+      .then(fetchedPost => {
+        setPost(fetchedPost);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error(`Error fetching post with slug "${slug}":`, error);
+        setPost(null);
+        setLoading(false);
+      });
   }, [slug]);
 
+  const { posts: allPosts } = usePostsData();
+  
   const relatedPosts = useMemo(() => {
-    if (!post) return [];
-    const allPosts = getAllPosts(); // Assuming getAllPosts() is efficient
+    if (!post || !allPosts.length) return [];
     return allPosts
       .filter(p => p.slug !== post.slug && p.tags.some(tag => post.tags.includes(tag)))
       .slice(0, 3);
-  }, [post]);
+  }, [post, allPosts]);
 
-  // Handle loading state (if needed, but removed for simplicity based on provided snippet)
-  // if (loading) { ... }
+  // Handle loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="py-16">
+          <div className="container mx-auto px-4 text-center">
+            <div className="branded-spinner mx-auto mb-4"></div>
+            <p className="text-lg text-slate-600">Loading article...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   // Handle not found
   if (!post) {
