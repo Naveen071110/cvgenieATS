@@ -1,80 +1,61 @@
 
-import { useState, useMemo } from "react";
-import { Search, X } from "lucide-react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { BlogPostMeta } from "@/lib/posts";
 
-interface BlogSearchProps {
+type BlogSearchProps = {
   posts: BlogPostMeta[];
-  onFilteredPosts: (posts: BlogPostMeta[]) => void;
-  placeholder?: string;
-}
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onFilteredPosts?: (posts: BlogPostMeta[]) => void;
+  className?: string;
+};
 
-export function BlogSearch({ posts, onFilteredPosts, placeholder = "Search articles..." }: BlogSearchProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+export function BlogSearch({
+  posts,
+  searchQuery,
+  onSearchChange,
+  onFilteredPosts,
+  className = ""
+}: BlogSearchProps) {
+  // Add a defensive no-op default and proper typing
+  const handleFiltered = typeof onFilteredPosts === 'function'
+    ? onFilteredPosts
+    : () => {};
 
+  // Memoize the filtered posts (computation only)
   const filteredPosts = useMemo(() => {
-    if (!searchTerm.trim()) {
+    if (!searchQuery.trim()) {
       return posts;
     }
 
-    const searchLower = searchTerm.toLowerCase();
-    
-    return posts.filter((post) => {
-      const titleMatch = post.title.toLowerCase().includes(searchLower);
-      const descriptionMatch = post.description.toLowerCase().includes(searchLower);
-      const excerptMatch = post.excerpt.toLowerCase().includes(searchLower);
-      const tagsMatch = post.tags.some((tag) => 
-        tag.toLowerCase().includes(searchLower)
-      );
-      const authorMatch = post.author.name.toLowerCase().includes(searchLower);
-      
-      return titleMatch || descriptionMatch || excerptMatch || tagsMatch || authorMatch;
-    });
-  }, [posts, searchTerm]);
+    const query = searchQuery.toLowerCase();
+    return posts.filter(post =>
+      post.title.toLowerCase().includes(query) ||
+      post.description.toLowerCase().includes(query) ||
+      post.tags.some(tag => tag.toLowerCase().includes(query))
+    );
+  }, [posts, searchQuery]);
 
-  // Update parent component when filtered posts change
-  useMemo(() => {
-    onFilteredPosts(filteredPosts);
-  }, [filteredPosts, onFilteredPosts]);
+  // Stabilize the callback reference
+  const emitFiltered = useCallback((p: BlogPostMeta[]) => handleFiltered(p), [handleFiltered]);
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-  };
-
-  const clearSearch = () => {
-    setSearchTerm("");
-  };
+  // Move the side effect to useEffect
+  useEffect(() => {
+    emitFiltered(filteredPosts);
+  }, [filteredPosts, emitFiltered]);
 
   return (
-    <div className="relative max-w-md">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-        <Input
-          type="text"
-          placeholder={placeholder}
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          className="pl-10 pr-10 bg-white border-slate-200 focus:border-primary"
-        />
-        {searchTerm && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearSearch}
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-slate-100"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        )}
-      </div>
-      
-      {searchTerm && (
-        <div className="mt-2 text-sm text-slate-600">
-          {filteredPosts.length} article{filteredPosts.length !== 1 ? 's' : ''} found
-        </div>
-      )}
+    <div className={`relative ${className}`}>
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+      <Input
+        type="text"
+        placeholder="Search articles..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+      />
     </div>
   );
 }

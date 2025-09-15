@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "wouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -55,7 +55,7 @@ export default function Blog() {
   const currentPosts = filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
 
   // Reset to page 1 when filters change
-  useMemo(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedTag]);
 
@@ -81,6 +81,7 @@ export default function Blog() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <BlogSearch
+                posts={allPosts}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
                 className="w-full md:w-96"
