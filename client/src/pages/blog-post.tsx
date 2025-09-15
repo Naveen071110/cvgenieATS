@@ -174,7 +174,7 @@ export default function BlogPost() {
               <div className="flex flex-wrap items-center gap-6 text-slate-600 mb-8">
                 <div className="flex items-center gap-2">
                   <User className="w-5 h-5" />
-                  <span>{post.author}</span>
+                  <span>{post.author.name}</span>
                 </div>
                 
                 <div className="flex items-center gap-2">

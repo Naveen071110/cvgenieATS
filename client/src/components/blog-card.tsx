@@ -56,7 +56,7 @@ export function BlogCard({ post, className = "" }: BlogCardProps) {
           
           <div className="flex items-center gap-1">
             <User className="w-4 h-4" />
-            <span>{post.author}</span>
+            <span>{post.author.name}</span>
           </div>
         </div>
         

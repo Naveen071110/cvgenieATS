@@ -10,7 +10,7 @@ export interface BlogPost {
   description: string;
   date: string;
   updated?: string;
-  author: string;
+  author: { name: string; avatar?: string };
   tags: string[];
   ogImage?: string;
   content: string;
@@ -24,7 +24,7 @@ export interface BlogPostMeta {
   description: string;
   date: string;
   updated?: string;
-  author: string;
+  author: { name: string; avatar?: string };
   tags: string[];
   ogImage?: string;
   excerpt: string;
@@ -59,8 +59,8 @@ export function getAllPosts(): BlogPostMeta[] {
           description: data.description || '',
           date: data.date || new Date().toISOString(),
           updated: data.updated,
-          author: data.author || 'CVGenie Editorial Team',
-          tags: data.tags || [],
+          author: normalizeAuthor(data.author || 'CVGenie Editorial Team'),
+          tags: Array.isArray(data.tags) ? data.tags.filter(tag => typeof tag === 'string') : [],
           ogImage: data.ogImage,
           excerpt,
           readingTime,
@@ -107,8 +107,8 @@ export function getPostBySlug(slug: string): BlogPost | null {
       description: data.description || '',
       date: data.date || new Date().toISOString(),
       updated: data.updated,
-      author: data.author || 'CVGenie Editorial Team',
-      tags: data.tags || [],
+      author: normalizeAuthor(data.author || 'CVGenie Editorial Team'),
+      tags: Array.isArray(data.tags) ? data.tags.filter(tag => typeof tag === 'string') : [],
       ogImage: data.ogImage,
       content,
       excerpt,
@@ -198,6 +198,20 @@ function calculateReadingTime(content: string): number {
   const words = content.trim().split(/\s+/).length;
   const readingTime = Math.ceil(words / wordsPerMinute);
   return readingTime;
+}
+
+// Normalize author data to handle both string and object formats
+function normalizeAuthor(author: any): { name: string; avatar?: string } {
+  if (typeof author === 'string') {
+    return { name: author };
+  }
+  if (typeof author === 'object' && author !== null) {
+    return {
+      name: author.name || 'Unknown Author',
+      avatar: author.avatar
+    };
+  }
+  return { name: 'Unknown Author' };
 }
 
 export function validatePost(slug: string): { isValid: boolean; errors: string[] } {

@@ -28,7 +28,7 @@ export function BlogSearch({ posts, onFilteredPosts, placeholder = "Search artic
       const tagsMatch = post.tags.some((tag) => 
         tag.toLowerCase().includes(searchLower)
       );
-      const authorMatch = post.author.toLowerCase().includes(searchLower);
+      const authorMatch = post.author.name.toLowerCase().includes(searchLower);
       
       return titleMatch || descriptionMatch || excerptMatch || tagsMatch || authorMatch;
     });
