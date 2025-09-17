@@ -1,0 +1,107 @@
+Task:
+Update the CV Genie app’s global CSS to add the new Magic Theme color variables, gradients, and animation keyframes for the magical brand experience.
+
+File to modify:
+
+client/src/styles/globals.css (If your global CSS is located elsewhere, use the correct path, e.g., client/src/index.css.)
+
+Steps:
+
+At the very top of the file, after any existing variable block, add the given CSS code block exactly as it is (do not remove or overwrite any existing variables, just append these new ones).
+
+If the project uses separate light/dark themes or has a variables section, ensure the new magic colors are in the :root under the default theme.
+
+Save and commit the change.
+
+Do not apply these styles to any class/component yet—this update is only for variables and keyframes, not immediate visual changes.
+
+Code to add:
+
+css
+/* ========== MAGIC THEME VARIABLES ========== */
+:root {
+  /* Existing variables (keep as-is) */
+  /* NEW: Magical Colors */
+  --magic-purple: #6B46C1;
+  --magic-gold: #F59E0B;
+  --magic-blue: #3B82F6;
+  --magic-sparkle: #FCD34D;
+  --magic-smoke: rgba(107, 70, 193, 0.1);
+  --magic-glow: rgba(245, 158, 11, 0.3);
+  /* Gradients */
+  --genie-gradient: linear-gradient(135deg, #6B46C1 0%, #3B82F6 100%);
+  --magic-shimmer: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.4) 50%, transparent 100%);
+}
+/* Magic Animations */
+@keyframes sparkle-float {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  50% { opacity: 1; transform: translateY(-20px) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0); }
+}
+@keyframes magic-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes smoke-rise {
+  0% {
+    bottom: 40px;
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateX(-50%) scale(1.2);
+  }
+  100% {
+    bottom: 60px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8);
+  }
+}
+/* Magic Effects */
+.sparkle {
+  background: radial-gradient(circle, var(--magic-gold) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sparkle-float 3s ease-out forwards;
+}
+.magic-button {
+  background: var(--genie-gradient);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.magic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--magic-shimmer);
+  transition: left 0.5s;
+  animation: magic-shimmer 2s infinite;
+}
+.magic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--magic-glow);
+}
+/* Accessibility: Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .magic-button,
+  .sparkle,
+  .magic-button::before {
+    animation: none;
+  }
+}
+Acceptance criteria:
+
+The magic theme variables, animations, and effects are available throughout the app for use in future UI updates.
+
+No existing styles are broken or overwritten—these are additive.
+
+Project should build and run with the new variables in place.
