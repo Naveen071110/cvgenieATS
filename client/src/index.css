@@ -2,7 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========== MAGIC THEME VARIABLES ========== */
 :root {
+  /* Magical Colors */
+  --magic-purple: #6B46C1;
+  --magic-gold: #F59E0B;
+  --magic-blue: #3B82F6;
+  --magic-sparkle: #FCD34D;
+  --magic-smoke: rgba(107, 70, 193, 0.1);
+  --magic-glow: rgba(245, 158, 11, 0.3);
+  
+  /* Gradients */
+  --genie-gradient: linear-gradient(135deg, #6B46C1 0%, #3B82F6 100%);
+  --magic-shimmer: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.4) 50%, transparent 100%);
+
 /* 60-30-10 Color Rule Implementation */
   --primary-blue: #2563eb;
   --gray-light: #f3f4f6;
@@ -1771,6 +1784,209 @@ select {
   align-items: center;
   justify-content: center;
   z-index: 10;
+}
+
+/* ========== MAGIC THEME ANIMATIONS ========== */
+@keyframes sparkle-float {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  50% { opacity: 1; transform: translateY(-20px) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0); }
+}
+
+@keyframes magic-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes smoke-rise {
+  0% {
+    bottom: 40px;
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateX(-50%) scale(1.2);
+  }
+  100% {
+    bottom: 60px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8);
+  }
+}
+
+@keyframes genie-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px var(--magic-glow);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px var(--magic-glow);
+  }
+}
+
+/* ========== MAGIC THEME EFFECTS ========== */
+.sparkle {
+  background: radial-gradient(circle, var(--magic-gold) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sparkle-float 3s ease-out forwards;
+}
+
+.magic-button {
+  background: var(--genie-gradient);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.magic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--magic-shimmer);
+  transition: left 0.5s;
+}
+
+.magic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--magic-glow);
+  animation: genie-pulse 2s ease-in-out infinite;
+}
+
+.magic-button:hover::before {
+  left: 100%;
+}
+
+.magic-button:active {
+  transform: translateY(0);
+}
+
+.magic-cta {
+  background: var(--genie-gradient);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 14px var(--magic-glow);
+}
+
+.magic-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--magic-shimmer);
+  animation: magic-shimmer 3s infinite;
+}
+
+.magic-cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 35px var(--magic-glow);
+}
+
+.magic-cta:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.magic-secondary {
+  background: rgba(107, 70, 193, 0.1);
+  color: var(--magic-purple);
+  border: 2px solid var(--magic-purple);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.magic-secondary:hover {
+  background: var(--magic-purple);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(107, 70, 193, 0.3);
+}
+
+.magic-accent {
+  background: linear-gradient(135deg, var(--magic-gold) 0%, #FBBF24 100%);
+  color: #92400E;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.magic-accent:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Genie-themed elements */
+.genie-lamp::before {
+  content: '🧞‍♂️';
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.wishes-counter {
+  background: linear-gradient(135deg, var(--magic-purple) 0%, var(--magic-blue) 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.wishes-counter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--magic-shimmer);
+  animation: magic-shimmer 4s infinite;
+}
+
+/* Accessibility: Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .magic-button,
+  .magic-cta,
+  .sparkle,
+  .magic-button::before,
+  .magic-cta::before,
+  .wishes-counter::before {
+    animation: none;
+  }
+  
+  .magic-button:hover,
+  .magic-cta:hover {
+    animation: none;
+  }
 }
 
 /* Smooth page transitions */

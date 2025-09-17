@@ -12,8 +12,8 @@ import { Link } from "wouter"
 
 const freePlanFeatures = [
   {
-    text: "3 AI-generated resumes per month",
-    description: "Perfect for testing our AI technology"
+    text: "3 Genie's Wishes per month",
+    description: "Perfect for testing our magical AI technology"
   },
   {
     text: "Professional ATS optimization",
@@ -35,16 +35,16 @@ const freePlanFeatures = [
 
 const proPlanFeatures = [
   {
-    text: "Unlimited resume generations",
+    text: "Unlimited Genie's Wishes",
     description: "Apply to as many jobs as you want"
   },
   {
-    text: "Priority AI processing",
-    description: "Get results faster than free users"
+    text: "Priority Genie processing",
+    description: "Your wishes granted faster than free users"
   },
   {
-    text: "Advanced AI optimizations",
-    description: "Premium algorithms for better results"
+    text: "Advanced magical optimizations",
+    description: "Premium spells for better results"
   },
   {
     text: "Premium export formats",
@@ -119,8 +119,8 @@ const PricingCard = ({
             onClick={onClick}
             className={`w-full py-3 text-lg font-semibold transition-all duration-200 ${
               highlighted 
-                ? 'bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-lg hover:shadow-xl' 
-                : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'
+                ? 'magic-cta genie-lamp' 
+                : 'magic-secondary'
             }`}
             variant={highlighted ? 'default' : 'outline'}
           >

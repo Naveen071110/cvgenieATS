@@ -166,12 +166,12 @@ export default function HeroSection() {
           ) : (
             <Link to="/generator">
               <button
-                className="cta-vibrant cta-animate group relative"
+                className="magic-cta group relative genie-lamp"
                 onClick={handleCreateResume}
                 aria-label="Start your free resume generation - Go to generator page"
               >
                 <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
-                Start Free
+                Grant My Wish
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </button>
             </Link>

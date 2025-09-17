@@ -346,12 +346,12 @@ export function InteractiveDemo({ className }: { className?: string }) {
           {/* CTA Section */}
           {improvements.length > 0 && (
             <div className="text-center mt-12 fade-in-up" style={{ animationDelay: '1.2s' }}>
-              <Button className="cta-vibrant interactive-button group" size="lg">
-                Get Your Full Optimized Resume
+              <Button className="magic-cta group genie-lamp" size="lg">
+                Reveal All Secrets
                 <Sparkles className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <p className="text-sm text-gray-600 mt-3">
-                See {improvements.length} more improvements in the full version
+                See {improvements.length} more magical improvements in the full version
               </p>
             </div>
           )}

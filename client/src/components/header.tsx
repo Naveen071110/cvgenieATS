@@ -158,26 +158,31 @@ export default function Header() {
                   </Button>
                 </div>
               ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => openAuthDialog({
-                    title: "Sign In",
-                    description: "Access your account to manage your generations."
-                  })}
-                  className="text-gray-700 border-gray-300 hover:bg-gray-50"
-                  aria-label="Sign In"
-                >
-                  <User 
-                    style={{ 
-                      width: 'var(--space-4)',
-                      height: 'var(--space-4)',
-                      marginRight: 'var(--space-1)'
-                    }}
-                    aria-hidden="true"
-                  />
-                  Sign In
-                </Button>
+                <div className="flex items-center gap-4">
+                  <div className="wishes-counter text-sm">
+                    <span>🧞‍♂️ 3 Wishes Left</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openAuthDialog({
+                      title: "Sign In",
+                      description: "Access your account to manage your generations."
+                    })}
+                    className="text-gray-700 border-gray-300 hover:bg-gray-50"
+                    aria-label="Sign In"
+                  >
+                    <User 
+                      style={{ 
+                        width: 'var(--space-4)',
+                        height: 'var(--space-4)',
+                        marginRight: 'var(--space-1)'
+                      }}
+                      aria-hidden="true"
+                    />
+                    Sign In
+                  </Button>
+                </div>
               )}
             </div>
 

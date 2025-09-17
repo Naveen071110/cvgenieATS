@@ -25,16 +25,16 @@ export default function GeneratorCTA() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
               <Link to="/generator">
                 <button
-                  className="cta-primary group"
+                  className="magic-cta group genie-lamp"
                   aria-label="Start your free resume transformation"
                 >
-                  Start Free
+                  Grant My Wish
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </button>
               </Link>
               <Link to="/pricing">
                 <button
-                  className="cta-secondary group"
+                  className="magic-secondary group"
                   aria-label="View pricing plans and features"
                 >
                   View Plans
@@ -60,10 +60,10 @@ export default function GeneratorCTA() {
 
             <Link to="/generator">
               <button
-                  className="cta-vibrant interactive-button group"
+                  className="magic-cta group genie-lamp"
                   aria-label="Start generating your optimized resume now"
                 >
-                  Start Generating Now
+                  Unleash the Magic
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </button>
             </Link>

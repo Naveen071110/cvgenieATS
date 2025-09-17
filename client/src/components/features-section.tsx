@@ -283,10 +283,10 @@ export default function FeaturesSection() {
         <div className="text-center mt-16">
           <Link to="/generator">
             <button 
-              className="cta-vibrant interactive-button group"
+              className="magic-cta group genie-lamp"
               aria-label="Get started with AI-powered resume optimization"
             >
-              Get Started Now
+              Begin Your Journey
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
           </Link>
