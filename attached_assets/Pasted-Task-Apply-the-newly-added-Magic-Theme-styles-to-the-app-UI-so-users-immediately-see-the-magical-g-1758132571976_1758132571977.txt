@@ -1,0 +1,62 @@
+Task:
+Apply the newly added Magic Theme styles to the app UI so users immediately see the magical/genie branding. Update the most prominent elements as follows:
+
+1. Main CTA Button (e.g., “Generate” or “Get Started”):
+
+Update the main CTA button(s) throughout the app (such as on the Homepage and Generator page).
+
+Change their class to use magic-button (already provided in the CSS).
+
+Example code:
+
+jsx
+<button className="magic-button" ...>
+  Grant My Wish
+</button>
+2. Homepage Hero Section:
+
+Add a lamp or genie emoji/icon next to the app name/title for visual magic.
+
+Optionally add a “shimmer” or a sparkle overlay using the CSS variables or the .sparkle class on a background element.
+
+3. Success Feedback & Generating States:
+
+Where you show success or loading, add styles using .sparkle or change background/box-shadow to use magic colors (e.g., box-shadow: 0 0 24px var(--magic-glow);).
+
+4. Free Plan (Three Wishes Counter):
+
+Find or create the free generations remaining UI.
+
+Add a lamp emoji or icon and label it as "Genie's Wishes" or similar, using one of the magic colors.
+
+Example:
+
+jsx
+<div className="bg-gradient-to-r from-magic-purple to-magic-blue text-white p-3 rounded-lg flex items-center">
+  <span role="img" aria-label="lamp">🧞‍♂️</span>
+  <span className="ml-2">Genie's Wishes: 3 free generations</span>
+</div>
+5. File Upload Area:
+
+Update the border or background of the resume upload box to use var(--magic-purple) or var(--magic-blue) from the variables.
+
+Example:
+
+css
+.magic-upload-zone {
+  border: 2px dashed var(--magic-purple);
+  background: var(--magic-smoke);
+}
+6. Optionally, Add Magic Effects:
+
+Where appropriate, use the sparkle class for confetti/magic feedback.
+
+For fun, you can add an animated lamp SVG to the homepage, header, or generator.
+
+Acceptance criteria:
+
+When opening the site, users see buttons, main CTAs, and upload areas styled with the magic theme (colors, gradients, shimmer).
+
+No existing functionality is lost—these are pure style changes.
+
+The update is visible to users without needing any further deploys or steps.
