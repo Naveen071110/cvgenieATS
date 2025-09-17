@@ -1,6 +1,6 @@
-import { Star, ArrowRight } from "lucide-react";
+
+import { Star } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { Link } from "wouter";
 import {
   Carousel,
   CarouselContent,
@@ -64,11 +64,11 @@ export default function TestimonialsSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div 
           ref={headerAnimation.ref}
-          className={`text-center mb-10 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          className={`text-center mb-8 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
           <h2 className="typography-section-header text-slate-900 mb-4">
             Trusted by Job Seekers Worldwide
@@ -131,11 +131,9 @@ export default function TestimonialsSection() {
         </Carousel>
 
         {/* Mobile scroll indicator */}
-        <div className="flex justify-center mt-6 md:hidden">
+        <div className="flex justify-center mt-4 md:hidden">
           <p className="text-sm text-slate-500">← Swipe to see more →</p>
         </div>
-
-        
       </div>
     </section>
   );
