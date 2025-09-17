@@ -396,42 +396,17 @@ export function FileUpload({
             disabled={isProcessing}
           />
 
-        <div className="space-y-4">
-            <div className={cn(
-              "w-16 h-16 mx-auto rounded-lg flex items-center justify-center transition-all duration-300",
-              isDragging
-                ? "bg-primary/20 scale-110"
-                : isValidated ? "bg-green-100" :
-                validationError
-                  ? "bg-red-100"
-                  : "bg-gray-200"
-            )}>
-              {validationError ? (
-                <AlertCircle
-                  className="w-8 h-8 text-red-500"
-                  aria-hidden="true"
-                  role="img"
-                  aria-label="Error indicator"
-                />
-              ) : isValidated ? (
-                <CheckCircle
-                  className="w-8 h-8 text-green-500"
-                  aria-hidden="true"
-                  role="img"
-                  aria-label="Success indicator"
-                />
-              ) : (
-                <Upload className={cn(
-                  "w-8 h-8 transition-colors duration-300",
-                  isDragging ? "text-primary" : "text-gray-500"
-                )}
-                aria-hidden="true"
-                role="img"
-                aria-label="Upload indicator"
-                />
-              )}
+        <div className="space-y-4 relative">
+            {isDragging && (
+              <>
+                <div className="sparkle absolute top-2 right-8 w-2 h-2"></div>
+                <div className="sparkle absolute bottom-4 left-6 w-3 h-3" style={{ animationDelay: '0.5s' }}></div>
+                <div className="sparkle absolute top-6 left-12 w-2 h-2" style={{ animationDelay: '1s' }}></div>
+              </>
+            )}
+            <div className={`mx-auto w-12 h-12 transition-colors ${isDragging ? 'text-[var(--magic-blue)]' : 'text-gray-400'}`}>
+              <Upload className="w-full h-full" />
             </div>
-
             <div className="space-y-2">
               <h3 className={cn(
                 "text-lg font-semibold transition-colors duration-300",

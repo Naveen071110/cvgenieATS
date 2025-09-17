@@ -5,70 +5,31 @@ import { Link } from "wouter";
 
 export default function GeneratorCTA() {
   return (
-    <section id="generator" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50">
-      <div className="max-w-4xl mx-auto text-center">
-        <Card className="shadow-2xl border border-slate-200 floating-card bg-white/80 backdrop-blur-sm">
-          <CardContent className="p-12">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center">
-                <Sparkles className="w-8 h-8 text-white" />
-              </div>
-            </div>
+    <section className="py-20 relative overflow-hidden" style={{ background: 'var(--genie-gradient)' }}>
+      <div className="container mx-auto px-4 text-center relative">
+        {/* Magic smoke effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-0 left-1/4 w-20 h-20 rounded-full opacity-20" style={{ background: 'var(--magic-smoke)', animation: 'smoke-rise 4s ease-out infinite' }}></div>
+          <div className="absolute bottom-0 right-1/3 w-16 h-16 rounded-full opacity-30" style={{ background: 'var(--magic-smoke)', animation: 'smoke-rise 5s ease-out infinite', animationDelay: '1s' }}></div>
+        </div>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-              Ready to Transform Your Resume?
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
-              Upload your current resume and paste any job description. Our AI will create an ATS-optimized resume and personalized cover letter in seconds.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-              <Link to="/generator">
-                <button
-                  className="cta-primary group"
-                  aria-label="Start your free resume transformation"
-                >
-                  Start Free
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                </button>
-              </Link>
-              <Link to="/pricing">
-                <button
-                  className="cta-secondary group"
-                  aria-label="View pricing plans and features"
-                >
-                  View Plans
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                </button>
-              </Link>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-              <div className="flex items-center text-green-600">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                <span className="text-sm font-medium">3 free generations per month</span>
-              </div>
-              <div className="flex items-center text-blue-600">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                <span className="text-sm font-medium">No signup required</span>
-              </div>
-              <div className="flex items-center text-purple-600">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                <span className="text-sm font-medium">ATS-optimized results</span>
-              </div>
-            </div>
-
-            <Link to="/generator">
-              <button
-                  className="cta-vibrant interactive-button group"
-                  aria-label="Start generating your optimized resume now"
-                >
-                  Start Generating Now
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </button>
-            </Link>
-          </CardContent>
-        </Card>
+        <div className="max-w-3xl mx-auto space-y-8 relative">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Ready to Transform Your Career?
+          </h2>
+          <p className="text-xl mb-8" style={{ color: 'var(--magic-sparkle)' }}>
+            Join thousands of professionals who've already upgraded their resumes with CV Genie
+          </p>
+          <Button
+            size="lg"
+            className="bg-white hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cta-pulse"
+            style={{ color: 'var(--magic-purple)' }}
+            onClick={() => navigate('/generator')}
+          >
+            Start Your Resume Transformation
+            <Sparkles className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
       </div>
     </section>
   );

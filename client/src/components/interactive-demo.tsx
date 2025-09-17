@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -95,7 +94,7 @@ function ATSScoreBar({ score, isVisible = false }: { score: number; isVisible?: 
 function generateMockImprovements(input: string): Improvement[] {
   const improvements: Improvement[] = [];
   const words = input.toLowerCase().split(/\s+/);
-  
+
   if (words.length > 5) {
     improvements.push({
       id: '1',
@@ -105,7 +104,7 @@ function generateMockImprovements(input: string): Improvement[] {
       icon: <Target className="w-4 h-4" />
     });
   }
-  
+
   if (words.some(word => ['worked', 'responsible', 'helped'].includes(word))) {
     improvements.push({
       id: '2',
@@ -115,7 +114,7 @@ function generateMockImprovements(input: string): Improvement[] {
       icon: <TrendingUp className="w-4 h-4" />
     });
   }
-  
+
   if (input.length > 50) {
     improvements.push({
       id: '3',
@@ -135,33 +134,33 @@ function generateMockImprovements(input: string): Improvement[] {
       icon: <Brain className="w-4 h-4" />
     });
   }
-  
+
   return improvements;
 }
 
 function calculateMockScore(input: string): number {
   const baseScore = 45;
   const words = input.split(/\s+/).filter(word => word.length > 0);
-  
+
   let score = baseScore;
-  
+
   // Add points for length
   score += Math.min(words.length * 2, 30);
-  
+
   // Add points for keywords
   const keywords = ['experience', 'skills', 'management', 'development', 'leadership', 'project', 'team', 'results'];
   const foundKeywords = words.filter(word => keywords.includes(word.toLowerCase()));
   score += foundKeywords.length * 3;
-  
+
   // Add points for numbers (metrics)
   const hasNumbers = /\d/.test(input);
   if (hasNumbers) score += 10;
-  
+
   // Add points for professional words
   const professionalWords = ['achieved', 'implemented', 'led', 'developed', 'managed', 'created'];
   const foundProfessional = words.filter(word => professionalWords.includes(word.toLowerCase()));
   score += foundProfessional.length * 2;
-  
+
   return Math.min(Math.max(score, 15), 95);
 }
 
@@ -172,6 +171,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
   const [atsScore, setAtsScore] = useState(45);
   const [improvements, setImprovements] = useState<Improvement[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // Added for processing state
 
   const steps = [
     {
@@ -200,17 +200,17 @@ export function InteractiveDemo({ className }: { className?: string }) {
       const timeout = setTimeout(() => {
         const newImprovements = generateMockImprovements(input);
         const newScore = calculateMockScore(input);
-        
+
         setImprovements(newImprovements);
         setAtsScore(newScore);
         setIsTyping(false);
-        
+
         // Mark steps as completed based on input
         const newCompleted: number[] = [];
         if (input.length > 20) newCompleted.push(1);
         if (input.length > 50) newCompleted.push(2);
         if (input.length > 100) newCompleted.push(3);
-        
+
         setCompletedSteps(newCompleted);
       }, 800);
 
@@ -225,6 +225,15 @@ export function InteractiveDemo({ className }: { className?: string }) {
 
   const handleStepClick = (stepNumber: number) => {
     setActiveStep(stepNumber);
+  };
+
+  const startDemo = () => {
+    setIsProcessing(true);
+    // Simulate AI processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      // Optionally, move to the next step or show a success message
+    }, 2000);
   };
 
   return (
@@ -301,7 +310,22 @@ export function InteractiveDemo({ className }: { className?: string }) {
                   AI Analysis Results
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 relative">
+                {/* Processing Overlay */}
+                {isProcessing && (
+                  <div className="absolute inset-0 bg-white/90 rounded-lg flex items-center justify-center z-10">
+                    <div className="flex flex-col items-center space-y-4 relative">
+                      {/* Magic sparkles during processing */}
+                      <div className="sparkle absolute -top-4 -left-4 w-2 h-2"></div>
+                      <div className="sparkle absolute -bottom-2 right-2 w-3 h-3" style={{ animationDelay: '0.8s' }}></div>
+                      <div className="sparkle absolute top-2 -right-6 w-2 h-2" style={{ animationDelay: '1.5s' }}></div>
+
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--magic-purple)]"></div>
+                      <p className="font-semibold" style={{ color: 'var(--magic-purple)' }}>Processing with AI Magic...</p>
+                    </div>
+                  </div>
+                )}
+                
                 {/* ATS Score */}
                 <div>
                   <ATSScoreBar score={atsScore} isVisible={input.length > 0} />
@@ -333,7 +357,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
                   </div>
                 )}
 
-                {input.length === 0 && (
+                {input.length === 0 && !isProcessing && (
                   <div className="text-center py-8 text-gray-500">
                     <Brain className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                     <p>Start typing to see AI-powered improvements</p>
@@ -346,7 +370,12 @@ export function InteractiveDemo({ className }: { className?: string }) {
           {/* CTA Section */}
           {improvements.length > 0 && (
             <div className="text-center mt-12 fade-in-up" style={{ animationDelay: '1.2s' }}>
-              <Button className="cta-vibrant interactive-button group" size="lg">
+              <Button 
+                onClick={startDemo}
+                disabled={isProcessing}
+                className="magic-button px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ background: isProcessing ? 'var(--magic-glow)' : 'var(--genie-gradient)' }}
+              >
                 Get Your Full Optimized Resume
                 <Sparkles className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
