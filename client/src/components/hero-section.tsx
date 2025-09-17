@@ -114,7 +114,6 @@ export default function HeroSection() {
       {/* Animated Background */}
       <div
         className="absolute inset-0 transition-all duration-1000 bg-gradient-to-br from-blue-50 via-white to-gray-50"
-        style={{ background: `linear-gradient(135deg, var(--magic-purple) 0%, var(--magic-blue) 50%, var(--magic-purple) 100%)` }}
       />
 
       {/* Floating Particles */}

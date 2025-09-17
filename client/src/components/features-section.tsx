@@ -5,7 +5,7 @@ import AIBrainIcon from "../assets/icons/ai-brain.svg?react"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import DocumentTransformIcon from "../assets/icons/document-transform.svg?react"
 import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
-import AnalyticsDashboardIcon from "../assets/icons/analytics-analytics-dashboard.svg?react"
+import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
 import TargetBullseyeIcon from "../assets/icons/target-bullseye.svg?react"
 
 const features = [
