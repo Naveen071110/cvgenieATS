@@ -64,11 +64,11 @@ export default function TestimonialsSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div 
           ref={headerAnimation.ref}
-          className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
+          className={`text-center mb-10 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
           <h2 className="typography-section-header text-slate-900 mb-4">
             Trusted by Job Seekers Worldwide
@@ -135,21 +135,7 @@ export default function TestimonialsSection() {
           <p className="text-sm text-slate-500">← Swipe to see more →</p>
         </div>
 
-        {/* CTA after testimonials */}
-        <div className="text-center mt-16">
-          <p className="text-lg text-slate-600 mb-6 max-w-2xl mx-auto">
-            Join thousands of professionals who've already transformed their careers
-          </p>
-          <Link to="/generator">
-            <button
-              className="cta-primary group"
-              aria-label="Join successful professionals - Start your free resume"
-            >
-              Start Free Today
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-            </button>
-          </Link>
-        </div>
+        
       </div>
     </section>
   );
