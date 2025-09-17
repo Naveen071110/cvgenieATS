@@ -1,0 +1,96 @@
+Task:
+Update the CV Genie app to apply the new Magic Theme styles only to buttons, CTAs, and (optionally) add magical headline animations or effects. There should be no changes to main background colors, main font colors, or card backgrounds.
+
+Instructions:
+
+Button Styling:
+
+Find all major CTA buttons (e.g., “Generate,” “Get Started,” “Upload,” “Try Free”) throughout the app (homepage, generator page, upload, pricing, etc.).
+
+Change their class to magic-button (which is already defined in the global CSS).
+
+The color should only change for the button itself, not for any outer container or the page background.
+
+Example:
+
+jsx
+<button className="magic-button">Grant My Wish</button>
+Leave text and font color for headings and body unchanged.
+
+Optional: Magic Animations for Headings
+
+Optionally, add a subtle “sparkle” animation (.sparkle or a similar effect) to the main hero headline text only.
+
+This can be a single sparkle icon, emoji, or minimal animation but should not change the heading’s color.
+
+Example (React):
+
+jsx
+<h1>
+  Create Your Perfect Resume <span className="sparkle" aria-hidden="true">✨</span>
+</h1>
+No changes to:
+
+Page or section background colors
+
+Default font or text colors
+
+Card, modal, or upload backgrounds
+
+Magic Feedback (optional, but nice):
+
+For button clicks (e.g., “Generate” or “Download”), add a brief, non-intrusive sparkle/confetti effect over the button *only*.
+
+Example:
+
+On click, temporarily show a few sparkles near/over the button using the .sparkle class or a lightweight React effect.
+
+Acceptance criteria:
+
+Only buttons and main CTAs show the new Magic Theme.
+
+Page backgrounds, card backgrounds, and body text remain unchanged.
+
+Heading can have a small sparkle or lamp icon/animation, but no color change.
+
+Animations are subtle and do not disrupt the current design.
+
+Use this for targeted, safe, and visually balanced updates!Here’s an updated, focused prompt for Replit Assistant:
+
+Prompt for Replit Assistant
+
+Task:
+Update CV Genie to apply the new Magic Theme styles only to the app’s main buttons and CTAs—do not change any background colors, body font colors, or card backgrounds. You may optionally add a subtle sparkle or lamp icon animation to the hero/header text, but do not alter their color.
+
+Instructions:
+
+Change all key CTA buttons (e.g. “Generate”, “Get Started”, “Try Free”, “Upload Resume”) on every page/component to use the magic-button class from the new CSS.
+
+Leave backgrounds, cards, and text color elsewhere unchanged.
+
+Example:
+
+jsx
+<button className="magic-button">Grant My Wish</button>
+Optionally, add a sparkle emoji or lamp icon next to the main headline (not changing color, just an icon/animation), e.g.:
+
+jsx
+<h1>
+  Ready to Create Your Perfect Resume?
+  <span className="sparkle" aria-hidden="true">✨</span>
+</h1>
+Do not change the heading’s font or color.
+
+Do not apply any .magic-* styles, gradients, or variables to page backgrounds, containers, or card components.
+
+If possible, add a small sparkle/congrats animation over the button area only when a user clicks a CTA (e.g. “Generate”, “Download”)—but keep it minimal and contained to the button.
+
+Acceptance criteria:
+
+ONLY the main action buttons show the visible magic theme change.
+
+No background, section, or card color is updated.
+
+Headings keep their color; at most get an icon or sparkle as a fun accent (not a color change).
+
+All updates are strictly visual to buttons/headings.
