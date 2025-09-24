@@ -33,30 +33,6 @@ const testimonials = [
     role: "Data Scientist",
     content: "The ATS optimization feature is a game-changer. My resume now passes through filters and reaches real recruiters.",
     avatar: "DP"
-  },
-  {
-    name: "Lisa Thompson",
-    role: "Product Manager",
-    content: "I've tried other resume builders, but CVGenie's AI understands context better than anything else out there.",
-    avatar: "LT"
-  },
-  {
-    name: "James Wilson",
-    role: "Sales Director",
-    content: "Generated 5 different versions of my resume for different industries. Each one perfectly tailored. Amazing!",
-    avatar: "JW"
-  },
-  {
-    name: "Ana Martinez",
-    role: "HR Specialist",
-    content: "As someone who reviews resumes daily, I can confirm CVGenie creates professional, compelling documents.",
-    avatar: "AM"
-  },
-  {
-    name: "Kevin Zhang",
-    role: "Frontend Developer",
-    content: "The technical skills section optimization helped me highlight my expertise perfectly. Got my dream job!",
-    avatar: "KZ"
   }
 ];
 
