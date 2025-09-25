@@ -1,0 +1,68 @@
+Here is a focused prompt for the Replit assistant to ensure the watercolor background definitely appears in your hero section, given you already applied the styles but see no visible change:
+
+***
+
+**Objective:**  
+Force the appearance of the watercolor background in the hero section by verifying and correcting necessary CSS import, class assignment, and override issues.
+
+**Steps to implement:**
+
+1. **Verify CSS import in main.tsx:**  
+   Ensure `index.css` is imported at the **very top** of `client/src/main.tsx`, before any other imports:  
+   ```tsx
+   import './index.css';
+   ```
+   Remove any other duplicate global CSS imports in App.tsx or components.
+
+2. **Confirm hero section classes in hero-section.tsx:**  
+   Make sure the top-most hero container uses:  
+   ```tsx
+   <div className="hero-section">
+     <div className="hero-bg-blob" aria-hidden="true"></div>
+     <div className="hero-content">
+       {/* Existing content unchanged */}
+     </div>
+   </div>
+   ```
+   Remove any Tailwind background utilities (e.g., `bg-white`, `bg-gray-*`) from the outer `.hero-section`. If background is needed, place those on inner elements only.
+
+3. **Move watercolor CSS to bottom of index.css:**  
+   In `client/src/index.css` move the entire watercolor styles block (starting with `.hero-section` rules and keyframes) to the **very end** of the file, so it overrides Tailwind’s styles.
+
+4. **Add “!important” flags:**  
+   Add `!important` declarations on all `.hero-section` background and positioning styles in index.css (for example, `background: linear-gradient(...) !important;` and `position: relative !important;`) to increase style priority.
+
+5. **Check for parent background overlays in App.tsx:**  
+   Inspect the container elements in `App.tsx` to ensure no parents of `.hero-section` have solid background classes that could visually cover the gradient.
+
+6. **Add a visual debug outline:**  
+   Temporarily append to the very end of `index.css`:  
+   ```css
+   .hero-section {
+     outline: 4px dashed magenta !important;
+   }
+   ```
+   Reload the page to confirm the `.hero-section` container is targeted and styles are loading. Remove this rule once verified.
+
+7. **Clear caches and restart:**  
+   Stop the dev server. Then run:  
+   ```
+   rm -rf node_modules/.vite
+   npm run dev
+   ```
+   This fully clears caching that might block new styles.
+
+8. **Verify in browser devtools:**  
+   Inspect the hero section container and confirm:
+   - `.hero-section` class is present  
+   - `.hero-section` CSS rules appear and are NOT overridden or crossed out  
+   - Background gradient and blurred blobs are visible behind the text  
+
+**Outcome:**  
+The homepage hero’s watercolor background with animated subtle gradient blobs will become clearly visible while the content remains fully readable above it.
+
+***
+
+This will proactively solve style precedence, loading, and structure issues to guarantee your watercolor background shows.
+
+Sources
