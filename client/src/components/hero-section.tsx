@@ -101,7 +101,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="hero-section relative overflow-hidden"
       style={{
         paddingTop: 'calc(var(--space-20) + var(--space-8))',
         paddingBottom: 'var(--space-20)',
@@ -111,27 +111,21 @@ export default function HeroSection() {
       role="banner"
       aria-labelledby="hero-title"
     >
-      {/* Animated Background */}
-      <div
-        className="absolute inset-0 transition-all duration-1000 bg-gradient-to-br from-blue-50 via-white to-gray-50"
-      />
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {Array.from({ length: 15 }, (_, i) => (
-          <Particle key={i} delay={i * 0.5} />
-        ))}
-      </div>
+      {/* Decorative background blob */}
+      <div className="hero-bg-blob" aria-hidden="true"></div>
 
       <div
-        className="relative w-full text-center"
+        className="hero-content relative w-full text-center"
         style={{
           maxWidth: 'var(--container-2xl)',
           margin: '0 auto',
           paddingLeft: 'var(--space-4)',
           paddingRight: 'var(--space-4)'
         }}
-      >
+      ></div>
+    </section>
+  );
+}
         <h1
           id="hero-title"
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
