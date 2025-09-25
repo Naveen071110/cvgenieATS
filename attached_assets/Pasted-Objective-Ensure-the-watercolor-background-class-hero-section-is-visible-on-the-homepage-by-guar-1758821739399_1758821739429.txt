@@ -1,0 +1,98 @@
+Objective:
+Ensure the watercolor background (class hero-section) is visible on the homepage by guaranteeing correct markup, removing conflicting background utilities, and making the custom CSS win in cascade.
+
+Files to update:
+
+client/src/App.tsx
+
+client/src/components/hero-section.tsx
+
+client/src/index.css
+
+tailwind.config.ts (verify)
+
+client/src/main.tsx (verify import position)
+
+Tasks:
+
+Verify CSS import order
+
+Open client/src/main.tsx and make sure index.css is imported once and at the very top, before any other component imports. The first imports in main.tsx should include:
+import './index.css';
+If index.css is imported elsewhere (App.tsx), remove duplicates so main.tsx is the single source.
+
+Ensure hero wrapper uses hero-section and has no conflicting bg utilities
+
+Open client/src/components/hero-section.tsx.
+
+Confirm the top-level hero wrapper is:
+
+<div className="hero-section"> <div className="hero-bg-blob" aria-hidden="true"></div> <div className="hero-content"> {/* existing content */} </div> </div> - In that same file, remove any Tailwind bg-* utilities (bg-white, bg-gray-*, bg-slate-*, bg-[...]) from the top-level hero wrapper. If a white background is needed for inner cards, keep bg-white on inner containers (not the hero-section wrapper).
+Remove parent backgrounds that cover the hero
+
+Open client/src/App.tsx.
+
+Inspect the container that renders the homepage route. If any parent of the hero adds a solid background (e.g., <main className="bg-white"> or a section with bg-gray-*), move that background to a lower, inner element so the hero-section background can show through at the top of the page.
+
+If a global background is needed for the rest of the site, split the layout:
+
+Hero lives in a div without bg utilities.
+
+Subsequent sections get bg-white.
+
+Make custom CSS win the cascade
+
+Open client/src/index.css.
+
+Move the entire .hero-section block (including ::before, ::after, .hero-bg-blob, .hero-content, and keyframes) to the very bottom of index.css so it loads after Tailwind utilities.
+
+Ensure the .hero-section rule includes:
+.hero-section {
+position: relative !important;
+overflow: hidden !important;
+min-height: min(92vh, 900px) !important;
+background: linear-gradient(135deg,
+rgba(255, 182, 193, 0.28) 0%,
+rgba(173, 216, 230, 0.36) 25%,
+rgba(144, 238, 144, 0.28) 50%,
+rgba(255, 218, 185, 0.34) 75%,
+rgba(221, 160, 221, 0.28) 100%
+) !important;
+background-size: 200% 200% !important;
+animation: heroGradientShift 10s ease-in-out infinite !important;
+z-index: 0;
+}
+
+Ensure:
+.hero-content { position: relative; z-index: 2; }
+.hero-section::before, .hero-section::after, .hero-bg-blob { z-index: 0; }
+
+Tailwind config sanity
+
+Open tailwind.config.ts and verify content includes the client src paths exactly:
+content: ["./index.html", "./client/src/**/*.{js,ts,jsx,tsx}"]
+
+If it doesn’t, update it, save, and restart dev server so Tailwind rebuilds properly.
+
+Clear Vite cache and restart
+
+Stop dev server, then:
+rm -rf node_modules/.vite
+npm run dev
+
+Debug verification (remove after test)
+
+At the very bottom of index.css, add:
+.hero-section { outline: 2px dashed magenta !important; }
+
+Reload the homepage. If the magenta outline shows around the hero, the class is applied. If the gradient is still not visible, a parent background is covering it; remove that parent bg per step 3.
+
+Remove the outline rule after confirming.
+
+Acceptance criteria:
+
+The hero area displays the animated watercolor gradient with floating blobs behind the text.
+
+No parent background mask covers the hero gradient.
+
+Text remains legible, and layout unchanged.
