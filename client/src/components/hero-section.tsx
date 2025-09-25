@@ -100,20 +100,19 @@ export default function HeroSection() {
   };
 
   return (
-    <section
-      className="hero-section"
-      style={{
-        paddingTop: 'calc(var(--space-20) + var(--space-8))',
-        paddingBottom: 'var(--space-20)',
-        paddingLeft: 'var(--space-4)',
-        paddingRight: 'var(--space-4)'
-      }}
-      role="banner"
-      aria-labelledby="hero-title"
-    >
-      {/* Decorative background blob */}
+    <div className="hero-section">
       <div className="hero-bg-blob" aria-hidden="true"></div>
-
+      <div 
+        className="hero-content"
+        style={{
+          paddingTop: 'calc(var(--space-20) + var(--space-8))',
+          paddingBottom: 'var(--space-20)',
+          paddingLeft: 'var(--space-4)',
+          paddingRight: 'var(--space-4)'
+        }}
+        role="banner"
+        aria-labelledby="hero-title"
+      >
       <div
         className="hero-content relative w-full text-center"
         style={{
@@ -208,7 +207,7 @@ export default function HeroSection() {
           <StatsWidget />
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

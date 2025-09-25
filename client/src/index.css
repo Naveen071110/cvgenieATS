@@ -2383,7 +2383,4 @@ select {
   .hero-section .hero-bg-blob { filter: blur(55px) !important; }
 }
 
-/* Debug verification - temporary magenta outline */
-.hero-section { 
-  outline: 2px dashed magenta !important; 
-}
+/* Hero watercolor background is now properly cascaded and visible */
