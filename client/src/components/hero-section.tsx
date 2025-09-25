@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ArrowRight, CheckCircle, Clock, Users, FileText, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,15 +46,12 @@ const ProgressIndicator = ({ progress }: { progress: number }) => (
   </div>
 );
 
-
 export default function HeroSection() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [gradientShift, setGradientShift] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -122,95 +120,92 @@ export default function HeroSection() {
             paddingRight: 'var(--space-4)'
           }}
         >
-        <h1
-          id="hero-title"
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
-          style={{ marginBottom: 'var(--space-6)' }}
-        >
-          Transform Your Resume for{" "}
-          <span
-            className={`inline-block min-w-0 transition-opacity duration-300 text-primary ${
-              isVisible ? "opacity-100" : "opacity-0"
-            }`}
+          <h1
+            id="hero-title"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
+            style={{ marginBottom: 'var(--space-6)' }}
           >
-            {rotatingTexts[currentTextIndex]}
-          </span>
-        </h1>
-        <p
-          className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
-          style={{ marginBottom: 'var(--space-8)', animationDelay: '0.2s' }}
-        >
-          Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
-          Upload your current resume, paste a job description, and let our AI do the magic.
-        </p>
-        <div
-          className="flex flex-col sm:flex-row justify-center items-center w-full fade-in-up"
-          style={{ gap: 'var(--space-4)', marginBottom: 'var(--space-8)', animationDelay: '0.4s' }}
-        >
-          {isLoading ? (
-            <div className="w-full sm:w-auto flex flex-col items-center gap-4">
-              <Spinner />
-              <ProgressIndicator progress={progress} />
-              <span className="text-sm text-gray-500">Generating your resume...</span>
-            </div>
-          ) : (
-            <Link to="/generator">
-              <button
-                className="magic-cta group relative genie-lamp"
-                onClick={handleCreateResume}
-                aria-label="Start your free resume generation - Go to generator page"
-              >
-                <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
-                Grant My Wish
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-              </button>
-            </Link>
-          )}
+            Transform Your Resume for{" "}
+            <span
+              className={`inline-block min-w-0 transition-opacity duration-300 text-primary ${
+                isVisible ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {rotatingTexts[currentTextIndex]}
+            </span>
+          </h1>
+          <p
+            className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
+            style={{ marginBottom: 'var(--space-8)', animationDelay: '0.2s' }}
+          >
+            Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
+            Upload your current resume, paste a job description, and let our AI do the magic.
+          </p>
           <div
-            className="flex items-center text-gray-600"
-            style={{ gap: 'var(--space-3)' }}
+            className="flex flex-col sm:flex-row justify-center items-center w-full fade-in-up"
+            style={{ gap: 'var(--space-4)', marginBottom: 'var(--space-8)', animationDelay: '0.4s' }}
           >
-            <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" aria-hidden="true" />
-            <span className="text-sm font-medium">Generated in 40-60 seconds</span>
+            {isLoading ? (
+              <div className="w-full sm:w-auto flex flex-col items-center gap-4">
+                <Spinner />
+                <ProgressIndicator progress={progress} />
+                <span className="text-sm text-gray-500">Generating your resume...</span>
+              </div>
+            ) : (
+              <Link to="/generator">
+                <button
+                  className="magic-cta group relative genie-lamp"
+                  onClick={handleCreateResume}
+                  aria-label="Start your free resume generation - Go to generator page"
+                >
+                  <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
+                  Grant My Wish
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                </button>
+              </Link>
+            )}
+            <div
+              className="flex items-center text-gray-600"
+              style={{ gap: 'var(--space-3)' }}
+            >
+              <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" aria-hidden="true" />
+              <span className="text-sm font-medium">Generated in 40-60 seconds</span>
+            </div>
           </div>
-        </div>
 
-        {/* Feature Cards Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-          <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <AIBrainIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-            <h3 className="text-xl font-bold text-gray-800 mb-2">AI Powered</h3>
-            <p className="text-gray-600">Leverage advanced AI to craft perfect resumes and cover letters.</p>
+          {/* Feature Cards Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+            <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
+              <AIBrainIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">AI Powered</h3>
+              <p className="text-gray-600">Leverage advanced AI to craft perfect resumes and cover letters.</p>
+            </div>
+            <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
+              <ATSShieldIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">ATS Friendly</h3>
+              <p className="text-gray-600">Ensure your resume passes through Applicant Tracking Systems.</p>
+            </div>
+            <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
+              <SpeedOptimizationIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Fast & Efficient</h3>
+              <p className="text-gray-600">Generate professional documents in minutes, not hours.</p>
+            </div>
+            <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
+              <MailIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Personalized</h3>
+              <p className="text-gray-600">Tailor your application to each specific job description.</p>
+            </div>
           </div>
-          <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <ATSShieldIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-            <h3 className="text-xl font-bold text-gray-800 mb-2">ATS Friendly</h3>
-            <p className="text-gray-600">Ensure your resume passes through Applicant Tracking Systems.</p>
-          </div>
-          <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <SpeedOptimizationIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Fast & Efficient</h3>
-            <p className="text-gray-600">Generate professional documents in minutes, not hours.</p>
-          </div>
-          <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <MailIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Personalized</h3>
-            <p className="text-gray-600">Tailor your application to each specific job description.</p>
-          </div>
-        </div>
 
-        {/* Stats Section */}
-        <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-            Trusted by Thousands
-          </h2>
-          <StatsWidget />
+          {/* Stats Section */}
+          <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
+              Trusted by Thousands
+            </h2>
+            <StatsWidget />
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-// Add necessary CSS for animations if not already present in global styles
-// Ensure your Tailwind CSS configuration includes transitions and transforms.
-// Example CSS for animations (can be placed in a global CSS file or styled-components):
