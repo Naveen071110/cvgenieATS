@@ -1000,29 +1000,29 @@ select:focus,
 
 /* Watercolor-like animated background for hero */
 .hero-section {
-  position: relative;
-  overflow: hidden;
-  min-height: min(92vh, 900px);
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: min(92vh, 900px) !important;
   background: linear-gradient(135deg,
     rgba(255, 182, 193, 0.28) 0%,
     rgba(173, 216, 230, 0.36) 25%,
     rgba(144, 238, 144, 0.28) 50%,
     rgba(255, 218, 185, 0.34) 75%,
     rgba(221, 160, 221, 0.28) 100%
-  );
-  background-size: 200% 200%;
-  animation: heroGradientShift 10s ease-in-out infinite;
+  ) !important;
+  background-size: 200% 200% !important;
+  animation: heroGradientShift 10s ease-in-out infinite !important;
 }
 
 /* Soft floating blobs for watercolor feel */
 .hero-section::before,
 .hero-section::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.6;
-  pointer-events: none;
+  content: '' !important;
+  position: absolute !important;
+  border-radius: 50% !important;
+  filter: blur(60px) !important;
+  opacity: 0.6 !important;
+  pointer-events: none !important;
 }
 
 .hero-section::before {
