@@ -1,0 +1,204 @@
+Objective:
+Render a soft watercolor-style animated background in the homepage hero without breaking any existing layout, content, or CTA logic. Ensure the custom CSS wins over Tailwind utilities and there’s no parent background masking the hero.
+
+Scope (exact files to edit):
+
+client/src/main.tsx
+
+client/src/App.tsx
+
+client/src/components/hero-section.tsx
+
+client/src/index.css
+
+tailwind.config.ts (verify setting only)
+
+No other files should be changed.
+
+Safety rules:
+
+Do not change any visible copy, links, event handlers, or component logic.
+
+Do not move button positions or alter layout spacing, except adding wrapper class names.
+
+If similar hero background styles already exist, replace them instead of duplicating.
+
+Keep all new styles scoped to .hero-section and do not affect other pages/sections.
+
+Tasks
+
+Ensure global CSS import order (main.tsx)
+
+Open client/src/main.tsx.
+
+Confirm this is at the very top, before any component imports:
+import './index.css';
+
+If index.css is imported anywhere else (e.g., App.tsx), remove the duplicates so main.tsx is the single source of global CSS.
+
+Tailwind content paths (tailwind.config.ts)
+
+Open tailwind.config.ts.
+
+Confirm content includes both index.html and all client/src files:
+content: ["./index.html", "./client/src/**/*.{js,ts,jsx,tsx}"]
+
+Do not change theme or plugins.
+
+Save the file if a change was made.
+
+Update hero markup (hero-section.tsx)
+
+Open client/src/components/hero-section.tsx.
+
+At the top-most wrapper of the hero section, ensure this structure (adapt to the existing wrapper; do not duplicate wrappers or change text/logic):
+
+<div className="hero-section"> <div className="hero-bg-blob" aria-hidden="true"></div> <div className="hero-content"> {/* Keep ALL existing hero content (headings, paragraph, stats, CTAs) exactly as-is inside this container */} </div> </div>
+Remove bg-white/bg-gray-/bg-slate- utilities from the top-most hero wrapper only (leave inner card backgrounds intact). If there is a utility applying a background to the hero wrapper, move that background class onto an inner container so the outer wrapper’s gradient can show.
+
+Remove parent mask (App.tsx)
+
+Open client/src/App.tsx.
+
+If the main layout or the section wrapping the homepage hero applies a solid background (e.g., <main className="bg-white"> or <section className="bg-gray-50">), move that background class to the sections that follow the hero, not the hero itself.
+
+End state: the hero’s outermost container is free of any solid background from parent wrappers, so the gradient is visible.
+
+Add/relocate CSS (index.css)
+
+Open client/src/index.css.
+
+Scroll to the bottom of the file (after Tailwind’s @tailwind utilities and any other rules) and append these styles (if a .hero-section block already exists, replace it instead of duplicating):
+
+/* === Watercolor Hero Background (scoped) === */
+.hero-section {
+position: relative !important;
+overflow: hidden !important;
+min-height: min(92vh, 900px) !important;
+background: linear-gradient(135deg,
+rgba(255, 182, 193, 0.28) 0%,
+rgba(173, 216, 230, 0.36) 25%,
+rgba(144, 238, 144, 0.28) 50%,
+rgba(255, 218, 185, 0.34) 75%,
+rgba(221, 160, 221, 0.28) 100%
+) !important;
+background-size: 200% 200% !important;
+animation: heroGradientShift 10s ease-in-out infinite !important;
+z-index: 0;
+}
+
+/* Soft floating “watercolor” blobs */
+.hero-section::before,
+.hero-section::after {
+content: '' !important;
+position: absolute !important;
+border-radius: 50% !important;
+filter: blur(60px) !important;
+opacity: 0.6 !important;
+pointer-events: none !important;
+}
+
+.hero-section::before {
+top: -12%;
+left: -10%;
+width: 340px;
+height: 340px;
+background: radial-gradient(circle, rgba(255, 192, 203, 0.42) 0%, transparent 70%);
+animation: heroFloatA 7s ease-in-out infinite;
+}
+
+.hero-section::after {
+bottom: -12%;
+right: -10%;
+width: 440px;
+height: 440px;
+background: radial-gradient(circle, rgba(173, 216, 230, 0.36) 0%, transparent 70%);
+animation: heroFloatB 9s ease-in-out infinite reverse;
+}
+
+/* Optional mid-depth blob */
+.hero-section .hero-bg-blob {
+position: absolute;
+left: 10%;
+bottom: 8%;
+width: 420px;
+height: 300px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(144, 238, 144, 0.34) 0%, transparent 70%);
+filter: blur(70px);
+opacity: 0.55;
+animation: heroFloatC 12s ease-in-out infinite;
+pointer-events: none;
+z-index: 0;
+}
+
+/* Ensure content sits above background */
+.hero-content {
+position: relative;
+z-index: 2;
+}
+
+/* Subtle legibility enhancement */
+.hero-content h1, .hero-content h2, .hero-content p {
+text-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* Animations */
+@keyframes heroGradientShift {
+0%, 100% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+}
+@keyframes heroFloatA {
+0%, 100% { transform: translateY(0) scale(1); }
+50% { transform: translateY(-18px) scale(1.05); }
+}
+@keyframes heroFloatB {
+0%, 100% { transform: translateY(0) scale(1); }
+50% { transform: translateY(20px) scale(1.06); }
+}
+@keyframes heroFloatC {
+0%, 100% { transform: translateX(0) translateY(0); }
+50% { transform: translateX(16px) translateY(-8px); }
+}
+
+/* Mobile tuning */
+@media (max-width: 640px) {
+.hero-section { min-height: 75vh; }
+.hero-section::before, .hero-section::after { filter: blur(45px); }
+.hero-section .hero-bg-blob { filter: blur(55px); }
+}
+
+Important: place these rules at the very bottom of index.css to win load order against Tailwind utilities and any other global styles.
+
+Build/cache steps
+
+Stop the dev server if running.
+
+Clear Vite cache then restart:
+rm -rf node_modules/.vite
+npm run dev
+
+Quick visual verification (remove after test)
+
+Append this temporary rule at the very bottom of index.css:
+.hero-section { outline: 2px dashed magenta !important; }
+
+Reload the homepage. If the outline appears around the hero, the class is correctly applied and the CSS is loaded. Remove the outline rule once verified.
+
+If background is still not visible
+
+Inspect the hero wrapper in browser devtools and confirm:
+
+.hero-section styles are present and not overridden.
+
+A parent element is not painting a solid background over the same area.
+
+If a parent has a background utility (e.g., bg-white), move that background to sections below the hero so the hero gradient remains visible.
+
+Acceptance criteria
+
+The hero area shows an animated watercolor gradient with soft floating blobs behind the existing content.
+
+No other sections are affected.
+
+No layout or functional regressions (buttons, links, text) occur.
