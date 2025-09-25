@@ -1,0 +1,62 @@
+Objective:
+Locate and fix the syntax error causing the Babel parser crash (parseReturnStatement/parseExpression), typically a stray return outside a function or broken JSX, without altering app behavior or content.
+
+Tasks:
+
+Surface the exact file and line
+
+Run the dev server once to get a fuller stack trace; ensure stack traces are shown with filenames/lines as suggested in Vite troubleshooting, then stop the server to apply fixes.
+
+If the stack trace still lacks the file, search the codebase for top-level return tokens:
+
+Look in recently edited files first: client/src/components/hero-section.tsx, client/src/App.tsx, client/src/main.tsx (and any other files touched in the background change).
+
+Validate component returns
+
+For each React component, ensure the return is inside the component function and returns exactly one JSX parent (use a fragment <>...</> if needed), since JSX must have a single enclosing parent.
+
+Correct pattern:
+const Component = () => {
+return (
+<>
+{/* existing JSX */}
+</>
+);
+};
+
+Fix common parser tripwires
+
+Remove any return statements that appear at the top-level of a module (outside any function/component), which triggers “return not in function” per the JS spec and MDN guidance.
+
+Check for malformed JSX such as:
+
+Unclosed tags or stray closing tags
+
+Text between closing and opening tags where not allowed
+
+JSX siblings not wrapped in a parent node (wrap with <>...</>).
+
+If an inline function was converted from implicit to block body, ensure it now has return inside the function:
+// wrong
+const Comp = () => { (<div/>) }
+// right
+const Comp = () => { return (<div/>); }
+
+Apply targeted fixes in likely files
+
+hero-section.tsx: Verify the outer wrapper and any inner sections return a single parent and that no stray return sits between JSX blocks introduced during the background changes.
+
+App.tsx: Ensure layout/route wrappers don’t have stray returns or partial JSX fragments after a return.
+
+main.tsx: Ensure only ReactDOM.createRoot(...).render(...) is inside the function scope and no return sits at top-level accidentally.
+
+Rebuild and verify
+
+Clear Vite’s cache and restart (improves stack trace fidelity and rebuilds from a clean state): rm -rf node_modules/.vite && npm run dev, as recommended by Vite troubleshooting when errors persist.
+
+Confirm the server starts without the Babel parser error and the homepage renders.
+
+Guardrails:
+
+Do not change any strings, handlers, or business logic—only fix syntax and structure so every return is inside a function/component and every JSX return has a single parent.
+

@@ -1,0 +1,35 @@
+Objective: Reveal and fix the underlying syntax error causing esbuild to crash, then confirm the watercolor hero renders.
+
+Tasks:
+
+Show the first real error
+
+Stop dev server and restart with verbose logs to capture the earliest error line:
+
+Clear cache and run: rm -rf node_modules/.vite && npm run dev, then copy the first error line above the esbuild stack.
+
+If nothing clearer appears, run Vite in debug mode to surface file/line info per docs: DEBUG=vite:* npm run dev, then capture the first syntax line reported before the esbuild stack.
+
+Lint and auto‑fix the two edited files
+
+Open client/src/index.css and validate the watercolor block you added at the bottom; fix any typos like missing semicolons, braces, or invalid color tokens (e.g., ensure rgba has parentheses like rgba(173,216,230,0.36) and not “rgba173, 216, 230, 0.36”) and ensure every @keyframes block has matching braces; save the file after formatting.
+
+Open client/src/components/hero-section.tsx and ensure the component returns a single JSX parent, all tags are closed, and no stray return or bracket sits outside a function; run a formatter and fix any red squiggles reported by TypeScript/TSX parsing; do not change copy or logic, only syntax/structure.
+
+Rebuild cleanly
+
+Clear Vite cache again and restart to ensure stale transforms don’t linger: rm -rf node_modules/.vite && npm run dev; verify that the dev server starts without the esbuild stack trace per the troubleshooting guide.
+
+Verify watercolor loads
+
+In the running app, open the homepage, inspect the hero wrapper, and confirm the element has class hero-section and the .hero-section rules from index.css are applied (not crossed out); if a parent sets a solid background, move that background to sections below the hero so the gradient is visible; do not alter text/CTAs.
+
+If the crash persists
+
+Pin Vite/esbuild to compatible versions in package.json, reinstall, and retry since version mismatches can produce opaque esbuild stacks; then repeat steps 1–3:
+
+"vite": "^5.x", "esbuild": "^0.21.x" (align with the Vite troubleshooting guidance), followed by rm -rf node_modules && npm install && rm -rf node_modules/.vite && npm run dev.
+
+Acceptance criteria:
+
+Dev server boots without the esbuild on-end stack, and the logs show no earlier syntax errors; homepage hero renders with the watercolor background present and the content readable above it.
