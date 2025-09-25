@@ -1,0 +1,171 @@
+Objective:
+Add a soft, watercolor-style animated background to the homepage hero, matching the attached screenshot’s look, without breaking existing layout, typography, or CTAs.
+
+Files to modify:
+
+client/src/components/hero-section.tsx
+
+client/src/index.css
+
+Safety and replacement rules:
+
+If .hero-section or .hero-content already exist, update their styles instead of duplicating classes.
+
+Do not change any existing text nodes, links, button actions, or component logic.
+
+Keep all new styles scoped under .hero-section to avoid global overrides.
+
+If a previous hero background system exists (e.g., other pseudo-elements or background images), replace it with this one rather than stacking both.
+
+If this code finds similar properties, merge them, keeping existing spacing and typography.
+
+Changes to implement:
+
+Update hero-section.tsx
+
+Ensure the top-level wrapper of the hero has className="hero-section".
+
+Ensure the immediate content container has className="hero-content".
+
+Add a decorative, empty div with className="hero-bg-blob" as a child of the hero wrapper (but outside the textual content) to create depth. Mark it aria-hidden.
+
+Concrete edits (adapt to current structure; do not alter content):
+
+Wrap current hero content like this:
+
+<div className="hero-section"> <div className="hero-bg-blob" aria-hidden="true"></div> <div className="hero-content"> {/* EXISTING hero headings, subhead, stats, CTAs, images — leave unchanged */} </div> </div>
+If the file already uses a wrapper, add/merge className="hero-section" to that wrapper, add className="hero-content" to the immediate content container, and insert the hero-bg-blob.
+
+Append CSS to index.css (merge carefully if classes already exist)
+
+Add or merge the following rules:
+
+/* Watercolor-like animated background for hero */
+.hero-section {
+position: relative;
+overflow: hidden;
+min-height: min(92vh, 900px);
+background: linear-gradient(135deg,
+rgba(255, 182, 193, 0.28) 0%,
+rgba(173, 216, 230, 0.36) 25%,
+rgba(144, 238, 144, 0.28) 50%,
+rgba(255, 218, 185, 0.34) 75%,
+rgba(221, 160, 221, 0.28) 100%
+);
+background-size: 200% 200%;
+animation: heroGradientShift 10s ease-in-out infinite;
+}
+
+/* Soft floating blobs for watercolor feel */
+.hero-section::before,
+.hero-section::after {
+content: '';
+position: absolute;
+border-radius: 50%;
+filter: blur(60px);
+opacity: 0.6;
+pointer-events: none;
+}
+
+.hero-section::before {
+top: -12%;
+left: -10%;
+width: 340px;
+height: 340px;
+background: radial-gradient(circle, rgba(255, 192, 203, 0.42) 0%, transparent 70%);
+animation: heroFloatA 7s ease-in-out infinite;
+}
+
+.hero-section::after {
+bottom: -12%;
+right: -10%;
+width: 440px;
+height: 440px;
+background: radial-gradient(circle, rgba(173, 216, 230, 0.36) 0%, transparent 70%);
+animation: heroFloatB 9s ease-in-out infinite reverse;
+}
+
+/* Optional middle layer for extra depth */
+.hero-section .hero-bg-blob {
+position: absolute;
+left: 10%;
+bottom: 8%;
+width: 420px;
+height: 300px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(144, 238, 144, 0.34) 0%, transparent 70%);
+filter: blur(70px);
+opacity: 0.55;
+animation: heroFloatC 12s ease-in-out infinite;
+pointer-events: none;
+z-index: 0;
+}
+
+/* Ensure content sits above background layers */
+.hero-content {
+position: relative;
+z-index: 2;
+}
+
+@keyframes heroGradientShift {
+0%, 100% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+}
+
+@keyframes heroFloatA {
+0%, 100% { transform: translateY(0) scale(1); }
+50% { transform: translateY(-18px) scale(1.05); }
+}
+
+@keyframes heroFloatB {
+0%, 100% { transform: translateY(0) scale(1); }
+50% { transform: translateY(20px) scale(1.06); }
+}
+
+@keyframes heroFloatC {
+0%, 100% { transform: translateX(0) translateY(0); }
+50% { transform: translateX(16px) translateY(-8px); }
+}
+
+/* Optional: improve legibility on busy backgrounds */
+.hero-content h1, .hero-content h2, .hero-content p {
+text-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Mobile tuning */
+@media (max-width: 640px) {
+.hero-section { min-height: 75vh; }
+.hero-section::before, .hero-section::after { filter: blur(45px); }
+.hero-section .hero-bg-blob { filter: blur(55px); }
+}
+
+Conflict handling
+
+If index.css already defines .hero-section backgrounds or pseudo-elements, replace those specific background and ::before/::after blocks with the new ones. Do not remove spacing, typography, or layout rules unrelated to background.
+
+If hero-section.tsx already has extra decorative layers, remove the older ones to avoid stacking multiple blob systems.
+
+Accessibility and performance
+
+Keep decorative layers aria-hidden.
+
+Do not import external images; this solution is pure CSS for quick load.
+
+After changes, verify that heading and CTA contrast meets WCAG AA; if not, slightly increase text-shadow opacity (e.g., 0.1).
+
+Testing checklist
+
+Desktop and mobile render without layout shift.
+
+Text remains readable over background.
+
+No duplicate hero-section or hero-content classes were created.
+
+No console errors introduced.
+
+If the hero wrapper lives under a different component name/path than hero-section.tsx, apply the same class additions there. Otherwise, proceed with these two files only.
+
+Notes on CSS‑in‑JS:
+You do not appear to be using styled-components/Emotion. If some parts are styled inline in TSX, ignore the CSS‑in‑JS step; index.css is the single source of truth for these styles.
+
+Please proceed with the above edits. If any class names differ in hero-section.tsx, adapt selectors accordingly rather than adding new wrappers.
