@@ -100,29 +100,28 @@ export default function HeroSection() {
   };
 
   return (
-    <section
-      className="hero-section relative overflow-hidden"
-      style={{
-        paddingTop: 'calc(var(--space-20) + var(--space-8))',
-        paddingBottom: 'var(--space-20)',
-        paddingLeft: 'var(--space-4)',
-        paddingRight: 'var(--space-4)'
-      }}
-      role="banner"
-      aria-labelledby="hero-title"
-    >
-      {/* Decorative background blob */}
+    <div className="hero-section">
       <div className="hero-bg-blob" aria-hidden="true"></div>
-
-      <div
-        className="hero-content relative w-full text-center"
+      <div 
+        className="hero-content"
         style={{
-          maxWidth: 'var(--container-2xl)',
-          margin: '0 auto',
+          paddingTop: 'calc(var(--space-20) + var(--space-8))',
+          paddingBottom: 'var(--space-20)',
           paddingLeft: 'var(--space-4)',
           paddingRight: 'var(--space-4)'
         }}
+        role="banner"
+        aria-labelledby="hero-title"
       >
+        <div
+          className="relative w-full text-center"
+          style={{
+            maxWidth: 'var(--container-2xl)',
+            margin: '0 auto',
+            paddingLeft: 'var(--space-4)',
+            paddingRight: 'var(--space-4)'
+          }}
+        >
         <h1
           id="hero-title"
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
@@ -208,7 +207,7 @@ export default function HeroSection() {
           <StatsWidget />
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
