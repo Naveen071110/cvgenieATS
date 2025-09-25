@@ -1,0 +1,57 @@
+Issue:
+Vite pre-transform error in client/src/components/hero-section.tsx:
+Adjacent JSX elements must be wrapped in an enclosing tag. Did you want a JSX fragment <>...</>? (line ~143)
+
+Goal:
+Locate the spot in hero-section.tsx where two sibling JSX nodes are returned without a single parent and wrap them in a fragment or a container. Do not change any text, logic, or event handlers — only fix the structure.
+
+Tasks:
+
+Open client/src/components/hero-section.tsx and identify the component return where the error points (around lines 130–160). Look for adjacent elements directly under return (...) that are not wrapped in a single parent — e.g., an <h1> followed by a <p>, or <div> and <p> at the same level.
+
+Wrap adjacent siblings in a single parent:
+
+Prefer adding a lightweight fragment so DOM structure doesn’t change:
+<>
+{/* existing elements exactly as-is */}
+</>
+
+If the component already expects a specific wrapper (e.g., className="hero-content"), wrap inside that container instead:
+
+<div className="hero-content"> {/* existing elements */} </div>
+Ensure the hero wrapper structure remains valid:
+
+Top-level hero wrapper should be a single element, e.g.:
+
+<div className="hero-section"> <div className="hero-bg-blob" aria-hidden="true"></div> <div className="hero-content"> {/* Headline, paragraph, CTA, badges, etc. — wrapped as a single parent or fragment if needed */} </div> </div> - Inside hero-content, if multiple siblings are at the same level returned by a child function/component, wrap them with <>...</>.
+Don’t alter styles or logic:
+
+Do not rename classes, change copy, move buttons, or modify handlers.
+
+Only add the minimal enclosing tag(s) needed to satisfy JSX’s single-root requirement in each return statement.
+
+Common patterns to fix:
+
+After a closing </h1>, if a <p> starts immediately at the same level in a returned JSX block, wrap them:
+<>
+
+<h1>...</h1> <p>...</p>
+</>
+
+If mapping lists and adding an adjacent node, ensure each returned map item has one parent.
+
+Run and verify:
+
+Restart dev server (or let Vite HMR apply).
+
+Confirm no further “Adjacent JSX elements” errors remain in hero-section.tsx or other files.
+
+If you need an example patch around the reported lines, apply this pattern:
+Replace:
+
+</h1> <p ...> ... </p> {/* next siblings ... */} With: <> </h1> <p ...> ... </p> {/* next siblings ... */} </>
+Acceptance criteria:
+
+The file compiles without the “Adjacent JSX elements” error.
+
+Visual layout and behavior remain unchanged aside from the fix.
