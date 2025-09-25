@@ -998,7 +998,104 @@ select:focus,
   0%, 100% {
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 
+/* Watercolor-like animated background for hero */
+.hero-section {
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: min(92vh, 900px) !important;
+  background: linear-gradient(135deg,
+    rgba(255, 182, 193, 0.28) 0%,
+    rgba(173, 216, 230, 0.36) 25%,
+    rgba(144, 238, 144, 0.28) 50%,
+    rgba(255, 218, 185, 0.34) 75%,
+    rgba(221, 160, 221, 0.28) 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  animation: heroGradientShift 10s ease-in-out infinite !important;
+}
 
+/* Soft floating blobs for watercolor feel */
+.hero-section::before,
+.hero-section::after {
+  content: '' !important;
+  position: absolute !important;
+  border-radius: 50% !important;
+  filter: blur(60px) !important;
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+}
+
+.hero-section::before {
+  top: -12%;
+  left: -10%;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(255, 192, 203, 0.42) 0%, transparent 70%);
+  animation: heroFloatA 7s ease-in-out infinite;
+}
+
+.hero-section::after {
+  bottom: -12%;
+  right: -10%;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(173, 216, 230, 0.36) 0%, transparent 70%);
+  animation: heroFloatB 9s ease-in-out infinite reverse;
+}
+
+/* Optional middle layer for extra depth */
+.hero-section .hero-bg-blob {
+  position: absolute;
+  left: 10%;
+  bottom: 8%;
+  width: 420px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(144, 238, 144, 0.34) 0%, transparent 70%);
+  filter: blur(70px);
+  opacity: 0.55;
+  animation: heroFloatC 12s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content sits above background layers */
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes heroGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes heroFloatA {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.05); }
+}
+
+@keyframes heroFloatB {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(20px) scale(1.06); }
+}
+
+@keyframes heroFloatC {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(16px) translateY(-8px); }
+}
+
+/* Optional: improve legibility on busy backgrounds */
+.hero-content h1, .hero-content h2, .hero-content p {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Mobile tuning */
+@media (max-width: 640px) {
+  .hero-section { min-height: 75vh; }
+  .hero-section::before, .hero-section::after { filter: blur(45px); }
+  .hero-section .hero-bg-blob { filter: blur(55px); }
+}
 
   }
   50% {
@@ -2280,107 +2377,3 @@ select {
     font-size: 16px; /* Prevents zoom on iOS */
   }
 }
-
-/* ========== HERO WATERCOLOR BACKGROUND - FINAL CASCADE ========== */
-/* Watercolor-like animated background for hero - moved to bottom for cascade priority */
-.hero-section {
-  position: relative !important;
-  overflow: hidden !important;
-  min-height: min(92vh, 900px) !important;
-  background: linear-gradient(135deg,
-    rgba(255, 182, 193, 0.28) 0%,
-    rgba(173, 216, 230, 0.36) 25%,
-    rgba(144, 238, 144, 0.28) 50%,
-    rgba(255, 218, 185, 0.34) 75%,
-    rgba(221, 160, 221, 0.28) 100%
-  ) !important;
-  background-size: 200% 200% !important;
-  animation: heroGradientShift 10s ease-in-out infinite !important;
-  z-index: 0 !important;
-}
-
-/* Soft floating blobs for watercolor feel */
-.hero-section::before,
-.hero-section::after {
-  content: '' !important;
-  position: absolute !important;
-  border-radius: 50% !important;
-  filter: blur(60px) !important;
-  opacity: 0.6 !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-.hero-section::before {
-  top: -12% !important;
-  left: -10% !important;
-  width: 340px !important;
-  height: 340px !important;
-  background: radial-gradient(circle, rgba(255, 192, 203, 0.42) 0%, transparent 70%) !important;
-  animation: heroFloatA 7s ease-in-out infinite !important;
-}
-
-.hero-section::after {
-  bottom: -12% !important;
-  right: -10% !important;
-  width: 440px !important;
-  height: 440px !important;
-  background: radial-gradient(circle, rgba(173, 216, 230, 0.36) 0%, transparent 70%) !important;
-  animation: heroFloatB 9s ease-in-out infinite reverse !important;
-}
-
-/* Optional middle layer for extra depth */
-.hero-section .hero-bg-blob {
-  position: absolute !important;
-  left: 10% !important;
-  bottom: 8% !important;
-  width: 420px !important;
-  height: 300px !important;
-  border-radius: 50% !important;
-  background: radial-gradient(circle, rgba(144, 238, 144, 0.34) 0%, transparent 70%) !important;
-  filter: blur(70px) !important;
-  opacity: 0.55 !important;
-  animation: heroFloatC 12s ease-in-out infinite !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-/* Ensure content sits above background layers */
-.hero-content {
-  position: relative !important;
-  z-index: 2 !important;
-}
-
-@keyframes heroGradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes heroFloatA {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-18px) scale(1.05); }
-}
-
-@keyframes heroFloatB {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(20px) scale(1.06); }
-}
-
-@keyframes heroFloatC {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(16px) translateY(-8px); }
-}
-
-/* Optional: improve legibility on busy backgrounds */
-.hero-content h1, .hero-content h2, .hero-content p {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
-}
-
-/* Mobile tuning */
-@media (max-width: 640px) {
-  .hero-section { min-height: 75vh !important; }
-  .hero-section::before, .hero-section::after { filter: blur(45px) !important; }
-  .hero-section .hero-bg-blob { filter: blur(55px) !important; }
-}
-
-/* Hero watercolor background is now properly cascaded and visible */
