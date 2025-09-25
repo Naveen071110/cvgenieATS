@@ -101,7 +101,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="hero-section relative overflow-hidden"
+      className="hero-section"
       style={{
         paddingTop: 'calc(var(--space-20) + var(--space-8))',
         paddingBottom: 'var(--space-20)',
