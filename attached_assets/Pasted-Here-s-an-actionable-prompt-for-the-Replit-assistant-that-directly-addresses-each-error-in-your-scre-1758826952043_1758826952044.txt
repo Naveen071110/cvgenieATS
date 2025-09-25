@@ -1,0 +1,58 @@
+Here’s an actionable prompt for the Replit assistant that directly addresses each error in your screenshots, specifically for fixing your `client/src/components/hero-section.tsx` file **and** ensuring the rest of the site builds cleanly.
+
+***
+
+### Fix prompt for Replit assistant
+
+**Critical errors to resolve:**
+1. **Unclosed or mismatched `<div>` tags** (lines 103 and “unexpected end of file before closing div” at 216).
+2. **The character “}” is not valid inside a JSX element** (line 212: likely a stray curly brace not associated with any function, statement, or JSX block).
+3. **Return/JSX boundaries** — ensure there are no top-level returns or misplaced fragments.
+
+**Step-by-step instructions:**
+
+1. **Open** `client/src/components/hero-section.tsx`.
+
+2. **Find the section around lines 100–220** (as mentioned in the error):  
+   - Locate the `<div className="hero-section">` on or around line 103.
+   - Ensure EVERY opening `<div>` has a corresponding closing `</div>`, and that inner elements are all opened and closed correctly.
+   - At the bottom (around lines 212–216), remove any stray `}` or `{}` that are NOT paired with a JSX or function block.  
+   - If the last block is meant to close a function, ensure it closes all open curly braces but NOT inside a JSX return.
+   - If there's incomplete JSX (e.g., returns `<div>...</div>` but the return is missing a fragment or closing tag), wrap all siblings in `<>...</>` or a `<div>`.
+
+3. **Practical JSX structure—your function should look like:**
+
+```tsx
+export default function HeroSection() {
+  return (
+    <div className="hero-section">
+      <div className="hero-bg-blob" aria-hidden="true"></div>
+      <div className="hero-content">
+        {/* ALL hero elements (h1, p, buttons, etc.) go here, fully closed */}
+      </div>
+    </div>
+  );
+}
+```
+
+**Do NOT place any raw curly braces “}” or “{” inside the JSX tree unless they’re opening/closing a JavaScript expression.**
+
+4. **After correcting,** run a formatter (Prettier or VS Code format). Check for:
+   - All tags matched.
+   - No dangling curly braces.
+   - No “return” outside a function.
+
+5. **Save and restart the dev server.**
+
+**Acceptance criteria:**
+- No more parse errors in hero-section.tsx.
+- App builds and previews successfully.
+- The entire hero section is visible and functional, and the rest of the site works.
+
+***
+
+**Tip:** If you still see any curly brace `{` not part of a function, map loop, or valid JSX interpolation, remove or correctly place it.
+
+This prompt methodically fixes the JSX structure, parent/child tag matching, and curly brace placement—the only things that cause the errors in your screenshots!
+
+Sources
