@@ -122,10 +122,7 @@ export default function HeroSection() {
           paddingLeft: 'var(--space-4)',
           paddingRight: 'var(--space-4)'
         }}
-      ></div>
-    </section>
-  );
-}
+      >
         <h1
           id="hero-title"
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
