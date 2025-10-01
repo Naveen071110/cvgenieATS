@@ -2367,3 +2367,22 @@ select {
     opacity: 1;
   }
 }
+
+/* Type helpers (non-breaking) */
+.display-lg { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; }
+.lead { font-size: clamp(1.125rem, 2.2vw, 1.5rem); line-height: 1.4; }
+
+/* Watercolor hero background scaffolding */
+.hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.18; }
+.hero-blob { filter: blur(20px); animation: blobFloat 16s ease-in-out infinite; transform-origin: center; }
+.hero-blob--alt { animation-duration: 22s; animation-direction: alternate-reverse; }
+
+@keyframes blobFloat {
+0%,100% { transform: translate3d(0,0,0) scale(1); }
+50% { transform: translate3d(2%, -2%, 0) scale(1.05); }
+}
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce) {
+.hero-blob { animation: none !important; }
+}

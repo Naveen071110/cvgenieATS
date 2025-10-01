@@ -99,6 +99,31 @@ export default function HeroSection() {
 
   return (
     <div className="hero-section">
+      {/* Decorative watercolor SVG layer below content */}
+      <div className="hero-bg" aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <radialGradient id="wcA" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#9ec5fe" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#9ec5fe" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="wcB" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#b1e3c1" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#b1e3c1" stopOpacity="0" />
+            </radialGradient>
+            <filter id="wcBlur" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="10" />
+            </filter>
+          </defs>
+          {/* Blurred watercolor washes */}
+          <g className="hero-blob" style={{ transformOrigin: '18% 62%' }}>
+            <circle cx="18" cy="62" r="28" fill="url(#wcA)" filter="url(#wcBlur)" />
+          </g>
+          <g className="hero-blob hero-blob--alt" style={{ transformOrigin: '82% 28%' }}>
+            <circle cx="82" cy="28" r="24" fill="url(#wcB)" filter="url(#wcBlur)" />
+          </g>
+        </svg>
+      </div>
       <div className="hero-bg-blob" aria-hidden="true"></div>
       <div 
         className="hero-content"
@@ -122,7 +147,7 @@ export default function HeroSection() {
         >
           <h1
             id="hero-title"
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
+            className="display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
             style={{ marginBottom: 'var(--space-6)' }}
           >
             Transform Your Resume for{" "}
@@ -135,7 +160,7 @@ export default function HeroSection() {
             </span>
           </h1>
           <p
-            className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
+            className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
             style={{ marginBottom: 'var(--space-8)', animationDelay: '0.2s' }}
           >
             Generate ATS-optimized resumes and personalized cover letters in seconds using AI.
