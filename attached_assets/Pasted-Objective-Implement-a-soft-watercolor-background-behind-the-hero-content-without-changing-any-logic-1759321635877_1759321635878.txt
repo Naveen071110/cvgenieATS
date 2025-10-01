@@ -1,0 +1,97 @@
+Objective: Implement a soft watercolor background behind the hero content without changing any logic, routes, text, or imports. Only modify the three files listed below, and use the built‑in “Preview changes” and checkpoint/rollback flow.
+
+Scope and files (edit exactly these):
+
+client/src/index.css (append new rules at the very end; do not delete anything)
+
+tailwind.config.ts (verify content paths unchanged; no new globs; no darkMode change)
+
+client/src/components/hero-section.tsx (insert one background layer block; keep existing structure/handlers)
+
+Guardrails:
+
+Do not change any strings, event handlers, imports, or component names; UI‑only change.
+
+Keep Tailwind content: ["./client/index.html","./client/src/**/*.{js,jsx,ts,tsx}"] exactly as is to avoid purge problems.
+
+Append CSS at file end to ensure load order wins and avoid overrides; do not move existing rules.
+
+SVG must be aria-hidden, pointer-events: none, and positioned under .hero-content so it never blocks clicks.
+
+If the section return would have adjacent siblings, wrap them in a React fragment <>…</> to avoid JSX “adjacent elements” errors.
+
+Steps:
+
+client/src/index.css — append these exact blocks at the very end (do not remove anything above):
+/* Type helpers (non-breaking) */
+.display-lg { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; }
+.lead { font-size: clamp(1.125rem, 2.2vw, 1.5rem); line-height: 1.4; }
+
+/* Watercolor hero background scaffolding */
+.hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.18; }
+.hero-blob { filter: blur(20px); animation: blobFloat 16s ease-in-out infinite; transform-origin: center; }
+.hero-blob--alt { animation-duration: 22s; animation-direction: alternate-reverse; }
+
+@keyframes blobFloat {
+0%,100% { transform: translate3d(0,0,0) scale(1); }
+50% { transform: translate3d(2%, -2%, 0) scale(1.05); }
+}
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce) {
+.hero-blob { animation: none !important; }
+}
+This is appended at the end so it wins specificity without !important and stays isolated from existing tokens and utilities.
+
+tailwind.config.ts — verify only that content paths remain:
+content: ["./client/index.html","./client/src/**/*.{js,jsx,ts,tsx}"]
+Do not change darkMode, plugins, or add new globs, because scanning already covers client/src and the entry HTML.
+
+client/src/components/hero-section.tsx — inside the top‑level hero section (which is already relative), insert the background block as the first child before the existing content container:
+{/* Decorative watercolor SVG layer below content */}
+
+<div className="hero-bg" aria-hidden="true"> <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"> <defs> <radialGradient id="wcA" cx="50%" cy="50%" r="50%"> <stop offset="0%" stopColor="#9ec5fe" stopOpacity="0.25" /> <stop offset="100%" stopColor="#9ec5fe" stopOpacity="0" /> </radialGradient> <radialGradient id="wcB" cx="50%" cy="50%" r="50%"> <stop offset="0%" stopColor="#b1e3c1" stopOpacity="0.22" /> <stop offset="100%" stopColor="#b1e3c1" stopOpacity="0" /> </radialGradient> <filter id="wcBlur" x="-50%" y="-50%" width="200%" height="200%"> <feGaussianBlur stdDeviation="10" /> </filter> </defs>
+text
+{/* Blurred watercolor washes */}
+<g className="hero-blob" style={{ transformOrigin: '18% 62%' }}>
+  <circle cx="18" cy="62" r="28" fill="url(#wcA)" filter="url(#wcBlur)" />
+</g>
+<g className="hero-blob hero-blob--alt" style={{ transformOrigin: '82% 28%' }}>
+  <circle cx="82" cy="28" r="24" fill="url(#wcB)" filter="url(#wcBlur)" />
+</g>
+</svg> </div> Important: keep .hero-content and all existing children unchanged and above this block in the DOM so text/buttons remain clickable.[10]
+Apply helper classes without removing existing ones:
+
+Add “display-lg” to the main H1 classes for smooth responsive scaling.
+
+Add “lead” to the subheading/lead paragraph classes for readable line height on all screens.
+
+Rebuild and verify using the assistant workflow:
+
+Use the assistant’s “Preview changes” to review diffs and apply once they match the steps above, then run the app.
+
+Confirm in DevTools that .hero-bg renders, its SVG is present, and .hero-blob has the keyframes applied; verify that .hero-content sits above and remains interactive.
+
+Toggle “Reduce motion” in OS settings and confirm the animation stops due to the prefers-reduced-motion rule.
+
+Temporary debug (remove after check):
+
+Append to the very end of client/src/index.css: .hero-bg { outline: 2px dashed magenta; } then reload to see the layer frame, and delete this line once confirmed.
+
+Rollback plan:
+
+If anything looks off, use the assistant’s checkpoint/rollback to revert the edit set in one click, then re‑apply step‑by‑step.
+
+Why this is safe
+Edits are additive and appended at the end of client/src/index.css, preserving existing tokens and reducing cascade conflicts.
+
+Tailwind content globs are left unchanged, so class generation and purge behavior remain stable for files under client/src and client/index.html.
+
+The SVG is nested inside the existing hero container and marked aria-hidden with pointer-events: none, avoiding event capture and JSX multi‑root issues seen previously.
+
+If anything fails
+Most JSX crashes stem from adjacent top‑level elements or an unclosed tag; if the section wrapper has multiple siblings, wrap them with <>…</> and keep the new <div className="hero-bg"> as the first child of the section.
+
+If the background doesn’t appear, ensure index.css is imported once at app entry and that the new rules were appended at the very bottom; then check in DevTools that .hero-bg exists and isn’t covered by a higher z‑index sibling.
+
+If the assistant changed Tailwind content paths by mistake, restore content: ["./client/index.html","./client/src/**/*.{js,jsx,ts,tsx}"] and restart the dev server so utilities compile
