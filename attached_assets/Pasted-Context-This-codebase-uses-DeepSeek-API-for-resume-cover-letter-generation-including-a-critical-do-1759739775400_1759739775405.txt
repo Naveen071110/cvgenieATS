@@ -1,0 +1,131 @@
+Context:
+This codebase uses DeepSeek API for resume/cover letter generation—including a critical double-pass workflow that makes a second AI call to correct/strictly reformat for ATS compliance. All existing frontend functionality, async flow, and error handling must be preserved exactly.
+
+🚩 MIGRATION TASK (Do this exactly):
+1. Locate ALL DeepSeek/OpenAI API Requests
+Find anything importing, referencing, or calling:
+
+'openai', 'deepseek', or https://api.deepseek.com/v1/chat/completions
+
+Update all service/util/helpers accordingly.
+
+2. Remove Unused DeepSeek/OpenAI Config
+Remove SDKs, credentials, models, or types not reused with Gemini.
+
+Do NOT remove helper functions that are unrelated to API requests.
+
+3. Integrate Gemini API Calls
+Gemini REST endpoint:
+
+text
+https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=YOUR_GEMINI_API_KEY
+GEMINI_API_KEY must come from .env or secure config (never hardcode).
+
+All requests must be POST and have "Content-Type": "application/json"
+
+4. Payload Conversion
+DeepSeek/OpenAI style:
+
+json
+{ "model": "...", "messages": [{ "role": "user", "content": "..." }] }
+Gemini expects:
+
+json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [{ "text": "YOUR_PROMPT_TEXT" }]
+    }
+  ]
+}
+Adapt any multi-message logic to use "parts".
+
+5. Gemini API Response Handling
+Resume/cover letter text is ALWAYS at:
+response.candidates[0].content.parts[0].text
+
+Must be extracted, validated, and .trim()’ed before any downstream processing.
+
+6. Preserve TWO-PASS ATS-FIX LOGIC
+After first Gemini call (optimized resume), your code MUST make a SECOND call:
+
+Prompt Gemini:
+"Take this resume and convert it to an ATS-compliant, plain text, non-markdown, strictly formatted resume. Structure sections with clear headers. Output ONLY the plain text resume, no explanation or decoration. [resume text]"
+
+ATA reformat logic (including error trapping, fallback, and output verification) must remain intact and be applied as with DeepSeek.
+
+7. Robust Error Handling
+All Gemini calls are wrapped in try/catch.
+
+All non-2xx/timeout/empty responses cause:
+
+Up to 2 additional retries with exponential backoff (1250ms, 3000ms).
+
+If still failing, return descriptive error:
+"Sorry, our resume AI is temporarily unavailable. Please try again in a few minutes."
+
+Network/logging must not leak sensitive info.
+
+8. Testing and Edge Cases
+All major flows (optimize, ATS reformat, export) must be unit/integration tested.
+
+Manually validate that Gemini’s formats:
+
+Always include ATS-friendly headers (EXPERIENCE, SKILLS etc.)
+
+Contain no extraneous explanation, JSON, or markdown
+
+If Gemini responds with a non-compliant/empty string, retry once with an explicit fallback prompt.
+
+9. Environment/Secrets
+.env update:
+
+text
+GEMINI_API_KEY=your_actual_key
+Never commit credentials.
+
+10. Update Documentation
+Mark all changed files and sections as “Gemini-migrated” with in-code comments.
+
+Add a README line stating Gemini is used, not DeepSeek.
+
+Sample Gemini Fetch Helper for Sonnet 4.5
+js
+async function callGemini(prompt) {
+  const key = process.env.GEMINI_API_KEY;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`;
+  const payload = {
+    contents: [{ role: "user", parts: [{ text: prompt }] }]
+  };
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        timeout: 30000
+      });
+      const data = await res.json();
+      let output = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (output) return output;
+      if (res.status === 429 || res.status >= 500) await new Promise(r => setTimeout(r, 1250 * (attempt+1)));
+      else break;
+    } catch (err) {
+      if (attempt === 2) throw new Error("Gemini API failed after 3 tries: " + err.message);
+    }
+  }
+  throw new Error("No valid response from Gemini.");
+}
+Use for both optimization and ATS reformat requests. Tailor prompts as appropriate.
+
+REMEMBER:
+
+Maintain all logic, comments, helper function structure.
+
+Only update the API, error handling, and response formatting logic as outlined.
+
+If any requirement or data flow is ambiguous, output a TODO comment and STOP to clarify, don’t guess or hallucinate.
+
+All changes must be ready for production and reviewed for regression.
+
