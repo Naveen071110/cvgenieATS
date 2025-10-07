@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { storage } from "./storage";
 import documentGenerator from "./documentGenerator";
-import { parseResume } from "./documentParser";
+import documentParser from "./documentParser";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -217,10 +217,12 @@ export function registerRoutes(app: Express) {
       }
 
       const filePath = req.file.path;
-      const parsedText = await parseResume(filePath);
+      const result = await documentParser.extractText(filePath, req.file.mimetype);
 
       // Clean up uploaded file
       fs.unlinkSync(filePath);
+
+      const parsedText = result.content;
 
       res.json({
         success: true,
