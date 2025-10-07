@@ -1,7 +1,5 @@
 import type { Express } from "express";
-import { db } from "@db";
-import { resumes, coverLetters } from "@db/schema";
-import { eq } from "drizzle-orm";
+import { storage } from "./storage";
 import { generateDocument } from "./documentGenerator";
 import { parseResume } from "./documentParser";
 import multer from "multer";
@@ -265,17 +263,15 @@ export function registerRoutes(app: Express) {
       const resumePath = await generateDocument(optimizedResume, "resume", format, timestamp);
       const coverLetterPath = await generateDocument(coverLetter, "cover_letter", format, timestamp);
 
-      // Step 5: Save to database
-      const [resumeRecord] = await db.insert(resumes).values({
-        userId: 1, // TODO: Replace with actual user ID from auth
-        originalText: resumeText,
-        optimizedText: optimizedResume,
-        jobDescription: jobDescription,
-      }).returning();
-
-      await db.insert(coverLetters).values({
-        resumeId: resumeRecord.id,
-        content: coverLetter,
+      // Step 5: Save to database (using in-memory storage)
+      const sessionId = `session_${timestamp}`;
+      
+      await storage.createGeneration({
+        sessionId,
+        originalResume: resumeText,
+        jobDescription,
+        optimizedResume,
+        coverLetter,
       });
 
       res.json({
@@ -322,14 +318,10 @@ export function registerRoutes(app: Express) {
   // Get user's resumes
   app.get("/api/resumes", async (req, res) => {
     try {
-      const userId = 1; // TODO: Replace with actual user ID from auth
-      const userResumes = await db.query.resumes.findMany({
-        where: eq(resumes.userId, userId),
-        orderBy: (resumes, { desc }) => [desc(resumes.createdAt)],
-        limit: 10,
-      });
+      const sessionId = req.query.sessionId as string || "default_session";
+      const generations = await storage.getGenerationsBySession(sessionId);
 
-      res.json(userResumes);
+      res.json(generations);
     } catch (error: any) {
       console.error("Fetch resumes error:", error);
       res.status(500).json({ error: "Failed to fetch resumes" });
