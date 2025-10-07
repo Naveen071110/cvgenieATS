@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { storage } from "./storage";
-import { generateDocument } from "./documentGenerator";
+import documentGenerator from "./documentGenerator";
 import { parseResume } from "./documentParser";
 import multer from "multer";
 import path from "path";
@@ -260,8 +260,16 @@ export function registerRoutes(app: Express) {
 
       // Step 4: Generate documents
       const timestamp = Date.now();
-      const resumePath = await generateDocument(optimizedResume, "resume", format, timestamp);
-      const coverLetterPath = await generateDocument(coverLetter, "cover_letter", format, timestamp);
+      const baseFilename = `generated_${timestamp}`;
+      const outputs = await documentGenerator.generateMultipleFormats(
+        optimizedResume,
+        coverLetter,
+        baseFilename,
+        [format]
+      );
+      
+      const resumePath = outputs.resumeDOCX || '';
+      const coverLetterPath = outputs.coverLetterDOCX || '';
 
       // Step 5: Save to database (using in-memory storage)
       const sessionId = `session_${timestamp}`;
