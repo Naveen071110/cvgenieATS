@@ -1,0 +1,157 @@
+PROBLEM:
+The Gemini migration introduced multiple import/export mismatches. The app is crashing with errors like:
+
+text
+SyntaxError: The requested module does not provide an export named 'XXX'
+ROOT CAUSE:
+During refactoring, imports in server/routes.ts are trying to use named exports that don't exist in the target modules. The modules are using default exports or different named exports.
+
+SYSTEMATIC FIX INSTRUCTIONS:
+STEP 1: Audit ALL Imports in server/routes.ts
+Action: Open server/routes.ts and examine EVERY import statement at the top of the file.
+
+You will likely find:
+
+ts
+import { generateDocument } from "./documentGenerator";
+import { parseResume } from "./documentParser";
+import { someOtherFunction } from "./someOtherModule";
+STEP 2: For EACH Import, Check the Target Module's Exports
+For each import, open the corresponding file and check:
+
+Does it export a default?
+
+ts
+export default something;
+→ If YES, import should be: import moduleName from "./module"
+
+Does it export named exports?
+
+ts
+export const functionName = ...;
+export function functionName() { ... }
+→ If YES, import should be: import { functionName } from "./module"
+
+Does it export a class instance?
+
+ts
+class MyClass { ... }
+export default new MyClass();
+→ Import as: import instanceName from "./module" and use instanceName.method()
+
+STEP 3: Fix ALL Mismatched Imports in routes.ts
+Common patterns to fix:
+
+Pattern A: Module exports default, but import expects named
+ts
+// WRONG:
+import { generateDocument } from "./documentGenerator";
+
+// CORRECT:
+import documentGenerator from "./documentGenerator";
+// Then use: documentGenerator.generateDOCX(...)
+Pattern B: Module exports named, but import expects default
+ts
+// WRONG:
+import parser from "./documentParser";
+
+// CORRECT:
+import { parseResume } from "./documentParser";
+Pattern C: Function name mismatch
+ts
+// Check what the module ACTUALLY exports
+// If module exports: export const parseResumeFile = ...
+// Then import should be: import { parseResumeFile } from "./documentParser";
+STEP 4: Update ALL Function Calls in routes.ts
+After fixing imports, update how you call these functions throughout routes.ts:
+
+Before:
+
+ts
+const result = generateDocument(resume, cover, filename);
+After (if using class instance):
+
+ts
+const result = documentGenerator.generateMultipleFormats(resume, cover, filename);
+STEP 5: Systematic Check of All Server Files
+Check these files for similar issues:
+
+server/routes.ts ✓ (main focus)
+
+server/index.ts
+
+server/storage.ts
+
+Any other custom .ts files in /server
+
+For each file:
+
+List all imports
+
+Verify exports in target files
+
+Fix mismatches
+
+Update function calls
+
+STEP 6: Common Module Patterns to Look For
+A. documentGenerator.ts:
+
+Likely exports: export default new DocumentGenerator()
+
+Import as: import documentGenerator from "./documentGenerator"
+
+Use as: documentGenerator.generateDOCX(...) or documentGenerator.generateMultipleFormats(...)
+
+B. documentParser.ts:
+
+Check if it exports: export function parseResume(...) OR export default parseResume
+
+Adjust import accordingly
+
+C. storage.ts:
+
+Likely exports: export default storage or export const storage = ...
+
+Import accordingly
+
+STEP 7: Quick Reference - Export/Import Patterns
+Export Type	Module Code	Correct Import
+Default export	export default X	import X from "./module"
+Named export	export const X = ...	import { X } from "./module"
+Class instance	export default new Class()	import instance from "./module"
+Multiple named	export { a, b, c }	import { a, b, c } from "./module"
+EXECUTION CHECKLIST:
+ Open server/routes.ts
+
+ For EACH import statement, open the target file
+
+ Check what that file exports (default vs named)
+
+ Fix the import in routes.ts to match
+
+ Update all function calls in routes.ts to use correct syntax
+
+ Repeat for any other server files with imports
+
+ Run npm run dev to verify no more import errors
+
+ If new errors appear, repeat the process for that specific import
+
+TESTING:
+After all fixes, verify:
+
+bash
+npm run dev
+Expected result: Server starts successfully with no import/export errors.
+
+If you see another error: Apply the same systematic approach to that specific import.
+
+IMPORTANT NOTES:
+DO NOT guess at export names - always check the actual file
+
+DO NOT change the modules' exports unless absolutely necessary - fix the imports instead
+
+DO NOT skip any import - check them ALL systematically
+
+Document each change with a brief comment explaining what was fixed
