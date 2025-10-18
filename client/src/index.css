@@ -1945,48 +1945,10 @@ select {
 }
 
 /* Genie-themed elements */
-.genie-lamp {
-  position: relative;
-  overflow: hidden;
-}
-
 .genie-lamp::before {
   content: '🧞‍♂️';
   margin-right: 8px;
   font-size: 1.2em;
-  position: relative;
-  z-index: 2;
-}
-
-.genie-lamp::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(252, 211, 77, 0.3),
-    rgba(245, 158, 11, 0.4),
-    rgba(252, 211, 77, 0.3),
-    transparent
-  );
-  animation: genie-shimmer-sweep 3s ease-in-out infinite;
-  z-index: 1;
-}
-
-@keyframes genie-shimmer-sweep {
-  0% {
-    left: -100%;
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: 100%;
-  }
 }
 
 .wishes-counter {
