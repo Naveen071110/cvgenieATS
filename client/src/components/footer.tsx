@@ -16,7 +16,7 @@ export default function Footer() {
               <span className="text-xl font-bold">CVGenie</span>
             </div>
             <p className="text-slate-400 mb-4">
-              Transform your resume with AI-powered optimization for better job opportunities.
+              The best AI resume builder for creating ATS-friendly resumes. Free resume builder with professional templates and instant optimization.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-slate-400 hover:text-white transition-colors">

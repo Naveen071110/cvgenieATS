@@ -32,17 +32,18 @@ export default function Home() {
                 </div>
 
                 <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                  Ready to Create Your Perfect Resume?
+                  Ready to Build Your ATS-Friendly Resume?
                 </h2>
                 <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-                  Join thousands of professionals who have landed their dream jobs with our AI-powered resume generator.
+                  Join thousands of professionals who have landed their dream jobs using our AI resume builder. 
+                  Get started with our free resume builder today!
                 </p>
                 
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    <span className="text-sm font-medium">3 free generations per month</span>
+                    <span className="text-sm font-medium">Free resume builder - 3 generations/month</span>
                   </div>
                   <div className="flex items-center text-blue-600">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
@@ -50,7 +51,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center text-purple-600">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                    <span className="text-sm font-medium">ATS-optimized results</span>
+                    <span className="text-sm font-medium">ATS-friendly resume templates</span>
                   </div>
                 </div>
 

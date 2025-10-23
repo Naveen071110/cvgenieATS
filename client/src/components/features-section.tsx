@@ -11,10 +11,10 @@ import TargetBullseyeIcon from "../assets/icons/target-bullseye.svg?react"
 const features = [
   {
     icon: AIBrainIcon,
-    title: "One-Click Tailoring",
-    description: "Upload your resume and paste any job description. Our AI instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
+    title: "AI-Powered Resume Builder",
+    description: "Upload your resume and paste any job description. Our best AI resume builder instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
     benefits: [
-      "Keyword optimization for ATS systems",
+      "Keyword optimization for ATS resume builder compatibility",
       "Smart skill matching and prioritization",
       "Experience reframing for maximum impact"
     ],
@@ -46,11 +46,11 @@ const features = [
   },
   {
     icon: ATSShieldIcon,
-    title: "ATS-Optimized Formatting",
-    description: "Most resumes get rejected by Applicant Tracking Systems before human eyes see them. Our AI ensures your resume passes through ATS filters with proper formatting, structure, and keyword placement.",
+    title: "ATS-Friendly Resume Templates",
+    description: "Most resumes get rejected by Applicant Tracking Systems before human eyes see them. Our free resume builder uses ATS-friendly resume templates to ensure your resume passes through ATS filters with proper formatting, structure, and keyword placement.",
     benefits: [
-      "Clean, parseable document structure",
-      "Strategic keyword placement",
+      "ATS resume builder with clean, parseable structure",
+      "Strategic keyword placement for maximum visibility",
       "Compatible with all major ATS platforms"
     ],
     mockup: (
