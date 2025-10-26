@@ -64,6 +64,19 @@ const proPlanFeatures = [
   }
 ];
 
+interface PricingCardProps {
+  title: string;
+  price: string;
+  period?: string;
+  description: string;
+  features: Array<{ text: string; description: string }>;
+  buttonText: string;
+  buttonLink: string;
+  highlighted?: boolean;
+  popular?: boolean;
+  onClick?: () => void;
+}
+
 const PricingCard = ({ 
   title, 
   price, 
@@ -75,11 +88,11 @@ const PricingCard = ({
   highlighted = false,
   popular = false,
   onClick
-}) => {
+}: PricingCardProps) => {
   return (
     <Card className={`relative pricing-card ${highlighted ? 'ring-2 ring-primary shadow-2xl' : 'shadow-lg'} ${popular ? 'scale-105' : ''}`}>
       {popular && (
-        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+        <div className="absolute -top-4 left-4">
           <div className="bg-gradient-to-r from-primary to-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
             <Star className="w-4 h-4 mr-1" />
             Most Popular
