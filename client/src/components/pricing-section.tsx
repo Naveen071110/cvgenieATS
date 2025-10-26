@@ -90,7 +90,7 @@ const PricingCard = ({
   onClick
 }: PricingCardProps) => {
   return (
-    <Card className={`relative pricing-card ${highlighted ? 'ring-2 ring-primary shadow-2xl' : 'shadow-lg'} ${popular ? 'scale-105' : ''}`}>
+    <Card className={`relative pricing-card border-2 ${highlighted ? 'border-primary shadow-xl' : 'border-gray-300 shadow-md'} ${popular ? 'scale-105' : ''}`}>
       {popular && (
         <div className="absolute -top-4 left-4">
           <div className="bg-gradient-to-r from-primary to-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
