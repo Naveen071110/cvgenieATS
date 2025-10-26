@@ -87,27 +87,27 @@ const PricingCard = ({
         </div>
       )}
       
-      <CardContent className="p-8">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-600 mb-4">{description}</p>
+      <CardContent className="p-8 pt-12">
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-1">{title}</h3>
+          <p className="text-sm text-gray-600 mb-3">{description}</p>
           
           <div className="flex items-baseline justify-center mb-2">
-            <span className="text-5xl font-bold text-gray-900">{price}</span>
-            {period && <span className="text-lg text-gray-500 ml-2">{period}</span>}
+            <span className="text-4xl font-bold text-gray-900">{price}</span>
+            {period && <span className="text-base text-gray-500 ml-2">{period}</span>}
           </div>
         </div>
 
-        <ul className="space-y-4 mb-8">
+        <ul className="space-y-3 mb-6">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start">
-              <div className="flex-shrink-0 mt-0.5 mr-3">
-                <Check className="w-5 h-5 text-green-500" />
+              <div className="flex-shrink-0 mt-0.5 mr-2">
+                <Check className="w-4 h-4 text-green-500" />
               </div>
               <div>
-                <span className="font-medium text-gray-900">{feature.text}</span>
+                <span className="text-sm font-medium text-gray-900">{feature.text}</span>
                 {feature.description && (
-                  <p className="text-sm text-gray-500 mt-1">{feature.description}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{feature.description}</p>
                 )}
               </div>
             </li>
@@ -117,7 +117,7 @@ const PricingCard = ({
         <Link to={buttonLink} className="w-full">
           <Button
             onClick={onClick}
-            className={`w-full py-3 text-lg font-semibold transition-all duration-200 ${
+            className={`w-full py-2.5 text-base font-semibold transition-all duration-200 ${
               highlighted 
                 ? 'magic-cta genie-lamp' 
                 : 'magic-secondary'
