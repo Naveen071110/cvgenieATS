@@ -1,23 +1,8 @@
-import { createContext, useContext } from 'react'
+// Compatibility layer for Clerk authentication
+// This provides a useAuth hook that wraps Clerk functionality
 import { useUser, useClerk } from '@clerk/clerk-react'
 
-interface AuthContextValue {
-  user: {
-    id: string
-    email: string | undefined
-    user_metadata: {
-      full_name?: string
-      avatar_url?: string
-      name?: string
-    }
-  } | null
-  isLoading: boolean
-  signOut: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined)
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function useAuth() {
   const { user, isLoaded } = useUser()
   const { signOut: clerkSignOut } = useClerk()
 
@@ -35,23 +20,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await clerkSignOut()
   }
 
-  const value: AuthContextValue = {
+  return {
     user: authUser,
     isLoading: !isLoaded,
     signOut
   }
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
 }

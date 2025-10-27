@@ -5,8 +5,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClerkProvider } from "@clerk/clerk-react";
-import { AuthProvider } from "@/context/AuthContext";
-import { ImagePerformanceMonitor } from "@/components/ui/image-performance-monitor";
 import Home from "@/pages/home";
 
 // Import Clerk publishable key
@@ -60,12 +58,10 @@ function App() {
   return (
     <ClerkProvider publishableKey={clerkPubKey || ''}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
       </QueryClientProvider>
     </ClerkProvider>
   );
