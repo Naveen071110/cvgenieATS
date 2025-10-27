@@ -53,7 +53,9 @@ export class MemStorage implements IStorage {
     const session: UsageSession = { 
       ...insertSession, 
       id,
-      createdAt: new Date()
+      createdAt: new Date(),
+      generationsUsed: insertSession.generationsUsed ?? 0,
+      isPro: insertSession.isPro ?? 0
     };
     this.usageSessions.set(id, session);
     return session;
