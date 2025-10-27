@@ -1,10 +1,17 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { storage } from "./storage";
 import documentGenerator from "./documentGenerator";
 import documentParser from "./documentParser";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
+
+// Extend Express Request to include Clerk auth
+interface AuthRequest extends Request {
+  auth?: { userId: string };
+}
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -236,7 +243,7 @@ export function registerRoutes(app: Express) {
   });
 
   // Generate resume and cover letter endpoint (Gemini-migrated)
-  app.post("/api/generate", async (req, res) => {
+  app.post("/api/generate", async (req: AuthRequest, res) => {
     try {
       const { resumeText, jobDescription, format = "pdf" } = req.body;
 
@@ -273,7 +280,7 @@ export function registerRoutes(app: Express) {
       const resumePath = outputs.resumeDOCX || '';
       const coverLetterPath = outputs.coverLetterDOCX || '';
 
-      // Step 5: Save to database (using in-memory storage)
+      // Step 5: Save to in-memory storage
       const sessionId = `session_${timestamp}`;
       
       await storage.createGeneration({
@@ -283,6 +290,22 @@ export function registerRoutes(app: Express) {
         optimizedResume,
         coverLetter,
       });
+
+      // Step 6: Save to Neon Postgres if user is authenticated
+      if (req.auth?.userId) {
+        try {
+          await insertResume(
+            req.auth.userId,
+            optimizedResume,
+            coverLetter,
+            jobDescription
+          );
+          console.log("Resume saved to Neon database for user:", req.auth.userId);
+        } catch (dbError: any) {
+          console.error("Failed to save to Neon database:", dbError);
+          // Don't fail the request if database save fails
+        }
+      }
 
       res.json({
         success: true,
@@ -335,6 +358,79 @@ export function registerRoutes(app: Express) {
     } catch (error: any) {
       console.error("Fetch resumes error:", error);
       res.status(500).json({ error: "Failed to fetch resumes" });
+    }
+  });
+
+  // GET /api/resume-history - Fetch resume history from NEON POSTGRES ONLY (requires auth)
+  app.get("/api/resume-history", ClerkExpressRequireAuth(), async (req: AuthRequest, res) => {
+    try {
+      const userId = req.auth?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      // FETCH FROM NEON POSTGRES EXTERNAL DATABASE ONLY
+      const resumes = await getResumesByUserId(userId);
+      
+      res.json({ resumes });
+    } catch (error: any) {
+      console.error("Error fetching from Neon database:", error);
+      res.status(500).json({ error: "Failed to fetch resumes from external database" });
+    }
+  });
+
+  // GET /api/resume-history/:id - Fetch single resume by ID from NEON POSTGRES ONLY (requires auth)
+  app.get("/api/resume-history/:id", ClerkExpressRequireAuth(), async (req: AuthRequest, res) => {
+    try {
+      const userId = req.auth?.userId;
+      const resumeId = parseInt(req.params.id);
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      if (isNaN(resumeId)) {
+        return res.status(400).json({ error: "Invalid resume ID" });
+      }
+      
+      const resume = await getResumeById(resumeId, userId);
+      
+      if (!resume) {
+        return res.status(404).json({ error: "Resume not found" });
+      }
+      
+      res.json({ resume });
+    } catch (error: any) {
+      console.error("Error fetching resume from Neon database:", error);
+      res.status(500).json({ error: "Failed to fetch resume from external database" });
+    }
+  });
+
+  // DELETE /api/resume-history/:id - Delete resume from NEON POSTGRES ONLY (requires auth)
+  app.delete("/api/resume-history/:id", ClerkExpressRequireAuth(), async (req: AuthRequest, res) => {
+    try {
+      const userId = req.auth?.userId;
+      const resumeId = parseInt(req.params.id);
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      if (isNaN(resumeId)) {
+        return res.status(400).json({ error: "Invalid resume ID" });
+      }
+      
+      const deleted = await deleteResume(resumeId, userId);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Resume not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting resume from Neon database:", error);
+      res.status(500).json({ error: "Failed to delete resume from external database" });
     }
   });
 }

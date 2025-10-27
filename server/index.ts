@@ -1,8 +1,10 @@
 import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
+import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
+import { initializeResumeTable } from "./database/resumeQueries";
 
 const app = express();
 
@@ -74,6 +76,14 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
 });
 
 (async () => {
+  // Initialize Neon database table
+  try {
+    await initializeResumeTable();
+    log("Neon database table initialized successfully");
+  } catch (error: any) {
+    log(`Warning: Failed to initialize database table: ${error.message}`);
+  }
+
   await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
