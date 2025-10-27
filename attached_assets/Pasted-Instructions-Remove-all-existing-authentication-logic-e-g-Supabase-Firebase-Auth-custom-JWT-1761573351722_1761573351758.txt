@@ -1,0 +1,88 @@
+Instructions:
+
+Remove all existing authentication logic (e.g., Supabase, Firebase/Auth, custom JWT)—delete related dependencies, code, and environment variables.
+
+Install Clerk packages for our stack:
+
+React/Next.js: npm install @clerk/clerk-react @clerk/nextjs
+
+Node/Express: npm install @clerk/clerk-sdk-node
+
+Update authentication code as follows:
+
+React/Next.js example:
+
+Wrap the app with ClerkProvider.
+
+Use SignIn, SignUp components from Clerk.
+
+Protect routes using SignedIn and SignedOut.
+
+Example (see code below).
+
+Express example:
+
+Use Clerk middleware for protected routes.
+
+Example (see code below).
+
+Add Clerk keys to Replit secrets or .env (you will supply actual keys later):
+
+text
+CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+Set Clerk frontend URLs and callback URLs to your custom domains (e.g., https://accounts.cvgenieats.com where needed).
+
+Test login, logout, and auth-protected routes.
+
+Document changes in comments or README so team knows new auth system.
+
+Sample Clerk Integration Code
+
+React/Next.js Example (app root, e.g., _app.js or RootLayout.jsx):
+
+jsx
+import { ClerkProvider, SignedIn, SignedOut, SignIn, UserButton } from '@clerk/clerk-react';
+
+function App({ Component, pageProps }) {
+  return (
+    <ClerkProvider publishableKey={process.env.CLERK_PUBLISHABLE_KEY}>
+      <SignedIn>
+        <UserButton />
+        <Component {...pageProps} />
+      </SignedIn>
+      <SignedOut>
+        <SignIn redirectUrl="/" />
+      </SignedOut>
+    </ClerkProvider>
+  );
+}
+export default App;
+Node.js Express Example:
+
+js
+const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
+const express = require('express');
+const app = express();
+// Protect route
+app.get('/dashboard', ClerkExpressRequireAuth(), (req, res) => {
+  res.send('Protected dashboard, user:', req.auth.userId);
+});
+Environment Setup:
+
+In Replit Secrets or .env add:
+
+text
+CLERK_PUBLISHABLE_KEY=your_key_here
+CLERK_SECRET_KEY=your_key_here
+No hardcoding!
+
+Success Criteria:
+
+All previous login/auth code is removed.
+
+Clerk handles all authentication (SignIn, SignUp, session).
+
+App uses your custom domain for Clerk interfaces.
+
+Only Clerk credentials are in secrets/environment.
