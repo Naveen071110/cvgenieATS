@@ -89,6 +89,19 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
 
   await registerRoutes(app);
 
+  // Serve SEO files with correct content types
+  app.get('/robots.txt', (_req, res) => {
+    const robotsPath = path.join(process.cwd(), 'client', 'public', 'robots.txt');
+    res.type('text/plain');
+    res.sendFile(robotsPath);
+  });
+
+  app.get('/sitemap.xml', (_req, res) => {
+    const sitemapPath = path.join(process.cwd(), 'client', 'public', 'sitemap.xml');
+    res.type('application/xml');
+    res.sendFile(sitemapPath);
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
