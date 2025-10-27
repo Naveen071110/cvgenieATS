@@ -10,6 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2025)
 
+### Clerk Authentication Integration (January 27, 2025)
+- **Complete Auth Migration**: Migrated from Supabase to Clerk for user authentication
+- **Removed Dependencies**: Uninstalled @supabase/supabase-js package completely
+- **Clerk Packages Installed**: Added @clerk/clerk-react and @clerk/express for full-stack authentication
+- **ClerkProvider Integration**: Wrapped application with ClerkProvider in App.tsx for seamless auth state management
+- **Compatibility Layer**: Created useAuth hook wrapper around Clerk functionality for backward compatibility
+- **Modernized Login Dialog**: Updated to use Clerk's SignIn component with custom styling
+- **Environment Variables**: Added VITE_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY for secure authentication
+- **No More Custom Auth**: Removed all custom authentication logic, forms, and password handling
+- **Simplified Architecture**: Clerk handles all authentication flows including OAuth, sessions, and user management
+
 ### Latest UI/UX Improvements (January 6, 2025)
 - **FAQ Section Optimization**: Removed redundant help section with contact support and live chat options to reduce clutter
 - **Improved Spacing**: Reduced whitespace throughout FAQ component for better visual density and user experience
@@ -84,11 +95,19 @@ The schema includes three main entities:
 - Generations (storing resume/cover letter pairs)
 
 ### Authentication and Authorization
-Currently implements a sessionless approach suitable for the free tier:
+The application uses Clerk for modern, secure authentication:
 
-- **Session Tracking**: Random session IDs generated client-side
-- **Usage Limits**: Tracked per session (3 generations for free users)
-- **Future Authentication**: Schema prepared for user accounts and Pro subscriptions
+- **Authentication Provider**: Clerk handles all user authentication and session management
+- **Frontend Integration**: ClerkProvider wraps the application, providing auth context throughout
+- **Auth Hooks**: useAuth() compatibility hook wraps Clerk's useUser and useClerk hooks
+- **Sign In/Sign Up**: Clerk's pre-built SignIn component handles all authentication flows
+- **OAuth Support**: Clerk provides built-in OAuth integration (Google, GitHub, etc.)
+- **Session Management**: Automatic session handling with secure token management
+- **Usage Limits**: Tracked per session (3 generations for free users, unlimited for Pro)
+- **Environment Variables**: 
+  - `VITE_CLERK_PUBLISHABLE_KEY`: Frontend Clerk key
+  - `CLERK_SECRET_KEY`: Backend Clerk key for protected routes
+- **Domain Configuration**: Production keys configured for cvgenieats.com domain
 
 ### File Processing Architecture
 The application handles PDF resume uploads with a flexible processing pipeline:
@@ -127,6 +146,12 @@ Modern development toolchain optimized for TypeScript and React:
 - **TanStack React Query**: Server state management with caching, synchronization, and background updates
 - **React Hook Form**: Performant forms library with minimal re-renders
 - **Zod**: TypeScript-first schema validation library
+
+### Authentication
+- **Clerk**: Modern authentication and user management platform
+  - Frontend: @clerk/clerk-react for React components and hooks
+  - Backend: @clerk/express for Express.js middleware and protected routes
+  - Provides OAuth, email/password, magic links, and more
 
 ### Database and ORM
 - **Drizzle ORM**: Lightweight, type-safe ORM for PostgreSQL
