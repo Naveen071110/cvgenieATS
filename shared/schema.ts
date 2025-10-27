@@ -27,16 +27,6 @@ export const usageSessions = pgTable("usage_sessions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// User-specific resume history table for Clerk-authenticated users
-export const resumes = pgTable("resumes", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: text("user_id").notNull(), // Clerk user ID
-  resumeData: text("resume_data").notNull(), // Optimized resume content
-  jobDescription: text("job_description").notNull(), // Job description used
-  coverLetter: text("cover_letter").notNull(), // Generated cover letter
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -52,16 +42,9 @@ export const insertUsageSessionSchema = createInsertSchema(usageSessions).omit({
   createdAt: true,
 });
 
-export const insertResumeSchema = createInsertSchema(resumes).omit({
-  id: true,
-  createdAt: true,
-});
-
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Generation = typeof generations.$inferSelect;
 export type UsageSession = typeof usageSessions.$inferSelect;
 export type InsertGeneration = z.infer<typeof insertGenerationSchema>;
 export type InsertUsageSession = z.infer<typeof insertUsageSessionSchema>;
-export type Resume = typeof resumes.$inferSelect;
-export type InsertResume = z.infer<typeof insertResumeSchema>;
