@@ -1,104 +1,48 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { authService, type AuthUser } from '@/lib/supabase'
+import { createContext, useContext } from 'react'
+import { useUser, useClerk } from '@clerk/clerk-react'
 
 interface AuthContextValue {
-  user: AuthUser | null
+  user: {
+    id: string
+    email: string | undefined
+    user_metadata: {
+      full_name?: string
+      avatar_url?: string
+      name?: string
+    }
+  } | null
   isLoading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string) => Promise<{ error: any }>
-  signInWithGoogle: () => Promise<{ error: any }>
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, isLoaded } = useUser()
+  const { signOut: clerkSignOut } = useClerk()
 
-  useEffect(() => {
-    // Get initial user with error handling
-    authService.getCurrentUser().then((user) => {
-      setUser(user as AuthUser | null)
-      setIsLoading(false)
-    }).catch((error) => {
-      console.warn('Auth service not configured:', error.message)
-      setUser(null)
-      setIsLoading(false)
-    })
-
-    // Listen for auth changes with error handling
-    try {
-      const { data: { subscription } } = authService.onAuthStateChange((user) => {
-        setUser(user)
-        setIsLoading(false)
-      })
-      return () => subscription.unsubscribe()
-    } catch (error) {
-      console.warn('Auth service not configured:', error)
-      setUser(null)
-      setIsLoading(false)
+  const authUser = user ? {
+    id: user.id,
+    email: user.primaryEmailAddress?.emailAddress,
+    user_metadata: {
+      full_name: user.fullName || undefined,
+      avatar_url: user.imageUrl || undefined,
+      name: user.firstName || undefined,
     }
-  }, [])
-
-  const signIn = async (email: string, password: string) => {
-    setIsLoading(true)
-    try {
-      const { error } = await authService.signInWithEmail(email, password)
-      setIsLoading(false)
-      return { error }
-    } catch (err) {
-      setIsLoading(false)
-      return { error: new Error('Authentication service not configured. Please contact support.') }
-    }
-  }
-
-  const signUp = async (email: string, password: string) => {
-    setIsLoading(true)
-    try {
-      const { error } = await authService.signUpWithEmail(email, password)
-      setIsLoading(false)
-      return { error }
-    } catch (err) {
-      setIsLoading(false)
-      return { error: new Error('Authentication service not configured. Please contact support.') }
-    }
-  }
-
-  const signInWithGoogle = async () => {
-    setIsLoading(true)
-    try {
-      const { error } = await authService.signInWithGoogle()
-      setIsLoading(false)
-      return { error }
-    } catch (err) {
-      setIsLoading(false)
-      return { error: new Error('Authentication service not configured. Please contact support.') }
-    }
-  }
+  } : null
 
   const signOut = async () => {
-    setIsLoading(true)
-    try {
-      await authService.signOut()
-      setUser(null)
-      setIsLoading(false)
-    } catch (err) {
-      console.warn('Sign out error:', err)
-      setUser(null)
-      setIsLoading(false)
-    }
+    await clerkSignOut()
+  }
+
+  const value: AuthContextValue = {
+    user: authUser,
+    isLoading: !isLoaded,
+    signOut
   }
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoading,
-      signIn,
-      signUp,
-      signInWithGoogle,
-      signOut
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
