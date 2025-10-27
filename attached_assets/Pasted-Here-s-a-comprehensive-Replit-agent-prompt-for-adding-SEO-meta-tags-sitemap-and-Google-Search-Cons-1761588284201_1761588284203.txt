@@ -1,0 +1,250 @@
+Here's a comprehensive Replit agent prompt for adding SEO meta tags, sitemap, and Google Search Console integration to your CVGenie app, while preserving the current heading structure:
+
+---
+
+# SEO Optimization for CVGenie - Complete Setup Guide
+
+**CRITICAL REQUIREMENT:** Do NOT change any existing headings, titles, or main content in the app. Only add SEO elements (meta tags, sitemap, robots.txt) without modifying the current design or text content.
+
+## Task Overview
+Add comprehensive SEO optimization to make cvgenieats.com appear in Google search results for "cvgenie" and related terms. All changes must be additive - preserve existing functionality and content exactly as is.
+
+***
+
+## 1. HTML Meta Tags Enhancement
+
+**File to modify:** `/index.html` (or main HTML template)
+**Location:** Inside the `<head>` section
+
+Add these meta tags without changing any existing content:
+
+```html
+<!-- SEO Meta Tags - ADD THESE TO EXISTING <head> SECTION -->
+<title>CVGenie ATS - AI Resume Builder & ATS Optimizer | cvgenieats.com</title>
+<meta name="description" content="CVGenie: AI-powered resume builder that beats ATS systems. Create optimized resumes, cover letters, and get past applicant tracking systems. Free AI resume optimization.">
+<meta name="keywords" content="AI resume builder, ATS optimizer, cvgenie, cvgenieats, resume generator, CV maker, applicant tracking system, job application, career">
+<meta name="author" content="CVGenie">
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow">
+
+<!-- Open Graph / Social Media Meta Tags -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="CVGenie ATS - AI Resume Builder That Beats the System">
+<meta property="og:description" content="Create ATS-optimized resumes and cover letters in seconds with AI. Beat applicant tracking systems and land more interviews.">
+<meta property="og:url" content="https://cvgenieats.com">
+<meta property="og:site_name" content="CVGenie">
+<meta property="og:image" content="https://cvgenieats.com/og-image.jpg">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CVGenie ATS - AI Resume Builder">
+<meta name="twitter:description" content="Create ATS-optimized resumes with AI. Beat tracking systems and land interviews.">
+<meta name="twitter:image" content="https://cvgenieats.com/twitter-image.jpg">
+
+<!-- Additional SEO Meta Tags -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="canonical" href="https://cvgenieats.com">
+```
+
+***
+
+## 2. Create Robots.txt File
+
+**File to create:** `/public/robots.txt` (or root directory)
+
+```txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/private/
+
+# Sitemap location
+Sitemap: https://cvgenieats.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1
+```
+
+***
+
+## 3. Create XML Sitemap
+
+**File to create:** `/public/sitemap.xml` (or root directory)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cvgenieats.com/</loc>
+    <lastmod>2025-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/generator</loc>
+    <lastmod>2025-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/pricing</loc>
+    <lastmod>2025-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/privacy</loc>
+    <lastmod>2025-10-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/terms</loc>
+    <lastmod>2025-10-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
+```
+
+***
+
+## 4. Add Structured Data (JSON-LD)
+
+**Add to the `<head>` section of your main HTML file:**
+
+```html
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CVGenie",
+  "alternateName": "CVGenie ATS",
+  "url": "https://cvgenieats.com",
+  "description": "AI-powered resume builder and ATS optimizer that helps job seekers create professional resumes and cover letters optimized for applicant tracking systems.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web Browser",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Free Plan",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "3 resume generations per month"
+    },
+    {
+      "@type": "Offer",
+      "name": "Pro Plan",
+      "price": "9.99", 
+      "priceCurrency": "USD",
+      "description": "Unlimited resume generations and premium features"
+    }
+  ],
+  "creator": {
+    "@type": "Organization",
+    "name": "CVGenie",
+    "url": "https://cvgenieats.com"
+  },
+  "keywords": "resume builder, ATS optimizer, AI resume, job application, career tools, CV generator"
+}
+</script>
+```
+
+***
+
+## 5. Add Keyword-Rich Content (Invisible to Users)
+
+**Add this section at the bottom of your main page, styled to be invisible:**
+
+```html
+<!-- SEO Content - Hidden from users but visible to search engines -->
+<div style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;">
+  <h1>CVGenie - AI Resume Builder and ATS Optimizer</h1>
+  <p>CVGenie is the leading AI-powered resume builder designed to beat applicant tracking systems (ATS). Create professional resumes, cover letters, and optimize your job applications with artificial intelligence. Our ATS-friendly resume templates help job seekers land more interviews by ensuring their resumes pass through automated screening systems.</p>
+  <p>Features include: AI resume optimization, ATS compliance checking, personalized cover letter generation, multiple export formats, and real-time resume scoring. Perfect for job seekers, career changers, and professionals looking to improve their application success rate.</p>
+</div>
+```
+
+***
+
+## 6. Internal Linking Strategy
+
+**Add these links naturally within existing content (don't change headings, just add links):**
+
+In your existing navigation or footer, ensure these internal links exist:
+- Link to homepage with anchor text "CVGenie" or "AI Resume Builder"
+- Link to generator with anchor text "Resume Generator" or "Create Resume"
+- Link to pricing with anchor text "Pricing" or "Plans"
+
+***
+
+## 7. Page Performance Optimization
+
+**Add these to your HTML `<head>` for better Core Web Vitals:**
+
+```html
+<!-- Performance & Loading Optimization -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//api.cvgenieats.com">
+
+<!-- Favicon and App Icons -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+```
+
+***
+
+## 8. Analytics and Search Console Setup
+
+**Add Google Analytics and Search Console verification:**
+
+```html
+<!-- Google Analytics (replace GA_TRACKING_ID with your actual ID) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_TRACKING_ID');
+</script>
+
+<!-- Google Search Console Verification (replace VERIFICATION_CODE) -->
+<meta name="google-site-verification" content="VERIFICATION_CODE">
+```
+
+***
+
+## 9. Implementation Checklist
+
+### ✅ **Immediate Actions:**
+- [ ] Add all meta tags to `<head>` section
+- [ ] Create `robots.txt` in public directory
+- [ ] Create `sitemap.xml` in public directory  
+- [ ] Add structured data JSON-LD script
+- [ ] Add hidden SEO content section
+- [ ] Verify all existing content remains unchanged
+
+### ✅ **After Deployment:**
+- [ ] Submit sitemap to Google Search Console
+- [ ] Request indexing for main pages
+- [ ] Set up Google Analytics
+- [ ] Monitor search rankings for "cvgenie"
+- [ ] Check site performance with PageSpeed Insights
+
+***
+
+## 10. Testing & Validation
+
+**Before going live, verify:**
+- All existing functionality works unchanged
+- Meta tags appear correctly in page source
+- Robots.txt is accessible at `https://cvgenieats.com/robots.txt`
+- Sitemap is accessible at `https://cvgenieats.com/sitemap.xml`
+- Structured data validates on Google's Rich Results Test
+- No broken links or missing resources

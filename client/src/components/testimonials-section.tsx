@@ -10,32 +10,32 @@ import {
 
 const testimonials = [
   {
-    name: "Gaurav Guru",
+    name: "Gaurav Singh",
     role: "Software Engineer",
     content:
       "CVGenie transformed my resume into a targeted masterpiece. I got 3 interview calls within a week of using it!",
-    avatar: "GG",
+    avatar: "GS",
   },
   {
-    name: "Michael Rodriguez",
+    name: "Sarah Rodriguez",
     role: "Marketing Manager",
     content:
       "The cover letters are incredible! Each one feels personally written. I landed my current role thanks to CVGenie.",
-    avatar: "MR",
+    avatar: "SR",
   },
   {
-    name: "Emily Johnson",
+    name: "Emily Winter",
     role: "UX Designer",
     content:
       "As a career changer, I was struggling to present my transferable skills. CVGenie made it effortless!",
-    avatar: "EJ",
+    avatar: "EW",
   },
   {
-    name: "David Park",
+    name: "David Greene",
     role: "Data Scientist",
     content:
       "The ATS optimization feature is a game-changer. My resume now passes through filters and reaches real recruiters.",
-    avatar: "DP",
+    avatar: "DG",
   },
 ];
 
