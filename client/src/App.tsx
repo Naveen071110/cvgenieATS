@@ -12,6 +12,7 @@ const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 // Lazy load non-critical pages
 const Generator = lazy(() => import("@/pages/generator"));
+const ResumeHistoryPage = lazy(() => import("@/pages/resume-history"));
 const Terms = lazy(() => import("@/pages/terms"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const PricingPolicy = lazy(() => import("@/pages/pricing-policy"));
@@ -24,6 +25,11 @@ function Router() {
       <Route path="/generator">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
           <Generator />
+        </Suspense>
+      </Route>
+      <Route path="/resume-history">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
+          <ResumeHistoryPage />
         </Suspense>
       </Route>
       <Route path="/terms">

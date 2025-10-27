@@ -5,13 +5,8 @@ import documentParser from "./documentParser";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import { requireAuth, getAuth } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
-
-// Extend Express Request to include Clerk auth
-interface AuthRequest extends Request {
-  auth?: { userId: string };
-}
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -243,7 +238,7 @@ export function registerRoutes(app: Express) {
   });
 
   // Generate resume and cover letter endpoint (Gemini-migrated)
-  app.post("/api/generate", async (req: AuthRequest, res) => {
+  app.post("/api/generate", async (req, res) => {
     try {
       const { resumeText, jobDescription, format = "pdf" } = req.body;
 
@@ -292,15 +287,16 @@ export function registerRoutes(app: Express) {
       });
 
       // Step 6: Save to Neon Postgres if user is authenticated
-      if (req.auth?.userId) {
+      const auth = getAuth(req);
+      if (auth?.userId) {
         try {
           await insertResume(
-            req.auth.userId,
+            auth.userId,
             optimizedResume,
             coverLetter,
             jobDescription
           );
-          console.log("Resume saved to Neon database for user:", req.auth.userId);
+          console.log("Resume saved to Neon database for user:", auth.userId);
         } catch (dbError: any) {
           console.error("Failed to save to Neon database:", dbError);
           // Don't fail the request if database save fails
@@ -362,9 +358,10 @@ export function registerRoutes(app: Express) {
   });
 
   // GET /api/resume-history - Fetch resume history from NEON POSTGRES ONLY (requires auth)
-  app.get("/api/resume-history", ClerkExpressRequireAuth(), async (req: AuthRequest, res) => {
+  app.get("/api/resume-history", requireAuth(), async (req, res) => {
     try {
-      const userId = req.auth?.userId;
+      const auth = getAuth(req);
+      const userId = auth?.userId;
       
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -381,9 +378,10 @@ export function registerRoutes(app: Express) {
   });
 
   // GET /api/resume-history/:id - Fetch single resume by ID from NEON POSTGRES ONLY (requires auth)
-  app.get("/api/resume-history/:id", ClerkExpressRequireAuth(), async (req: AuthRequest, res) => {
+  app.get("/api/resume-history/:id", requireAuth(), async (req, res) => {
     try {
-      const userId = req.auth?.userId;
+      const auth = getAuth(req);
+      const userId = auth?.userId;
       const resumeId = parseInt(req.params.id);
       
       if (!userId) {
@@ -408,9 +406,10 @@ export function registerRoutes(app: Express) {
   });
 
   // DELETE /api/resume-history/:id - Delete resume from NEON POSTGRES ONLY (requires auth)
-  app.delete("/api/resume-history/:id", ClerkExpressRequireAuth(), async (req: AuthRequest, res) => {
+  app.delete("/api/resume-history/:id", requireAuth(), async (req, res) => {
     try {
-      const userId = req.auth?.userId;
+      const auth = getAuth(req);
+      const userId = auth?.userId;
       const resumeId = parseInt(req.params.id);
       
       if (!userId) {

@@ -85,6 +85,16 @@ export default function Header() {
               >
                 Generator
               </Link>
+              {user && (
+                <Link 
+                  to="/resume-history"
+                  className="text-body transition-colors text-gray-600 hover:text-primary"
+                  aria-label="Go to Resume History page"
+                  data-testid="link-resume-history"
+                >
+                  Resume History
+                </Link>
+              )}
               <button 
                 onClick={() => scrollToSection("features")}
                 className="text-body transition-colors text-gray-600 hover:text-primary"
@@ -225,6 +235,18 @@ export default function Header() {
               >
                 Generator
               </Link>
+              {user && (
+                <Link
+                  to="/resume-history"
+                  className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                  style={{ padding: 'var(--space-3)' }}
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-label="Go to Resume History page"
+                  data-testid="link-resume-history-mobile"
+                >
+                  Resume History
+                </Link>
+              )}
               <button
                 onClick={() => scrollToSection("features")}
                 className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"

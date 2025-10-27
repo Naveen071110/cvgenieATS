@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
-import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
+import { clerkMiddleware } from "@clerk/express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
@@ -24,6 +24,9 @@ app.use(compression({
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Apply Clerk middleware globally
+app.use(clerkMiddleware());
 
 app.use((req, res, next) => {
   const start = Date.now();
