@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/private/
+
+# Sitemap location
+Sitemap: https://cvgenieats.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1
