@@ -19,13 +19,13 @@ export default function Footer() {
               The best AI resume builder for creating ATS-friendly resumes. Free resume builder with professional templates and instant optimization.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-slate-400 hover:text-white transition-colors">
+              <a href="https://x.com/NaveenBale" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors" aria-label="Follow us on X (Twitter)" data-testid="link-twitter">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors">
+              <a href="https://github.com/Naveen071110" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors" aria-label="Visit our GitHub" data-testid="link-github">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors">
+              <a href="https://www.linkedin.com/in/naveen-guru-b23a7816a" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors" aria-label="Connect on LinkedIn" data-testid="link-linkedin">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>

@@ -1,6 +1,12 @@
-
 import { useState, useEffect } from "react";
-import { ArrowRight, CheckCircle, Clock, Users, FileText, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle,
+  Clock,
+  Users,
+  FileText,
+  Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { StatsWidget } from "./stats-widget";
@@ -9,7 +15,13 @@ import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
 import MailIcon from "../assets/icons/mail.svg?react";
 
-const rotatingTexts = ['Any Job', 'Tech Roles', 'Creative Positions', 'Leadership Roles', 'Remote Work'];
+const rotatingTexts = [
+  "Any Job",
+  "Tech Roles",
+  "Creative Positions",
+  "Leadership Roles",
+  "Remote Work",
+];
 
 // Particle component
 const Particle = ({ delay }: { delay: number }) => (
@@ -19,7 +31,7 @@ const Particle = ({ delay }: { delay: number }) => (
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       animationDelay: `${delay}s`,
-      animationDuration: `${6 + Math.random() * 4}s`
+      animationDuration: `${6 + Math.random() * 4}s`,
     }}
   />
 );
@@ -42,7 +54,10 @@ const SkeletonLoader = () => (
 // Placeholder for progress indicator component
 const ProgressIndicator = ({ progress }: { progress: number }) => (
   <div className="w-full bg-gray-200 rounded-full h-2.5">
-    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+    <div
+      className="bg-primary h-2.5 rounded-full transition-all duration-300"
+      style={{ width: `${progress}%` }}
+    ></div>
   </div>
 );
 
@@ -67,7 +82,7 @@ export default function HeroSection() {
 
   useEffect(() => {
     const gradientInterval = setInterval(() => {
-      setGradientShift(prev => (prev + 1) % 360);
+      setGradientShift((prev) => (prev + 1) % 360);
     }, 100);
 
     return () => clearInterval(gradientInterval);
@@ -101,7 +116,12 @@ export default function HeroSection() {
     <div className="hero-section">
       {/* Decorative watercolor SVG layer below content */}
       <div className="hero-bg" aria-hidden="true">
-        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
           <defs>
             <radialGradient id="wcA" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#9ec5fe" stopOpacity="0.25" />
@@ -116,22 +136,37 @@ export default function HeroSection() {
             </filter>
           </defs>
           {/* Blurred watercolor washes */}
-          <g className="hero-blob" style={{ transformOrigin: '18% 62%' }}>
-            <circle cx="18" cy="62" r="28" fill="url(#wcA)" filter="url(#wcBlur)" />
+          <g className="hero-blob" style={{ transformOrigin: "18% 62%" }}>
+            <circle
+              cx="18"
+              cy="62"
+              r="28"
+              fill="url(#wcA)"
+              filter="url(#wcBlur)"
+            />
           </g>
-          <g className="hero-blob hero-blob--alt" style={{ transformOrigin: '82% 28%' }}>
-            <circle cx="82" cy="28" r="24" fill="url(#wcB)" filter="url(#wcBlur)" />
+          <g
+            className="hero-blob hero-blob--alt"
+            style={{ transformOrigin: "82% 28%" }}
+          >
+            <circle
+              cx="82"
+              cy="28"
+              r="24"
+              fill="url(#wcB)"
+              filter="url(#wcBlur)"
+            />
           </g>
         </svg>
       </div>
       <div className="hero-bg-blob" aria-hidden="true"></div>
-      <div 
+      <div
         className="hero-content"
         style={{
-          paddingTop: 'calc(var(--space-20) + var(--space-8))',
-          paddingBottom: 'var(--space-20)',
-          paddingLeft: 'var(--space-4)',
-          paddingRight: 'var(--space-4)'
+          paddingTop: "calc(var(--space-20) + var(--space-8))",
+          paddingBottom: "var(--space-20)",
+          paddingLeft: "var(--space-4)",
+          paddingRight: "var(--space-4)",
         }}
         role="banner"
         aria-labelledby="hero-title"
@@ -139,16 +174,16 @@ export default function HeroSection() {
         <div
           className="relative w-full text-center"
           style={{
-            maxWidth: 'var(--container-2xl)',
-            margin: '0 auto',
-            paddingLeft: 'var(--space-4)',
-            paddingRight: 'var(--space-4)'
+            maxWidth: "var(--container-2xl)",
+            margin: "0 auto",
+            paddingLeft: "var(--space-4)",
+            paddingRight: "var(--space-4)",
           }}
         >
           <h1
             id="hero-title"
             className="display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
-            style={{ marginBottom: 'var(--space-6)' }}
+            style={{ marginBottom: "var(--space-6)" }}
           >
             Free AI Resume Builder for{" "}
             <span
@@ -161,20 +196,27 @@ export default function HeroSection() {
           </h1>
           <p
             className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
-            style={{ marginBottom: 'var(--space-8)', animationDelay: '0.2s' }}
+            style={{ marginBottom: "var(--space-8)", animationDelay: "0.2s" }}
           >
-            Create ATS-friendly resumes with the best AI resume builder. Our free resume builder generates 
-            ATS-optimized resumes and personalized cover letters tailored to job descriptions in seconds.
+            Create ATS-friendly resumes with the best AI resume builder. Our
+            free resume builder generates ATS-optimized resumes and personalized
+            cover letters tailored to job descriptions in seconds.
           </p>
           <div
             className="flex flex-col sm:flex-row justify-center items-center w-full fade-in-up"
-            style={{ gap: 'var(--space-4)', marginBottom: 'var(--space-8)', animationDelay: '0.4s' }}
+            style={{
+              gap: "var(--space-4)",
+              marginBottom: "var(--space-8)",
+              animationDelay: "0.4s",
+            }}
           >
             {isLoading ? (
               <div className="w-full sm:w-auto flex flex-col items-center gap-4">
                 <Spinner />
                 <ProgressIndicator progress={progress} />
-                <span className="text-sm text-gray-500">Generating your resume...</span>
+                <span className="text-sm text-gray-500">
+                  Generating your resume...
+                </span>
               </div>
             ) : (
               <Link to="/generator">
@@ -185,47 +227,87 @@ export default function HeroSection() {
                 >
                   <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
                   Grant My Wish
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                  <ArrowRight
+                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    aria-hidden="true"
+                  />
                 </button>
               </Link>
             )}
             <div
               className="flex items-center text-gray-600"
-              style={{ gap: 'var(--space-3)' }}
+              style={{ gap: "var(--space-3)" }}
             >
-              <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" aria-hidden="true" />
-              <span className="text-sm font-medium">Generated in 40-60 seconds</span>
+              <Zap
+                className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500"
+                aria-hidden="true"
+              />
+              <span className="text-sm font-medium">
+                Generated in 40-60 seconds
+              </span>
             </div>
           </div>
 
           {/* Feature Cards Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-              <AIBrainIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Best AI Resume Builder</h3>
-              <p className="text-gray-600">Leverage advanced AI technology to create professional resumes and cover letters optimized for any job.</p>
+              <AIBrainIcon
+                className="w-12 h-12 text-primary mb-4"
+                aria-hidden="true"
+              />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Best AI Resume Builder
+              </h3>
+              <p className="text-gray-600">
+                Leverage advanced AI technology to create professional resumes
+                and cover letters optimized for any job.
+              </p>
             </div>
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-              <ATSShieldIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-bold text-gray-800 mb-2">ATS-Friendly Resume Templates</h3>
-              <p className="text-gray-600">All resumes use ATS-friendly resume templates that pass Applicant Tracking Systems effortlessly.</p>
+              <ATSShieldIcon
+                className="w-12 h-12 text-primary mb-4"
+                aria-hidden="true"
+              />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                ATS-Friendly Resume Templates
+              </h3>
+              <p className="text-gray-600">
+                All resumes use ATS-friendly resume templates that pass
+                Applicant Tracking Systems effortlessly.
+              </p>
             </div>
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-              <SpeedOptimizationIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Fast & Free to Start</h3>
-              <p className="text-gray-600">Our ATS resume builder free tier lets you generate professional documents in minutes, not hours.</p>
+              <SpeedOptimizationIcon
+                className="w-12 h-12 text-primary mb-4"
+                aria-hidden="true"
+              />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Fast & Free to Start
+              </h3>
+              <p className="text-gray-600">
+                Our ATS resume builder free tier lets you generate professional
+                documents in minutes, not hours.
+              </p>
             </div>
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-              <MailIcon className="w-12 h-12 text-primary mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Job-Tailored Content</h3>
-              <p className="text-gray-600">Tailor your resume and cover letter to match each specific job description perfectly.</p>
+              <MailIcon
+                className="w-12 h-12 text-primary mb-4"
+                aria-hidden="true"
+              />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Job-Tailored Content
+              </h3>
+              <p className="text-gray-600">
+                Tailor your resume and cover letter to match each specific job
+                description perfectly.
+              </p>
             </div>
           </div>
 
           {/* Stats Section */}
           <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-              Trusted by Hundreds
+              Trusted by Few
             </h2>
             <StatsWidget />
           </div>
