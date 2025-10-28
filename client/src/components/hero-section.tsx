@@ -225,7 +225,7 @@ export default function HeroSection() {
           {/* Stats Section */}
           <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-              Trusted by Thousands
+              Trusted by Hundreds
             </h2>
             <StatsWidget />
           </div>
