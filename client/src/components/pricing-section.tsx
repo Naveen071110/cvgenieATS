@@ -1,5 +1,7 @@
 
 import { Check, Star } from "lucide-react"
+import { useState } from "react"
+import { useUser } from "@clerk/clerk-react"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
 import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
@@ -8,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useAuthDialog } from "@/hooks/useAuthDialog"
 import { LoginDialog } from "@/components/LoginDialog"
+import { SubscriptionModal } from "@/components/SubscriptionModal"
 import { Link } from "wouter"
 
 const freePlanFeatures = [
@@ -150,9 +153,18 @@ export default function PricingSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
   const cardsAnimation = useScrollAnimation({ threshold: 0.3 });
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const { isSignedIn } = useUser();
 
   const handleUpgradeClick = () => {
-    console.log("Upgrade button clicked");
+    if (!isSignedIn) {
+      openAuthDialog({
+        title: "Sign in to upgrade",
+        description: "Please sign in to your account to upgrade to Pro.",
+      });
+    } else {
+      setShowSubscriptionModal(true);
+    }
   };
 
   return (
@@ -243,6 +255,11 @@ export default function PricingSection() {
         onOpenChange={closeAuthDialog}
         title={dialogConfig.title}
         description={dialogConfig.description}
+      />
+      
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
       />
     </section>
   );
