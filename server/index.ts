@@ -5,6 +5,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
 import { initializeResumeTable } from "./database/resumeQueries";
+import { initializeUsageSessionsTable } from "./database/subscriptionQueries";
 import dodoWebhookRouter from "./webhooks/dodoPayments";
 
 const app = express();
@@ -80,12 +81,13 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
 });
 
 (async () => {
-  // Initialize Neon database table
+  // Initialize Neon database tables
   try {
     await initializeResumeTable();
-    log("Neon database table initialized successfully");
+    await initializeUsageSessionsTable();
+    log("Neon database tables initialized successfully");
   } catch (error: any) {
-    log(`Warning: Failed to initialize database table: ${error.message}`);
+    log(`Warning: Failed to initialize database tables: ${error.message}`);
   }
 
   // Serve SEO files with correct content types (before other routes)

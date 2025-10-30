@@ -105,3 +105,29 @@ export async function getUserByDodoCustomerId(dodoCustomerId: string): Promise<s
     return null;
   }
 }
+
+/**
+ * Initialize usage_sessions table if it doesn't exist
+ */
+export async function initializeUsageSessionsTable(): Promise<void> {
+  await sql`
+    CREATE TABLE IF NOT EXISTS usage_sessions (
+      id SERIAL PRIMARY KEY,
+      session_id VARCHAR(255) NOT NULL UNIQUE,
+      generations_used INTEGER DEFAULT 0,
+      is_pro INTEGER DEFAULT 0,
+      dodo_customer_id VARCHAR(255),
+      dodo_subscription_id VARCHAR(255),
+      subscription_status VARCHAR(50) DEFAULT 'free'
+    )
+  `;
+  
+  // Create indexes if they don't exist
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_usage_sessions_session_id ON usage_sessions(session_id)
+  `;
+  
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_usage_sessions_dodo_customer_id ON usage_sessions(dodo_customer_id)
+  `;
+}
