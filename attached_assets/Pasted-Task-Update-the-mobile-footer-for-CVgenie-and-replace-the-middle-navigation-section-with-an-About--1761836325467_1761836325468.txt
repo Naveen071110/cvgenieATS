@@ -1,0 +1,27 @@
+Task: Update the mobile footer for CVgenie, and replace the middle navigation section with an About section.
+
+Footer Improvements
+
+Move the footer higher so it sits close to the bottom of the visible content even on mobile (ensure no excessive spacing/padding below the main app).
+
+Reduce the vertical margin or padding between the last menu item and the footer’s Terms/Privacy links.
+
+Test so the footer is always visible without scrolling far, regardless of device size.
+
+Navigation Update
+
+Remove the middle navigation group from the menu which currently shows: FAQ, Resume Tips, Career Advice.
+
+Instead of these items, create a new “About” section in the navigation sidebar/menu.
+
+Insert About Section Content
+
+Add this About text:
+About CVgenie
+CVgenie was built to solve a real problem for job seekers: most resumes never get seen by humans because large companies use ATS (Applicant Tracking Systems) to automatically filter and sort applications.
+With years of resume wrangling and product-building experience, we've focused on making ATS-friendly resumes simple, fast, and accessible.
+Our core features are designed for real users—not just for bots—so you can match your resume to any job description, spot instant keyword gaps, and apply with confidence.
+Today CVgenie runs on modern, scalable tech (Clerk for login, NeonDB for serverless databases), and we're building more agent-driven tools to help automate the job search and application process from start to finish.
+Building in public means everything here is shaped by your feedback. If you have ideas, suggestions, or want to test early features, reach out any time.
+Instructions for the agent:
+Apply these changes across all relevant mobile and menu components. Post-change, preview on small and large device screens to confirm improved footer placement and About section visibility. Do not add FAQ, Resume Tips, or Career Advice links. About section content should appear and be editable for future updates.
