@@ -81,11 +81,11 @@ const genieAnimation = {
   ]
 };
 
-interface UsageSession {
-  id: string;
-  sessionId: string;
-  generationsUsed: number;
-  isPro: number;
+interface SubscriptionStatus {
+  isPro: boolean;
+  subscriptionStatus: string;
+  dodoCustomerId?: string;
+  dodoSubscriptionId?: string;
 }
 
 interface GenerationResult {
@@ -142,10 +142,11 @@ export default function Generator() {
     return unsubscribe;
   }, []);
 
-  // Get usage session
-  const { data: usageSession } = useQuery<UsageSession>({
-    queryKey: ["/api/usage", sessionId],
-    enabled: !!sessionId,
+  // Get subscription status (only for authenticated users)
+  const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
+    queryKey: ["/api/subscription/status"],
+    enabled: !!user,
+    retry: false,
   });
 
   // Extract resume content mutation
@@ -355,9 +356,12 @@ export default function Generator() {
     URL.revokeObjectURL(url);
   };
 
-  const remainingGenerations = usageSession?.isPro
+  // Calculate remaining generations
+  // Authenticated Pro users: unlimited (-1)
+  // Authenticated Free users or unauthenticated: 3 free generations
+  const remainingGenerations = subscriptionStatus?.isPro
     ? -1
-    : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
+    : 3;
 
   const canGenerate = resumeFile && resumeContent.trim().length > 0 && jobDescription.trim().length >= 50 && !generateMutation.isPending;
 

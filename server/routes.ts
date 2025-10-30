@@ -473,9 +473,14 @@ export function registerRoutes(app: Express) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
+      const { getUserSubscription } = await import("./database/subscriptionQueries");
+      const subscription = await getUserSubscription(userId);
+
       res.json({
-        isPro: false,
-        subscriptionStatus: 'free',
+        isPro: subscription.isPro,
+        subscriptionStatus: subscription.subscriptionStatus,
+        dodoCustomerId: subscription.dodoCustomerId,
+        dodoSubscriptionId: subscription.dodoSubscriptionId,
       });
     } catch (error: any) {
       console.error("Error fetching subscription status:", error);

@@ -10,11 +10,11 @@ import { apiRequest } from "@/lib/queryClient";
 import { FileUpload } from '@/components/file-upload';
 import ExportOptions from './export-options';
 
-interface UsageSession {
-  id: string;
-  sessionId: string;
-  generationsUsed: number;
-  isPro: number;
+interface SubscriptionStatus {
+  isPro: boolean;
+  subscriptionStatus: string;
+  dodoCustomerId?: string;
+  dodoSubscriptionId?: string;
 }
 
 interface GenerationResult {
@@ -38,9 +38,10 @@ export default function ResumeGenerator() {
   const queryClient = useQueryClient();
 
   // Get usage session
-  const { data: usageSession } = useQuery<UsageSession>({
-    queryKey: ["/api/usage", sessionId],
-    enabled: !!sessionId,
+  const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
+    queryKey: ["/api/subscription/status"],
+    enabled: false, // Not needed for this component
+    retry: false,
   });
 
   // Generate mutation
@@ -134,9 +135,9 @@ export default function ResumeGenerator() {
     });
   };
 
-  const remainingGenerations = usageSession?.isPro
+  const remainingGenerations = subscriptionStatus?.isPro
     ? -1
-    : Math.max(0, 3 - (usageSession?.generationsUsed || 0));
+    : 3;
 
   return (
     <main role="main" aria-labelledby="generator-title">
@@ -391,7 +392,7 @@ export default function ResumeGenerator() {
         {/* Usage Counter */}
         <div className="text-center mt-8 p-4 bg-slate-50 rounded-lg">
           <p className="text-sm text-slate-600">
-            {usageSession?.isPro ? (
+            {subscriptionStatus?.isPro ? (
               "Unlimited generations with Pro plan"
             ) : (
               <>

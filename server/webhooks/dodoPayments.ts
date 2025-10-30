@@ -154,15 +154,16 @@ async function updateUserSubscriptionStatus(
   status: string
 ) {
   try {
-    const isActive = status === 'active';
+    const { updateUserSubscription } = await import('../database/subscriptionQueries');
     
     console.log(`Updating subscription for ${email}:`, {
       subscriptionId,
       customerId,
       status,
-      isActive,
     });
 
+    await updateUserSubscription(email, customerId, subscriptionId, status);
+    console.log(`Successfully updated subscription for ${email}`);
   } catch (error) {
     console.error('Error updating user subscription status:', error);
   }
