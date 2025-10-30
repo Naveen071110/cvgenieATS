@@ -5,6 +5,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
 import { initializeResumeTable } from "./database/resumeQueries";
+import dodoWebhookRouter from "./webhooks/dodoPayments";
 
 const app = express();
 
@@ -107,6 +108,9 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
     res.type('application/xml');
     res.sendFile(sitemapPath);
   });
+
+  // Add webhook routes before regular routes
+  app.use('/api/webhooks', dodoWebhookRouter);
 
   await registerRoutes(app);
 

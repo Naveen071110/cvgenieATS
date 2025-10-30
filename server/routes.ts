@@ -7,6 +7,7 @@ import path from "path";
 import fs from "fs";
 import { requireAuth, getAuth } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
+import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription } from "./services/dodoPayments";
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -430,6 +431,110 @@ export function registerRoutes(app: Express) {
     } catch (error: any) {
       console.error("Error deleting resume from Neon database:", error);
       res.status(500).json({ error: "Failed to delete resume from external database" });
+    }
+  });
+
+  // POST /api/subscription/create-checkout - Create Dodo Payments checkout session (requires auth)
+  app.post("/api/subscription/create-checkout", requireAuth(), async (req, res) => {
+    try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const userEmail = auth.sessionClaims?.email as string || '';
+      const userName = auth.sessionClaims?.name as string || auth.sessionClaims?.firstName as string || 'User';
+
+      if (!userEmail) {
+        return res.status(400).json({ error: "User email not found" });
+      }
+
+      const session = await createCheckoutSession(userEmail, userName);
+      
+      res.json({
+        sessionId: session.sessionId,
+        paymentLink: session.paymentLink,
+      });
+    } catch (error: any) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ error: "Failed to create checkout session" });
+    }
+  });
+
+  // GET /api/subscription/status - Get user's subscription status (requires auth)
+  app.get("/api/subscription/status", requireAuth(), async (req, res) => {
+    try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      res.json({
+        isPro: false,
+        subscriptionStatus: 'free',
+      });
+    } catch (error: any) {
+      console.error("Error fetching subscription status:", error);
+      res.status(500).json({ error: "Failed to fetch subscription status" });
+    }
+  });
+
+  // POST /api/subscription/verify-payment - Verify payment and activate subscription (requires auth)
+  app.post("/api/subscription/verify-payment", requireAuth(), async (req, res) => {
+    try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+      const { paymentId } = req.body;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      if (!paymentId) {
+        return res.status(400).json({ error: "Payment ID is required" });
+      }
+
+      const paymentStatus = await verifyPaymentStatus(paymentId);
+      
+      res.json({
+        status: paymentStatus.status,
+        customerId: paymentStatus.customerId,
+        subscriptionId: paymentStatus.subscriptionId,
+      });
+    } catch (error: any) {
+      console.error("Error verifying payment:", error);
+      res.status(500).json({ error: "Failed to verify payment" });
+    }
+  });
+
+  // POST /api/subscription/cancel - Cancel user's subscription (requires auth)
+  app.post("/api/subscription/cancel", requireAuth(), async (req, res) => {
+    try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+      const { subscriptionId } = req.body;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      if (!subscriptionId) {
+        return res.status(400).json({ error: "Subscription ID is required" });
+      }
+
+      const result = await cancelSubscription(subscriptionId);
+      
+      res.json({
+        success: result.success,
+        status: result.status,
+      });
+    } catch (error: any) {
+      console.error("Error canceling subscription:", error);
+      res.status(500).json({ error: "Failed to cancel subscription" });
     }
   });
 }

@@ -24,6 +24,9 @@ export const usageSessions = pgTable("usage_sessions", {
   sessionId: text("session_id").notNull().unique(),
   generationsUsed: integer("generations_used").default(0),
   isPro: integer("is_pro").default(0), // 0 = false, 1 = true
+  dodoCustomerId: text("dodo_customer_id"),
+  dodoSubscriptionId: text("dodo_subscription_id"),
+  subscriptionStatus: text("subscription_status"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
