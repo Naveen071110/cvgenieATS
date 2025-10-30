@@ -1,6 +1,5 @@
-import { neonClient } from "./neon";
+import { sql } from "./neon";
 import { usageSessions } from "@shared/schema";
-import { eq } from "drizzle-orm";
 
 export interface UserSubscription {
   userId: string;
@@ -15,21 +14,14 @@ export interface UserSubscription {
  */
 export async function getUserSubscription(userId: string): Promise<UserSubscription> {
   try {
-    const db = neonClient();
-    
-    const result = await db
-      .select({
-        sessionId: usageSessions.sessionId,
-        isPro: usageSessions.isPro,
-        subscriptionStatus: usageSessions.subscriptionStatus,
-        dodoCustomerId: usageSessions.dodoCustomerId,
-        dodoSubscriptionId: usageSessions.dodoSubscriptionId,
-      })
-      .from(usageSessions)
-      .where(eq(usageSessions.sessionId, userId))
-      .limit(1);
+    const result = await sql`
+      SELECT session_id, is_pro, subscription_status, dodo_customer_id, dodo_subscription_id
+      FROM usage_sessions
+      WHERE session_id = ${userId}
+      LIMIT 1
+    `;
 
-    if (result.length === 0) {
+    if (result.length === 0 || !result[0]) {
       return {
         userId,
         isPro: false,
@@ -42,10 +34,10 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
     const subscription = result[0];
     return {
       userId,
-      isPro: subscription.isPro === 1,
-      subscriptionStatus: subscription.subscriptionStatus || 'free',
-      dodoCustomerId: subscription.dodoCustomerId,
-      dodoSubscriptionId: subscription.dodoSubscriptionId,
+      isPro: subscription.is_pro === 1,
+      subscriptionStatus: subscription.subscription_status || 'free',
+      dodoCustomerId: subscription.dodo_customer_id,
+      dodoSubscriptionId: subscription.dodo_subscription_id,
     };
   } catch (error) {
     console.error("Error fetching user subscription:", error);
@@ -69,35 +61,26 @@ export async function updateUserSubscription(
   subscriptionStatus: string
 ): Promise<void> {
   try {
-    const db = neonClient();
-    
     const isPro = subscriptionStatus === 'active' ? 1 : 0;
     
-    const existingUser = await db
-      .select()
-      .from(usageSessions)
-      .where(eq(usageSessions.sessionId, userId))
-      .limit(1);
+    const existing = await sql`
+      SELECT id FROM usage_sessions WHERE session_id = ${userId} LIMIT 1
+    `;
 
-    if (existingUser.length > 0) {
-      await db
-        .update(usageSessions)
-        .set({
-          isPro,
-          dodoCustomerId,
-          dodoSubscriptionId,
-          subscriptionStatus,
-        })
-        .where(eq(usageSessions.sessionId, userId));
+    if (existing.length > 0) {
+      await sql`
+        UPDATE usage_sessions
+        SET is_pro = ${isPro},
+            dodo_customer_id = ${dodoCustomerId},
+            dodo_subscription_id = ${dodoSubscriptionId},
+            subscription_status = ${subscriptionStatus}
+        WHERE session_id = ${userId}
+      `;
     } else {
-      await db.insert(usageSessions).values({
-        sessionId: userId,
-        generationsUsed: 0,
-        isPro,
-        dodoCustomerId,
-        dodoSubscriptionId,
-        subscriptionStatus,
-      });
+      await sql`
+        INSERT INTO usage_sessions (session_id, generations_used, is_pro, dodo_customer_id, dodo_subscription_id, subscription_status)
+        VALUES (${userId}, 0, ${isPro}, ${dodoCustomerId}, ${dodoSubscriptionId}, ${subscriptionStatus})
+      `;
     }
     
     console.log(`Updated subscription for user ${userId}: ${subscriptionStatus}`);
@@ -112,15 +95,11 @@ export async function updateUserSubscription(
  */
 export async function getUserByDodoCustomerId(dodoCustomerId: string): Promise<string | null> {
   try {
-    const db = neonClient();
-    
-    const result = await db
-      .select({ sessionId: usageSessions.sessionId })
-      .from(usageSessions)
-      .where(eq(usageSessions.dodoCustomerId, dodoCustomerId))
-      .limit(1);
+    const result = await sql`
+      SELECT session_id FROM usage_sessions WHERE dodo_customer_id = ${dodoCustomerId} LIMIT 1
+    `;
 
-    return result.length > 0 ? result[0].sessionId : null;
+    return result.length > 0 && result[0] ? result[0].session_id : null;
   } catch (error) {
     console.error("Error fetching user by Dodo customer ID:", error);
     return null;
