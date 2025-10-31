@@ -154,16 +154,31 @@ async function updateUserSubscriptionStatus(
   status: string
 ) {
   try {
-    const { updateUserSubscription } = await import('../database/subscriptionQueries');
+    const { updateUserSubscription, getUserByDodoCustomerId } = await import('../database/subscriptionQueries');
     
-    console.log(`Updating subscription for ${email}:`, {
+    // First try to find user by Dodo customer ID
+    let userId = await getUserByDodoCustomerId(customerId);
+    
+    if (!userId) {
+      console.warn(`No user found with Dodo customer ID ${customerId}. Subscription update skipped.`);
+      return;
+    }
+
+    console.log(`Updating subscription for user ${userId} (${email}):`, {
       subscriptionId,
       customerId,
       status,
     });
 
-    await updateUserSubscription(email, customerId, subscriptionId, status);
-    console.log(`Successfully updated subscription for ${email}`);
+    // Only set Pro if status is explicitly "active"
+    if (status === 'active') {
+      await updateUserSubscription(userId, customerId, subscriptionId, status);
+      console.log(`Successfully activated Pro subscription for user ${userId}`);
+    } else {
+      // For any other status (cancelled, expired, etc.), set to free
+      await updateUserSubscription(userId, customerId, subscriptionId, 'free');
+      console.log(`Successfully deactivated Pro subscription for user ${userId}`);
+    }
   } catch (error) {
     console.error('Error updating user subscription status:', error);
   }

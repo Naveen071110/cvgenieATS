@@ -22,6 +22,7 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
     `;
 
     if (result.length === 0 || !result[0]) {
+      // No record found - user is FREE by default
       return {
         userId,
         isPro: false,
@@ -32,15 +33,23 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
     }
 
     const subscription = result[0];
+    
+    // STRICT: Only set isPro if BOTH conditions are true:
+    // 1. Database has is_pro = 1
+    // 2. subscription_status is explicitly "active"
+    const isActive = subscription.subscription_status === 'active';
+    const isPro = subscription.is_pro === 1 && isActive;
+    
     return {
       userId,
-      isPro: subscription.is_pro === 1,
+      isPro,
       subscriptionStatus: subscription.subscription_status || 'free',
       dodoCustomerId: subscription.dodo_customer_id,
       dodoSubscriptionId: subscription.dodo_subscription_id,
     };
   } catch (error) {
     console.error("Error fetching user subscription:", error);
+    // On error, default to FREE tier
     return {
       userId,
       isPro: false,
@@ -53,6 +62,7 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
 
 /**
  * Update user subscription status in Neon database
+ * ONLY sets isPro = 1 if subscriptionStatus is explicitly "active"
  */
 export async function updateUserSubscription(
   userId: string,
@@ -61,6 +71,8 @@ export async function updateUserSubscription(
   subscriptionStatus: string
 ): Promise<void> {
   try {
+    // STRICT: Only set isPro to 1 if status is explicitly "active"
+    // Any other status (free, cancelled, expired, etc.) = isPro: 0
     const isPro = subscriptionStatus === 'active' ? 1 : 0;
     
     const existing = await sql`
@@ -77,13 +89,14 @@ export async function updateUserSubscription(
         WHERE session_id = ${userId}
       `;
     } else {
+      // New user - insert with specified status
       await sql`
         INSERT INTO usage_sessions (session_id, generations_used, is_pro, dodo_customer_id, dodo_subscription_id, subscription_status)
         VALUES (${userId}, 0, ${isPro}, ${dodoCustomerId}, ${dodoSubscriptionId}, ${subscriptionStatus})
       `;
     }
     
-    console.log(`Updated subscription for user ${userId}: ${subscriptionStatus}`);
+    console.log(`Updated subscription for user ${userId}: isPro=${isPro}, status=${subscriptionStatus}`);
   } catch (error) {
     console.error("Error updating user subscription:", error);
     throw error;

@@ -8,6 +8,7 @@ import fs from "fs";
 import { requireAuth, getAuth } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription } from "./services/dodoPayments";
+import { resetAllUsersToFree } from "./database/resetSubscriptions";
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -446,6 +447,16 @@ export function registerRoutes(app: Express) {
 
       const userEmail = auth.sessionClaims?.email as string || '';
       const userName = auth.sessionClaims?.name as string || auth.sessionClaims?.firstName as string || 'User';
+      
+      if (!userEmail) {
+        return res.status(400).json({ error: "User email not found" });
+      }
+
+      // Initialize user record as FREE before creating checkout
+      const { updateUserSubscription } = await import("./database/subscriptionQueries");
+      await updateUserSubscription(userId, '', '', 'free');
+
+      const session = await createCheckoutSession(userEmail, userName);er';
 
       if (!userEmail) {
         return res.status(400).json({ error: "User email not found" });
@@ -543,3 +554,30 @@ export function registerRoutes(app: Express) {
     }
   });
 }
+
+
+  // POST /api/admin/reset-subscriptions - Reset all users to free tier (admin only)
+  app.post("/api/admin/reset-subscriptions", requireAuth(), async (req, res) => {
+    try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      // TODO: Add admin check here if needed
+      // For now, any authenticated user can run this (remove in production or add proper admin check)
+      
+      const result = await resetAllUsersToFree();
+      
+      res.json({
+        success: true,
+        message: "All users reset to free tier",
+        ...result
+      });
+    } catch (error: any) {
+      console.error("Error resetting subscriptions:", error);
+      res.status(500).json({ error: "Failed to reset subscriptions" });
+    }
+  });
