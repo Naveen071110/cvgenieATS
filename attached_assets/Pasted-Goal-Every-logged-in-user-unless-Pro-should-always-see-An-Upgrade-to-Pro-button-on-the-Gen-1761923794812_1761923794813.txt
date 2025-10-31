@@ -1,0 +1,64 @@
+Goal:
+Every logged-in user (unless Pro) should always see:
+
+An “Upgrade to Pro” button on the Generator page
+
+“3 generations remaining” indicator (reset every login for Free tier users)
+
+Instructions:
+
+Review all backend and frontend logic related to user tier and generator limits.
+
+On user login (new or existing), fetch the user's subscription status from Neon DB (use correct session or user ID).
+
+If user is NOT Pro, set user state/tier to Free.
+
+Initialize/ensure the generations remaining count is set to 3 (store in DB/session/state, whichever you use for enforcement).
+
+If user is Pro, show unlimited generations, hide upgrade button.
+
+Generator Page UI Logic:
+
+For Free (non-Pro) users, always:
+
+Display “Upgrade to Pro” button (ensure it opens Dodo Payments checkout in new window/tab).
+
+Display “3 generations remaining” counter:
+
+Decrement counter with each resume/cover letter generation.
+
+If count reaches 0, disable generator and ONLY show Upgrade button.
+
+For Pro users, hide Upgrade button, display “Unlimited generations”.
+
+Resetting on Login:
+
+On every login, for Free users, reset “generations remaining” back to 3.
+
+Code & Data Checks:
+
+Ensure no legacy code/logic overrides this UI state.
+
+If any localStorage/cached user data sets Pro by default, clear/reset on login.
+
+Check backend APIs always reflect current Neon DB state for subscription/usage.
+
+Button Handling:
+
+Change ALL Upgrade to Pro buttons anywhere in app so they ALWAYS open Dodo Payments checkout URL in a new tab (window.open(paymentLink, '_blank')).
+
+Testing:
+
+New user logs in: sees Upgrade button, "3 generations left"
+
+Uses generator: 3 → 2 → 1 → 0, then only Upgrade button is enabled
+
+Upgrades to Pro: next login, sees unlimited, no Upgrade button
+
+This prompt will:
+
+Ensure “Upgrade to Pro” and generation limits reset for every Free user every login
+
+Prevent phantom Pro status by always checking backend DB, never assuming Pro
+
+Fix all generator page UI logic so Free users see 3-gen left + upgrade offer
