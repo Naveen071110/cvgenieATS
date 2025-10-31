@@ -22,7 +22,15 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
       });
 
       if (response && response.paymentLink) {
-        window.location.href = response.paymentLink;
+        // Open checkout in new tab
+        window.open(response.paymentLink, '_blank');
+        
+        toast({
+          title: "Checkout Opened",
+          description: "Complete your purchase in the new tab. Your Pro status will activate automatically after payment.",
+        });
+        
+        onClose();
       } else {
         throw new Error("No payment link received");
       }

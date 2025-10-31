@@ -452,9 +452,14 @@ export function registerRoutes(app: Express) {
         return res.status(400).json({ error: "User email not found" });
       }
 
-      // Initialize user record as FREE before creating checkout
-      const { updateUserSubscription } = await import("./database/subscriptionQueries");
-      await updateUserSubscription(userId, '', '', 'free');
+      // Initialize user record as FREE before creating checkout (if they don't exist)
+      const { updateUserSubscription, getUserSubscription } = await import("./database/subscriptionQueries");
+      const existingSubscription = await getUserSubscription(userId);
+      
+      // Only initialize if user doesn't exist or is not already Pro
+      if (!existingSubscription.dodoCustomerId) {
+        await updateUserSubscription(userId, '', '', 'free');
+      }
 
       const session = await createCheckoutSession(userEmail, userName);
 

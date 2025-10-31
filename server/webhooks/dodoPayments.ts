@@ -170,14 +170,15 @@ async function updateUserSubscriptionStatus(
       status,
     });
 
-    // Only set Pro if status is explicitly "active"
+    // STRICT: Only set Pro if status is explicitly "active"
+    // Any other status (cancelled, expired, paused, etc.) = FREE tier
     if (status === 'active') {
-      await updateUserSubscription(userId, customerId, subscriptionId, status);
-      console.log(`Successfully activated Pro subscription for user ${userId}`);
+      await updateUserSubscription(userId, customerId, subscriptionId, 'active');
+      console.log(`✅ Successfully activated Pro subscription for user ${userId}`);
     } else {
-      // For any other status (cancelled, expired, etc.), set to free
+      // For any other status, explicitly set to free
       await updateUserSubscription(userId, customerId, subscriptionId, 'free');
-      console.log(`Successfully deactivated Pro subscription for user ${userId}`);
+      console.log(`❌ Deactivated Pro subscription for user ${userId}, status: ${status}`);
     }
   } catch (error) {
     console.error('Error updating user subscription status:', error);

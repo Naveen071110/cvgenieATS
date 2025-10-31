@@ -169,9 +169,6 @@ export default function Header() {
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
-                  <div className="wishes-counter text-sm">
-                    <span>🧞‍♂️ 3 Wishes Left</span>
-                  </div>
                   <Button
                     variant="outline"
                     size="sm"

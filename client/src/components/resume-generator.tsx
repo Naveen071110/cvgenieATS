@@ -17,6 +17,18 @@ interface SubscriptionStatus {
   dodoSubscriptionId?: string;
 }
 
+export default function ResumeGenerator() {
+  // Fetch subscription status on component mount
+  const { data: subscriptionStatus, isLoading: isLoadingSubscription } = useQuery<SubscriptionStatus>({
+    queryKey: ['/api/subscription/status'],
+    retry: 1,
+    staleTime: 60000, // Cache for 1 minute
+  });
+
+  const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';
+  
+  // Rest of component implementation...
+
 interface GenerationResult {
   id: string;
   optimizedResume: string;

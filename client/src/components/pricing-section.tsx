@@ -210,7 +210,7 @@ export default function PricingSection() {
             description="For serious job seekers"
             features={proPlanFeatures}
             buttonText="Upgrade to Pro"
-            buttonLink="/generator"
+            buttonLink="#"
             highlighted={true}
             popular={true}
             onClick={handleUpgradeClick}
