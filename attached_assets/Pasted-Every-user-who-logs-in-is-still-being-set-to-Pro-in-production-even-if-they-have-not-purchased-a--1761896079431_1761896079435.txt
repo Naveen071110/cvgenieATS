@@ -1,0 +1,49 @@
+Every user who logs in is still being set to “Pro” in production, even if they have not purchased a subscription. The integration uses the subscription status logic in dodoPayments.ts and subscriptionQueries.ts.
+
+Files to Review:
+
+dodoPayments.ts
+
+subscriptionQueries.ts
+If more files are involved (such as auth/user model/controller), review those as well.
+
+Instructions:
+
+Subscription Logic Correction
+
+Audit all user authentication/login/signup flows.
+
+Ensure user’s isPro status (and related fields/roles) is NEVER set to true upon login or signup by default.
+
+After login/signup, always call getUserSubscription(userId) (from subscriptionQueries.ts) to get the user’s true subscription state from the database.
+
+Only set isPro to true if (a) the database value for ispro is 1 and (b) subscriptionStatus is “active”.
+
+New Users:
+
+When a new account is created, insert into usagesessions with ispro defaulting to 0 (false), and subscriptionstatus as "free" unless/until payment confirmation from Dodo triggers an upgrade.
+
+Existing Users:
+
+Run a database update to set ALL users’ ispro to 0 and subscriptionstatus to "free" unless there is a matching active subscription verified by Dodo Payments (use verifyPaymentStatus/getSubscriptionStatus from dodoPayments.ts).
+
+Purchase Flow:
+
+Only call updateUserSubscription to set ispro to 1/“Pro” when a successful payment/subscription webhook/callback from Dodo is confirmed (status: “active”).
+
+Testing & Validation:
+
+After fix, check on production:
+
+New user logs in/signs up → status should be Free/Basic, not Pro.
+
+Old users logging in again stay Free/Basic unless they’ve paid.
+
+When user buys Pro (completes payment), only then do they become Pro.
+
+Logout/login should not bypass this logic.
+
+Key Correction:
+Remove default assignment of Pro/ispro=1 anywhere except in explicit payment confirmation codepaths. All logic should use both your local database & verified Dodo Payments product status, not any default value.
+
+If you need to review the main user auth handler, signup handler, or wherever roles are assigned after login/signup, please attach those files as well.

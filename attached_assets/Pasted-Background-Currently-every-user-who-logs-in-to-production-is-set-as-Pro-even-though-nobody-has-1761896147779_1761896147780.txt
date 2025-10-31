@@ -1,0 +1,51 @@
+Background:
+Currently, every user who logs in to production is set as “Pro,” even though nobody has purchased a Pro subscription yet. This happens regardless of real payment status. All user status logic is handled through the files: dodoPayments.ts and subscriptionQueries.ts.
+
+Instructions:
+
+Audit all code paths where user status/role/tier is set on signup or login.
+
+Remove any instance that sets isPro, Pro role, or Pro tier to true or “active” by default.
+
+Ensure NO default setting of Pro unless payment confirmation is present.
+
+Enforce payment-based Pro status:
+
+When a user logs in or signs up, always call the subscription status function (getUserSubscription in subscriptionQueries.ts).
+
+Only assign isPro = true (or set Pro features/role) if both database value and remote Dodo Payments status for that user confirm "Pro" or "active subscription".
+
+If user does NOT have an active Pro subscription, they MUST be “Free” or “Basic”—never Pro.
+
+Update existing users:
+
+For every existing user (especially those already in the database), batch update status:
+
+Set isPro to false and subscriptionStatus to "free" unless that user has a Dodo Payments record with an active paid subscription.
+
+Payments/Webhooks:
+
+After a confirmed purchase or payment webhook from Dodo, only then call update logic to set user to Pro.
+
+Never trigger upgrade without explicit payment confirmation.
+
+Testing and validation:
+
+Test full signup, login, and logout cycles for multiple new and old users to ensure only paying users get Pro.
+
+Double-check all roles after login.
+
+If any default logic still sets Pro status, correct or remove those lines.
+
+Helpful Info:
+
+Make sure no fallback code (such as “if status not set, set to Pro”) exists anywhere in your auth/user handlers.
+
+You can run a one-time script that:
+
+Checks all users for valid Pro subscription via API/database
+
+Resets everyone else to Free
+
+Confirm database and logic consistency: sometimes frontend shows “Pro” if backend returns an outdated value—sync both sides.
+
