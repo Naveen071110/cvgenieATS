@@ -587,7 +587,7 @@ export default function Generator() {
 
                 {/* Usage Counter */}
                 <div className="text-sm text-slate-600">
-                  {user?.id ? (
+                  {subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active' ? (
                     <div className="flex items-center justify-center gap-2">
                       <Crown className="w-4 h-4 text-yellow-500" />
                       <span>Pro User - Unlimited generations</span>
@@ -603,8 +603,11 @@ export default function Generator() {
                       <Button
                         variant="link"
                         size="sm"
-                        onClick={handleUpgradeClick}
-                        className="p-0 h-auto text-blue-600 hover:text-blue-700"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleUpgradeClick();
+                        }}
+                        className="p-0 h-auto text-blue-600 hover:text-blue-700 cursor-pointer"
                       >
                         Upgrade to Pro
                       </Button>
