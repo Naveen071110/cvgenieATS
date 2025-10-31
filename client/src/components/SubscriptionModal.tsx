@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface SubscriptionModalProps {
@@ -17,13 +16,22 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
   const handleUpgrade = async () => {
     setIsLoading(true);
     try {
-      const response = await apiRequest<{ sessionId: string; paymentLink: string }>("/api/subscription/create-checkout", {
-        method: "POST",
+      const response = await fetch('/api/subscription/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
 
-      if (response && response.paymentLink) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
+      }
+
+      const data = await response.json();
+
+      if (data && data.paymentLink) {
         // Open checkout in new tab (use window.open with noopener for security)
-        const newWindow = window.open(response.paymentLink, '_blank', 'noopener,noreferrer');
+        const newWindow = window.open(data.paymentLink, '_blank', 'noopener,noreferrer');
         
         if (!newWindow) {
           // Popup was blocked, show fallback
@@ -52,6 +60,7 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
         description: error.message || "Failed to start checkout. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -69,10 +78,10 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px]" aria-describedby="subscription-dialog-description">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Upgrade to Pro</DialogTitle>
-          <DialogDescription>
+          <DialogTitle id="subscription-dialog-title" className="text-2xl font-bold">Upgrade to Pro</DialogTitle>
+          <DialogDescription id="subscription-dialog-description">
             Unlock unlimited access to all features and take your job search to the next level.
           </DialogDescription>
         </DialogHeader>

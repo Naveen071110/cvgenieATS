@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { SignIn } from '@clerk/clerk-react'
 
 interface LoginDialogProps {
@@ -8,11 +8,15 @@ interface LoginDialogProps {
   description?: string
 }
 
-export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
+export function LoginDialog({ open, onOpenChange, title, description }: LoginDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden">
-        <SignIn 
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden" aria-describedby="login-dialog-description">
+        <DialogHeader>
+          <DialogTitle id="login-dialog-title">{title}</DialogTitle>
+          <DialogDescription id="login-dialog-description">{description}</DialogDescription>
+        </DialogHeader>
+        <SignIn
           routing="virtual"
           afterSignInUrl="/generator"
           appearance={{
