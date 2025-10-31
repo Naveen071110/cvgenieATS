@@ -56,9 +56,9 @@ async function callGemini(prompt: string): Promise<string> {
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`;
   const payload = {
-    contents: [{ 
-      role: "user", 
-      parts: [{ text: prompt }] 
+    contents: [{
+      role: "user",
+      parts: [{ text: prompt }]
     }]
   };
 
@@ -245,8 +245,8 @@ export function registerRoutes(app: Express) {
       const { resumeText, jobDescription, format = "pdf" } = req.body;
 
       if (!resumeText || !jobDescription) {
-        return res.status(400).json({ 
-          error: "Resume text and job description are required" 
+        return res.status(400).json({
+          error: "Resume text and job description are required"
         });
       }
 
@@ -273,13 +273,13 @@ export function registerRoutes(app: Express) {
         baseFilename,
         [format]
       );
-      
+
       const resumePath = outputs.resumeDOCX || '';
       const coverLetterPath = outputs.coverLetterDOCX || '';
 
       // Step 5: Save to in-memory storage
       const sessionId = `session_${timestamp}`;
-      
+
       await storage.createGeneration({
         sessionId,
         originalResume: resumeText,
@@ -364,14 +364,14 @@ export function registerRoutes(app: Express) {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      
+
       // FETCH FROM NEON POSTGRES EXTERNAL DATABASE ONLY
       const resumes = await getResumesByUserId(userId);
-      
+
       res.json({ resumes });
     } catch (error: any) {
       console.error("Error fetching from Neon database:", error);
@@ -385,21 +385,21 @@ export function registerRoutes(app: Express) {
       const auth = getAuth(req);
       const userId = auth?.userId;
       const resumeId = parseInt(req.params.id);
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      
+
       if (isNaN(resumeId)) {
         return res.status(400).json({ error: "Invalid resume ID" });
       }
-      
+
       const resume = await getResumeById(resumeId, userId);
-      
+
       if (!resume) {
         return res.status(404).json({ error: "Resume not found" });
       }
-      
+
       res.json({ resume });
     } catch (error: any) {
       console.error("Error fetching resume from Neon database:", error);
@@ -413,21 +413,21 @@ export function registerRoutes(app: Express) {
       const auth = getAuth(req);
       const userId = auth?.userId;
       const resumeId = parseInt(req.params.id);
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-      
+
       if (isNaN(resumeId)) {
         return res.status(400).json({ error: "Invalid resume ID" });
       }
-      
+
       const deleted = await deleteResume(resumeId, userId);
-      
+
       if (!deleted) {
         return res.status(404).json({ error: "Resume not found" });
       }
-      
+
       res.json({ success: true });
     } catch (error: any) {
       console.error("Error deleting resume from Neon database:", error);
@@ -440,14 +440,14 @@ export function registerRoutes(app: Express) {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
       const userEmail = auth.sessionClaims?.email as string || '';
       const userName = auth.sessionClaims?.name as string || auth.sessionClaims?.firstName as string || 'User';
-      
+
       if (!userEmail) {
         return res.status(400).json({ error: "User email not found" });
       }
@@ -457,7 +457,7 @@ export function registerRoutes(app: Express) {
       await updateUserSubscription(userId, '', '', 'free');
 
       const session = await createCheckoutSession(userEmail, userName);
-      
+
       res.json({
         sessionId: session.sessionId,
         paymentLink: session.paymentLink,
@@ -473,7 +473,7 @@ export function registerRoutes(app: Express) {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
@@ -499,7 +499,7 @@ export function registerRoutes(app: Express) {
       const auth = getAuth(req);
       const userId = auth?.userId;
       const { paymentId } = req.body;
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
@@ -509,7 +509,7 @@ export function registerRoutes(app: Express) {
       }
 
       const paymentStatus = await verifyPaymentStatus(paymentId);
-      
+
       res.json({
         status: paymentStatus.status,
         customerId: paymentStatus.customerId,
@@ -527,7 +527,7 @@ export function registerRoutes(app: Express) {
       const auth = getAuth(req);
       const userId = auth?.userId;
       const { subscriptionId } = req.body;
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
@@ -537,7 +537,7 @@ export function registerRoutes(app: Express) {
       }
 
       const result = await cancelSubscription(subscriptionId);
-      
+
       res.json({
         success: result.success,
         status: result.status,
@@ -547,24 +547,22 @@ export function registerRoutes(app: Express) {
       res.status(500).json({ error: "Failed to cancel subscription" });
     }
   });
-}
-
 
   // POST /api/admin/reset-subscriptions - Reset all users to free tier (admin only)
   app.post("/api/admin/reset-subscriptions", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
-      
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
       // TODO: Add admin check here if needed
       // For now, any authenticated user can run this (remove in production or add proper admin check)
-      
+
       const result = await resetAllUsersToFree();
-      
+
       res.json({
         success: true,
         message: "All users reset to free tier",
@@ -575,3 +573,4 @@ export function registerRoutes(app: Express) {
       res.status(500).json({ error: "Failed to reset subscriptions" });
     }
   });
+}
