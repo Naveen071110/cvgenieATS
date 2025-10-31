@@ -144,11 +144,25 @@ export default function Generator() {
   }, []);
 
   // Get subscription status (only for authenticated users)
-  const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
+  const { data: subscriptionStatus, refetch: refetchSubscription } = useQuery<SubscriptionStatus>({
     queryKey: ["/api/subscription/status"],
     enabled: !!user,
     retry: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
+
+  // Track generations used in current session
+  const [generationsUsed, setGenerationsUsed] = useState(0);
+  const FREE_TIER_LIMIT = 3;
+
+  // Refetch subscription status on user change
+  useEffect(() => {
+    if (user) {
+      refetchSubscription();
+      setGenerationsUsed(0); // Reset counter on login
+    }
+  }, [user?.id, refetchSubscription]);
 
   // Extract resume content mutation
   const extractResumeMutation = useMutation({
@@ -269,6 +283,12 @@ export default function Generator() {
         setGenerationResult(data);
         setEditedResume(data.optimizedResume);
         setEditedCoverLetter(data.coverLetter);
+        
+        // Increment generation counter for Free users
+        if (!subscriptionStatus?.isPro || subscriptionStatus?.subscriptionStatus !== 'active') {
+          setGenerationsUsed(prev => prev + 1);
+        }
+        
         queryClient.invalidateQueries({ queryKey: ["/api/usage"] });
         setIsAIProcessing(false);
         manager.reset();
@@ -359,19 +379,30 @@ export default function Generator() {
 
   // Calculate remaining generations
   // Authenticated Pro users: unlimited (-1)
-  // Authenticated Free users or unauthenticated: 3 free generations
-  const remainingGenerations = subscriptionStatus?.isPro
-    ? -1
-    : 3;
+  // Authenticated Free users: 3 - used
+  const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';
+  const remainingGenerations = isPro ? -1 : FREE_TIER_LIMIT - generationsUsed;
 
-  const canGenerate = resumeFile && resumeContent.trim().length > 0 && jobDescription.trim().length >= 50 && !generateMutation.isPending;
+  // Can generate if: has file + content + job desc AND (is Pro OR has generations left)
+  const hasGenerationsLeft = isPro || remainingGenerations > 0;
+  const canGenerate = resumeFile && 
+                      resumeContent.trim().length > 0 && 
+                      jobDescription.trim().length >= 50 && 
+                      !generateMutation.isPending && 
+                      hasGenerationsLeft;
 
   const handleGenerateClick = () => {
-    if (!user && remainingGenerations <= 0) {
-      openAuthDialog({
-        title: "Sign in to continue",
-        description: "You've used all 3 free generations. Sign in to upgrade to Pro for unlimited generations."
-      });
+    // Check if user has generations remaining
+    if (!hasGenerationsLeft) {
+      if (!user) {
+        openAuthDialog({
+          title: "Sign in to upgrade",
+          description: "You've used all 3 free generations. Sign in to upgrade to Pro for unlimited generations."
+        });
+      } else {
+        // Logged in but no generations left - show upgrade modal
+        setShowSubscriptionModal(true);
+      }
       return;
     }
     generateMutation.mutate();
@@ -574,12 +605,15 @@ export default function Generator() {
                   size="lg"
                   className="px-8 py-4 text-black"
                   variant="accent"
+                  title={!hasGenerationsLeft ? "No generations remaining - Upgrade to Pro" : ""}
                 >
                   {generateMutation.isPending ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                       Generating...
                     </>
+                  ) : !hasGenerationsLeft ? (
+                    "Upgrade to Generate"
                   ) : (
                     "Generate Magic"
                   )}
@@ -587,30 +621,37 @@ export default function Generator() {
 
                 {/* Usage Counter */}
                 <div className="text-sm text-slate-600">
-                  {subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active' ? (
+                  {isPro ? (
                     <div className="flex items-center justify-center gap-2">
                       <Crown className="w-4 h-4 text-yellow-500" />
                       <span>Pro User - Unlimited generations</span>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center gap-4">
-                      <span>
-                        {remainingGenerations > 0
-                          ? `${remainingGenerations} free generations remaining`
-                          : "No free generations remaining"
-                        }
-                      </span>
-                      <Button
-                        variant="link"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleUpgradeClick();
-                        }}
-                        className="p-0 h-auto text-blue-600 hover:text-blue-700 cursor-pointer"
-                      >
-                        Upgrade to Pro
-                      </Button>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="flex items-center justify-center gap-4">
+                        <span className={remainingGenerations === 0 ? "text-red-600 font-semibold" : ""}>
+                          {user 
+                            ? `${remainingGenerations} generation${remainingGenerations !== 1 ? 's' : ''} remaining`
+                            : `${remainingGenerations} free generation${remainingGenerations !== 1 ? 's' : ''} remaining`
+                          }
+                        </span>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleUpgradeClick();
+                          }}
+                          className="p-0 h-auto text-blue-600 hover:text-blue-700 cursor-pointer font-semibold"
+                        >
+                          Upgrade to Pro
+                        </Button>
+                      </div>
+                      {remainingGenerations === 0 && (
+                        <p className="text-xs text-red-600">
+                          You've used all free generations. Upgrade to Pro for unlimited access!
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

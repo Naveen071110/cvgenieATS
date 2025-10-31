@@ -455,7 +455,7 @@ export function registerRoutes(app: Express) {
       // Initialize user record as FREE before creating checkout (if they don't exist)
       const { updateUserSubscription, getUserSubscription } = await import("./database/subscriptionQueries");
       const existingSubscription = await getUserSubscription(userId);
-      
+
       // Only initialize if user doesn't exist or is not already Pro
       if (!existingSubscription.dodoCustomerId) {
         await updateUserSubscription(userId, '', '', 'free');
@@ -476,21 +476,24 @@ export function registerRoutes(app: Express) {
   // GET /api/subscription/status - Get user's subscription status (requires auth)
   app.get("/api/subscription/status", requireAuth(), async (req, res) => {
     try {
-      const auth = getAuth(req);
-      const userId = auth?.userId;
+      const userId = req.auth?.userId;
 
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
+      // Always fetch fresh data from database, never cache
       const { getUserSubscription } = await import("./database/subscriptionQueries");
       const subscription = await getUserSubscription(userId);
 
+      // STRICT: User is Pro ONLY if both isPro=true AND subscriptionStatus='active'
+      const isPro = Boolean(subscription?.isPro === 1 && subscription?.subscriptionStatus === 'active');
+
       res.json({
-        isPro: subscription.isPro,
-        subscriptionStatus: subscription.subscriptionStatus,
-        dodoCustomerId: subscription.dodoCustomerId,
-        dodoSubscriptionId: subscription.dodoSubscriptionId,
+        isPro,
+        subscriptionStatus: subscription?.subscriptionStatus || 'free',
+        dodoCustomerId: subscription?.dodoCustomerId || undefined,
+        dodoSubscriptionId: subscription?.dodoSubscriptionId || undefined,
       });
     } catch (error: any) {
       console.error("Error fetching subscription status:", error);

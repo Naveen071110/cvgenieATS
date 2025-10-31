@@ -22,8 +22,19 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
       });
 
       if (response && response.paymentLink) {
-        // Open checkout in new tab
-        window.open(response.paymentLink, '_blank');
+        // Open checkout in new tab (use window.open with noopener for security)
+        const newWindow = window.open(response.paymentLink, '_blank', 'noopener,noreferrer');
+        
+        if (!newWindow) {
+          // Popup was blocked, show fallback
+          toast({
+            title: "Popup Blocked",
+            description: "Please allow popups and try again, or copy the payment link.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
         
         toast({
           title: "Checkout Opened",
