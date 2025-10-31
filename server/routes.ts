@@ -456,12 +456,6 @@ export function registerRoutes(app: Express) {
       const { updateUserSubscription } = await import("./database/subscriptionQueries");
       await updateUserSubscription(userId, '', '', 'free');
 
-      const session = await createCheckoutSession(userEmail, userName);er';
-
-      if (!userEmail) {
-        return res.status(400).json({ error: "User email not found" });
-      }
-
       const session = await createCheckoutSession(userEmail, userName);
       
       res.json({
