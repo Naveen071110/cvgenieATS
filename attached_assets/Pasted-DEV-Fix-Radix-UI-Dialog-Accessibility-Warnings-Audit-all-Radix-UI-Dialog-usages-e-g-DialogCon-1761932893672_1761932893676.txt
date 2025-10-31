@@ -1,0 +1,49 @@
+DEV: Fix Radix UI Dialog Accessibility Warnings
+
+Audit all Radix UI Dialog usages (e.g., DialogContent) triggered by “Upgrade to Pro.”
+
+For every Dialog:
+
+Ensure a <DialogTitle> component is present inside the <DialogContent>. If you want to visually hide the title, wrap it with Radix’s <VisuallyHidden> component as per docs: https://radix-ui.com/primitives/docs/components/dialog.
+
+Add <DialogDescription> or aria-describedby={...} to <DialogContent> so the Dialog is accessible for screen readers.
+
+Test with screen readers for full accessibility compliance.
+
+PROD: Fix HTTP Method/Fetch Error
+
+Update all frontend fetch/axios/HTTP requests to /api/subscription/create-checkout so that:
+
+The first argument to fetch (or axios) is always the endpoint URL, not the HTTP method. (Right now, it’s incorrectly using the endpoint as the method.)
+
+Example code (fetch):
+
+js
+fetch('/api/subscription/create-checkout', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ ...userData })
+})
+Example code (axios):
+
+js
+axios.post('/api/subscription/create-checkout', { ...userData })
+Ensure all calls to create-checkout are using POST (not GET or other methods).
+
+Validate server-side endpoint handles POST requests correctly, and responds with the Dodo Payments link on success.
+
+Testing
+
+In development: Open the Dialog for "Upgrade to Pro" and check for no Radix UI warnings in the console, and confirm accessible markup.
+
+In production: Click “Upgrade to Pro” and verify that request is sent with the POST method, and the response correctly opens the Dodo payment link.
+
+Key tips:
+
+Accessibility errors are required to be fixed for good UX and a11y compliance—always include readable title and description.
+
+HTTP fetch errors almost always stem from swapped argument order or misuse—method should be inside the fetch options object, never as a URL.
+
+If you use async handler or React Query/Mutation, ensure they call fetch/axios as above.
+
+Apply fix and verify in both environments.
