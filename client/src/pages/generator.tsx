@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { LoginDialog } from "@/components/LoginDialog";
+import { SubscriptionModal } from "@/components/SubscriptionModal";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import Lottie from "lottie-react";
 import DocumentUploadIcon from '@/assets/icons/document-upload.svg?react';
@@ -376,11 +377,17 @@ export default function Generator() {
     generateMutation.mutate();
   };
 
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+
   const handleUpgradeClick = () => {
-    openAuthDialog({
-      title: "Upgrade to Pro",
-      description: "Get unlimited generations, priority support, and advanced features."
-    });
+    if (!user) {
+      openAuthDialog({
+        title: "Sign in to upgrade",
+        description: "Please sign in to your account to upgrade to Pro."
+      });
+    } else {
+      setShowSubscriptionModal(true);
+    }
   };
 
   // Define default accepted types based on the new constants
@@ -818,6 +825,12 @@ export default function Generator() {
         currentStep={aiStep}
         progress={aiProgress}
         onComplete={() => setIsAIProcessing(false)}
+      />
+
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
       />
     </div>
   );
