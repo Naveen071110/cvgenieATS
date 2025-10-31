@@ -19,6 +19,7 @@ export function useSubscription() {
     staleTime: 30000, // 30 seconds
     retry: 1,
     refetchOnWindowFocus: true,
+    refetchOnMount: true, // Always fetch fresh data on mount
   });
 
   const refreshSubscription = () => {
