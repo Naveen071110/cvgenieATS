@@ -16,6 +16,28 @@ export const dodoClient = new DodoPayments({
 export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
 
 /**
+ * Debug function to list all available products in current environment
+ */
+export async function listAvailableProducts() {
+  try {
+    const products = await dodoClient.products.list({});
+    console.log('📦 Available products in Dodo Payments:');
+    if (products.products && products.products.length > 0) {
+      products.products.forEach((product: any) => {
+        console.log(`  - ${product.name}: ${product.product_id}`);
+      });
+      return products.products;
+    } else {
+      console.log('  ⚠️ No products found in current environment');
+      return [];
+    }
+  } catch (error: any) {
+    console.error('❌ Error listing products:', error.message);
+    return [];
+  }
+}
+
+/**
  * Get or create a Dodo Payments customer by email
  */
 export async function getOrCreateCustomer(email: string, name: string) {
@@ -62,14 +84,25 @@ export async function createCheckoutSession(
 
   // Log the product ID being used (first 10 chars only for security)
   console.log(`🔧 Using Product ID: ${productId.substring(0, 10)}...`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV === 'production' ? 'live_mode' : 'test_mode'}`);
 
   // Validate product ID format
-  if (!productId.startsWith('pdt_')) {
+  if (!productId.startsWith('pdt_') && !productId.startsWith('prod_')) {
     console.error(`❌ Invalid product ID format: ${productId}`);
-    throw new Error("Invalid Dodo Payments Product ID format. Must start with 'pdt_'");
+    throw new Error("Invalid Dodo Payments Product ID format. Must start with 'pdt_' or 'prod_'");
   }
 
   try {
+    // Debug: List all available products to verify configuration
+    console.log('🔍 Verifying product availability...');
+    const availableProducts = await listAvailableProducts();
+    const productExists = availableProducts.some((p: any) => p.product_id === productId);
+    
+    if (!productExists && availableProducts.length > 0) {
+      console.error(`❌ Product ID '${productId}' not found in available products`);
+      console.error(`💡 Available product IDs: ${availableProducts.map((p: any) => p.product_id).join(', ')}`);
+    }
+
     // Ensure customer exists before creating payment
     await getOrCreateCustomer(customerEmail, customerName);
 

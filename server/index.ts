@@ -7,6 +7,7 @@ import path from "path";
 import { initializeResumeTable } from "./database/resumeQueries";
 import { initializeUsageSessionsTable } from "./database/subscriptionQueries";
 import dodoWebhookRouter from "./webhooks/dodoPayments";
+import { listAvailableProducts, PRODUCT_ID } from "./services/dodoPayments";
 
 const app = express();
 
@@ -98,11 +99,32 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
   if (!dodoApiKey || !dodoProductId) {
     log("⚠️  WARNING: Dodo Payments not configured. Subscription features will not work.");
     log("⚠️  Set DODO_PAYMENTS_API_KEY and DODO_PAYMENTS_PRODUCT_ID in environment variables.");
-  } else if (!dodoProductId.startsWith('pdt_')) {
-    log("❌ ERROR: Invalid DODO_PAYMENTS_PRODUCT_ID format. Must start with 'pdt_'");
+  } else if (!dodoProductId.startsWith('pdt_') && !dodoProductId.startsWith('prod_')) {
+    log("❌ ERROR: Invalid DODO_PAYMENTS_PRODUCT_ID format. Must start with 'pdt_' or 'prod_'");
     log(`❌ Current value: ${dodoProductId}`);
   } else {
     log(`✅ Dodo Payments configured with Product ID: ${dodoProductId.substring(0, 10)}...`);
+    log(`🌍 Environment: ${process.env.NODE_ENV === 'production' ? 'LIVE MODE' : 'TEST MODE'}`);
+    
+    // Verify product exists in Dodo Payments
+    try {
+      log('🔍 Verifying Dodo Payments product configuration...');
+      const products = await listAvailableProducts();
+      const productExists = products.some((p: any) => p.product_id === PRODUCT_ID);
+      
+      if (productExists) {
+        log(`✅ Product verified: ${PRODUCT_ID.substring(0, 10)}... exists in Dodo Payments`);
+      } else {
+        log(`❌ WARNING: Product ID ${PRODUCT_ID} NOT FOUND in Dodo Payments!`);
+        if (products.length > 0) {
+          log(`💡 Available products: ${products.map((p: any) => `${p.name} (${p.product_id})`).join(', ')}`);
+        } else {
+          log(`⚠️ No products found. Please create a product in your Dodo Payments dashboard.`);
+        }
+      }
+    } catch (error: any) {
+      log(`⚠️ Could not verify Dodo Payments product: ${error.message}`);
+    }
   }
 
   // Serve SEO files with correct content types (before other routes)
