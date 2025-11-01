@@ -1,19 +1,19 @@
 import DodoPayments from 'dodopayments';
 
-if (!process.env.DODO_PAYMENTS_API_KEY) {
-  throw new Error('DODO_PAYMENTS_API_KEY is not set in environment variables');
+if (!process.env.DODOPAYMENTS_API_KEY) {
+  throw new Error('DODOPAYMENTS_API_KEY is not set in environment variables');
 }
 
-if (!process.env.DODO_PAYMENTS_PRODUCT_ID) {
-  throw new Error('DODO_PAYMENTS_PRODUCT_ID is not set in environment variables');
+if (!process.env.DODOPAYMENTSPRODUCTID) {
+  throw new Error('DODOPAYMENTSPRODUCTID is not set in environment variables');
 }
 
 export const dodoClient = new DodoPayments({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+  bearerToken: process.env.DODOPAYMENTS_API_KEY,
   environment: process.env.NODE_ENV === 'production' ? 'live_mode' : 'test_mode',
 });
 
-export const PRODUCT_ID = process.env.DODOPAYMENTS_PRODUCT_ID;
+export const PRODUCT_ID = process.env.DODOPAYMENTSPRODUCTID;
 
 /**
  * Get or create a Dodo Payments customer by email
