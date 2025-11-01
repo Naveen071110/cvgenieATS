@@ -474,7 +474,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // POST /api/subscription/create-checkout - Create Dodo Payments checkout session (requires auth)
+  // POST /api/subscription/create-checkout - Create Dodo Payments checkout link (requires auth)
   app.post("/api/subscription/create-checkout", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
@@ -483,6 +483,8 @@ export function registerRoutes(app: Express) {
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
+
+      console.log(`\n💳 Creating checkout link for user: ${userId}`);
 
       // Try to get email and name from Clerk backend first
       let userEmail = '';
@@ -549,28 +551,35 @@ export function registerRoutes(app: Express) {
         await updateUserSubscription(userId, '', '', 'free');
       }
 
-      // Create checkout session with userId in metadata for webhook mapping
-      const session = await createCheckoutSession(userEmail, userName, userId);
-
-      console.log(`Created checkout session for user ${userId}: ${session.sessionId}`);
+      // SIMPLIFIED: Use direct Dodo Payments checkout link
+      // This bypasses API issues and uses the proven working checkout page
+      const productId = process.env.DODO_PAYMENTS_PRODUCT_ID || 'pdt_4oZICjqHtM1kIMDDDEpTG';
+      
+      // Build checkout URL with prefilled customer information
+      const checkoutUrl = new URL(`https://checkout.dodopayments.com/buy/${productId}`);
+      checkoutUrl.searchParams.set('quantity', '1');
+      checkoutUrl.searchParams.set('prefilled_email', userEmail);
+      checkoutUrl.searchParams.set('prefilled_customer_name', userName);
+      // Add userId as customer reference for webhook identification
+      checkoutUrl.searchParams.set('customer_reference', userId);
+      
+      const paymentLink = checkoutUrl.toString();
+      
+      console.log(`✅ Generated direct checkout link for user ${userId}`);
+      console.log(`   Email: ${userEmail}`);
+      console.log(`   Name: ${userName}`);
+      console.log(`   Link: ${paymentLink}`);
 
       res.json({
-        paymentLink: session.paymentLink,
+        paymentLink,
       });
     } catch (error: any) {
-      console.error("Error creating checkout session:", error);
+      console.error("Error creating checkout link:", error);
       console.error("Error stack:", error.stack);
       
-      // Check if it's a product configuration error
-      if (error.message?.includes('Product configuration error')) {
-        res.status(500).json({ 
-          error: "Our payment system is temporarily misconfigured. Please contact support or try again later." 
-        });
-      } else {
-        res.status(500).json({ 
-          error: error.message || "Failed to create checkout session. Please try again." 
-        });
-      }
+      res.status(500).json({ 
+        error: error.message || "Failed to create checkout link. Please try again." 
+      });
     }
   });
 

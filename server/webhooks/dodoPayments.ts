@@ -16,10 +16,16 @@ interface WebhookPayload {
     subscription_id?: string;
     customer_id?: string;
     status?: string;
+    customer_reference?: string; // userId passed from checkout URL
+    metadata?: {
+      userId?: string; // Alternative location for userId
+      customer_reference?: string;
+    };
     customer?: {
       customer_id?: string;
       email?: string;
       name?: string;
+      customer_reference?: string;
     };
     subscription?: {
       subscription_id?: string;
@@ -92,16 +98,24 @@ async function handleSubscriptionCreated(payload: WebhookPayload) {
   const subscriptionId = payload.data.subscription?.subscription_id || payload.data.subscription_id;
   const customerId = payload.data.customer?.customer_id || payload.data.customer_id;
   const customerEmail = payload.data.customer?.email;
+  
+  // Try to get userId from multiple possible locations
+  const userId = payload.data.customer_reference || 
+                 payload.data.metadata?.userId ||
+                 payload.data.metadata?.customer_reference ||
+                 payload.data.customer?.customer_reference;
 
   console.log('Subscription created:', {
     subscriptionId,
     customerId,
     customerEmail,
+    userId,
   });
 
-  if (customerEmail && subscriptionId) {
+  if (subscriptionId) {
     await updateUserSubscriptionStatus(
-      customerEmail,
+      userId,
+      customerEmail || '',
       subscriptionId,
       customerId || '',
       'active'
@@ -113,15 +127,23 @@ async function handleSubscriptionUpdated(payload: WebhookPayload) {
   const subscriptionId = payload.data.subscription?.subscription_id || payload.data.subscription_id;
   const status = payload.data.subscription?.status || payload.data.status;
   const customerEmail = payload.data.customer?.email;
+  
+  // Try to get userId from multiple possible locations
+  const userId = payload.data.customer_reference || 
+                 payload.data.metadata?.userId ||
+                 payload.data.metadata?.customer_reference ||
+                 payload.data.customer?.customer_reference;
 
   console.log('Subscription updated:', {
     subscriptionId,
     status,
+    userId,
   });
 
-  if (customerEmail && status) {
+  if (status) {
     await updateUserSubscriptionStatus(
-      customerEmail,
+      userId,
+      customerEmail || '',
       subscriptionId || '',
       payload.data.customer?.customer_id || '',
       status
@@ -132,22 +154,29 @@ async function handleSubscriptionUpdated(payload: WebhookPayload) {
 async function handleSubscriptionCancelled(payload: WebhookPayload) {
   const subscriptionId = payload.data.subscription?.subscription_id || payload.data.subscription_id;
   const customerEmail = payload.data.customer?.email;
+  
+  // Try to get userId from multiple possible locations
+  const userId = payload.data.customer_reference || 
+                 payload.data.metadata?.userId ||
+                 payload.data.metadata?.customer_reference ||
+                 payload.data.customer?.customer_reference;
 
   console.log('Subscription cancelled:', {
     subscriptionId,
+    userId,
   });
 
-  if (customerEmail) {
-    await updateUserSubscriptionStatus(
-      customerEmail,
-      subscriptionId || '',
-      payload.data.customer?.customer_id || '',
-      'cancelled'
-    );
-  }
+  await updateUserSubscriptionStatus(
+    userId,
+    customerEmail || '',
+    subscriptionId || '',
+    payload.data.customer?.customer_id || '',
+    'cancelled'
+  );
 }
 
 async function updateUserSubscriptionStatus(
+  userId: string | undefined,
   email: string,
   subscriptionId: string,
   customerId: string,
@@ -156,15 +185,35 @@ async function updateUserSubscriptionStatus(
   try {
     const { updateUserSubscription, getUserByDodoCustomerId } = await import('../database/subscriptionQueries');
     
-    // First try to find user by Dodo customer ID
-    let userId = await getUserByDodoCustomerId(customerId);
+    // Priority 1: Use userId from customer_reference if available
+    let finalUserId = userId;
     
-    if (!userId) {
-      console.warn(`No user found with Dodo customer ID ${customerId}. Subscription update skipped.`);
+    // Priority 2: Try to find user by Dodo customer ID if userId not provided
+    if (!finalUserId && customerId) {
+      finalUserId = await getUserByDodoCustomerId(customerId);
+    }
+    
+    // Priority 3: Try to find by email as last resort
+    if (!finalUserId && email) {
+      const { clerkClient } = await import('@clerk/express');
+      try {
+        // Search for user by email in Clerk
+        const users = await clerkClient.users.getUserList({ emailAddress: [email] });
+        if (users.data && users.data.length > 0) {
+          finalUserId = users.data[0].id;
+          console.log(`Found user by email lookup: ${finalUserId}`);
+        }
+      } catch (emailError) {
+        console.error('Error looking up user by email:', emailError);
+      }
+    }
+    
+    if (!finalUserId) {
+      console.warn(`⚠️ Could not identify user. customerId: ${customerId}, email: ${email}, userId: ${userId}. Subscription update skipped.`);
       return;
     }
 
-    console.log(`Updating subscription for user ${userId} (${email}):`, {
+    console.log(`Updating subscription for user ${finalUserId} (${email}):`, {
       subscriptionId,
       customerId,
       status,
@@ -173,12 +222,12 @@ async function updateUserSubscriptionStatus(
     // STRICT: Only set Pro if status is explicitly "active"
     // Any other status (cancelled, expired, paused, etc.) = FREE tier
     if (status === 'active') {
-      await updateUserSubscription(userId, customerId, subscriptionId, 'active');
-      console.log(`✅ Successfully activated Pro subscription for user ${userId}`);
+      await updateUserSubscription(finalUserId, customerId, subscriptionId, 'active');
+      console.log(`✅ Successfully activated Pro subscription for user ${finalUserId}`);
     } else {
       // For any other status, explicitly set to free
-      await updateUserSubscription(userId, customerId, subscriptionId, 'free');
-      console.log(`❌ Deactivated Pro subscription for user ${userId}, status: ${status}`);
+      await updateUserSubscription(finalUserId, customerId, subscriptionId, 'free');
+      console.log(`❌ Deactivated Pro subscription for user ${finalUserId}, status: ${status}`);
     }
   } catch (error) {
     console.error('Error updating user subscription status:', error);

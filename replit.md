@@ -10,15 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2025)
 
-### Dodo Payments Environment Mode Fix (November 1, 2025)
-- **Critical Bug Fixed**: App was forcing `test_mode` when `NODE_ENV !== 'production'`, causing API key/environment mismatches
-- **Environment Control**: Added explicit `DODO_PAYMENTS_MODE` environment variable for independent environment selection
-- **Default Changed**: Now defaults to `live_mode` instead of `test_mode` to match production API keys
-- **Comprehensive Logging**: Added detailed logging for all Dodo Payments requests with timestamps, environment, and product verification
-- **Startup Verification**: Server now verifies product exists in configured environment on startup
-- **Enhanced Error Handling**: Added specific handlers for 401 (auth) and 404 (product not found) errors with diagnostic guidance
-- **Product Validation**: Real-time product existence check before every checkout attempt
-- **Diagnostic Tools**: Created comprehensive diagnostic documentation (DODO_PAYMENTS_DIAGNOSTIC.md and IMPLEMENTATION_SUMMARY.md)
+### Dodo Payments Direct Checkout Implementation (November 1, 2025)
+- **MAJOR CHANGE**: Switched from API-based checkout to direct Dodo Payments checkout links
+- **Simplified Integration**: Now generates direct checkout URLs instead of calling Dodo Payments API
+- **Checkout URL Format**: `https://checkout.dodopayments.com/buy/{productId}?prefilled_email=...&customer_reference={userId}`
+- **Eliminated API Issues**: No more API key/environment mismatch problems - uses proven working checkout page
+- **User Tracking**: Passes userId as `customer_reference` parameter for webhook identification
+- **Enhanced Webhook**: Updated webhook to extract userId from multiple possible locations (customer_reference, metadata)
+- **Fallback User Lookup**: Webhook can identify users by customer_reference, Dodo customer ID, or Clerk email lookup
+- **Comprehensive Logging**: Added detailed logging for checkout link generation with user info
+- **Diagnostic Tools**: Created DODO_PAYMENTS_DIAGNOSTIC.md and IMPLEMENTATION_SUMMARY.md for troubleshooting
 
 ### Pro Subscription Checkout Fix (January 27, 2025)
 - **Enhanced Email Extraction**: Improved checkout flow to reliably extract user email from Clerk
