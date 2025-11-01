@@ -1,0 +1,151 @@
+Context
+
+Clicking “Upgrade to Pro” throws “user email does not exist”.
+
+Pro checkout must work in dev and prod.
+
+“Resume History” must be visible/accessible only to active Pro subscribers.
+
+Tasks
+
+A) Harden the create‑checkout backend endpoint
+Goal: The server must derive the user’s email and name from the authenticated session, not from the client, and must gracefully handle missing emails. Then it should return a valid Dodo checkout/payment link.
+
+Steps:
+
+In the POST /api/subscription/create-checkout handler:
+
+Require an authenticated session. If not logged in, return 401.
+
+Get userId from the session.
+
+Fetch the user profile on the server and derive:
+
+email = primary email (fall back to first verified email, or first available email; never trust client body)
+
+name = firstName + lastName if present; otherwise username; otherwise “CVgenie User”
+
+If email is still missing after server fetch, return 400 with a clear message: “No email on account. Please add an email to your profile to subscribe.”
+
+Call the existing payments helper to create a checkout session. If your payments helper assumes an existing customer, implement “find‑or‑create customer by email” before creating the payment so there’s no “user email does not exist” failure.
+
+Include metadata { userId } with the payment/subscription so webhooks can map back to your user later.
+
+Return { paymentLink } in JSON.
+
+Implementation notes:
+
+Do not read email/name from the request body. Always derive from the server‑side session/user profile.
+
+If the Dodo SDK requires a customer record, add a lightweight “getOrCreateCustomer(email, name)” step:
+
+Try retrieve by email; if not found, create customer; then proceed to payment creation.
+
+Ensure the endpoint only handles POST.
+
+Method/headers correctness:
+
+Enforce POST only.
+
+Return JSON with { paymentLink } or an error message.
+
+Set proper error responses (400, 401, 500) with clear messages.
+
+B) Fix all “Upgrade to Pro” button handlers (frontend)
+Goal: Correctly call the POST endpoint and then open the payment link in a new tab. Do not navigate inside the app.
+
+Steps:
+
+Replace any direct routes or wrong fetch usage with:
+
+fetch('/api/subscription/create-checkout', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' }
+})
+.then(r => r.json())
+.then(({ paymentLink }) => window.open(paymentLink, '_blank', 'noopener'))
+.catch(show toast error).
+
+Add a loading state on click and a toast on failure.
+
+Ensure every “Upgrade to Pro” entry point (pricing page, banners, generator page, locked states) uses the same function above.
+
+C) Gate “Resume History” to active Pro only
+Goal: Only active Pro subscribers can see/use Resume History (both UI and API).
+
+Steps:
+
+Backend guard:
+
+In the GET /api/resume/history (and any related endpoints):
+
+Require session.
+
+Read subscription from your database for userId.
+
+If not active Pro, return 403 { error: 'Pro required' }.
+
+Frontend guard:
+
+Hide the “Resume History” link and page for non‑Pro users.
+
+If a non‑Pro user navigates directly (deep link), show a “Locked” view with the Upgrade button (using the unified handler above).
+
+D) Fix Radix Dialog accessibility warnings (dev)
+Goal: Remove console warnings and ensure a11y.
+
+Steps:
+
+In any “Upgrade to Pro” dialog components using Radix:
+
+Add <DialogTitle> inside <DialogContent>. If you want it visually hidden, wrap with <VisuallyHidden>.
+
+Add <DialogDescription> or set aria-describedby on <DialogContent>.
+
+Re-run and confirm console warnings are gone.
+
+E) Defensive checks and tests
+
+Add server‑side validation:
+
+If the session exists but no email, respond 400 with a helpful error. Frontend should show a toast telling the user to add an email in profile.
+
+Add error logging around create‑checkout to surface Dodo SDK errors (customer not found, invalid product, etc.).
+
+Test matrix:
+
+Dev and Prod: Free user logs in → clicks Upgrade → new tab opens Dodo checkout.
+
+User without email: click Upgrade → friendly error asking to add email.
+
+After successful purchase: webhook/verification flips isPro=true and subscriptionStatus='active'. UI hides Upgrade buttons, Resume History shows.
+
+Non‑Pro: Resume History link hidden and API returns 403 if called directly.
+
+F) Cleanup and consistency
+
+Ensure on every login/session restore the app reads subscription/tier from your database (not from client cache) so Pro/Free is accurate.
+
+Clear any localStorage flags that could force Pro state.
+
+Confirm the payments metadata includes userId so future webhooks can update the correct record.
+
+Deliverables
+
+Updated backend handler for POST /api/subscription/create-checkout (server‑derived email/name; getOrCreate customer; returns { paymentLink }).
+
+Unified frontend upgrade handler used across all Upgrade buttons that posts to the endpoint and window.open’s the link.
+
+Backend guards for Resume History and frontend conditional rendering/locked view.
+
+Radix Dialog title/description fixes; no console warnings.
+
+Brief test notes proving the cases above work in dev and prod.
+
+If any relevant files besides the subscription/payments helpers are involved (auth/session middleware, user fetch helper, resume history API, and the components that render Upgrade buttons), please open and edit those too to complete this change end‑to‑end.
+
+
+
+
+
+

@@ -15,8 +15,43 @@ export const dodoClient = new DodoPayments({
 
 export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
 
-export async function createCheckoutSession(userEmail: string, userName: string) {
+/**
+ * Get or create a Dodo Payments customer by email
+ */
+export async function getOrCreateCustomer(email: string, name: string) {
   try {
+    // Try to find existing customer by email
+    const customers = await dodoClient.customers.list({});
+    const existingCustomer = customers.customers?.find((c: any) => c.email === email);
+    
+    if (existingCustomer) {
+      return {
+        customerId: existingCustomer.customer_id,
+        email: existingCustomer.email,
+      };
+    }
+    
+    // Create new customer if not found
+    const newCustomer = await dodoClient.customers.create({
+      email,
+      name,
+    });
+    
+    return {
+      customerId: newCustomer.customer_id,
+      email: newCustomer.email,
+    };
+  } catch (error) {
+    console.error('Error getting or creating customer:', error);
+    throw new Error('Failed to get or create customer');
+  }
+}
+
+export async function createCheckoutSession(userEmail: string, userName: string, userId: string) {
+  try {
+    // Ensure customer exists before creating payment
+    await getOrCreateCustomer(userEmail, userName);
+    
     const session = await dodoClient.payments.create({
       payment_link: true,
       customer: {
@@ -34,15 +69,19 @@ export async function createCheckoutSession(userEmail: string, userName: string)
         product_id: PRODUCT_ID,
         quantity: 1,
       }],
+      metadata: {
+        userId,
+      },
     });
 
     return {
       sessionId: session.payment_id,
       paymentLink: session.payment_link || '',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating Dodo Payments checkout session:', error);
-    throw new Error('Failed to create checkout session');
+    console.error('Dodo error details:', error.message, error.response?.data);
+    throw new Error(`Failed to create checkout session: ${error.message}`);
   }
 }
 

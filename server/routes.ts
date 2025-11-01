@@ -359,7 +359,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // GET /api/resume-history - Fetch resume history from NEON POSTGRES ONLY (requires auth)
+  // GET /api/resume-history - Fetch resume history from NEON POSTGRES ONLY (requires auth and active Pro)
   app.get("/api/resume-history", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
@@ -367,6 +367,19 @@ export function registerRoutes(app: Express) {
 
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      // Check if user has active Pro subscription
+      const { getUserSubscription } = await import("./database/subscriptionQueries");
+      const subscription = await getUserSubscription(userId);
+      
+      const isPro = subscription.isPro && subscription.subscriptionStatus === 'active';
+      
+      if (!isPro) {
+        return res.status(403).json({ 
+          error: "Pro subscription required",
+          message: "Resume History is a Pro feature. Upgrade to access your saved resumes."
+        });
       }
 
       // FETCH FROM NEON POSTGRES EXTERNAL DATABASE ONLY
@@ -379,7 +392,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // GET /api/resume-history/:id - Fetch single resume by ID from NEON POSTGRES ONLY (requires auth)
+  // GET /api/resume-history/:id - Fetch single resume by ID from NEON POSTGRES ONLY (requires auth and active Pro)
   app.get("/api/resume-history/:id", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
@@ -392,6 +405,19 @@ export function registerRoutes(app: Express) {
 
       if (isNaN(resumeId)) {
         return res.status(400).json({ error: "Invalid resume ID" });
+      }
+
+      // Check if user has active Pro subscription
+      const { getUserSubscription } = await import("./database/subscriptionQueries");
+      const subscription = await getUserSubscription(userId);
+      
+      const isPro = subscription.isPro && subscription.subscriptionStatus === 'active';
+      
+      if (!isPro) {
+        return res.status(403).json({ 
+          error: "Pro subscription required",
+          message: "Resume History is a Pro feature. Upgrade to access your saved resumes."
+        });
       }
 
       const resume = await getResumeById(resumeId, userId);
@@ -407,7 +433,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // DELETE /api/resume-history/:id - Delete resume from NEON POSTGRES ONLY (requires auth)
+  // DELETE /api/resume-history/:id - Delete resume from NEON POSTGRES ONLY (requires auth and active Pro)
   app.delete("/api/resume-history/:id", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
@@ -420,6 +446,19 @@ export function registerRoutes(app: Express) {
 
       if (isNaN(resumeId)) {
         return res.status(400).json({ error: "Invalid resume ID" });
+      }
+
+      // Check if user has active Pro subscription
+      const { getUserSubscription } = await import("./database/subscriptionQueries");
+      const subscription = await getUserSubscription(userId);
+      
+      const isPro = subscription.isPro && subscription.subscriptionStatus === 'active';
+      
+      if (!isPro) {
+        return res.status(403).json({ 
+          error: "Pro subscription required",
+          message: "Resume History is a Pro feature. Upgrade to access your saved resumes."
+        });
       }
 
       const deleted = await deleteResume(resumeId, userId);
@@ -445,11 +484,28 @@ export function registerRoutes(app: Express) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      const userEmail = auth.sessionClaims?.email as string || '';
-      const userName = auth.sessionClaims?.name as string || auth.sessionClaims?.firstName as string || 'User';
+      // Derive email and name from session claims (server-side, never trust client)
+      const sessionClaims = auth.sessionClaims as any;
+      let userEmail = sessionClaims?.email as string || '';
+      let userName = '';
+      
+      // Try to get name from various sources
+      if (sessionClaims?.name) {
+        userName = sessionClaims.name;
+      } else if (sessionClaims?.firstName || sessionClaims?.lastName) {
+        userName = `${sessionClaims.firstName || ''} ${sessionClaims.lastName || ''}`.trim();
+      } else if (sessionClaims?.username) {
+        userName = sessionClaims.username;
+      } else {
+        userName = 'CVGenie User';
+      }
 
-      if (!userEmail) {
-        return res.status(400).json({ error: "User email not found" });
+      // Strict email validation - must have email to subscribe
+      if (!userEmail || userEmail.trim() === '') {
+        console.error(`User ${userId} attempted checkout without email`);
+        return res.status(400).json({ 
+          error: "No email on account. Please add an email to your profile to subscribe." 
+        });
       }
 
       // Initialize user record as FREE before creating checkout (if they don't exist)
@@ -461,15 +517,20 @@ export function registerRoutes(app: Express) {
         await updateUserSubscription(userId, '', '', 'free');
       }
 
-      const session = await createCheckoutSession(userEmail, userName);
+      // Create checkout session with userId in metadata for webhook mapping
+      const session = await createCheckoutSession(userEmail, userName, userId);
+
+      console.log(`Created checkout session for user ${userId}: ${session.sessionId}`);
 
       res.json({
-        sessionId: session.sessionId,
         paymentLink: session.paymentLink,
       });
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
-      res.status(500).json({ error: "Failed to create checkout session" });
+      console.error("Error stack:", error.stack);
+      res.status(500).json({ 
+        error: error.message || "Failed to create checkout session. Please try again." 
+      });
     }
   });
 
