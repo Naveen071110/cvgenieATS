@@ -5,12 +5,27 @@ import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
+import { useQuery } from "@tanstack/react-query";
+
+interface SubscriptionStatus {
+  isPro: boolean;
+  subscriptionStatus: string;
+}
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, signOut, isLoading } = useAuth();
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
+  
+  // Check subscription status for Pro features
+  const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
+    queryKey: ["/api/subscription/status"],
+    enabled: !!user,
+    retry: false,
+  });
+
+  const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,7 +100,7 @@ export default function Header() {
               >
                 Generator
               </Link>
-              {user && (
+              {user && isPro && (
                 <Link 
                   to="/resume-history"
                   className="text-body transition-colors text-gray-600 hover:text-primary"
@@ -232,7 +247,7 @@ export default function Header() {
               >
                 Generator
               </Link>
-              {user && (
+              {user && isPro && (
                 <Link
                   to="/resume-history"
                   className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"

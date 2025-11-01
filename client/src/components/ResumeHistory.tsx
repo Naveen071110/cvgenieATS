@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Trash2, FileText, Loader2 } from 'lucide-react';
+import { Download, Trash2, FileText, Loader2, Lock, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useQuery } from '@tanstack/react-query';
+import { SubscriptionModal } from './SubscriptionModal';
 
 interface Resume {
   id: number;
@@ -14,20 +16,35 @@ interface Resume {
   updated_at: string;
 }
 
+interface SubscriptionStatus {
+  isPro: boolean;
+  subscriptionStatus: string;
+}
+
 export default function ResumeHistory() {
   const { getToken, isSignedIn } = useAuth();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { toast } = useToast();
 
+  // Check subscription status
+  const { data: subscriptionStatus, isLoading: isLoadingSubscription } = useQuery<SubscriptionStatus>({
+    queryKey: ["/api/subscription/status"],
+    enabled: !!isSignedIn,
+    retry: false,
+  });
+
+  const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';
+
   useEffect(() => {
-    if (isSignedIn) {
+    if (isSignedIn && isPro) {
       fetchResumes();
     } else {
       setLoading(false);
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, isPro]);
 
   const fetchResumes = async () => {
     try {
@@ -40,6 +57,16 @@ export default function ResumeHistory() {
       });
 
       if (!response.ok) {
+        if (response.status === 403) {
+          // Pro subscription required
+          const errorData = await response.json();
+          toast({
+            title: 'Pro Feature',
+            description: errorData.message || 'Resume History requires an active Pro subscription.',
+            variant: 'destructive',
+          });
+          return;
+        }
         throw new Error('Failed to fetch resume history');
       }
 
@@ -133,7 +160,65 @@ export default function ResumeHistory() {
     );
   }
 
-  if (loading) {
+  // Show Pro upgrade view if user is not Pro
+  if (isSignedIn && !isLoadingSubscription && !isPro) {
+    return (
+      <>
+        <div className="container mx-auto px-4 py-16 text-center" data-testid="container-pro-required">
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader className="text-center pb-4">
+              <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary/20 to-blue-100 flex items-center justify-center">
+                <Lock className="h-10 w-10 text-primary" />
+              </div>
+              <CardTitle className="text-3xl mb-2">Resume History</CardTitle>
+              <CardDescription className="text-base">
+                Unlock unlimited access to all your saved resumes
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-gradient-to-br from-primary/5 to-blue-50 rounded-lg p-6">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Crown className="h-6 w-6 text-primary" />
+                  <h3 className="text-xl font-semibold">Pro Feature</h3>
+                </div>
+                <p className="text-muted-foreground text-center mb-4">
+                  Resume History is exclusively available to Pro subscribers. Upgrade now to:
+                </p>
+                <ul className="text-left space-y-2 max-w-md mx-auto">
+                  <li className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span>Access all your saved resumes anytime</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Download className="h-4 w-4 text-primary" />
+                    <span>Download resumes in multiple formats</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Crown className="h-4 w-4 text-primary" />
+                    <span>Unlimited resume generations</span>
+                  </li>
+                </ul>
+              </div>
+              <Button
+                onClick={() => setShowUpgradeModal(true)}
+                className="w-full max-w-md mx-auto bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white font-semibold py-6 text-lg"
+                data-testid="button-upgrade-to-pro"
+              >
+                <Crown className="mr-2 h-5 w-5" />
+                Upgrade to Pro
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+        <SubscriptionModal 
+          isOpen={showUpgradeModal} 
+          onClose={() => setShowUpgradeModal(false)} 
+        />
+      </>
+    );
+  }
+
+  if (loading || isLoadingSubscription) {
     return (
       <div className="container mx-auto px-4 py-16 text-center" data-testid="container-loading">
         <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
