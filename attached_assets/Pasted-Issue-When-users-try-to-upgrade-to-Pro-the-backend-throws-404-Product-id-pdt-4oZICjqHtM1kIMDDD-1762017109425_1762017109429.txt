@@ -1,0 +1,55 @@
+Issue:
+When users try to upgrade to Pro, the backend throws:
+404 Product id 'pdt_4oZICjqHtM1kIMDDDEpTG' does not exist
+
+What’s happening:
+
+The Dodo Payments API is rejecting the checkout session creation because the PRODUCTID used does not match an active product in your Dodo Payments dashboard.
+
+Instructions to resolve:
+
+Double-check the Dodo Payments product setup:
+
+Go to your Dodo Payments dashboard.
+
+Verify the actual Product ID for your Pro subscription product. It should start with pdt_ and be listed under products.
+
+Copy the Product ID exactly as shown (beware of leading/trailing spaces).
+
+Update the environment variables / code:
+
+In your deployment environment (Replit, .env, or wherever secrets are set), update DODOPAYMENTSPRODUCTID to the correct product id from Dodo Payments.
+
+If there are separate .env files for dev and prod, make sure both are updated and reloaded.
+
+Also check for any hardcoded product ids in dodoPayments.ts or elsewhere in your code; replace with the correct one if needed.
+
+Restart/redeploy the app:
+
+Make sure to fully restart or redeploy the backend so new environment variables are loaded.
+
+(Optional, for robustness):
+
+Add error handling when creating checkout sessions. If the Dodo API returns 404 for the product id, log the actual product id being sent, and respond with a clear message.
+
+Add a startup log or health endpoint that verifies the correct product id is available in the environment, and fails loudly if not.
+
+Test the fix:
+
+Click “Upgrade to Pro” again—checkout should now initiate and send users to a valid payment page.
+
+If there is still an error, log the full thrown product id and check again in Dodo Payments dashboard.
+
+Summary of what to tell the agent:
+
+Update the environment configuration so the Dodo Payments product id is the active, existing id from the dashboard.
+
+Remove any hardcoded or outdated product ids from code.
+
+Restart/redeploy and test.
+
+Add better error handling for this case.
+
+If you use multiple environments (dev, prod), update both.
+
+Once this is done, the upgrade to pro should work for all users in both dev and production.
