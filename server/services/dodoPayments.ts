@@ -8,12 +8,43 @@ if (!process.env.DODO_PAYMENTS_PRODUCT_ID) {
   throw new Error('DODO_PAYMENTS_PRODUCT_ID is not set in environment variables');
 }
 
+/**
+ * Determine Dodo Payments environment mode
+ * Priority:
+ * 1. Explicit DODO_PAYMENTS_MODE env var ('live' or 'test')
+ * 2. Default to 'live_mode' for production-like deployments
+ * 
+ * NOTE: This is independent of NODE_ENV to allow testing live mode in development
+ */
+const getDodoEnvironment = (): 'live_mode' | 'test_mode' => {
+  const explicitMode = process.env.DODO_PAYMENTS_MODE?.toLowerCase();
+  
+  if (explicitMode === 'live' || explicitMode === 'live_mode') {
+    return 'live_mode';
+  }
+  
+  if (explicitMode === 'test' || explicitMode === 'test_mode') {
+    return 'test_mode';
+  }
+  
+  // Default to live_mode if not explicitly set
+  // This allows live keys to work in development environment
+  return 'live_mode';
+};
+
+export const DODO_ENVIRONMENT = getDodoEnvironment();
+export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
+
+// Log configuration at startup
+console.log('🔧 Dodo Payments Configuration:');
+console.log(`   Environment: ${DODO_ENVIRONMENT}`);
+console.log(`   Product ID: ${PRODUCT_ID.substring(0, 15)}...`);
+console.log(`   API Key: ${process.env.DODO_PAYMENTS_API_KEY?.substring(0, 10)}...`);
+
 export const dodoClient = new DodoPayments({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  environment: process.env.NODE_ENV === 'production' ? 'live_mode' : 'test_mode',
+  environment: DODO_ENVIRONMENT,
 });
-
-export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
 
 /**
  * Debug function to list all available products in current environment
@@ -75,16 +106,20 @@ export async function createCheckoutSession(
   userId: string
 ): Promise<{ sessionId: string; paymentLink: string }> {
   const apiKey = process.env.DODO_PAYMENTS_API_KEY;
-  const productId = process.env.DODO_PAYMENTS_PRODUCT_ID;
+  const productId = PRODUCT_ID;
+  const requestTimestamp = new Date().toISOString();
+
+  console.log('\n🛒 ===== CHECKOUT SESSION REQUEST =====');
+  console.log(`📅 Timestamp: ${requestTimestamp}`);
+  console.log(`👤 Customer: ${customerEmail} (User ID: ${userId})`);
+  console.log(`🌍 Dodo Environment: ${DODO_ENVIRONMENT}`);
+  console.log(`🆔 Product ID: ${productId}`);
+  console.log(`🔑 API Key (first 10 chars): ${apiKey?.substring(0, 10)}...`);
 
   if (!apiKey || !productId) {
     console.error("❌ Missing Dodo Payments configuration");
     throw new Error("Dodo Payments API key or Product ID not configured");
   }
-
-  // Log the product ID being used (first 10 chars only for security)
-  console.log(`🔧 Using Product ID: ${productId.substring(0, 10)}...`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV === 'production' ? 'live_mode' : 'test_mode'}`);
 
   // Validate product ID format
   if (!productId.startsWith('pdt_') && !productId.startsWith('prod_')) {
@@ -94,18 +129,32 @@ export async function createCheckoutSession(
 
   try {
     // Debug: List all available products to verify configuration
-    console.log('🔍 Verifying product availability...');
+    console.log('🔍 Verifying product availability in Dodo Payments...');
     const availableProducts = await listAvailableProducts();
     const productExists = availableProducts.some((p: any) => p.product_id === productId);
     
-    if (!productExists && availableProducts.length > 0) {
-      console.error(`❌ Product ID '${productId}' not found in available products`);
-      console.error(`💡 Available product IDs: ${availableProducts.map((p: any) => p.product_id).join(', ')}`);
+    if (!productExists) {
+      console.error(`❌ CRITICAL: Product ID '${productId}' NOT FOUND in Dodo Payments ${DODO_ENVIRONMENT}`);
+      if (availableProducts.length > 0) {
+        console.error(`💡 Available products in ${DODO_ENVIRONMENT}:`);
+        availableProducts.forEach((p: any) => {
+          console.error(`   - ${p.name}: ${p.product_id}`);
+        });
+      } else {
+        console.error(`⚠️ No products found in ${DODO_ENVIRONMENT}. Check your Dodo dashboard.`);
+      }
+      throw new Error(`Product not found in ${DODO_ENVIRONMENT}. Please verify your product exists in the correct environment.`);
+    } else {
+      console.log(`✅ Product verified: ${productId} exists in ${DODO_ENVIRONMENT}`);
     }
 
     // Ensure customer exists before creating payment
+    console.log(`👤 Getting or creating customer: ${customerEmail}`);
     await getOrCreateCustomer(customerEmail, customerName);
 
+    console.log('💳 Creating payment session...');
+    console.log(`📦 Request payload: product_cart=[{product_id: "${PRODUCT_ID}", quantity: 1}]`);
+    
     const session = await dodoClient.payments.create({
       payment_link: true,
       customer: {
@@ -127,24 +176,51 @@ export async function createCheckoutSession(
         userId,
       },
     });
+    
+    console.log(`✅ Payment session created successfully: ${session.payment_id}`);
 
     return {
       sessionId: session.payment_id,
       paymentLink: session.payment_link || '',
     };
   } catch (error: any) {
-    console.error('Error creating Dodo Payments checkout session:', error);
-    console.error('Dodo error details:', error.message, error.response?.data);
-
+    console.error('\n❌ ===== CHECKOUT SESSION FAILED =====');
+    console.error(`📅 Timestamp: ${new Date().toISOString()}`);
+    console.error(`🌍 Environment: ${DODO_ENVIRONMENT}`);
+    console.error(`🆔 Product ID: ${productId}`);
+    console.error(`👤 Customer: ${customerEmail}`);
+    console.error(`🔴 Error Type: ${error.constructor.name}`);
+    console.error(`🔴 Error Message: ${error.message}`);
+    console.error(`🔴 Status Code: ${error.status || error.response?.status || 'N/A'}`);
+    console.error(`🔴 Response Data:`, JSON.stringify(error.response?.data || error.body || 'No response data', null, 2));
+    
     // Specific handling for 404 product not found
-    if (error.response?.status === 404 && error.response?.data?.error?.includes('Product id')) {
-      console.error(`❌ Product ID '${productId}' does not exist in Dodo Payments dashboard`);
+    if ((error.status === 404 || error.response?.status === 404)) {
+      console.error(`\n⚠️ DIAGNOSIS: Product ID '${productId}' does not exist in ${DODO_ENVIRONMENT}`);
+      console.error(`💡 ACTION REQUIRED:`);
+      console.error(`   1. Verify product exists in Dodo Payments dashboard in ${DODO_ENVIRONMENT}`);
+      console.error(`   2. Check that API key matches the environment (live vs test)`);
+      console.error(`   3. Ensure product is active and not archived`);
       throw new Error(
-        `Product configuration error: The Product ID '${productId}' does not exist in your Dodo Payments dashboard. ` +
-        `Please verify the correct Product ID in your Dodo Payments dashboard and update the DODOPAYMENTSPRODUCTID environment variable.`
+        `Product configuration error: The Product ID '${productId}' does not exist in your Dodo Payments ${DODO_ENVIRONMENT} dashboard. ` +
+        `Please verify the correct Product ID and ensure your API key matches the environment.`
+      );
+    }
+    
+    // Handling for 401 unauthorized (wrong API key or environment mismatch)
+    if (error.status === 401 || error.response?.status === 401) {
+      console.error(`\n⚠️ DIAGNOSIS: API key authentication failed for ${DODO_ENVIRONMENT}`);
+      console.error(`💡 ACTION REQUIRED:`);
+      console.error(`   1. Verify DODO_PAYMENTS_API_KEY is for ${DODO_ENVIRONMENT}`);
+      console.error(`   2. Check that API key is not expired or revoked`);
+      console.error(`   3. Confirm you're using the correct environment (live vs test)`);
+      throw new Error(
+        `Authentication error: API key does not match ${DODO_ENVIRONMENT}. ` +
+        `Please verify your DODO_PAYMENTS_API_KEY is the correct ${DODO_ENVIRONMENT} key.`
       );
     }
 
+    console.error('=====================================\n');
     throw new Error(`Failed to create checkout session: ${error.message}`);
   }
 }

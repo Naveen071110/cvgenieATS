@@ -103,8 +103,8 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
     log("❌ ERROR: Invalid DODO_PAYMENTS_PRODUCT_ID format. Must start with 'pdt_' or 'prod_'");
     log(`❌ Current value: ${dodoProductId}`);
   } else {
-    log(`✅ Dodo Payments configured with Product ID: ${dodoProductId.substring(0, 10)}...`);
-    log(`🌍 Environment: ${process.env.NODE_ENV === 'production' ? 'LIVE MODE' : 'TEST MODE'}`);
+    // Note: Dodo environment logging is now in dodoPayments.ts on import
+    log(`✅ Dodo Payments Product ID configured: ${dodoProductId.substring(0, 15)}...`);
     
     // Verify product exists in Dodo Payments
     try {
@@ -113,7 +113,7 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
       const productExists = products.some((p: any) => p.product_id === PRODUCT_ID);
       
       if (productExists) {
-        log(`✅ Product verified: ${PRODUCT_ID.substring(0, 10)}... exists in Dodo Payments`);
+        log(`✅ Product verified successfully in Dodo Payments`);
       } else {
         log(`❌ WARNING: Product ID ${PRODUCT_ID} NOT FOUND in Dodo Payments!`);
         if (products.length > 0) {
@@ -124,6 +124,7 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
       }
     } catch (error: any) {
       log(`⚠️ Could not verify Dodo Payments product: ${error.message}`);
+      log(`💡 This may indicate an API key or environment mismatch.`);
     }
   }
 

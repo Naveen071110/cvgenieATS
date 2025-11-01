@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2025)
 
+### Dodo Payments Environment Mode Fix (November 1, 2025)
+- **Critical Bug Fixed**: App was forcing `test_mode` when `NODE_ENV !== 'production'`, causing API key/environment mismatches
+- **Environment Control**: Added explicit `DODO_PAYMENTS_MODE` environment variable for independent environment selection
+- **Default Changed**: Now defaults to `live_mode` instead of `test_mode` to match production API keys
+- **Comprehensive Logging**: Added detailed logging for all Dodo Payments requests with timestamps, environment, and product verification
+- **Startup Verification**: Server now verifies product exists in configured environment on startup
+- **Enhanced Error Handling**: Added specific handlers for 401 (auth) and 404 (product not found) errors with diagnostic guidance
+- **Product Validation**: Real-time product existence check before every checkout attempt
+- **Diagnostic Tools**: Created comprehensive diagnostic documentation (DODO_PAYMENTS_DIAGNOSTIC.md and IMPLEMENTATION_SUMMARY.md)
+
 ### Pro Subscription Checkout Fix (January 27, 2025)
 - **Enhanced Email Extraction**: Improved checkout flow to reliably extract user email from Clerk
 - **Multi-Source Email Retrieval**: System tries Clerk backend API first, then falls back to session claims with multiple field name variations
