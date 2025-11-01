@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2025)
 
+### Pro Subscription Checkout Fix (January 27, 2025)
+- **Enhanced Email Extraction**: Improved checkout flow to reliably extract user email from Clerk
+- **Multi-Source Email Retrieval**: System tries Clerk backend API first, then falls back to session claims with multiple field name variations
+- **Production-Ready**: Fixed "please add email to profile" error on production by using clerkClient.users.getUser()
+- **Robust Fallback**: Added comprehensive fallback logic to try multiple email field names (email, primary_email, email_address, emailAddress)
+- **Better Error Handling**: Added detailed logging to track email extraction success/failure
+- **Name Extraction**: Enhanced name extraction from Clerk user profile with multiple fallback options
+
 ### Clerk Authentication Integration (January 27, 2025)
 - **Complete Auth Migration**: Migrated from Supabase to Clerk for user authentication
 - **Removed Dependencies**: Uninstalled @supabase/supabase-js package completely

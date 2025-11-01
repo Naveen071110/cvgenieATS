@@ -5,7 +5,7 @@ import documentParser from "./documentParser";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { requireAuth, getAuth } from "@clerk/express";
+import { requireAuth, getAuth, clerkClient } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription } from "./services/dodoPayments";
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
@@ -484,27 +484,59 @@ export function registerRoutes(app: Express) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Derive email and name from session claims (server-side, never trust client)
-      const sessionClaims = auth.sessionClaims as any;
-      let userEmail = sessionClaims?.email as string || '';
+      // Try to get email and name from Clerk backend first
+      let userEmail = '';
       let userName = '';
-      
-      // Try to get name from various sources
-      if (sessionClaims?.name) {
-        userName = sessionClaims.name;
-      } else if (sessionClaims?.firstName || sessionClaims?.lastName) {
-        userName = `${sessionClaims.firstName || ''} ${sessionClaims.lastName || ''}`.trim();
-      } else if (sessionClaims?.username) {
-        userName = sessionClaims.username;
-      } else {
-        userName = 'CVGenie User';
+
+      try {
+        const user = await clerkClient.users.getUser(userId);
+        console.log('Clerk user fetched successfully:', userId);
+        
+        // Get primary email
+        const primaryEmail = user.emailAddresses.find(
+          (email: any) => email.id === user.primaryEmailAddressId
+        );
+        userEmail = primaryEmail?.emailAddress || user.emailAddresses[0]?.emailAddress || '';
+        
+        // Get name
+        userName = user.fullName || 
+                   (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : '') ||
+                   user.firstName || 
+                   user.lastName || 
+                   user.username || 
+                   'CVGenie User';
+        
+        console.log('Email extracted:', userEmail ? 'Found' : 'Not found');
+      } catch (clerkError: any) {
+        console.error('Clerk API error, falling back to session claims:', clerkError.message);
+        
+        // Fallback: Try session claims
+        const sessionClaims = auth.sessionClaims as any;
+        
+        // Try multiple possible email field names
+        userEmail = sessionClaims?.email || 
+                   sessionClaims?.primary_email || 
+                   sessionClaims?.email_address ||
+                   sessionClaims?.emailAddress || 
+                   '';
+        
+        // Try to get name from session claims
+        userName = sessionClaims?.name || 
+                  sessionClaims?.full_name ||
+                  (sessionClaims?.firstName && sessionClaims?.lastName 
+                    ? `${sessionClaims.firstName} ${sessionClaims.lastName}`.trim() 
+                    : '') ||
+                  sessionClaims?.firstName ||
+                  sessionClaims?.lastName ||
+                  sessionClaims?.username ||
+                  'CVGenie User';
       }
 
-      // Strict email validation - must have email to subscribe
+      // If still no email, return error
       if (!userEmail || userEmail.trim() === '') {
-        console.error(`User ${userId} attempted checkout without email`);
+        console.error(`User ${userId} has no email available`);
         return res.status(400).json({ 
-          error: "No email on account. Please add an email to your profile to subscribe." 
+          error: "Unable to retrieve email from your account. Please contact support." 
         });
       }
 
@@ -537,7 +569,8 @@ export function registerRoutes(app: Express) {
   // GET /api/subscription/status - Get user's subscription status (requires auth)
   app.get("/api/subscription/status", requireAuth(), async (req, res) => {
     try {
-      const userId = req.auth?.userId;
+      const auth = getAuth(req);
+      const userId = auth?.userId;
 
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -547,8 +580,8 @@ export function registerRoutes(app: Express) {
       const { getUserSubscription } = await import("./database/subscriptionQueries");
       const subscription = await getUserSubscription(userId);
 
-      // STRICT: User is Pro ONLY if both isPro=true AND subscriptionStatus='active'
-      const isPro = Boolean(subscription?.isPro === 1 && subscription?.subscriptionStatus === 'active');
+      // STRICT: User is Pro ONLY if both isPro=1 AND subscriptionStatus='active'
+      const isPro = Boolean(subscription?.isPro && subscription?.subscriptionStatus === 'active');
 
       res.json({
         isPro,
