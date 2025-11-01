@@ -93,7 +93,7 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
 
   // Validate Dodo Payments configuration
   const dodoApiKey = process.env.DODO_PAYMENTS_API_KEY;
-  const dodoProductId = process.env.DODO_PAYMENTS_PRODUCT_ID;D;
+  const dodoProductId = process.env.DODO_PAYMENTS_PRODUCT_ID;
 
   if (!dodoApiKey || !dodoProductId) {
     log("⚠️  WARNING: Dodo Payments not configured. Subscription features will not work.");
