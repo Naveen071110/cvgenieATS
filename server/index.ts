@@ -87,14 +87,29 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
     await initializeUsageSessionsTable();
     log("Neon database tables initialized successfully");
   } catch (error: any) {
-    log(`Warning: Failed to initialize database tables: ${error.message}`);
+    log("Failed to initialize Neon database tables:", error.message);
+    process.exit(1);
+  }
+
+  // Validate Dodo Payments configuration
+  const dodoApiKey = process.env.DODOPAYMENTS_API_KEY;
+  const dodoProductId = process.env.DODOPAYMENTSPRODUCTID;
+
+  if (!dodoApiKey || !dodoProductId) {
+    log("⚠️  WARNING: Dodo Payments not configured. Subscription features will not work.");
+    log("⚠️  Set DODOPAYMENTS_API_KEY and DODOPAYMENTSPRODUCTID in environment variables.");
+  } else if (!dodoProductId.startsWith('pdt_')) {
+    log("❌ ERROR: Invalid DODOPAYMENTSPRODUCTID format. Must start with 'pdt_'");
+    log(`❌ Current value: ${dodoProductId}`);
+  } else {
+    log(`✅ Dodo Payments configured with Product ID: ${dodoProductId.substring(0, 10)}...`);
   }
 
   // Serve SEO files with correct content types (before other routes)
   app.get('/robots.txt', (_req, res) => {
     // In production, files are in dist/public, in development they're in client/public
     const isDev = app.get("env") === "development";
-    const robotsPath = isDev 
+    const robotsPath = isDev
       ? path.join(process.cwd(), 'client', 'public', 'robots.txt')
       : path.join(import.meta.dirname, 'public', 'robots.txt');
     res.type('text/plain');

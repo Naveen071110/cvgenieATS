@@ -13,7 +13,7 @@ export const dodoClient = new DodoPayments({
   environment: process.env.NODE_ENV === 'production' ? 'live_mode' : 'test_mode',
 });
 
-export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
+export const PRODUCT_ID = process.env.DODOPAYMENTS_PRODUCT_ID;
 
 /**
  * Get or create a Dodo Payments customer by email
@@ -23,20 +23,20 @@ export async function getOrCreateCustomer(email: string, name: string) {
     // Try to find existing customer by email
     const customers = await dodoClient.customers.list({});
     const existingCustomer = customers.customers?.find((c: any) => c.email === email);
-    
+
     if (existingCustomer) {
       return {
         customerId: existingCustomer.customer_id,
         email: existingCustomer.email,
       };
     }
-    
+
     // Create new customer if not found
     const newCustomer = await dodoClient.customers.create({
       email,
       name,
     });
-    
+
     return {
       customerId: newCustomer.customer_id,
       email: newCustomer.email,
@@ -47,16 +47,37 @@ export async function getOrCreateCustomer(email: string, name: string) {
   }
 }
 
-export async function createCheckoutSession(userEmail: string, userName: string, userId: string) {
+export async function createCheckoutSession(
+  customerEmail: string,
+  customerName: string,
+  userId: string
+): Promise<{ sessionId: string; paymentLink: string }> {
+  const apiKey = process.env.DODOPAYMENTS_API_KEY;
+  const productId = process.env.DODOPAYMENTSPRODUCTID;
+
+  if (!apiKey || !productId) {
+    console.error("❌ Missing Dodo Payments configuration");
+    throw new Error("Dodo Payments API key or Product ID not configured");
+  }
+
+  // Log the product ID being used (first 10 chars only for security)
+  console.log(`🔧 Using Product ID: ${productId.substring(0, 10)}...`);
+
+  // Validate product ID format
+  if (!productId.startsWith('pdt_')) {
+    console.error(`❌ Invalid product ID format: ${productId}`);
+    throw new Error("Invalid Dodo Payments Product ID format. Must start with 'pdt_'");
+  }
+
   try {
     // Ensure customer exists before creating payment
-    await getOrCreateCustomer(userEmail, userName);
-    
+    await getOrCreateCustomer(customerEmail, customerName);
+
     const session = await dodoClient.payments.create({
       payment_link: true,
       customer: {
-        email: userEmail,
-        name: userName,
+        email: customerEmail,
+        name: customerName,
       },
       billing: {
         city: 'N/A',
@@ -81,6 +102,16 @@ export async function createCheckoutSession(userEmail: string, userName: string,
   } catch (error: any) {
     console.error('Error creating Dodo Payments checkout session:', error);
     console.error('Dodo error details:', error.message, error.response?.data);
+
+    // Specific handling for 404 product not found
+    if (error.response?.status === 404 && error.response?.data?.error?.includes('Product id')) {
+      console.error(`❌ Product ID '${productId}' does not exist in Dodo Payments dashboard`);
+      throw new Error(
+        `Product configuration error: The Product ID '${productId}' does not exist in your Dodo Payments dashboard. ` +
+        `Please verify the correct Product ID in your Dodo Payments dashboard and update the DODOPAYMENTSPRODUCTID environment variable.`
+      );
+    }
+
     throw new Error(`Failed to create checkout session: ${error.message}`);
   }
 }

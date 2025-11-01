@@ -560,9 +560,17 @@ export function registerRoutes(app: Express) {
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
       console.error("Error stack:", error.stack);
-      res.status(500).json({ 
-        error: error.message || "Failed to create checkout session. Please try again." 
-      });
+      
+      // Check if it's a product configuration error
+      if (error.message?.includes('Product configuration error')) {
+        res.status(500).json({ 
+          error: "Our payment system is temporarily misconfigured. Please contact support or try again later." 
+        });
+      } else {
+        res.status(500).json({ 
+          error: error.message || "Failed to create checkout session. Please try again." 
+        });
+      }
     }
   });
 
