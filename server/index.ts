@@ -92,14 +92,14 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
   }
 
   // Validate Dodo Payments configuration
-  const dodoApiKey = process.env.DODOPAYMENTS_API_KEY;
-  const dodoProductId = process.env.DODOPAYMENTSPRODUCTID;
+  const dodoApiKey = process.env.DODO_PAYMENTS_API_KEY;
+  const dodoProductId = process.env.DODO_PAYMENTS_PRODUCT_ID;D;
 
   if (!dodoApiKey || !dodoProductId) {
     log("⚠️  WARNING: Dodo Payments not configured. Subscription features will not work.");
-    log("⚠️  Set DODOPAYMENTS_API_KEY and DODOPAYMENTSPRODUCTID in environment variables.");
+    log("⚠️  Set DODO_PAYMENTS_API_KEY and DODO_PAYMENTS_PRODUCT_ID in environment variables.");
   } else if (!dodoProductId.startsWith('pdt_')) {
-    log("❌ ERROR: Invalid DODOPAYMENTSPRODUCTID format. Must start with 'pdt_'");
+    log("❌ ERROR: Invalid DODO_PAYMENTS_PRODUCT_ID format. Must start with 'pdt_'");
     log(`❌ Current value: ${dodoProductId}`);
   } else {
     log(`✅ Dodo Payments configured with Product ID: ${dodoProductId.substring(0, 10)}...`);

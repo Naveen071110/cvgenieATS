@@ -1,19 +1,19 @@
 import DodoPayments from 'dodopayments';
 
-if (!process.env.DODOPAYMENTS_API_KEY) {
-  throw new Error('DODOPAYMENTS_API_KEY is not set in environment variables');
+if (!process.env.DODO_PAYMENTS_API_KEY) {
+  throw new Error('DODO_PAYMENTS_API_KEY is not set in environment variables');
 }
 
-if (!process.env.DODOPAYMENTSPRODUCTID) {
-  throw new Error('DODOPAYMENTSPRODUCTID is not set in environment variables');
+if (!process.env.DODO_PAYMENTS_PRODUCT_ID) {
+  throw new Error('DODO_PAYMENTS_PRODUCT_ID is not set in environment variables');
 }
 
 export const dodoClient = new DodoPayments({
-  bearerToken: process.env.DODOPAYMENTS_API_KEY,
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
   environment: process.env.NODE_ENV === 'production' ? 'live_mode' : 'test_mode',
 });
 
-export const PRODUCT_ID = process.env.DODOPAYMENTSPRODUCTID;
+export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
 
 /**
  * Get or create a Dodo Payments customer by email
@@ -52,8 +52,8 @@ export async function createCheckoutSession(
   customerName: string,
   userId: string
 ): Promise<{ sessionId: string; paymentLink: string }> {
-  const apiKey = process.env.DODOPAYMENTS_API_KEY;
-  const productId = process.env.DODOPAYMENTSPRODUCTID;
+  const apiKey = process.env.DODO_PAYMENTS_API_KEY;
+  const productId = process.env.DODO_PAYMENTS_PRODUCT_ID;
 
   if (!apiKey || !productId) {
     console.error("❌ Missing Dodo Payments configuration");
