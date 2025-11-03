@@ -102,7 +102,7 @@ export default function Footer() {
                   Pricing Policy
                 </Link>
               </li>
-              <li><a href="mailto:support@cvgenie.com" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">Contact</a></li>
+              <li><a href="mailto:singhnaveen360@gmail.com" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">Contact</a></li>
             </ul>
           </div>
         </div>

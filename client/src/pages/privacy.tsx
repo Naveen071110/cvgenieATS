@@ -15,6 +15,9 @@ export default function Privacy() {
               </div>
               <span className="text-xl font-bold text-slate-900">CVGenie</span>
             </Link>
+            <a href="mailto:singhnaveen360@gmail.com" className="text-sm text-slate-600 hover:text-primary transition-colors">
+              Contact Us
+            </a>
           </div>
         </nav>
       </header>
