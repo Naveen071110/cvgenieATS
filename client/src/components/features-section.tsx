@@ -181,24 +181,24 @@ export default function FeaturesSection() {
   return (
     <section 
       id="features" 
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-white"
+      className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white"
       aria-labelledby="features-title"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16" ref={scrollFadeInRef.ref}>
+        <div className="text-center mb-20" ref={scrollFadeInRef.ref}>
           <h2 
             id="features-title"
-            className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4"
+            className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6 font-heading"
           >
             Powerful Features for Perfect Resumes
           </h2>
-          <p className="text-body-large max-w-2xl mx-auto text-gray-600">
+          <p className="text-lg max-w-2xl mx-auto text-gray-600 font-body leading-relaxed">
             Our AI-powered platform combines cutting-edge technology with professional expertise
             to create resumes that stand out in today's competitive job market.
           </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-16)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-24)' }}>
           {features.map((feature, index) => {
             const featureAnimation = useScrollAnimation({ threshold: 0.1 });
             const isEven = index % 2 === 0;

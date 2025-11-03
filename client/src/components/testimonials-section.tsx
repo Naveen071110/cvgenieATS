@@ -43,16 +43,16 @@ export default function TestimonialsSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
       <div className="max-w-7xl mx-auto">
         <div
           ref={headerAnimation.ref}
-          className={`text-center mb-8 scroll-fade-in ${headerAnimation.isVisible ? "visible" : ""}`}
+          className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? "visible" : ""}`}
         >
-          <h2 className="typography-section-header text-slate-900 mb-4">
+          <h2 className="text-4xl font-bold text-slate-900 mb-6 font-heading">
             Trusted by Job Seekers Worldwide
           </h2>
-          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
+          <p className="text-slate-600 max-w-2xl mx-auto text-lg font-body leading-relaxed">
             See how CVGenie has helped professionals land their dream jobs
           </p>
         </div>
@@ -76,24 +76,27 @@ export default function TestimonialsSection() {
                 >
                   <div
                     ref={testimonialAnimation.ref}
-                    className={`bg-slate-50 rounded-2xl p-6 border border-slate-200 floating-card testimonial-fade-in ${
+                    className={`bg-white rounded-xl p-8 border border-slate-200 floating-card testimonial-fade-in ${
                       testimonialAnimation.isVisible ? "visible" : ""
-                    } h-full`}
-                    style={{ animationDelay: `${(index % 3) * 0.2}s` }}
+                    } h-full flex flex-col shadow-sm hover:shadow-md transition-shadow`}
+                    style={{ 
+                      animationDelay: `${(index % 3) * 0.2}s`,
+                      minHeight: '320px'
+                    }}
                   >
-                    <div className="flex items-center mb-4">
+                    <div className="flex items-center mb-6">
                       <div className="flex text-yellow-400">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="w-5 h-5 fill-current" />
                         ))}
                       </div>
                     </div>
-                    <p className="typography-body text-slate-600 mb-6 leading-relaxed">
+                    <p className="text-slate-600 mb-auto leading-relaxed font-body flex-grow">
                       "{testimonial.content}"
                     </p>
-                    <div className="flex items-center">
+                    <div className="flex items-center mt-6 pt-6 border-t border-slate-100">
                       <div
-                        className={`w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4 avatar-pop ${
+                        className={`w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-blue-100 flex items-center justify-center mr-4 avatar-pop font-semibold text-primary ${
                           testimonialAnimation.isVisible ? "visible" : ""
                         }`}
                         style={{
@@ -103,10 +106,10 @@ export default function TestimonialsSection() {
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <p className="typography-body font-semibold text-slate-900">
+                        <p className="font-semibold text-slate-900 font-heading">
                           {testimonial.name}
                         </p>
-                        <p className="typography-small text-slate-500">
+                        <p className="text-sm text-slate-500 font-body">
                           {testimonial.role}
                         </p>
                       </div>

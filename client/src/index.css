@@ -1872,18 +1872,19 @@ select {
 }
 
 .magic-cta {
-  background: var(--genie-gradient);
+  background: linear-gradient(90deg, #7F7FD5, #86A8E7, #91EAE4);
   color: white;
-  padding: 16px 32px;
-  border-radius: 16px;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
   border: none;
   font-weight: 700;
   font-size: 1.1rem;
+  font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 4px 14px var(--magic-glow);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .magic-cta::before {
@@ -1893,17 +1894,17 @@ select {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: var(--magic-shimmer);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   animation: magic-shimmer 3s infinite;
 }
 
 .magic-cta:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 35px var(--magic-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
 .magic-cta:active {
-  transform: translateY(-1px) scale(0.98);
+  transform: translateY(0);
 }
 
 .magic-secondary {
@@ -2288,11 +2289,11 @@ select {
 .hero-section {
   position: relative !important;
   min-height: 100vh !important;
-  background: linear-gradient(135deg, 
-    rgba(99, 102, 241, 0.05) 0%, 
-    rgba(139, 92, 246, 0.05) 25%, 
-    rgba(59, 130, 246, 0.05) 50%, 
-    rgba(16, 185, 129, 0.05) 75%, 
+  background: linear-gradient(135deg,
+    rgba(99, 102, 241, 0.05) 0%,
+    rgba(139, 92, 246, 0.05) 25%,
+    rgba(59, 130, 246, 0.05) 50%,
+    rgba(16, 185, 129, 0.05) 75%,
     rgba(245, 158, 11, 0.05) 100%) !important;
   overflow: hidden !important;
 }

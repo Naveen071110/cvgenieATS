@@ -221,7 +221,7 @@ export default function HeroSection() {
             ) : (
               <Link to="/generator">
                 <button
-                  className="magic-cta group relative genie-lamp"
+                  className="magic-cta group relative inline-flex items-center"
                   onClick={handleCreateResume}
                   aria-label="Start your free resume generation - Go to generator page"
                 >

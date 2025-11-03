@@ -21,7 +21,7 @@ export default function Home() {
         <HeroSection />
 
         {/* Generator CTA Section */}
-        <section id="generator" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50">
+        <section id="generator" className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50">
           <div className="max-w-4xl mx-auto text-center">
             <Card className="shadow-2xl border border-slate-200 floating-card bg-white/80 backdrop-blur-sm">
               <CardContent className="p-12">
@@ -61,13 +61,24 @@ export default function Home() {
           </div>
         </section>
 
-        <FeaturesSection />
-        <InteractiveDemo /> {/* Replaced ResumeComparison with InteractiveDemo */}
-        <TrustIndicatorsSection />
-        <TestimonialsSection />
-        <PricingSection />
-        {/* Debug: Pricing section should appear above this line */}
-        <FAQSection />
+        <div className="py-16">
+          <FeaturesSection />
+        </div>
+        <div className="py-16">
+          <InteractiveDemo />
+        </div>
+        <div className="py-16">
+          <TrustIndicatorsSection />
+        </div>
+        <div className="py-16">
+          <TestimonialsSection />
+        </div>
+        <div className="py-16">
+          <PricingSection />
+        </div>
+        <div className="py-16">
+          <FAQSection />
+        </div>
       </main>
       <Footer />
     </div>
