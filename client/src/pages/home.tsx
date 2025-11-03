@@ -117,80 +117,24 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="py-16">
+        <div className="py-12">
           <FeaturesSection />
         </div>
-        <div className="py-16">
+        <div className="py-12">
           <InteractiveDemo />
         </div>
-        <div className="py-16">
+        <div className="py-12">
           <TrustIndicatorsSection />
         </div>
-        <div className="py-16">
+        <div className="py-12">
           <TestimonialsSection />
         </div>
-        <div className="py-16">
+        <div className="py-12">
           <PricingSection />
         </div>
-        <div className="py-16">
+        <div className="py-12">
           <FAQSection />
         </div>
-
-        {/* Press & Partnerships Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                Building in Public
-              </h2>
-              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                Follow our journey as we revolutionize the resume building experience
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-white font-bold text-xl">🏆</span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">Awards & Recognition</h3>
-                <p className="text-slate-600">
-                  Committed to excellence in AI-powered resume optimization
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-white font-bold text-xl">🤝</span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">Partnerships</h3>
-                <p className="text-slate-600">
-                  Collaborating with industry leaders to enhance your career journey
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-white font-bold text-xl">📰</span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">In the Press</h3>
-                <p className="text-slate-600">
-                  Featured in top career development and tech publications
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-12 text-center">
-              <p className="text-slate-600 mb-4">Want to partner with us or feature CVGenie?</p>
-              <a 
-                href="mailto:singhnaveen360@gmail.com" 
-                className="inline-flex items-center text-primary hover:text-blue-700 font-semibold transition-colors"
-              >
-                Get in touch →
-              </a>
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>
