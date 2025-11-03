@@ -185,7 +185,7 @@ export default function HeroSection() {
             className="display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 fade-in-up"
             style={{ marginBottom: "var(--space-6)" }}
           >
-            Free AI Resume Builder for{" "}
+            Get Noticed Faster. Land More Interviews for{" "}
             <span
               className={`inline-block min-w-0 transition-opacity duration-300 text-primary ${
                 isVisible ? "opacity-100" : "opacity-0"
@@ -198,9 +198,8 @@ export default function HeroSection() {
             className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 fade-in-up"
             style={{ marginBottom: "var(--space-8)", animationDelay: "0.2s" }}
           >
-            Create ATS-friendly resumes with the best AI resume builder. Our
-            free resume builder generates ATS-optimized resumes and personalized
-            cover letters tailored to job descriptions in seconds.
+            Transform your resume into interview invitations. Our intelligent AI crafts 
+            personalized resumes that bypass automated screening systems and reach real recruiters—in seconds.
           </p>
           <div
             className="flex flex-col sm:flex-row justify-center items-center w-full fade-in-up"
@@ -256,11 +255,11 @@ export default function HeroSection() {
                 aria-hidden="true"
               />
               <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Best AI Resume Builder
+                Smart Resume Intelligence
               </h3>
               <p className="text-gray-600">
-                Leverage advanced AI technology to create professional resumes
-                and cover letters optimized for any job.
+                Harness cutting-edge AI that understands what recruiters want and 
+                positions you as the perfect candidate for every role.
               </p>
             </div>
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
@@ -269,11 +268,11 @@ export default function HeroSection() {
                 aria-hidden="true"
               />
               <h3 className="text-xl font-bold text-gray-800 mb-2">
-                ATS-Friendly Resume Templates
+                Beat Applicant Filters
               </h3>
               <p className="text-gray-600">
-                All resumes use ATS-friendly resume templates that pass
-                Applicant Tracking Systems effortlessly.
+                Expertly formatted to sail through automated screening—ensuring 
+                your resume reaches hiring managers, not rejection folders.
               </p>
             </div>
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
@@ -282,11 +281,11 @@ export default function HeroSection() {
                 aria-hidden="true"
               />
               <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Fast & Free to Start
+                Lightning-Fast Results
               </h3>
               <p className="text-gray-600">
-                Our ATS resume builder free tier lets you generate professional
-                documents in minutes, not hours.
+                Start applying in minutes, not days. Create polished, 
+                interview-ready documents while others are still formatting.
               </p>
             </div>
             <div className="feature-card bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
@@ -295,11 +294,11 @@ export default function HeroSection() {
                 aria-hidden="true"
               />
               <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Job-Tailored Content
+                Personalized Every Time
               </h3>
               <p className="text-gray-600">
-                Tailor your resume and cover letter to match each specific job
-                description perfectly.
+                Each application gets custom-crafted content that speaks directly 
+                to the employer's needs and gets you noticed.
               </p>
             </div>
           </div>

@@ -11,12 +11,12 @@ import TargetBullseyeIcon from "../assets/icons/target-bullseye.svg?react"
 const features = [
   {
     icon: AIBrainIcon,
-    title: "AI-Powered Resume Builder",
-    description: "Upload your resume and paste any job description. Our best AI resume builder instantly analyzes both and tailors your experience to match exactly what employers are looking for, highlighting relevant skills and achievements.",
+    title: "Intelligent Resume Transformation",
+    description: "Upload your resume and paste any job description. Our advanced AI instantly analyzes both and reshapes your experience to align perfectly with what employers seek, spotlighting your most relevant qualifications.",
     benefits: [
-      "Keyword optimization for ATS resume builder compatibility",
-      "Smart skill matching and prioritization",
-      "Experience reframing for maximum impact"
+      "Strategic keyword integration that gets past filters",
+      "Intelligent skill highlighting and prioritization",
+      "Experience repositioning for maximum recruiter appeal"
     ],
     mockup: (
       <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
@@ -46,12 +46,12 @@ const features = [
   },
   {
     icon: ATSShieldIcon,
-    title: "ATS-Friendly Resume Templates",
-    description: "Most resumes get rejected by Applicant Tracking Systems before human eyes see them. Our free resume builder uses ATS-friendly resume templates to ensure your resume passes through ATS filters with proper formatting, structure, and keyword placement.",
+    title: "Guaranteed to Reach Real Recruiters",
+    description: "Most applications never make it past automated filters. We ensure yours does. Our professionally structured format glides through screening systems, landing your resume directly in front of decision-makers.",
     benefits: [
-      "ATS resume builder with clean, parseable structure",
-      "Strategic keyword placement for maximum visibility",
-      "Compatible with all major ATS platforms"
+      "Clean, machine-readable structure that systems love",
+      "Optimized keyword positioning for top search rankings",
+      "Tested across all major hiring platforms"
     ],
     mockup: (
       <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
@@ -190,11 +190,11 @@ export default function FeaturesSection() {
             id="features-title"
             className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6 font-heading"
           >
-            Powerful Features for Perfect Resumes
+            Everything You Need to Get Hired Faster
           </h2>
           <p className="text-lg max-w-2xl mx-auto text-gray-600 font-body leading-relaxed">
-            Our AI-powered platform combines cutting-edge technology with professional expertise
-            to create resumes that stand out in today's competitive job market.
+            Our intelligent platform combines advanced AI with recruiting expertise
+            to craft resumes that capture attention and generate interviews.
           </p>
         </div>
 

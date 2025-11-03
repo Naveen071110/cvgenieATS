@@ -50,10 +50,10 @@ export default function TestimonialsSection() {
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? "visible" : ""}`}
         >
           <h2 className="text-4xl font-bold text-slate-900 mb-6 font-heading">
-            Trusted by Job Seekers Worldwide
+            Real People. Real Interview Success.
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg font-body leading-relaxed">
-            See how CVGenie has helped professionals land their dream jobs
+            Discover how professionals like you went from overlooked to interview-ready
           </p>
         </div>
 
