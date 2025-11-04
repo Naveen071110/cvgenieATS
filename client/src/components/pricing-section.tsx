@@ -1,4 +1,3 @@
-
 import { Check, Star } from "lucide-react"
 import { useState } from "react"
 import { useUser } from "@clerk/clerk-react"
@@ -80,13 +79,13 @@ interface PricingCardProps {
   onClick?: () => void;
 }
 
-const PricingCard = ({ 
-  title, 
-  price, 
-  period, 
-  description, 
-  features, 
-  buttonText, 
+const PricingCard = ({
+  title,
+  price,
+  period,
+  description,
+  features,
+  buttonText,
   buttonLink,
   highlighted = false,
   popular = false,
@@ -102,12 +101,12 @@ const PricingCard = ({
           </div>
         </div>
       )}
-      
+
       <CardContent className="p-8 pt-12">
         <div className="text-center mb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-1">{title}</h3>
           <p className="text-sm text-gray-600 mb-3">{description}</p>
-          
+
           <div className="flex items-baseline justify-center mb-2">
             <span className="text-4xl font-bold text-gray-900">{price}</span>
             {period && <span className="text-base text-gray-500 ml-2">{period}</span>}
@@ -134,8 +133,8 @@ const PricingCard = ({
           <Button
             onClick={onClick}
             className={`w-full py-2.5 text-base font-semibold transition-all duration-200 ${
-              highlighted 
-                ? 'magic-cta genie-lamp' 
+              highlighted
+                ? 'magic-cta genie-lamp'
                 : 'magic-secondary'
             }`}
             variant={highlighted ? 'default' : 'outline'}
@@ -165,6 +164,13 @@ export default function PricingSection() {
     } else {
       setShowSubscriptionModal(true);
     }
+  };
+
+  const handleNeedLogin = () => {
+    openAuthDialog({
+      title: "Sign in to upgrade",
+      description: "Please sign in to your account to upgrade to Pro.",
+    });
   };
 
   return (
@@ -256,10 +262,11 @@ export default function PricingSection() {
         title={dialogConfig.title}
         description={dialogConfig.description}
       />
-      
+
       <SubscriptionModal
         isOpen={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
+        onNeedLogin={handleNeedLogin}
       />
     </section>
   );

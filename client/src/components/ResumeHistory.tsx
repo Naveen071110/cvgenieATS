@@ -212,7 +212,11 @@ export default function ResumeHistory() {
         </div>
         <SubscriptionModal 
           isOpen={showUpgradeModal} 
-          onClose={() => setShowUpgradeModal(false)} 
+          onClose={() => setShowUpgradeModal(false)}
+          onNeedLogin={() => {
+            setShowUpgradeModal(false);
+            // User will need to refresh or navigate after login
+          }}
         />
       </>
     );

@@ -283,12 +283,12 @@ export default function Generator() {
         setGenerationResult(data);
         setEditedResume(data.optimizedResume);
         setEditedCoverLetter(data.coverLetter);
-        
+
         // Increment generation counter for Free users
         if (!subscriptionStatus?.isPro || subscriptionStatus?.subscriptionStatus !== 'active') {
           setGenerationsUsed(prev => prev + 1);
         }
-        
+
         queryClient.invalidateQueries({ queryKey: ["/api/usage"] });
         setIsAIProcessing(false);
         manager.reset();
@@ -872,9 +872,16 @@ export default function Generator() {
       />
 
       {/* Subscription Modal */}
-      <SubscriptionModal
-        isOpen={showSubscriptionModal}
+      <SubscriptionModal 
+        isOpen={showSubscriptionModal} 
         onClose={() => setShowSubscriptionModal(false)}
+        onNeedLogin={() => {
+          setShowSubscriptionModal(false);
+          openAuthDialog({
+            title: "Sign in to upgrade",
+            description: "Please sign in to your account to upgrade to Pro."
+          });
+        }}
       />
     </div>
   );

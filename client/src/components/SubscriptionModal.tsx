@@ -3,17 +3,29 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onNeedLogin?: () => void;
 }
 
-export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
+export function SubscriptionModal({ isOpen, onClose, onNeedLogin }: SubscriptionModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleUpgrade = async () => {
+    // Check if user is logged in first
+    if (!user) {
+      onClose();
+      if (onNeedLogin) {
+        onNeedLogin();
+      }
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch('/api/subscription/create-checkout', {
