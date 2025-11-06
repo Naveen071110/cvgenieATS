@@ -166,7 +166,7 @@ export default function Header() {
                         aria-hidden="true"
                       />
                     </div>
-                    <span className="text-sm text-gray-700">{user.email}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{user.email}</span>
                   </div>
                   <Button
                     variant="ghost"
@@ -254,7 +254,7 @@ export default function Header() {
               {user && isPro && (
                 <Link
                   to="/resume-history"
-                  className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                  className="block rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   style={{ padding: 'var(--space-3)' }}
                   onClick={() => setIsMenuOpen(false)}
                   aria-label="Go to Resume History page"
@@ -265,7 +265,7 @@ export default function Header() {
               )}
               <button
                 onClick={() => scrollToSection("features")}
-                className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                className="block w-full text-left rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
                 aria-label="Scroll to Features section"
               >
@@ -273,7 +273,7 @@ export default function Header() {
               </button>
               <button
                 onClick={() => scrollToSection("pricing")}
-                className="block w-full text-left rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                className="block w-full text-left rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
                 aria-label="Scroll to Pricing section"
               >
@@ -282,16 +282,16 @@ export default function Header() {
 
               {/* Mobile Theme Toggle */}
               <div 
-                className="flex items-center justify-between rounded-md hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
               >
-                <span className="text-base font-medium text-gray-600">Theme</span>
+                <span className="text-base font-medium text-gray-600 dark:text-gray-300">Theme</span>
                 <ThemeToggle />
               </div>
 
               {/* Mobile Auth Section */}
               <div 
-                className="border-t border-gray-200"
+                className="border-t border-gray-200 dark:border-gray-700"
                 style={{ 
                   paddingTop: 'var(--space-4)',
                   marginTop: 'var(--space-4)'
