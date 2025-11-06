@@ -92,7 +92,7 @@ const PricingCard = ({
   onClick
 }: PricingCardProps) => {
   return (
-    <Card className={`relative pricing-card border-2 ${highlighted ? 'border-primary shadow-xl' : 'border-gray-300 shadow-md'} ${popular ? 'scale-105' : ''}`}>
+    <Card className={`relative pricing-card border-2 ${highlighted ? 'border-primary dark:border-blue-500 shadow-xl' : 'border-gray-300 dark:border-gray-700 shadow-md'} ${popular ? 'scale-105' : ''} bg-white dark:bg-gray-800`}>
       {popular && (
         <div className="absolute -top-4 left-4">
           <div className="bg-gradient-to-r from-primary to-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
@@ -104,12 +104,12 @@ const PricingCard = ({
 
       <CardContent className="p-8 pt-12">
         <div className="text-center mb-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-1">{title}</h3>
-          <p className="text-sm text-gray-600 mb-3">{description}</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{title}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{description}</p>
 
           <div className="flex items-baseline justify-center mb-2">
-            <span className="text-4xl font-bold text-gray-900">{price}</span>
-            {period && <span className="text-base text-gray-500 ml-2">{period}</span>}
+            <span className="text-4xl font-bold text-gray-900 dark:text-white">{price}</span>
+            {period && <span className="text-base text-gray-500 dark:text-gray-400 ml-2">{period}</span>}
           </div>
         </div>
 
@@ -117,12 +117,12 @@ const PricingCard = ({
           {features.map((feature, index) => (
             <li key={index} className="flex items-start">
               <div className="flex-shrink-0 mt-0.5 mr-2">
-                <Check className="w-4 h-4 text-green-500" />
+                <Check className="w-4 h-4 text-green-500 dark:text-green-400" />
               </div>
               <div>
-                <span className="text-sm font-medium text-gray-900">{feature.text}</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{feature.text}</span>
                 {feature.description && (
-                  <p className="text-xs text-gray-500 mt-0.5">{feature.description}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{feature.description}</p>
                 )}
               </div>
             </li>
@@ -176,7 +176,7 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-20 bg-gradient-to-br from-gray-50 to-white"
+      className="py-20 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
       style={{ display: 'block', visibility: 'visible', opacity: 1 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,10 +184,10 @@ export default function PricingSection() {
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Choose Your Plan
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Start free, upgrade when you need unlimited access. No hidden fees, cancel anytime.
           </p>
         </div>
@@ -227,28 +227,28 @@ export default function PricingSection() {
         <div className="text-center mt-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="flex flex-col items-center">
-              <ATSShieldIcon className="w-12 h-12 text-primary mb-4" />
-              <h4 className="font-semibold text-gray-900 mb-2">ATS Optimized</h4>
-              <p className="text-gray-600 text-sm">Pass through applicant tracking systems</p>
+              <ATSShieldIcon className="w-12 h-12 text-primary dark:text-blue-400 mb-4" />
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-2">ATS Optimized</h4>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Pass through applicant tracking systems</p>
             </div>
             <div className="flex flex-col items-center">
-              <MultiFormatExportIcon className="w-12 h-12 text-primary mb-4" />
-              <h4 className="font-semibold text-gray-900 mb-2">Multiple Formats</h4>
-              <p className="text-gray-600 text-sm">Export as DOCX or TXT</p>
+              <MultiFormatExportIcon className="w-12 h-12 text-primary dark:text-blue-400 mb-4" />
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h4>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Export as DOCX or TXT</p>
             </div>
             <div className="flex flex-col items-center">
-              <AnalyticsDashboardIcon className="w-12 h-12 text-primary mb-4" />
-              <h4 className="font-semibold text-gray-900 mb-2">AI-Powered</h4>
-              <p className="text-gray-600 text-sm">Advanced algorithms optimize your content</p>
+              <AnalyticsDashboardIcon className="w-12 h-12 text-primary dark:text-blue-400 mb-4" />
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-2">AI-Powered</h4>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Advanced algorithms optimize your content</p>
             </div>
           </div>
         </div>
 
         {/* FAQ Link */}
         <div className="text-center mt-12">
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-300">
             Questions about pricing? Check our{" "}
-            <Link to="/pricing-policy" className="text-primary hover:underline font-medium">
+            <Link to="/pricing-policy" className="text-primary dark:text-blue-400 hover:underline font-medium">
               pricing policy
             </Link>{" "}
             or contact support.
