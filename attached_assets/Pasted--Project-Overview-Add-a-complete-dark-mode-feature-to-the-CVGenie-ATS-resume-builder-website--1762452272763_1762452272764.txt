@@ -1,0 +1,119 @@
+### **Project Overview**
+Add a complete dark mode feature to the CVGenie ATS resume builder website with a toggle button that allows users to switch between light and dark themes. The implementation should be persistent across sessions and seamlessly integrated with the existing design.
+
+### **Current Design Analysis**
+The website currently uses:
+- **Light background**: Light gray/white (#f3f4f6, #ffffff)
+- **Primary brand colors**: Blue/purple gradient (#6366f1 to #8b5cf6)
+- **Text colors**: Dark gray (#1f2937) on light backgrounds
+- **Accent blue**: #3b82f6
+- **Navbar**: White background with blue logo
+- **Footer**: Dark navy background (#0f172a, #1e293b)
+- **Cards**: White backgrounds with subtle shadows
+- **Buttons**: Gradient purple-to-blue with white text
+
+### **Implementation Requirements**
+
+#### **1. Dark Mode Color Scheme**
+Create a dark theme with these specifications:
+- **Background**: Dark navy/charcoal (#0f172a, #1e293b, #1f2937)
+- **Surface/Cards**: Slightly lighter dark (#1e293b, #334155)
+- **Text**: Light gray/white (#f1f5f9, #e2e8f0)
+- **Borders**: Subtle gray (#334155)
+- **Keep brand colors**: Maintain the blue/purple gradients as they work well on dark backgrounds
+- **Adjust shadows**: Use lighter, more subtle shadows for dark mode
+
+#### **2. Toggle Button Placement & Design**
+- **Location**: Add the toggle button in the top navigation bar, positioned to the right of "Pricing" and left of the user avatar/sign-in button
+- **Icon**: Use a sun icon (☀️) for light mode and moon icon (🌙) for dark mode
+- **Style**: Circular button with smooth transition animation, matching the website's modern aesthetic
+- **Size**: Approximately 40px diameter, consistent with navbar height
+- **States**: Include hover effect with subtle scale transform
+
+#### **3. Technical Implementation**
+
+**CSS Approach:**
+```css
+/* Use CSS custom properties (variables) for colors */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  /* ... define all color variables */
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  /* ... override all color variables */
+}
+```
+
+**JavaScript Requirements:**
+- Add toggle button to navbar
+- Implement click handler to switch themes
+- Add smooth transition class (0.3s duration)
+- Save preference to localStorage as 'theme' key
+- Load saved preference on page load
+- Respect system preference if no saved preference exists using `prefers-color-scheme` media query
+- Apply `data-theme="dark"` or `data-theme="light"` attribute to html/body element
+
+#### **4. Components to Style**
+Ensure dark mode works on all these elements:
+- **Navigation bar** and all links
+- **Hero section** with headings and CTA buttons
+- **Feature cards** (Best AI Resume Builder, ATS-Friendly, etc.)
+- **Statistics section** (100+ Resumes, 94% ATS Pass Rate)
+- **Demo section** with interactive elements
+- **Testimonials carousel** with quote cards
+- **Pricing cards** (Free and Pro plans)
+- **FAQ accordion** items
+- **Footer** (already dark, may need adjustments)
+- **Forms and input fields** (textareas, search boxes)
+- **Buttons** (maintain gradient but adjust hover states)
+- **Export format cards** (DOCX, DOC, TXT)
+
+#### **5. Transition & Animation**
+- Add `transition: background-color 0.3s ease, color 0.3s ease` to all themed elements
+- Ensure smooth fade between themes
+- Animate the toggle button icon rotation/swap
+
+#### **6. Accessibility**
+- Add `aria-label="Toggle dark mode"` to the button
+- Ensure proper contrast ratios in dark mode (WCAG AA compliance)
+- Maintain focus states visibility in both themes
+- Keep text readable against all backgrounds
+
+#### **7. Testing Checklist**
+After implementation, verify:
+- [ ] Toggle button works on all pages (homepage, generator, features, pricing)
+- [ ] Theme persists across page navigation
+- [ ] Theme persists after browser refresh
+- [ ] All text is readable in both modes
+- [ ] All interactive elements are clearly visible
+- [ ] Gradient buttons remain attractive in dark mode
+- [ ] Images and icons display properly
+- [ ] No flickering or layout shifts when toggling
+- [ ] Mobile responsive behavior works correctly
+
+#### **8. Code Organization**
+- Create a new file: `theme-toggle.js` for JavaScript logic
+- Add dark mode CSS variables to main stylesheet or create `dark-mode.css`
+- Keep the implementation modular for easy maintenance
+
+### **Expected User Experience**
+Users should be able to:
+1. Click the toggle button and instantly see the theme switch
+2. Have their preference remembered across sessions
+3. See consistent theming across all pages
+4. Experience smooth transitions without jarring changes
+5. Enjoy an eye-friendly dark mode for nighttime use
+
+### **Priority Notes**
+- Maintain the brand identity (blue/purple gradients should stay prominent)
+- Ensure the "Grant My Wish" and other CTAs remain eye-catching in dark mode
+- The dark mode should feel modern and professional, matching the AI/tech aesthetic
+- Don't break any existing functionality
