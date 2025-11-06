@@ -425,17 +425,17 @@ export default function Generator() {
   const defaultAcceptedTypes = SUPPORTED_FORMATS.accept.split(',');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-slate-200">
+      <header className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-slate-200 dark:border-gray-700">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center space-x-2">
-              <ArrowLeft className="w-5 h-5 text-slate-600" />
+              <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-gray-400" />
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
-              <span className="text-xl font-bold text-slate-900">CVGenie</span>
+              <span className="text-xl font-bold text-slate-900 dark:text-white">CVGenie</span>
             </Link>
           </div>
         </nav>
@@ -443,23 +443,23 @@ export default function Generator() {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl main-content">
         <div className="text-center mb-12">
-          <h1 className="typography-headline text-slate-900 mb-4">
+          <h1 className="typography-headline text-slate-900 dark:text-white mb-4">
             AI-Powered Resume Generator
           </h1>
-          <p className="typography-body text-slate-600 max-w-2xl mx-auto text-lg">
+          <p className="typography-body text-slate-600 dark:text-gray-300 max-w-2xl mx-auto text-lg">
             Upload your current resume or enter your information to create an optimized,
             ATS-friendly resume tailored to your target job.
           </p>
         </div>
 
         {!generationResult ? (
-          <Card className="shadow-xl border border-slate-200 floating-card">
+          <Card className="shadow-xl border border-slate-200 dark:border-gray-700 dark:bg-gray-800 floating-card">
             <CardContent className="p-8">
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Resume Upload */}
                 <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-slate-900">Upload Your Resume</h3>
-                  <p className="text-sm text-slate-500">{SUPPORTED_FORMATS.description}</p>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Upload Your Resume</h3>
+                  <p className="text-sm text-slate-500 dark:text-gray-400">{SUPPORTED_FORMATS.description}</p>
                   <FileUpload
                     onFileSelect={handleFileUpload}
                     onFileRemove={() => {
@@ -479,19 +479,19 @@ export default function Generator() {
 
                 {/* Sample Resume Error Display */}
                 {sampleResumeError && (
-                  <div className="mt-6 p-4 border border-red-200 rounded-lg bg-red-50">
+                  <div className="mt-6 p-4 border border-red-200 dark:border-red-800 rounded-lg bg-red-50 dark:bg-red-900/30">
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
-                          <svg className="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center mt-0.5">
+                          <svg className="w-3 h-3 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                           </svg>
                         </div>
                         <div className="flex-1">
-                          <h4 className="text-sm font-medium text-red-800">Upload Failed</h4>
-                          <p className="text-sm text-red-700 mt-1">{sampleResumeError.error}</p>
+                          <h4 className="text-sm font-medium text-red-800 dark:text-red-300">Upload Failed</h4>
+                          <p className="text-sm text-red-700 dark:text-red-200 mt-1">{sampleResumeError.error}</p>
                           {sampleResumeError.message && (
-                            <p className="text-sm text-red-700 mt-2 font-medium">{sampleResumeError.message}</p>
+                            <p className="text-sm text-red-700 dark:text-red-200 mt-2 font-medium">{sampleResumeError.message}</p>
                           )}
                         </div>
                       </div>
@@ -499,7 +499,7 @@ export default function Generator() {
                       {sampleResumeError.sampleResume && (
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-2">
-                            <h5 className="text-sm font-medium text-red-800">Sample Resume Format:</h5>
+                            <h5 className="text-sm font-medium text-red-800 dark:text-red-300">Sample Resume Format:</h5>
                             <Button
                               variant="outline"
                               size="sm"
@@ -515,12 +515,12 @@ export default function Generator() {
                               Copy Sample
                             </Button>
                           </div>
-                          <div className="bg-white rounded border border-red-200 p-3 max-h-60 overflow-y-auto">
-                            <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
+                          <div className="bg-white dark:bg-gray-900 rounded border border-red-200 dark:border-red-800 p-3 max-h-60 overflow-y-auto">
+                            <pre className="text-xs text-slate-700 dark:text-gray-300 whitespace-pre-wrap font-mono">
                               {sampleResumeError.sampleResume}
                             </pre>
                           </div>
-                          <p className="text-xs text-red-600 mt-2">
+                          <p className="text-xs text-red-600 dark:text-red-400 mt-2">
                             Create a resume similar to this format and save it as a DOCX or TXT file for best results.
                           </p>
                         </div>
@@ -531,15 +531,15 @@ export default function Generator() {
 
                 {/* Job Description */}
                 <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-slate-900">Job Description</h3>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Job Description</h3>
                   <Textarea
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
                     placeholder="Paste the complete job description here... Include responsibilities, requirements, and company information for best results."
-                    className="resize-none"
+                    className="resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                     disabled={isAIProcessing}
                   />
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-500 dark:text-gray-400">
                     {jobDescription.length}/3000 characters minimum
                   </p>
                 </div>
@@ -547,10 +547,10 @@ export default function Generator() {
 
               {/* Resume Content Preview and Edit */}
               {extractedResume && (
-                <div className="mt-8 border-t pt-8">
+                <div className="mt-8 border-t dark:border-gray-700 pt-8">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-semibold text-slate-900">
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
                         Resume Content ({extractedResume.wordCount} words)
                       </h3>
                       <Button
@@ -567,8 +567,8 @@ export default function Generator() {
 
                     {extractResumeMutation.isPending && (
                       <div className="text-center py-4">
-                        <div className="inline-flex items-center gap-2 text-slate-600">
-                          <div className="animate-spin w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full"></div>
+                        <div className="inline-flex items-center gap-2 text-slate-600 dark:text-gray-300">
+                          <div className="animate-spin w-4 h-4 border-2 border-slate-300 dark:border-gray-600 border-t-slate-600 dark:border-t-gray-300 rounded-full"></div>
                           Extracting resume content...
                         </div>
                       </div>
@@ -579,19 +579,19 @@ export default function Generator() {
                         value={resumeContent}
                         onChange={(e) => setResumeContent(e.target.value)}
                         rows={15}
-                        className="font-mono text-sm"
+                        className="font-mono text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                         placeholder="Your resume content will appear here. You can edit it before generating the optimized version."
                         disabled={isAIProcessing}
                       />
                     ) : (
-                      <div className="bg-slate-50 rounded-lg p-4 max-h-60 overflow-y-auto">
-                        <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono">
+                      <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-4 max-h-60 overflow-y-auto">
+                        <pre className="text-sm text-slate-700 dark:text-gray-300 whitespace-pre-wrap font-mono">
                           {resumeContent}
                         </pre>
                       </div>
                     )}
 
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-500 dark:text-gray-400">
                       Review and edit your resume content above. The AI will use this information to generate your optimized resume.
                     </p>
                   </div>
@@ -620,16 +620,16 @@ export default function Generator() {
                 </Button>
 
                 {/* Usage Counter */}
-                <div className="text-sm text-slate-600">
+                <div className="text-sm text-slate-600 dark:text-gray-300">
                   {isPro ? (
                     <div className="flex items-center justify-center gap-2">
-                      <Crown className="w-4 h-4 text-yellow-500" />
+                      <Crown className="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
                       <span>Pro User - Unlimited generations</span>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-2">
                       <div className="flex items-center justify-center gap-4">
-                        <span className={remainingGenerations === 0 ? "text-red-600 font-semibold" : ""}>
+                        <span className={remainingGenerations === 0 ? "text-red-600 dark:text-red-400 font-semibold" : ""}>
                           {user 
                             ? `${remainingGenerations} generation${remainingGenerations !== 1 ? 's' : ''} remaining`
                             : `${remainingGenerations} free generation${remainingGenerations !== 1 ? 's' : ''} remaining`
@@ -642,13 +642,13 @@ export default function Generator() {
                             e.preventDefault();
                             handleUpgradeClick();
                           }}
-                          className="p-0 h-auto text-blue-600 hover:text-blue-700 cursor-pointer font-semibold"
+                          className="p-0 h-auto text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer font-semibold"
                         >
                           Upgrade to Pro
                         </Button>
                       </div>
                       {remainingGenerations === 0 && (
-                        <p className="text-xs text-red-600">
+                        <p className="text-xs text-red-600 dark:text-red-400">
                           You've used all free generations. Upgrade to Pro for unlimited access!
                         </p>
                       )}
@@ -668,10 +668,10 @@ export default function Generator() {
                     />
                   </div>
                   <div className="text-center mt-4 md:mt-6 space-y-2 max-w-sm md:max-w-md">
-                    <p className="text-blue-700 font-semibold text-lg md:text-xl animate-pulse">
+                    <p className="text-blue-700 dark:text-blue-400 font-semibold text-lg md:text-xl animate-pulse">
                       Generating your resume...
                     </p>
-                    <p className="text-slate-600 text-xs md:text-sm px-4">
+                    <p className="text-slate-600 dark:text-gray-300 text-xs md:text-sm px-4">
                       Our AI genie is working magic on your resume, optimizing it for ATS systems and crafting a personalized cover letter
                     </p>
                   </div>
@@ -682,18 +682,18 @@ export default function Generator() {
         ) : (
           <div className="space-y-6">
             {/* Success Header */}
-            <Card className="shadow-xl border border-slate-200 floating-card">
+            <Card className="shadow-xl border border-slate-200 dark:border-gray-700 dark:bg-gray-800 floating-card">
               <CardContent className="p-6">
                 <div className="text-center">
-                  <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-2xl font-semibold text-slate-900 mb-2">Documents Generated Successfully!</h3>
-                  <p className="text-slate-600">Review and edit your documents before downloading</p>
+                  <CheckCircle className="w-12 h-12 text-green-500 dark:text-green-400 mx-auto mb-4" />
+                  <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">Documents Generated Successfully!</h3>
+                  <p className="text-slate-600 dark:text-gray-300">Review and edit your documents before downloading</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Resume Section */}
-            <Card className="shadow-xl border border-slate-200 floating-card">
+            <Card className="shadow-xl border border-slate-200 dark:border-gray-700 dark:bg-gray-800 floating-card">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center">
@@ -738,7 +738,7 @@ export default function Generator() {
                     value={editedResume}
                     onChange={(e) => setEditedResume(e.target.value)}
                     rows={20}
-                    className="font-mono text-sm"
+                    className="font-mono text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Edit your resume here..."
                     disabled={isAIProcessing}
                   />

@@ -83,22 +83,22 @@ interface FAQAccordionItemProps {
 
 function FAQAccordionItem({ item, isOpen, onToggle }: FAQAccordionItemProps) {
   return (
-    <Card className="faq-item overflow-hidden transition-all duration-200 hover:shadow-md">
+    <Card className="faq-item overflow-hidden transition-all duration-200 hover:shadow-md dark:bg-gray-800 dark:border-gray-700">
       <button
-        className="faq-question w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="faq-question w-full text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={`faq-${item.id}`}
         id={`faq-${item.id}-button`}
       >
-        <CardHeader className="py-5 px-6 hover:bg-gray-50 transition-colors duration-200">
+        <CardHeader className="py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold text-gray-900 leading-6">
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white leading-6">
               {item.question}
             </CardTitle>
             <ChevronDown
               className={cn(
-                "faq-icon w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ml-4",
+                "faq-icon w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-300 flex-shrink-0 ml-4",
                 isOpen && "rotate-180"
               )}
               aria-hidden="true"
@@ -116,7 +116,7 @@ function FAQAccordionItem({ item, isOpen, onToggle }: FAQAccordionItemProps) {
         aria-labelledby={`faq-${item.id}-button`}
       >
         <CardContent className="px-6 pb-6 pt-0">
-          <div className="prose prose-sm text-gray-700 leading-relaxed">
+          <div className="prose prose-sm text-gray-700 dark:text-gray-300 leading-relaxed">
             {item.answer}
           </div>
         </CardContent>
@@ -164,16 +164,16 @@ export function FAQSection() {
   }, []);
 
   return (
-    <section className="py-8 md:py-12 bg-gradient-to-br from-gray-50 to-white">
+    <section className="py-8 md:py-12 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-6">
         <div className="text-center mb-6 md:mb-10">
-          <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full mb-4 md:mb-6">
-            <HelpCircle className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+          <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-primary/10 dark:bg-blue-900/30 rounded-full mb-4 md:mb-6">
+            <HelpCircle className="w-6 h-6 md:w-8 md:h-8 text-primary dark:text-blue-400" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 md:mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Find answers to common questions about CVGenie and our AI-powered resume optimization
           </p>
         </div>
@@ -182,18 +182,18 @@ export function FAQSection() {
           {/* Search Input */}
           <div className="faq-search mb-6 md:mb-8">
             <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
               <Input
                 type="text"
                 placeholder="Search FAQs..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="faq-search-input pl-12 pr-4 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                className="faq-search-input pl-12 pr-4 py-3 text-lg border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 rounded-xl focus:border-primary dark:focus:border-blue-500 focus:ring-2 focus:ring-primary/20 dark:focus:ring-blue-500/20 transition-all duration-200"
                 aria-label="Search frequently asked questions"
               />
             </div>
             {searchQuery && (
-              <p className="text-center text-gray-600 mt-4">
+              <p className="text-center text-gray-600 dark:text-gray-400 mt-4">
                 {filteredFAQs.length} result{filteredFAQs.length !== 1 ? 's' : ''} found
                 {filteredFAQs.length === 0 && ' - try a different search term'}
               </p>
@@ -212,17 +212,17 @@ export function FAQSection() {
                 />
               ))
             ) : (
-              <Card className="text-center py-12">
+              <Card className="text-center py-12 dark:bg-gray-800 dark:border-gray-700">
                 <CardContent>
-                  <HelpCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                  <HelpCircle className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
                     No FAQs found
                   </h3>
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 dark:text-gray-400">
                     Try adjusting your search terms or{' '}
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="text-primary hover:underline focus:outline-none focus:underline"
+                      className="text-primary dark:text-blue-400 hover:underline focus:outline-none focus:underline"
                     >
                       clear the search
                     </button>
