@@ -43,16 +43,16 @@ export default function TestimonialsSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto">
         <div
           ref={headerAnimation.ref}
           className={`text-center mb-16 scroll-fade-in ${headerAnimation.isVisible ? "visible" : ""}`}
         >
-          <h2 className="text-4xl font-bold text-slate-900 mb-6 font-heading">
+          <h2 className="text-4xl font-bold text-slate-900 dark:text-gray-100 mb-6 font-heading">
             Real People. Real Interview Success.
           </h2>
-          <p className="text-slate-600 max-w-2xl mx-auto text-lg font-body leading-relaxed">
+          <p className="text-slate-600 dark:text-gray-400 max-w-2xl mx-auto text-lg font-body leading-relaxed">
             Discover how professionals like you went from overlooked to interview-ready
           </p>
         </div>
@@ -76,9 +76,9 @@ export default function TestimonialsSection() {
                 >
                   <div
                     ref={testimonialAnimation.ref}
-                    className={`bg-white rounded-xl p-8 border border-slate-200 floating-card testimonial-fade-in ${
+                    className={`bg-white dark:bg-gray-800 rounded-xl p-8 border border-slate-200 dark:border-gray-700 floating-card testimonial-fade-in ${
                       testimonialAnimation.isVisible ? "visible" : ""
-                    } h-full flex flex-col shadow-sm hover:shadow-md transition-shadow`}
+                    } h-full flex flex-col shadow-sm hover:shadow-md transition-all`}
                     style={{ 
                       animationDelay: `${(index % 3) * 0.2}s`,
                       minHeight: '320px'
@@ -91,10 +91,10 @@ export default function TestimonialsSection() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-slate-600 mb-auto leading-relaxed font-body flex-grow">
+                    <p className="text-slate-600 dark:text-gray-300 mb-auto leading-relaxed font-body flex-grow">
                       "{testimonial.content}"
                     </p>
-                    <div className="flex items-center mt-6 pt-6 border-t border-slate-100">
+                    <div className="flex items-center mt-6 pt-6 border-t border-slate-100 dark:border-gray-700">
                       <div
                         className={`w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-blue-100 flex items-center justify-center mr-4 avatar-pop font-semibold text-primary ${
                           testimonialAnimation.isVisible ? "visible" : ""
@@ -106,10 +106,10 @@ export default function TestimonialsSection() {
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-900 font-heading">
+                        <p className="font-semibold text-slate-900 dark:text-gray-100 font-heading">
                           {testimonial.name}
                         </p>
-                        <p className="text-sm text-slate-500 font-body">
+                        <p className="text-sm text-slate-500 dark:text-gray-400 font-body">
                           {testimonial.role}
                         </p>
                       </div>
@@ -125,7 +125,7 @@ export default function TestimonialsSection() {
 
         {/* Mobile scroll indicator */}
         <div className="flex justify-center mt-4 md:hidden">
-          <p className="text-sm text-slate-500">← Swipe to see more →</p>
+          <p className="text-sm text-slate-500 dark:text-gray-400">← Swipe to see more →</p>
         </div>
       </div>
     </section>
