@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import { useQuery } from "@tanstack/react-query";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface SubscriptionStatus {
   isPro: boolean;
@@ -53,8 +54,8 @@ export default function Header() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 backdrop-blur-md border-b border-gray-200 ${
-        isScrolled ? "bg-white/90" : "bg-white/80"
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 ${
+        isScrolled ? "bg-white/90 dark:bg-gray-900/90" : "bg-white/80 dark:bg-gray-900/80"
       }`}>
         <nav 
           style={{ 
@@ -85,7 +86,7 @@ export default function Header() {
               >
                 <span className="text-white font-bold text-lg">CV</span>
               </div>
-              <span className="text-card-title text-primary">CVGenie</span>
+              <span className="text-card-title text-primary dark:text-blue-400">CVGenie</span>
             </div>
 
             {/* Navigation Links */}
@@ -95,7 +96,7 @@ export default function Header() {
             >
               <Link 
                 to="/generator"
-                className="text-body transition-colors text-gray-600 hover:text-primary"
+                className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
                 aria-label="Go to Generator page"
               >
                 Generator
@@ -103,7 +104,7 @@ export default function Header() {
               {user && isPro && (
                 <Link 
                   to="/resume-history"
-                  className="text-body transition-colors text-gray-600 hover:text-primary"
+                  className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
                   aria-label="Go to Resume History page"
                   data-testid="link-resume-history"
                 >
@@ -112,18 +113,21 @@ export default function Header() {
               )}
               <button 
                 onClick={() => scrollToSection("features")}
-                className="text-body transition-colors text-gray-600 hover:text-primary"
+                className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
                 aria-label="Scroll to Features section"
               >
                 Features
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
-                className="text-body transition-colors text-gray-600 hover:text-primary"
+                className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
                 aria-label="Scroll to Pricing section"
               >
                 Pricing
               </button>
+
+              {/* Theme Toggle */}
+              <ThemeToggle />
 
               {/* Auth Section */}
               {isLoading ? (
@@ -227,7 +231,7 @@ export default function Header() {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md">
             <div 
               style={{ 
                 padding: 'var(--space-2)',
@@ -240,7 +244,7 @@ export default function Header() {
             >
               <Link
                 to="/generator"
-                className="block rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 transition-colors"
+                className="block rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 style={{ padding: 'var(--space-3)' }}
                 onClick={() => setIsMenuOpen(false)}
                 aria-label="Go to Generator page"
@@ -275,6 +279,15 @@ export default function Header() {
               >
                 Pricing
               </button>
+
+              {/* Mobile Theme Toggle */}
+              <div 
+                className="flex items-center justify-between rounded-md hover:bg-gray-50 transition-colors"
+                style={{ padding: 'var(--space-3)' }}
+              >
+                <span className="text-base font-medium text-gray-600">Theme</span>
+                <ThemeToggle />
+              </div>
 
               {/* Mobile Auth Section */}
               <div 

@@ -159,40 +159,45 @@
 }
 
 .dark {
-  --background: var(--color-gray-900);
-  --foreground: var(--color-gray-50);
-  --muted: var(--color-gray-800);
-  --muted-foreground: var(--color-gray-400);
-  --popover: var(--color-gray-900);
-  --popover-foreground: var(--color-gray-50);
-  --card: var(--color-gray-900);
-  --card-foreground: var(--color-gray-50);
-  --border: var(--color-gray-700);
-  --input: var(--color-gray-700);
-  --primary: var(--primary-blue);
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --border: #334155;
+  --input: #334155;
+  --primary: #3b82f6;
   --primary-foreground: #ffffff;
-  --secondary: var(--color-gray-800);
-  --secondary-foreground: var(--color-gray-50);
-  --accent: var(--color-gray-800);
-  --accent-foreground: var(--color-gray-50);
-  --destructive: var(--color-error-500);
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+  --accent: #1e293b;
+  --accent-foreground: #f1f5f9;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --ring: var(--primary-blue);
+  --ring: #3b82f6;
 
-  /* Enhanced accent colors for dark mode using 60-30-10 palette - improved contrast */
+  /* Enhanced accent colors for dark mode */
   --accent2: var(--accent-orange);
-  --accent2-foreground: var(--color-gray-900);
-  --accent-orange: var(--accent-orange);
-  --accent-orange-foreground: var(--color-gray-900);
-  --accent-green: var(--accent-green);
-  --accent-green-foreground: var(--color-gray-900);
+  --accent2-foreground: #ffffff;
+  --accent-orange: #fb923c;
+  --accent-orange-foreground: #ffffff;
+  --accent-green: #10b981;
+  --accent-green-foreground: #ffffff;
 
   /* Dark mode improved contrast colors */
-  --text-high-contrast: #f9fafb; /* gray-50 for high contrast */
-  --text-medium-contrast: #e5e7eb; /* gray-200 for medium emphasis */
-  --text-low-contrast: #9ca3af; /* gray-400 for lower emphasis */
-  --link-color: #60a5fa; /* blue-400 for better contrast in dark mode */
-  --link-hover-color: #93c5fd; /* blue-300 for hover state */
+  --text-high-contrast: #f8fafc;
+  --text-medium-contrast: #cbd5e1;
+  --text-low-contrast: #64748b;
+  --link-color: #60a5fa;
+  --link-hover-color: #93c5fd;
+
+  /* Magic theme colors for dark mode */
+  --magic-purple: #8b5cf6;
+  --magic-blue: #60a5fa;
+  --genie-gradient: linear-gradient(135deg, #8b5cf6 0%, #60a5fa 100%);
 }
 
 @layer base {
@@ -232,20 +237,22 @@
     min-width: 320px;
     min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    background-color: var(--gray-light) !important;
-    color: #1e293b;
+    background-color: var(--background);
+    color: var(--foreground);
     @apply antialiased;
     /* Inter for body text - professional and highly legible */
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     overflow-x: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Poppins for headings - modern and distinctive */
   h1, h2, h3, h4, h5, h6 {
-    @apply text-slate-900;
+    color: var(--foreground);
     font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 600;
     letter-spacing: -0.025em;
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Specific heading weights for visual hierarchy */
