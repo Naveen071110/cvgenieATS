@@ -29,8 +29,8 @@ function ProcessStep({ step, isActive, isCompleted, icon, title, description, on
     <div
       className={cn(
         "process-step cursor-pointer transition-all duration-300 p-6 rounded-xl border-2 text-center",
-        isActive ? "border-blue-500 bg-blue-50 shadow-lg scale-105" : "border-gray-200 bg-white hover:border-blue-300 hover:shadow-md",
-        isCompleted && "border-green-500 bg-green-50"
+        isActive ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-lg scale-105" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md",
+        isCompleted && "border-green-500 bg-green-50 dark:bg-green-900/30"
       )}
       onClick={onClick}
       role="button"
@@ -39,12 +39,12 @@ function ProcessStep({ step, isActive, isCompleted, icon, title, description, on
     >
       <div className={cn(
         "step-icon w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-2xl transition-colors",
-        isActive ? "bg-blue-500 text-white" : isCompleted ? "bg-green-500 text-white" : "bg-gray-100 text-gray-600"
+        isActive ? "bg-blue-500 text-white" : isCompleted ? "bg-green-500 text-white" : "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300"
       )}>
         {icon}
       </div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
+      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{title}</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-300">{description}</p>
       {isCompleted && (
         <div className="mt-3">
           <CheckCircle className="w-5 h-5 text-green-500 mx-auto" />
@@ -70,7 +70,7 @@ function ATSScoreBar({ score, isVisible = false }: { score: number; isVisible?: 
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-700">ATS Compatibility Score</span>
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">ATS Compatibility Score</span>
         <span className={cn(
           "text-xl font-bold",
           score >= 80 ? "text-green-600" : score >= 60 ? "text-yellow-600" : "text-red-600"
@@ -84,7 +84,7 @@ function ATSScoreBar({ score, isVisible = false }: { score: number; isVisible?: 
           style={{ width: isVisible ? `${score}%` : '0%' }}
         />
       </div>
-      <p className="text-xs text-gray-500 text-center font-medium">
+      <p className="text-xs text-gray-500 dark:text-gray-400 text-center font-medium">
         {getScoreLabel(score)}
       </p>
     </div>
@@ -227,13 +227,13 @@ export function InteractiveDemo({ className }: { className?: string }) {
   };
 
   return (
-    <section className={cn("py-16 bg-gradient-to-br from-blue-50 to-indigo-100", className)}>
+    <section className={cn("py-16 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-900 dark:to-slate-800", className)}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 fade-in-up">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 fade-in-up">
             See CVGenie in Action
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto fade-in-up" style={{ animationDelay: '0.2s' }}>
             Try our interactive demo and watch your resume transform in real-time
           </p>
         </div>
@@ -260,9 +260,9 @@ export function InteractiveDemo({ className }: { className?: string }) {
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Input Section */}
-            <Card className="fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <Card className="fade-in-up bg-white dark:bg-slate-800 border-gray-200 dark:border-gray-700" style={{ animationDelay: '0.6s' }}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
                   <FileText className="w-5 h-5 text-blue-600" />
                   {activeStep === 1 ? 'Paste Your Resume Content' : 
                    activeStep === 2 ? 'Paste Job Description' : 
@@ -293,9 +293,9 @@ export function InteractiveDemo({ className }: { className?: string }) {
             </Card>
 
             {/* Results Section */}
-            <Card className="fade-in-up" style={{ animationDelay: '0.8s' }}>
+            <Card className="fade-in-up bg-white dark:bg-slate-800 border-gray-200 dark:border-gray-700" style={{ animationDelay: '0.8s' }}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
                   <Brain className="w-5 h-5 text-green-600" />
                   AI Analysis Results
                 </CardTitle>
@@ -309,19 +309,19 @@ export function InteractiveDemo({ className }: { className?: string }) {
                 {/* Improvements */}
                 {improvements.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Suggested Improvements</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Suggested Improvements</h4>
                     <div className="space-y-3">
                       {improvements.map((improvement, index) => (
                         <div
                           key={improvement.id}
-                          className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200 fade-in-up"
+                          className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 fade-in-up"
                           style={{ animationDelay: `${1 + index * 0.1}s` }}
                         >
-                          <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                          <div className="flex-shrink-0 w-8 h-8 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center text-green-600 dark:text-green-300">
                             {improvement.icon}
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-900">{improvement.text}</p>
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">{improvement.text}</p>
                             <Badge variant="secondary" className="mt-1 text-xs">
                               {improvement.impact}
                             </Badge>
@@ -333,8 +333,8 @@ export function InteractiveDemo({ className }: { className?: string }) {
                 )}
 
                 {input.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    <Brain className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <Brain className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
                     <p>Start typing to see AI-powered improvements</p>
                   </div>
                 )}
@@ -349,7 +349,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
                 Reveal All Secrets
                 <Sparkles className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <p className="text-sm text-gray-600 mt-3">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-3">
                 See {improvements.length} more magical improvements in the full version
               </p>
             </div>
