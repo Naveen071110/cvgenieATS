@@ -279,7 +279,6 @@
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
-    background-color: #0f172a;
   }
 
   /* Prevent horizontal scrolling on mobile */
