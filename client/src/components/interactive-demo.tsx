@@ -181,12 +181,6 @@ export function InteractiveDemo({ className }: { className?: string }) {
     },
     {
       number: 2,
-      icon: <Target className="w-6 h-6" />,
-      title: "Paste Job Description",
-      description: "From any job board or website"
-    },
-    {
-      number: 3,
       icon: <Sparkles className="w-6 h-6" />,
       title: "Get your Live ATS score",
       description: "Get your resume's ATS score"
@@ -208,7 +202,6 @@ export function InteractiveDemo({ className }: { className?: string }) {
         const newCompleted: number[] = [];
         if (input.length > 20) newCompleted.push(1);
         if (input.length > 50) newCompleted.push(2);
-        if (input.length > 100) newCompleted.push(3);
 
         setCompletedSteps(newCompleted);
       }, 800);
@@ -240,7 +233,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
 
         {/* Interactive Process Steps */}
         <div className="mb-12 fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             {steps.map((step) => (
               <ProcessStep
                 key={step.number}
@@ -264,9 +257,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
                   <FileText className="w-5 h-5 text-blue-600" />
-                  {activeStep === 1 ? 'Paste Your Resume Content' : 
-                   activeStep === 2 ? 'Paste Job Description' : 
-                   'See Your Optimized Content'}
+                  {activeStep === 1 ? 'Paste Your Resume Content' : 'See Your Optimized Content'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -276,12 +267,10 @@ export function InteractiveDemo({ className }: { className?: string }) {
                   placeholder={
                     activeStep === 1 
                       ? "Paste a section of your resume here to see real-time AI optimization..."
-                      : activeStep === 2
-                      ? "Paste the job description you're targeting..."
                       : "Your optimized content will appear here..."
                   }
                   className="min-h-[200px] resize-none focus:ring-2 focus:ring-blue-500"
-                  disabled={activeStep === 3}
+                  disabled={activeStep === 2}
                 />
                 {isTyping && (
                   <div className="mt-3 flex items-center gap-2 text-blue-600">
