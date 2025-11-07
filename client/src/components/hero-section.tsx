@@ -113,7 +113,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="hero-section">
+    <div className="hero-section bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       {/* Decorative watercolor SVG layer below content */}
       <div className="hero-bg" aria-hidden="true">
         <svg
@@ -182,12 +182,12 @@ export default function HeroSection() {
         >
           <h1
             id="hero-title"
-            className="display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 dark:text-white fade-in-up"
+            className="display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white fade-in-up"
             style={{ marginBottom: "var(--space-6)" }}
           >
             Get Noticed Faster. Land More Interviews for{" "}
             <span
-              className={`inline-block min-w-0 transition-opacity duration-300 text-primary dark:text-blue-400 ${
+              className={`inline-block min-w-0 transition-opacity duration-300 text-blue-400 ${
                 isVisible ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -195,7 +195,7 @@ export default function HeroSection() {
             </span>
           </h1>
           <p
-            className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 dark:text-gray-300 fade-in-up"
+            className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-300 fade-in-up"
             style={{ marginBottom: "var(--space-8)", animationDelay: "0.2s" }}
           >
             Transform your resume into interview invitations. Our intelligent AI crafts 
@@ -249,54 +249,54 @@ export default function HeroSection() {
 
           {/* Feature Cards Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-            <div className="feature-card bg-white/5 dark:bg-gray-800 border border-white/10 dark:border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
+            <div className="feature-card bg-gray-800/50 border border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
               <AIBrainIcon
-                className="w-12 h-12 text-primary dark:text-blue-400 mb-4"
+                className="w-12 h-12 text-blue-400 mb-4"
                 aria-hidden="true"
               />
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Smart Resume Intelligence
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-300">
                 Harness cutting-edge AI that understands what recruiters want and 
                 positions you as the perfect candidate for every role.
               </p>
             </div>
-            <div className="feature-card bg-white/5 dark:bg-gray-800 border border-white/10 dark:border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
+            <div className="feature-card bg-gray-800/50 border border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
               <ATSShieldIcon
-                className="w-12 h-12 text-primary dark:text-blue-400 mb-4"
+                className="w-12 h-12 text-blue-400 mb-4"
                 aria-hidden="true"
               />
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Beat Applicant Filters
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-300">
                 Expertly formatted to sail through automated screening—ensuring 
                 your resume reaches hiring managers, not rejection folders.
               </p>
             </div>
-            <div className="feature-card bg-white/5 dark:bg-gray-800 border border-white/10 dark:border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
+            <div className="feature-card bg-gray-800/50 border border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
               <SpeedOptimizationIcon
-                className="w-12 h-12 text-primary dark:text-blue-400 mb-4"
+                className="w-12 h-12 text-blue-400 mb-4"
                 aria-hidden="true"
               />
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Lightning-Fast Results
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-300">
                 Start applying in minutes, not days. Create polished, 
                 interview-ready documents while others are still formatting.
               </p>
             </div>
-            <div className="feature-card bg-white/5 dark:bg-gray-800 border border-white/10 dark:border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
+            <div className="feature-card bg-gray-800/50 border border-gray-700 backdrop-blur-sm rounded-xl p-6 text-left">
               <MailIcon
-                className="w-12 h-12 text-primary dark:text-blue-400 mb-4"
+                className="w-12 h-12 text-blue-400 mb-4"
                 aria-hidden="true"
               />
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Personalized Every Time
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-300">
                 Each application gets custom-crafted content that speaks directly 
                 to the employer's needs and gets you noticed.
               </p>
@@ -304,7 +304,7 @@ export default function HeroSection() {
           </div>
 
           {/* Stats Section */}
-          <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
+          <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600/90 to-purple-700/90 rounded-2xl shadow-xl border border-blue-500/20">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
               Trusted by Few
             </h2>
