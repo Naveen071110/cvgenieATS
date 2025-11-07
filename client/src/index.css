@@ -188,9 +188,9 @@
   --accent-green-foreground: #ffffff;
 
   /* Dark mode improved contrast colors */
-  --text-high-contrast: #f8fafc;
-  --text-medium-contrast: #cbd5e1;
-  --text-low-contrast: #64748b;
+  --text-high-contrast: #f9fafb;
+  --text-medium-contrast: #e5e7eb;
+  --text-low-contrast: #9ca3af;
   --link-color: #60a5fa;
   --link-hover-color: #93c5fd;
 

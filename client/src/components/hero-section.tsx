@@ -198,7 +198,7 @@ export default function HeroSection() {
             className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 dark:text-gray-300 fade-in-up"
             style={{ marginBottom: "var(--space-8)", animationDelay: "0.2s" }}
           >
-            Transform your resume into interview invitations. Our intelligent AI crafts 
+            Transform your resume into interview invitations. Our intelligent AI crafts
             personalized resumes that bypass automated screening systems and reach real recruiters—in seconds.
           </p>
           <div
@@ -258,7 +258,7 @@ export default function HeroSection() {
                 Smart Resume Intelligence
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Harness cutting-edge AI that understands what recruiters want and 
+                Harness cutting-edge AI that understands what recruiters want and
                 positions you as the perfect candidate for every role.
               </p>
             </div>
@@ -271,7 +271,7 @@ export default function HeroSection() {
                 Beat Applicant Filters
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Expertly formatted to sail through automated screening—ensuring 
+                Expertly formatted to sail through automated screening—ensuring
                 your resume reaches hiring managers, not rejection folders.
               </p>
             </div>
@@ -284,7 +284,7 @@ export default function HeroSection() {
                 Lightning-Fast Results
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Start applying in minutes, not days. Create polished, 
+                Start applying in minutes, not days. Create polished,
                 interview-ready documents while others are still formatting.
               </p>
             </div>
@@ -297,7 +297,7 @@ export default function HeroSection() {
                 Personalized Every Time
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Each application gets custom-crafted content that speaks directly 
+                Each application gets custom-crafted content that speaks directly
                 to the employer's needs and gets you noticed.
               </p>
             </div>
