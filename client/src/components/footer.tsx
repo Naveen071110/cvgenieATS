@@ -4,7 +4,7 @@ import SecurityLockIcon from "../assets/icons/security-lock.svg?react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-950 dark:bg-gray-950 text-white py-6 md:py-20 px-4 sm:px-6 lg:px-8">
+    <footer className="bg-slate-900 text-white py-6 md:py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-8">
           {/* Brand */}

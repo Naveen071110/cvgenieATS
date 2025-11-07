@@ -43,7 +43,7 @@ export default function TestimonialsSection() {
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-800">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto">
         <div
           ref={headerAnimation.ref}
