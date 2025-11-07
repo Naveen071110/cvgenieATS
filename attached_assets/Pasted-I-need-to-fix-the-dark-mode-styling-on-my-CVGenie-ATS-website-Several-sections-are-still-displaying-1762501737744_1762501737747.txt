@@ -1,0 +1,77 @@
+I need to fix the dark mode styling on my CVGenie ATS website. Several sections are still displaying in light mode. Please make the following updates ONE AT A TIME to ensure the entire website is consistently in dark mode:
+
+1. Hero Section Background (Homepage)
+
+Change the light gray/white background of the main hero section (with "Any Job" / "Remote Work" heading) to dark navy/dark background
+
+Update the text colors to be light/white for better contrast
+
+2. Hero Section Text
+
+The large animated text ("Any Job", "Remote Work", etc.) appears very light gray - make it more visible with white or light blue color
+
+Update the subtitle text below to be light gray instead of faded light color
+
+3. Statistics/Metrics Cards (Trusted by Few section)
+
+The stat cards showing "100+", "94%", "10+", "98%" have light blue/purple backgrounds
+
+Keep the cards but ensure text is optimized for dark mode visibility
+
+4. Demo Video Section Background
+
+The "See CVGenie in Action" section has a white/light gray background
+
+Change this to dark navy/dark background to match other sections
+
+5. Statistics Cards (40-60s, 3x More, 95%+ section)
+
+The white cards with blue/green text need dark backgrounds
+
+Change card backgrounds to dark navy/dark gray with light text
+
+6. CTA Section ("Ready to Land More Interviews?")
+
+This section has a very light gray background
+
+Change to dark navy background with white text
+
+7. Benefits/Features Text
+
+The light gray text in the benefits section (bullets with checkmarks) is hard to read
+
+Make this white or light gray for better visibility
+
+8. Trusted & Secure Section
+
+The white/light gray background needs to be dark
+
+The four feature cards (SSL Secured, Privacy Protected, etc.) have white backgrounds - change to dark cards with light text
+
+9. Testimonials Section Background
+
+The light background between testimonials sections should be dark
+
+10. Interactive Demo Section
+
+The section showing upload options (Any format - DOC, DOCX, or TXT, etc.) has white/light cards
+
+Change these to dark cards with light borders and light text
+
+11. Generator Page
+
+The file upload area has a light gray background
+
+The "Choose File" button and surrounding area needs dark styling
+
+Update all text colors to be light/white
+
+12. Generator Page - Job Description Section
+
+The textarea and surrounding area needs dark background
+
+Placeholder text should be light gray
+
+Character count text should be light colored
+
+Please implement these changes one section at a time, testing after each change to ensure the styling is consistent with the existing dark mode sections (like the navigation bar and footer which are already properly styled in dark mode).
