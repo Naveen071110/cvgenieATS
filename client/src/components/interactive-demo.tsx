@@ -189,7 +189,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
       number: 3,
       icon: <Sparkles className="w-6 h-6" />,
       title: "Get Optimized Resume",
-      description: "ATS-friendly and tailored"
+      description: "Get your resume's ATS score"
     }
   ];
 
@@ -231,10 +231,10 @@ export function InteractiveDemo({ className }: { className?: string }) {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 fade-in-up">
-            See CVGenie in Action
+            Get Your ATS Score Live
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto fade-in-up" style={{ animationDelay: '0.2s' }}>
-            Try our interactive demo and watch your resume transform in real-time
+            Paste your resume content and get instant AI-powered ATS analysis
           </p>
         </div>
 
