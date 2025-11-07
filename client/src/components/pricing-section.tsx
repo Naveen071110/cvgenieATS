@@ -92,7 +92,7 @@ const PricingCard = ({
   onClick
 }: PricingCardProps) => {
   return (
-    <Card className={`relative pricing-card border-2 ${highlighted ? 'border-primary dark:border-blue-500 shadow-xl' : 'border-gray-300 dark:border-gray-700 shadow-md'} ${popular ? 'scale-105' : ''} bg-white dark:bg-gray-800`}>
+    <Card className={`relative pricing-card border-2 ${highlighted ? 'border-blue-500 dark:border-blue-400 shadow-xl' : 'border-gray-700 dark:border-gray-600 shadow-md'} ${popular ? 'scale-105' : ''} bg-gray-800 dark:bg-gray-800`}>
       {popular && (
         <div className="absolute -top-4 left-4">
           <div className="bg-gradient-to-r from-primary to-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
@@ -176,7 +176,7 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-20 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
+      className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-800"
       style={{ display: 'block', visibility: 'visible', opacity: 1 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

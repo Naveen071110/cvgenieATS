@@ -181,7 +181,7 @@ export default function FeaturesSection() {
   return (
     <section 
       id="features" 
-      className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white dark:from-gray-900 dark:to-gray-800"
+      className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-800"
       aria-labelledby="features-title"
     >
       <div className="max-w-6xl mx-auto">

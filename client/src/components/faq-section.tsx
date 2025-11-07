@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from 'react';
 import { ChevronDown, Search, HelpCircle } from 'lucide-react';
 import { Input } from './ui/input';
@@ -232,7 +231,7 @@ export function FAQSection() {
             )}
           </div>
 
-          
+
         </div>
       </div>
     </section>
