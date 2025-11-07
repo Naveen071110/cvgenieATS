@@ -1,0 +1,109 @@
+Fix Remaining Dark Mode Issues - Remove White Backgrounds**
+
+### **Current Dark Mode Issues Found:**
+
+After reviewing the entire app, most sections look excellent in dark mode. However, there are **critical white/light background issues** in the following section:
+
+**❌ PROBLEM AREA: "See CVGenie in Action" Interactive Demo Section**
+
+This section (located on the homepage after the features showcase) currently has:
+- Light gray/white background (`bg-gray-50` or `bg-gray-100`) 
+- White cards for the three step icons (Upload, Paste Job Description, Get Optimized Resume)
+- Poor contrast making it look incomplete in dark mode
+
+---
+
+### **REQUIREMENTS:**
+
+**CRITICAL: Light mode must remain completely unchanged. Only add dark mode classes.**
+
+***
+
+### **Section-by-Section Fixes:**
+
+#### **1. "See CVGenie in Action" Section** ⚠️ HIGH PRIORITY
+**Location:** Homepage, below the stats section
+
+**Current Issue:** Entire section has white/light gray background
+
+**Fix Required:**
+```
+Main section container:
+- Add: dark:bg-slate-900 or dark:bg-gray-900
+
+Section heading and subtitle:
+- Ensure: dark:text-white for heading
+- Ensure: dark:text-gray-300 for subtitle
+
+Three feature cards (Upload format, Paste Job Description, Get Optimized Resume):
+- Change from: bg-white
+- To: bg-white dark:bg-slate-800 or dark:bg-gray-800
+- Card borders: dark:border-gray-700
+- Icon backgrounds: Keep blue but ensure contrast
+- Card text: dark:text-gray-200
+
+Interactive demo components below:
+- "Paste Your Resume Content" card: dark:bg-slate-800
+- "AI Analysis Results" card: dark:bg-slate-800
+- Ensure all text within is dark:text-gray-200 or dark:text-white
+```
+
+#### **2. "Trusted & Secure" Section** ✅ MINOR FIX
+**Location:** Near bottom of homepage
+
+**Current Issue:** Small white strip visible at the top edge
+
+**Fix Required:**
+```
+Section wrapper/container:
+- Ensure padding/margin doesn't expose white background
+- Add: dark:bg-slate-900 to parent container
+- Verify no white gaps between sections
+```
+
+***
+
+### **Implementation Checklist:**
+
+**For "See CVGenie in Action" Section:**
+- [ ] Update section wrapper: add `dark:bg-slate-900`
+- [ ] Update all white cards: `bg-white dark:bg-slate-800`
+- [ ] Update card borders: `border-gray-200 dark:border-gray-700`
+- [ ] Update heading text: `text-gray-900 dark:text-white`
+- [ ] Update body text: `text-gray-600 dark:text-gray-300`
+- [ ] Update icon containers if needed: ensure visibility
+- [ ] Test the interactive demo textarea and result cards
+- [ ] Verify paste/input areas have proper dark styling
+
+**General Checks:**
+- [ ] Test homepage in dark mode (top to bottom)
+- [ ] Test Features page in dark mode ✅ Already perfect
+- [ ] Test Pricing page in dark mode ✅ Already perfect
+- [ ] Test Generator page in dark mode ✅ Already perfect
+- [ ] Verify light mode unchanged on all pages
+- [ ] Check section transitions (no white gaps)
+
+***
+
+### **Color Palette Reference for Dark Mode:**
+
+```css
+Primary backgrounds: bg-slate-900 or bg-gray-900
+Secondary backgrounds: bg-slate-800 or bg-gray-800
+Card backgrounds: bg-slate-800/50 or bg-gray-800
+Borders: border-gray-700 or border-gray-800
+Primary text: text-white
+Secondary text: text-gray-300
+Muted text: text-gray-400
+```
+
+***
+
+### **Expected Result:**
+
+After implementing these changes, the **entire app should have a seamless dark mode experience** with:
+- ✅ No white or light gray backgrounds visible
+- ✅ Consistent dark slate/gray tones throughout
+- ✅ Proper text contrast and readability
+- ✅ Smooth visual hierarchy using subtle dark tone variations
+- ✅ Light mode completely unchanged
