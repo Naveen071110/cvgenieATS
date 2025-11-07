@@ -188,7 +188,7 @@ export function InteractiveDemo({ className }: { className?: string }) {
     {
       number: 3,
       icon: <Sparkles className="w-6 h-6" />,
-      title: "Get Optimized Resume",
+      title: "Get your Live ATS score",
       description: "Get your resume's ATS score"
     }
   ];
