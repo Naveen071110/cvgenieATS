@@ -1,5 +1,6 @@
 import { TrustBadges } from './trust-badges';
 import { CompanyLogos } from './company-logos';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 export default function TrustIndicatorsSection() {
   const sectionAnimation = useScrollAnimation({ threshold: 0.2 });

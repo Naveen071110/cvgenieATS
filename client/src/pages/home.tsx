@@ -9,7 +9,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { TrustIndicatorsSection } from "@/components/trust-indicators-section";
+import TrustIndicatorsSection from "@/components/trust-indicators-section";
 import { ResumeComparison } from "@/components/resume-comparison";
 import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
 
