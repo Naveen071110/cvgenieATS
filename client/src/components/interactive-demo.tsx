@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -95,7 +94,7 @@ function ATSScoreBar({ score, isVisible = false }: { score: number; isVisible?: 
 function generateMockImprovements(input: string): Improvement[] {
   const improvements: Improvement[] = [];
   const words = input.toLowerCase().split(/\s+/);
-  
+
   if (words.length > 5) {
     improvements.push({
       id: '1',
@@ -105,7 +104,7 @@ function generateMockImprovements(input: string): Improvement[] {
       icon: <Target className="w-4 h-4" />
     });
   }
-  
+
   if (words.some(word => ['worked', 'responsible', 'helped'].includes(word))) {
     improvements.push({
       id: '2',
@@ -115,7 +114,7 @@ function generateMockImprovements(input: string): Improvement[] {
       icon: <TrendingUp className="w-4 h-4" />
     });
   }
-  
+
   if (input.length > 50) {
     improvements.push({
       id: '3',
@@ -135,33 +134,33 @@ function generateMockImprovements(input: string): Improvement[] {
       icon: <Brain className="w-4 h-4" />
     });
   }
-  
+
   return improvements;
 }
 
 function calculateMockScore(input: string): number {
   const baseScore = 45;
   const words = input.split(/\s+/).filter(word => word.length > 0);
-  
+
   let score = baseScore;
-  
+
   // Add points for length
   score += Math.min(words.length * 2, 30);
-  
+
   // Add points for keywords
   const keywords = ['experience', 'skills', 'management', 'development', 'leadership', 'project', 'team', 'results'];
   const foundKeywords = words.filter(word => keywords.includes(word.toLowerCase()));
   score += foundKeywords.length * 3;
-  
+
   // Add points for numbers (metrics)
   const hasNumbers = /\d/.test(input);
   if (hasNumbers) score += 10;
-  
+
   // Add points for professional words
   const professionalWords = ['achieved', 'implemented', 'led', 'developed', 'managed', 'created'];
   const foundProfessional = words.filter(word => professionalWords.includes(word.toLowerCase()));
   score += foundProfessional.length * 2;
-  
+
   return Math.min(Math.max(score, 15), 95);
 }
 
@@ -200,17 +199,17 @@ export function InteractiveDemo({ className }: { className?: string }) {
       const timeout = setTimeout(() => {
         const newImprovements = generateMockImprovements(input);
         const newScore = calculateMockScore(input);
-        
+
         setImprovements(newImprovements);
         setAtsScore(newScore);
         setIsTyping(false);
-        
+
         // Mark steps as completed based on input
         const newCompleted: number[] = [];
         if (input.length > 20) newCompleted.push(1);
         if (input.length > 50) newCompleted.push(2);
         if (input.length > 100) newCompleted.push(3);
-        
+
         setCompletedSteps(newCompleted);
       }, 800);
 
