@@ -1,0 +1,94 @@
+The "See CVGenie in Action" section (located on homepage after the "Begin Your Journey" button) currently displays with:
+- Light gray/lavender background (`bg-gray-50`, `bg-slate-50`, or `bg-indigo-50`)
+- Three white cards for the demo steps
+- Light text that becomes barely visible
+
+***
+
+### **✅ SPECIFIC FIX INSTRUCTIONS:**
+
+Find the section with the heading **"See CVGenie in Action"** and subtitle **"Try our interactive demo..."**
+
+#### **Step 1: Fix the Section Background**
+Locate the `<section>` or `<div>` wrapper that contains "See CVGenie in Action"
+
+**Current classes likely include:** `bg-gray-50` OR `bg-slate-50` OR `bg-indigo-50`
+
+**Action:** Add dark mode class to the same element:
+```jsx
+className="bg-gray-50 dark:bg-slate-900"
+// OR
+className="bg-slate-50 dark:bg-slate-900"  
+// OR
+className="bg-indigo-50 dark:bg-slate-900"
+```
+
+#### **Step 2: Fix the Three Demo Cards**
+The three cards showing:
+1. "Upload Resume - Any format - DOC, DOCX, or TXT"
+2. "Paste Job Description - From any job board or website"  
+3. "Get Optimized Resume - ATS-friendly and tailored"
+
+**Current classes likely:** `bg-white` OR `bg-white/80`
+
+**Action:** Update each card wrapper:
+```jsx
+className="bg-white dark:bg-slate-800"
+```
+
+**Also add to card text:**
+```jsx
+// Headings
+className="text-gray-900 dark:text-white"
+
+// Body text  
+className="text-gray-600 dark:text-gray-300"
+```
+
+#### **Step 3: Fix Icon Backgrounds (if needed)**
+The circular icon containers (upload icon, target icon, sparkle icon)
+
+**If they have light backgrounds, update to:**
+```jsx
+className="bg-gray-100 dark:bg-slate-700"
+```
+
+#### **Step 4: Fix Card Borders**
+**Action:**
+```jsx
+className="border border-gray-200 dark:border-gray-700"
+```
+
+***
+
+### **📍 FILE LOCATION HINTS:**
+
+Look for files like:
+- `app/page.tsx` or `app/(marketing)/page.tsx` 
+- `components/sections/DemoSection.tsx` or similar
+- `components/InteractiveDemo.tsx`
+
+Search for the text: **"See CVGenie in Action"** or **"Try our interactive demo"**
+
+***
+
+### **🔍 VERIFICATION CHECKLIST:**
+
+After making changes:
+1. ✅ Refresh page in dark mode
+2. ✅ Scroll to "See CVGenie in Action" section
+3. ✅ Verify section background is dark (not light gray/lavender)
+4. ✅ Verify three cards have dark backgrounds (not white)
+5. ✅ Verify text is readable (white/light gray)
+6. ✅ Switch to light mode - verify section still looks good
+7. ✅ Verify there are no white backgrounds showing through
+
+---
+
+### **💡 QUICK DEBUG TIP:**
+
+If the changes don't work, it might be because:
+1. **Tailwind dark mode not enabled** - Check `tailwind.config.js` has `darkMode: 'class'`
+2. **Classes being overridden** - More specific classes later in the className might override dark: classes
+3. **Component using inline styles** - Inline `style={{backgroundColor: '#fff'}}` will override Tailwind classes
+4. **Parent container has conflicting background** - Check if a parent div has a light background without dark: variant
