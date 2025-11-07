@@ -1,0 +1,94 @@
+The app currently has inconsistent dark mode styling where:
+
+Main content sections have white/light gray backgrounds instead of dark backgrounds
+
+The hero section and call-to-action areas appear washed out with light backgrounds
+
+Video/demo sections have bright white backgrounds
+
+The overall contrast is poor, making dark mode feel incomplete
+
+Requirements:
+CRITICAL: Light mode must remain completely unchanged. Only modify dark mode styling.
+
+Dark Mode Changes Needed:
+Main Background Color:
+
+Change all white/light gray backgrounds (bg-white, bg-gray-50, bg-gray-100) in dark mode to proper dark colors
+
+Primary background should be dark:bg-slate-900 or dark:bg-gray-900
+
+Secondary backgrounds should be dark:bg-slate-800 or dark:bg-gray-800
+
+Hero Section (Homepage):
+
+Remove the light gray/white background behind the main headline and description
+
+Apply dark:bg-slate-900 or dark:bg-gray-900 to ensure seamless dark appearance
+
+Ensure the animated text remains visible with proper contrast
+
+Video/Demo Section ("See CVGenie in Action"):
+
+Change the white background container to dark:bg-slate-900
+
+The video placeholder/frame should have dark:bg-slate-800 background
+
+Stats cards (40-60s, 3x More, 95%+) should have dark:bg-slate-800 or dark:bg-gray-800 backgrounds
+
+Call-to-Action Sections:
+
+"Ready to Land More Interviews?" section: change light background to dark:bg-slate-900
+
+Ensure text remains readable with dark:text-gray-100 or dark:text-white
+
+Feature bullet points should use dark:text-gray-300 for secondary text
+
+Card Components:
+
+Feature cards that currently have light backgrounds should be dark:bg-slate-800/50 or similar
+
+Maintain the existing dark card styling (which already looks good)
+
+Ensure all cards have consistent dark backgrounds without white showing through
+
+Text Colors in Dark Mode:
+
+Headings: dark:text-white
+
+Body text: dark:text-gray-300
+
+Muted/secondary text: dark:text-gray-400
+
+Ensure all text has sufficient contrast against dark backgrounds
+
+Borders and Dividers:
+
+Update any light borders to dark:border-gray-700 or dark:border-gray-800
+
+Ensure subtle separation between sections without harsh white lines
+
+Generator Page:
+
+The page already has good dark mode styling - maintain consistency
+
+Ensure the upload area and forms match the same dark aesthetic
+
+Implementation Checklist:
+ Update all <section> elements with white/light backgrounds to include dark mode classes
+
+ Add dark:bg-slate-900 or dark:bg-gray-900 to main container divs
+
+ Replace bg-gray-50 with bg-gray-50 dark:bg-slate-900
+
+ Replace bg-white with bg-white dark:bg-slate-900 or dark:bg-slate-800 depending on hierarchy
+
+ Update all text classes to include dark mode variants
+
+ Test all pages (Home, Features, Pricing, Generator) in dark mode
+
+ Verify light mode remains unchanged
+
+Expected Result:
+When in dark mode, the entire app should have a consistent dark appearance with no white or light gray backgrounds bleeding through. The visual hierarchy should be maintained through subtle variations in dark tones (slate-900, slate-800, gray-900, gray-800) rather than reverting to light colors.
+
