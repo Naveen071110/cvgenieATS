@@ -9,15 +9,20 @@ import { requireAuth, getAuth, clerkClient } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription } from "./services/dodoPayments";
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
+import type { ResumeData } from "./documentGenerator"; // Assuming ResumeData is exported from documentGenerator
+import { getUserSubscription } from "./database/subscriptionQueries"; // Assuming getUserSubscription is exported from subscriptionQueries
+
+const tmpDir = path.join(process.cwd(), "tmp");
+
+// Ensure tmp directory exists
+if (!fs.existsSync(tmpDir)) {
+  fs.mkdirSync(tmpDir, { recursive: true });
+}
 
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      const uploadDir = path.join(process.cwd(), "tmp");
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      cb(null, uploadDir);
+      cb(null, tmpDir);
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -39,6 +44,23 @@ const upload = multer({
     }
   },
 });
+
+/**
+ * Helper function to get user subscription status.
+ * @param userId - The ID of the user.
+ * @returns The subscription status of the user.
+ */
+async function getUserSubscriptionStatus(userId: string) {
+  try {
+    // Dynamically import to avoid circular dependencies or ensure it's available
+    const { getUserSubscription } = await import("./database/subscriptionQueries");
+    return await getUserSubscription(userId);
+  } catch (error) {
+    console.error("Error fetching user subscription status:", error);
+    // Return a default free status if fetching fails
+    return { isPro: false, subscriptionStatus: 'free' };
+  }
+}
 
 /**
  * Gemini API helper function with retry logic
@@ -242,7 +264,12 @@ export function registerRoutes(app: Express) {
   // Generate resume and cover letter endpoint (Gemini-migrated)
   app.post("/api/generate", async (req, res) => {
     try {
-      const { resumeText, jobDescription, format = "pdf" } = req.body;
+      const { resumeText, coverLetterText, jobDescription, format = "pdf" } = req.body;
+      const userId = getAuth(req)?.userId; // Use getAuth directly
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
 
       if (!resumeText || !jobDescription) {
         return res.status(400).json({
@@ -252,32 +279,41 @@ export function registerRoutes(app: Express) {
 
       console.log("Starting Gemini-powered generation...");
 
-      // Step 1: Generate optimized resume with Gemini
+      // Step 1: Check user's Pro status for watermark
+      const userSubscription = await getUserSubscriptionStatus(userId);
+      const isPro = userSubscription?.isPro || false;
+
+      console.log('[Generate] User Pro status:', isPro ? 'Pro (no watermark)' : 'Free (with watermark)');
+
+      // Step 2: Generate optimized resume with Gemini
       let optimizedResume = await generateOptimizedResume(resumeText, jobDescription);
       console.log("Initial optimization complete");
 
-      // Step 2: Apply strict ATS formatting (second Gemini pass)
+      // Step 3: Apply strict ATS formatting (second Gemini pass)
       optimizedResume = await applyATSStrictFormat(optimizedResume);
       console.log("ATS formatting applied");
 
-      // Step 3: Generate cover letter
+      // Step 4: Generate cover letter
       const coverLetter = await generateCoverLetter(resumeText, jobDescription);
       console.log("Cover letter generated");
 
-      // Step 4: Generate documents
+      // Step 5: Generate documents
       const timestamp = Date.now();
       const baseFilename = `generated_${timestamp}`;
+      
+      // Assuming documentGenerator.generateMultipleFormats accepts isPro flag
       const outputs = await documentGenerator.generateMultipleFormats(
         optimizedResume,
         coverLetter,
         baseFilename,
-        [format]
+        [format],
+        isPro // Pass isPro flag here
       );
 
       const resumePath = outputs.resumeDOCX || '';
       const coverLetterPath = outputs.coverLetterDOCX || '';
 
-      // Step 5: Save to in-memory storage
+      // Step 6: Save to in-memory storage
       const sessionId = `session_${timestamp}`;
 
       await storage.createGeneration({
@@ -288,21 +324,18 @@ export function registerRoutes(app: Express) {
         coverLetter,
       });
 
-      // Step 6: Save to Neon Postgres if user is authenticated
-      const auth = getAuth(req);
-      if (auth?.userId) {
-        try {
-          await insertResume(
-            auth.userId,
-            optimizedResume,
-            coverLetter,
-            jobDescription
-          );
-          console.log("Resume saved to Neon database for user:", auth.userId);
-        } catch (dbError: any) {
-          console.error("Failed to save to Neon database:", dbError);
-          // Don't fail the request if database save fails
-        }
+      // Step 7: Save to Neon Postgres if user is authenticated
+      try {
+        await insertResume(
+          userId,
+          optimizedResume,
+          coverLetter,
+          jobDescription
+        );
+        console.log("Resume saved to Neon database for user:", userId);
+      } catch (dbError: any) {
+        console.error("Failed to save to Neon database:", dbError);
+        // Don't fail the request if database save fails
       }
 
       res.json({
@@ -328,7 +361,7 @@ export function registerRoutes(app: Express) {
   app.get("/api/download/:filename", (req, res) => {
     try {
       const filename = req.params.filename;
-      const filepath = path.join(process.cwd(), "tmp", filename);
+      const filepath = path.join(tmpDir, filename); // Use tmpDir
 
       if (!fs.existsSync(filepath)) {
         return res.status(404).json({ error: "File not found" });
@@ -337,16 +370,28 @@ export function registerRoutes(app: Express) {
       res.download(filepath, filename, (err) => {
         if (err) {
           console.error("Download error:", err);
-          res.status(500).json({ error: "Failed to download file" });
+          // Ensure error response is sent only once
+          if (!res.headersSent) {
+            res.status(500).json({ error: "Failed to download file" });
+          }
+        } else {
+          // Optionally, clean up the file after download
+          fs.unlink(filepath, (unlinkErr) => {
+            if (unlinkErr) {
+              console.error("Error deleting file after download:", unlinkErr);
+            }
+          });
         }
       });
     } catch (error: any) {
-      console.error("Download error:", error);
-      res.status(500).json({ error: "Failed to download file" });
+      console.error("Download endpoint error:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Failed to download file" });
+      }
     }
   });
 
-  // Get user's resumes
+  // Get user's resumes from storage
   app.get("/api/resumes", async (req, res) => {
     try {
       const sessionId = req.query.sessionId as string || "default_session";
@@ -370,11 +415,10 @@ export function registerRoutes(app: Express) {
       }
 
       // Check if user has active Pro subscription
-      const { getUserSubscription } = await import("./database/subscriptionQueries");
-      const subscription = await getUserSubscription(userId);
-      
+      const subscription = await getUserSubscription(userId); // Use direct import
+
       const isPro = subscription.isPro && subscription.subscriptionStatus === 'active';
-      
+
       if (!isPro) {
         return res.status(403).json({ 
           error: "Pro subscription required",
@@ -408,11 +452,10 @@ export function registerRoutes(app: Express) {
       }
 
       // Check if user has active Pro subscription
-      const { getUserSubscription } = await import("./database/subscriptionQueries");
-      const subscription = await getUserSubscription(userId);
-      
+      const subscription = await getUserSubscription(userId); // Use direct import
+
       const isPro = subscription.isPro && subscription.subscriptionStatus === 'active';
-      
+
       if (!isPro) {
         return res.status(403).json({ 
           error: "Pro subscription required",
@@ -449,11 +492,10 @@ export function registerRoutes(app: Express) {
       }
 
       // Check if user has active Pro subscription
-      const { getUserSubscription } = await import("./database/subscriptionQueries");
-      const subscription = await getUserSubscription(userId);
-      
+      const subscription = await getUserSubscription(userId); // Use direct import
+
       const isPro = subscription.isPro && subscription.subscriptionStatus === 'active';
-      
+
       if (!isPro) {
         return res.status(403).json({ 
           error: "Pro subscription required",
@@ -493,13 +535,13 @@ export function registerRoutes(app: Express) {
       try {
         const user = await clerkClient.users.getUser(userId);
         console.log('Clerk user fetched successfully:', userId);
-        
+
         // Get primary email
         const primaryEmail = user.emailAddresses.find(
           (email: any) => email.id === user.primaryEmailAddressId
         );
         userEmail = primaryEmail?.emailAddress || user.emailAddresses[0]?.emailAddress || '';
-        
+
         // Get name
         userName = user.fullName || 
                    (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : '') ||
@@ -507,21 +549,21 @@ export function registerRoutes(app: Express) {
                    user.lastName || 
                    user.username || 
                    'CVGenie User';
-        
+
         console.log('Email extracted:', userEmail ? 'Found' : 'Not found');
       } catch (clerkError: any) {
         console.error('Clerk API error, falling back to session claims:', clerkError.message);
-        
+
         // Fallback: Try session claims
         const sessionClaims = auth.sessionClaims as any;
-        
+
         // Try multiple possible email field names
         userEmail = sessionClaims?.email || 
                    sessionClaims?.primary_email || 
                    sessionClaims?.email_address ||
                    sessionClaims?.emailAddress || 
                    '';
-        
+
         // Try to get name from session claims
         userName = sessionClaims?.name || 
                   sessionClaims?.full_name ||
@@ -543,7 +585,7 @@ export function registerRoutes(app: Express) {
       }
 
       // Initialize user record as FREE before creating checkout (if they don't exist)
-      const { updateUserSubscription, getUserSubscription } = await import("./database/subscriptionQueries");
+      const { updateUserSubscription, getUserSubscription } = await import("./database/subscriptionQueries"); // Import locally if not global
       const existingSubscription = await getUserSubscription(userId);
 
       // Only initialize if user doesn't exist or is not already Pro
@@ -552,9 +594,9 @@ export function registerRoutes(app: Express) {
       }
 
       // SIMPLIFIED: Use direct Dodo Payments checkout link
-      // This bypasses API issues and uses the proven working checkout page
+      // This bypasses API issues and uses the proven checkout page
       const productId = process.env.DODO_PAYMENTS_PRODUCT_ID || 'pdt_4oZICjqHtM1kIMDDDEpTG';
-      
+
       // Build checkout URL with prefilled customer information
       const checkoutUrl = new URL(`https://checkout.dodopayments.com/buy/${productId}`);
       checkoutUrl.searchParams.set('quantity', '1');
@@ -562,9 +604,9 @@ export function registerRoutes(app: Express) {
       checkoutUrl.searchParams.set('prefilled_customer_name', userName);
       // Add userId as customer reference for webhook identification
       checkoutUrl.searchParams.set('customer_reference', userId);
-      
+
       const paymentLink = checkoutUrl.toString();
-      
+
       console.log(`✅ Generated direct checkout link for user ${userId}`);
       console.log(`   Email: ${userEmail}`);
       console.log(`   Name: ${userName}`);
@@ -576,7 +618,7 @@ export function registerRoutes(app: Express) {
     } catch (error: any) {
       console.error("Error creating checkout link:", error);
       console.error("Error stack:", error.stack);
-      
+
       res.status(500).json({ 
         error: error.message || "Failed to create checkout link. Please try again." 
       });
@@ -594,8 +636,7 @@ export function registerRoutes(app: Express) {
       }
 
       // Always fetch fresh data from database, never cache
-      const { getUserSubscription } = await import("./database/subscriptionQueries");
-      const subscription = await getUserSubscription(userId);
+      const subscription = await getUserSubscription(userId); // Use direct import
 
       // STRICT: User is Pro ONLY if both isPro=1 AND subscriptionStatus='active'
       const isPro = Boolean(subscription?.isPro && subscription?.subscriptionStatus === 'active');
