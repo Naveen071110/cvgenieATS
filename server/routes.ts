@@ -279,11 +279,11 @@ export function registerRoutes(app: Express) {
 
       console.log("Starting Gemini-powered generation...");
 
-      // Step 1: Check user's Pro status for watermark
+      // Step 1: Check user's Pro status for watermark and speed
       const userSubscription = await getUserSubscriptionStatus(userId);
       const isPro = userSubscription?.isPro || false;
 
-      console.log('[Generate] User Pro status:', isPro ? 'Pro (no watermark)' : 'Free (with watermark)');
+      console.log('[Generate] User Pro status:', isPro ? 'Pro (no watermark, instant generation)' : 'Free (with watermark, delayed generation)');
 
       // Step 2: Generate optimized resume with Gemini
       let optimizedResume = await generateOptimizedResume(resumeText, jobDescription);
@@ -336,6 +336,18 @@ export function registerRoutes(app: Express) {
       } catch (dbError: any) {
         console.error("Failed to save to Neon database:", dbError);
         // Don't fail the request if database save fails
+      }
+
+      // Step 8: Apply generation speed difference
+      // Free users: 4 second artificial delay for perceived value difference
+      // Pro users: Instant results
+      if (!isPro) {
+        const FREE_USER_DELAY_MS = 4000; // 4 seconds
+        console.log(`[Generate] Free user - applying ${FREE_USER_DELAY_MS}ms delay...`);
+        await new Promise(resolve => setTimeout(resolve, FREE_USER_DELAY_MS));
+        console.log('[Generate] Delay complete, sending response');
+      } else {
+        console.log('[Generate] Pro user - sending instant response');
       }
 
       res.json({

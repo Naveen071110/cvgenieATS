@@ -323,7 +323,16 @@ export default function ResumeGenerator() {
                         <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                         <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                       </div>
-                      <p className="text-slate-600 mt-4">This usually takes 10-15 seconds...</p>
+                      <p className="text-slate-600 mt-4">
+                        {isPro 
+                          ? "Processing your request at maximum speed..." 
+                          : "This usually takes 10-15 seconds..."}
+                      </p>
+                      {!isPro && (
+                        <p className="text-sm text-slate-500 mt-2">
+                          💡 Pro users get instant generation
+                        </p>
+                      )}
                     </div>
                   </div>
                 ) : generationResult && (

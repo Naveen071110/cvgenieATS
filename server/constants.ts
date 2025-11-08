@@ -18,3 +18,12 @@ export const FILE_EXTENSIONS = {
   docx: '.docx',
   txt: '.txt'
 };
+/**
+ * Generation speed configuration
+ * Pro users: Instant generation (no delay)
+ * Free users: Artificial delay to demonstrate Pro value
+ */
+export const GENERATION_SPEED = {
+  FREE_USER_DELAY_MS: 4000, // 4 seconds delay for Free users
+  PRO_USER_DELAY_MS: 0,     // No delay for Pro users
+} as const;
