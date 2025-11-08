@@ -1,0 +1,52 @@
+**Goal:**  
+Make resume generation noticeably faster for Pro users and intentionally slowed down (e.g., with a delay) for Free users. This should apply both to backend resume generation and any frontend loading/progress UI, without disrupting existing working logic or code.
+
+**Instructions:**
+
+1. **User Tier Check:**
+   - Use your existing subscription helpers, e.g. from `subscriptionQueries.ts`, `subscriptionUtils.ts`, or `useSubscription.tsx`, to determine if the current user is Pro or Free (`isPro` or `subscriptionStatus`).
+
+2. **Where to Add:**
+   - In the backend resume generation handler/API (in `routes.ts` or the relevant endpoint), identify the logic that runs the actual generation step or response.
+
+3. **Implement Speed Difference:**
+
+   - For **Free users**:  
+     - Before sending the response or marking the generation as complete, add an artificial delay.  
+       Example:  
+       ```js
+       if (!user.isPro) {
+         await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second delay (or as desired)
+       }
+       ```
+     - You can set the delay to 2–5 seconds for it to feel meaningfully “slower” without being punitive.
+
+   - For **Pro users**:  
+     - Do not add any delay. Run the generation as quickly as possible.
+     - Confirm the endpoint returns the result as soon as it’s ready.
+
+4. **Frontend Progress (Optional for even better UX):**
+   - In addition to the backend delay, you may optionally show an explicit progress bar, spinner, or “Generating (x seconds left for Free users)” notice in the UI for Free tier users.
+   - For Pro users, skip the forced wait/loading indicator and show the result immediately.
+
+5. **Testing:**
+   - Log in as Free user; trigger resume generation -> notice the enforced wait.
+   - Log in as Pro user; trigger resume generation -> see immediate or near-instant result.
+   - Ensure the only change is perceived and actual delay—generation quality, output, and security are unchanged.
+
+6. **Non-Disruptive Change:**
+   - Do not modify any generation logic that affects content, watermarks, or access; isolate changes purely to the timing/speed difference.
+   - Ensure error handling remains stable and user-tier logic is not bypassed.
+
+***
+
+**Additional:**  
+- You can centralize the “generationDelayMs” as a config/constant to easily tweak the speed difference without full redeploys.
+- In the future, also make it visible in pricing tables (“Instant generation with Pro”).
+
+***
+
+**Summary:**  
+- Free users get a noticeable artificial delay before each generation result (e.g., 3 seconds).
+- Pro users get instant results.
+- The rest of your logic and history/features are unchanged.
