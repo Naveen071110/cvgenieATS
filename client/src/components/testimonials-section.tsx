@@ -1,7 +1,8 @@
-
 import { Star, CheckCircle, Building2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar components
+import { Briefcase } from "lucide-react"; // Import Briefcase icon
 
 const testimonials = [
   {
@@ -108,7 +109,7 @@ export default function TestimonialsSection() {
             >
               {/* Subtle Background Gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-white/30 to-slate-50/50 dark:from-slate-800/50 dark:via-slate-800/30 dark:to-slate-800/50" />
-              
+
               {/* Very Subtle Border Accent */}
               <div className="absolute inset-0 border border-transparent bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-400/10 dark:via-purple-400/10 dark:to-pink-400/10 rounded-xl" 
                 style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '1px' }} 
