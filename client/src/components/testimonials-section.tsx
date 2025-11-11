@@ -97,30 +97,30 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Testimonial Cards Grid */}
-        <div className="grid grid-cols-1 max-w-2xl mx-auto gap-8">
+        <div className="grid grid-cols-1 max-w-[700px] mx-auto gap-8">
           {testimonials.map((testimonial, index) => (
             <Card
               key={testimonial.id}
-              className={`relative overflow-hidden border-2 transition-all duration-700 hover:scale-105 hover:shadow-2xl ${
+              className={`relative overflow-hidden rounded-xl border border-slate-200/60 dark:border-slate-700/60 transition-all duration-700 hover:scale-[1.02] hover:shadow-xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
               }`}
-              style={{ transitionDelay: `${index * 150}ms` }}
+              style={{ transitionDelay: `${index * 150}ms`, boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)' }}
             >
-              {/* Premium Gradient Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#5A5AFF]/10 via-[#7B68EE]/10 to-[#A259FF]/10 dark:from-[#5A5AFF]/20 dark:via-[#7B68EE]/20 dark:to-[#A259FF]/20" />
+              {/* Subtle Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-white/30 to-slate-50/50 dark:from-slate-800/50 dark:via-slate-800/30 dark:to-slate-800/50" />
               
-              {/* Subtle Border Glow */}
-              <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-[#5A5AFF]/30 via-[#7B68EE]/30 to-[#A259FF]/30 dark:from-[#5A5AFF]/40 dark:via-[#7B68EE]/40 dark:to-[#A259FF]/40 rounded-lg" 
-                style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '2px' }} 
+              {/* Very Subtle Border Accent */}
+              <div className="absolute inset-0 border border-transparent bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-400/10 dark:via-purple-400/10 dark:to-pink-400/10 rounded-xl" 
+                style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '1px' }} 
               />
 
-              <CardContent className="relative z-10 p-10">
-                {/* Star Rating with Glow */}
-                <div className="flex items-center gap-1 mb-6">
+              <CardContent className="relative z-10 p-8 sm:p-10 md:p-12">
+                {/* Star Rating with Glow - More Prominent */}
+                <div className="flex items-center gap-1.5 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-5 h-5 fill-yellow-400 text-yellow-400 transition-all duration-300 hover:scale-125 hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
+                      className="w-6 h-6 fill-yellow-400 text-yellow-400 transition-all duration-300 hover:scale-125 hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
                       style={{
                         filter: "drop-shadow(0 0 4px rgba(250, 204, 21, 0.4))",
                       }}
@@ -128,9 +128,9 @@ export default function TestimonialsSection() {
                   ))}
                 </div>
 
-                {/* Testimonial Quote */}
+                {/* Testimonial Quote - Reduced Size */}
                 <blockquote className="mb-8">
-                  <p className="text-base font-medium text-white dark:text-white leading-relaxed tracking-wide">
+                  <p className="text-base font-normal text-slate-800 dark:text-gray-100 leading-relaxed tracking-normal">
                     "{testimonial.quote}"
                   </p>
                 </blockquote>
@@ -153,17 +153,17 @@ export default function TestimonialsSection() {
                     )}
                   </div>
 
-                  {/* Name, Role, Company */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-slate-900 dark:text-white text-base truncate">
+                  {/* Name, Role, Company - Reduced Sizes */}
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <p className="font-semibold text-slate-900 dark:text-white text-[0.95rem] truncate">
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-slate-700 dark:text-gray-300 truncate">
+                    <p className="text-[0.85rem] text-slate-600 dark:text-gray-400 truncate">
                       {testimonial.role}
                     </p>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <Building2 className="w-3.5 h-3.5 text-slate-500 dark:text-gray-400 flex-shrink-0" />
-                      <p className="text-xs text-slate-600 dark:text-gray-400 truncate">
+                    <div className="flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-slate-500 dark:text-gray-500 flex-shrink-0" />
+                      <p className="text-[0.85rem] text-slate-500 dark:text-gray-500 truncate">
                         {testimonial.company}
                       </p>
                     </div>
