@@ -327,6 +327,11 @@ export default function HeroSection() {
                   borderRadius: '12px',
                   boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
                 }}
+                onError={(e) => {
+                  console.error('Hero image failed to load');
+                  e.currentTarget.style.display = 'none';
+                }}
+                loading="eager"
               />
             </div>
           </div>
