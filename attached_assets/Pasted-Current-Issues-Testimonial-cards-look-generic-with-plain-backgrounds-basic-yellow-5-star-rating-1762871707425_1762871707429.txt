@@ -1,0 +1,81 @@
+Current Issues:
+
+Testimonial cards look generic with plain backgrounds, basic yellow 5-star ratings, gray text, simple avatar circles, and weak section typography/subtitle.
+
+Needs to look more premium, credible, and visually interesting in BOTH light and dark modes.
+
+Required Visual & Functional Updates:
+
+Testimonial Card Background & Depth
+
+Replace the plain background on each testimonial card with a subtle blue-to-purple brand gradient (e.g., #5A5AFF to #A259FF or similar).
+
+Add a subtle shadow AND a 1px semi-transparent border for depth.
+
+Make sure gradients and shadows look good in both dark and light modes (test both; adjust saturation/opacity as needed).
+
+Star Ratings
+
+Enhance stars with a soft glow effect and/or animation on hover (e.g., increase brightness, add a gentle scale or pulse).
+
+Use SVG for stars if not already done for easy styling.
+
+Make stars visually distinctive in both themes.
+
+Testimonial Text
+
+Change quote/testimonial text to bright white (#FFFFFF) for both light and dark modes, or use a dark primary color for light mode and white for dark mode if theme toggling.
+
+Increase font weight slightly, and add a touch of letter spacing for readability.
+
+Avatars
+
+Replace placeholder initials with either:
+
+Actual user photos (if available) OR
+
+More sophisticated, brand-matching illustrated avatars (use an avatar library or SVGs).
+
+Avatars should have a subtle shadow and a 2px border that is visible in both light and dark mode.
+
+Add a verified badge/checkmark icon (styled in brand colors) next to/overlaid on each avatar for trust.
+
+Company Logos/Icons
+
+Show a small company logo or industry icon below/beside the user’s designation/job title.
+
+Keep logos in grayscale or softly colored (adapt for both modes).
+
+Use a placeholder icon if no logo is available.
+
+Section Title and Subtitle
+
+Make the section title (“Real People. Real Interview Success.”) larger, bolder, and use a font/weight that matches your branding.
+
+Add a subtle “fade-up” or similar animation when the section scrolls into view.
+
+Subtitle: Increase font size and weight, brighten the color for better contrast, and consider a gentle left-to-right gradient or text-shadow for added clarity.
+
+Subtitle should stand out from both the card backgrounds and the page background, in both color modes.
+
+Section Background
+
+Optionally add a soft geometric pattern (SVG or CSS, e.g. circles, waves, dots) or low-opacity brand shapes to the background of the entire testimonial section for a premium feel that works for both modes.
+
+Accessibility/Responsiveness
+
+Ensure all changes are accessible (sufficient color contrast, readable at multiple sizes).
+
+Test and adjust appearance on mobile, tablet, and desktop in both color themes.
+
+Tech/Implementation Notes:
+
+Use CSS variables/custom props for colors, gradients, and border to support easy toggling between dark and light mode.
+
+If using a CSS-in-JS or tailwind system, add variants for both dark and light modes.
+
+Make all new visual elements (badges, companies, avatars) accessible and responsive.
+
+TEST:
+Preview in both light and dark mode after making changes.
+Check on at least one desktop and one mobile layout.
