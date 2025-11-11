@@ -1,297 +1,241 @@
-import { CheckCircle, Mail, Download, Zap, Target, FileText, Package, ArrowRight } from "lucide-react";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { Link } from "wouter";
-import AIBrainIcon from "../assets/icons/ai-brain.svg?react"
-import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
-import DocumentTransformIcon from "../assets/icons/document-transform.svg?react"
-import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
-import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
-import TargetBullseyeIcon from "../assets/icons/target-bullseye.svg?react"
+import { useEffect, useRef, useState } from 'react';
+import { CheckCircle2, Sparkles } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import AIBrainIcon from '../assets/icons/ai-brain.svg?react';
+import ATSShieldIcon from '../assets/icons/ats-shield.svg?react';
+import SpeedOptimizationIcon from '../assets/icons/speed-optimization.svg?react';
 
-const features = [
-  {
-    icon: AIBrainIcon,
-    title: "Intelligent Resume Transformation",
-    description: "Upload your resume and paste any job description. Our advanced AI instantly analyzes both and reshapes your experience to align perfectly with what employers seek, spotlighting your most relevant qualifications.",
-    benefits: [
-      "Strategic keyword integration that gets past filters",
-      "Intelligent skill highlighting and prioritization",
-      "Experience repositioning for maximum recruiter appeal"
-    ],
-    mockup: (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-gray-700">
-        <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
-          <div className="flex items-center mb-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-sm font-medium text-slate-700 dark:text-gray-300">AI Analysis Complete</span>
-          </div>
-          <div className="space-y-2">
-            <div className="bg-primary/20 dark:bg-blue-900/40 text-primary dark:text-blue-300 text-xs px-2 py-1 rounded-full inline-block">React Developer</div>
-            <div className="bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full inline-block">JavaScript</div>
-            <div className="bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-xs px-2 py-1 rounded-full inline-block">Team Leadership</div>
-          </div>
-        </div>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-600 dark:text-gray-300">Keyword Match</span>
-            <span className="text-sm font-semibold text-green-600 dark:text-green-400">94%</span>
-          </div>
-          <div className="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2">
-            <div className="bg-green-500 dark:bg-green-400 h-2 rounded-full" style={{width: '94%'}}></div>
-          </div>
-        </div>
-      </div>
-    ),
-    reverse: false
-  },
-  {
-    icon: ATSShieldIcon,
-    title: "Guaranteed to Reach Real Recruiters",
-    description: "Most applications never make it past automated filters. We ensure yours does. Our professionally structured format glides through screening systems, landing your resume directly in front of decision-makers.",
-    benefits: [
-      "Clean, machine-readable structure that systems love",
-      "Optimized keyword positioning for top search rankings",
-      "Tested across all major hiring platforms"
-    ],
-    mockup: (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-gray-700">
-        <div className="border-b border-slate-200 dark:border-gray-700 pb-4 mb-4">
-          <h4 className="font-bold text-slate-900 dark:text-white">John Smith</h4>
-          <p className="text-sm text-slate-600 dark:text-gray-300">Senior React Developer</p>
-          <p className="text-xs text-slate-500 dark:text-gray-400">john.smith@email.com • (555) 123-4567</p>
-        </div>
-        <div className="space-y-3">
-          <div>
-            <h5 className="font-semibold text-slate-800 dark:text-gray-200 text-sm mb-1">EXPERIENCE</h5>
-            <div className="text-xs text-slate-600 dark:text-gray-300 space-y-1">
-              <p className="font-medium">Frontend Developer - TechCorp</p>
-              <p>• Developed React applications using TypeScript</p>
-              <p>• Led team of 4 developers on major product launch</p>
-            </div>
-          </div>
-          <div>
-            <h5 className="font-semibold text-slate-800 dark:text-gray-200 text-sm mb-1">SKILLS</h5>
-            <p className="text-xs text-slate-600 dark:text-gray-300">React, TypeScript, Node.js, GraphQL, AWS</p>
-          </div>
-        </div>
-        <div className="mt-4 p-2 bg-green-50 dark:bg-green-900/30 rounded border border-green-200 dark:border-green-700">
-          <div className="flex items-center">
-            <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400 mr-2" />
-            <span className="text-xs font-medium text-green-700 dark:text-green-300">ATS Compatible</span>
-          </div>
-        </div>
-      </div>
-    ),
-    reverse: true
-  },
-  {
-    icon: Mail,
-    title: "AI-Personalized Cover Letters",
-    description: "Don't send generic cover letters. Our AI crafts personalized cover letters that connect your experience directly to the company's needs, mentioning specific requirements and showing genuine interest.",
-    benefits: [
-      "Company-specific customization",
-      "Professional tone and structure",
-      "Highlights relevant achievements"
-    ],
-    mockup: (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-gray-700">
-        <div className="mb-4">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/40 rounded-full flex items-center justify-center mr-3">
-              <Mail className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-            </div>
-            <span className="font-semibold text-slate-800 dark:text-white">AI-Generated Cover Letter</span>
-          </div>
-        </div>
-        <div className="space-y-3 text-sm text-slate-600 dark:text-gray-300">
-          <p>"Dear Hiring Manager,</p>
-          <p>I am excited to apply for the Senior React Developer position at TechCorp. With 5+ years of experience building scalable React applications, I am particularly drawn to your company's focus on innovative fintech solutions.</p>
-          <p>Your job posting mentions the need for expertise in TypeScript and GraphQL - technologies I have used extensively in my current role where I lead a team of 4 developers...</p>
-          <div className="flex items-center pt-2">
-            <div className="flex-1 h-px bg-slate-200 dark:bg-gray-700"></div>
-            <span className="px-3 text-xs text-slate-400 dark:text-gray-500">Personalized content continues</span>
-            <div className="flex-1 h-px bg-slate-200 dark:bg-gray-700"></div>
-          </div>
-        </div>
-      </div>
-    ),
-    reverse: false
-  },
-  {
-    icon: MultiFormatExportIcon,
-    title: "Multiple Export Formats",
-    description: "Get your documents in the format you need. Whether you're applying online, emailing directly, or printing for in-person interviews, we've got you covered with multiple professional formats.",
-    benefits: [
-      "DOCX for professional submission",
-      "Plain text for easy copying",
-      "Word document for easy editing"
-    ],
-    mockup: (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-gray-700">
-        <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Export Options</h4>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 transition-colors cursor-pointer">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/40 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">DOCX</span>
-              </div>
-              <div>
-                <p className="font-medium text-slate-900 dark:text-white">DOCX Resume</p>
-                <p className="text-sm text-slate-500 dark:text-gray-400">Professional format</p>
-              </div>
-            </div>
-            <Download className="w-5 h-5 text-slate-400 dark:text-gray-500" />
-          </div>
+interface FeatureCheckProps {
+  text: string;
+  index: number;
+}
 
-          <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 transition-colors cursor-pointer">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">DOC</span>
-              </div>
-              <div>
-                <p className="font-medium text-slate-900 dark:text-white">Word Document</p>
-                <p className="text-sm text-slate-500 dark:text-gray-400">Easy to customize</p>
-              </div>
-            </div>
-            <Download className="w-5 h-5 text-slate-400 dark:text-gray-500" />
-          </div>
-
-          <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 transition-colors cursor-pointer">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-gray-600 dark:text-gray-300 font-bold text-sm">TXT</span>
-              </div>
-              <div>
-                <p className="font-medium text-slate-900 dark:text-white">Plain Text</p>
-                <p className="text-sm text-slate-500 dark:text-gray-400">Copy & paste ready</p>
-              </div>
-            </div>
-            <Download className="w-5 h-5 text-slate-400 dark:text-gray-500" />
-          </div>
-        </div>
-      </div>
-    ),
-    reverse: true
-  }
-];
-
-export default function FeaturesSection() {
-  const scrollFadeInRef = useScrollAnimation();
+const FeatureCheck = ({ text, index }: FeatureCheckProps) => {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section 
-      id="features" 
-      className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white dark:from-gray-900 dark:to-gray-800"
-      aria-labelledby="features-title"
+    <motion.li
+      className="flex items-start gap-3 group"
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay: index * 0.1, duration: 0.4 }}
     >
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-20" ref={scrollFadeInRef.ref}>
-          <h2 
-            id="features-title"
-            className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-6 font-heading"
+      <motion.div
+        className="relative flex-shrink-0 mt-1"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        whileHover={{ scale: 1.1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      >
+        <CheckCircle2
+          className="w-6 h-6 text-primary dark:text-blue-400 transition-all duration-300"
+          strokeWidth={2.5}
+          fill={isHovered ? "currentColor" : "none"}
+        />
+        {isHovered && (
+          <motion.div
+            className="absolute inset-0 bg-primary/20 dark:bg-blue-400/20 rounded-full blur-md"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1.5, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+          />
+        )}
+      </motion.div>
+      <span className="text-gray-700 dark:text-gray-300 leading-relaxed">
+        {text}
+      </span>
+    </motion.li>
+  );
+};
+
+interface FeatureSectionProps {
+  title: string;
+  subtitle: string;
+  description: string;
+  features: string[];
+  icon: React.ReactNode;
+  imageSrc?: string;
+  imageAlt?: string;
+  reverse?: boolean;
+}
+
+const FeatureSection = ({
+  title,
+  subtitle,
+  description,
+  features,
+  icon,
+  imageSrc,
+  imageAlt = "Feature preview",
+  reverse = false,
+}: FeatureSectionProps) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.section
+      ref={ref}
+      className="py-16 md:py-24 lg:py-32"
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${reverse ? 'lg:flex-row-reverse' : ''}`}>
+          {/* Content Side */}
+          <motion.div
+            className={`space-y-6 ${reverse ? 'lg:order-2' : 'lg:order-1'}`}
+            initial={{ opacity: 0, x: reverse ? 50 : -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? 50 : -50 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Everything You Need to Get Hired Faster
-          </h2>
-          <p className="text-lg max-w-2xl mx-auto text-gray-600 dark:text-gray-300 font-body leading-relaxed">
-            Our intelligent platform combines advanced AI with recruiting expertise
-            to craft resumes that capture attention and generate interviews.
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-24)' }}>
-          {features.map((feature, index) => {
-            const featureAnimation = useScrollAnimation({ threshold: 0.1 });
-            const isEven = index % 2 === 0;
-            const slideDirection = isEven ? 'slide-in-left' : 'slide-in-right';
-
-            return (
-            <div
-              key={index}
-              ref={featureAnimation.ref}
-              className={`grid lg:grid-cols-2 items-center ${slideDirection} ${
-                featureAnimation.isVisible ? 'visible' : ''
-              } ${feature.reverse ? 'lg:grid-flow-col-dense' : ''}`}
-              style={{ 
-                gap: 'var(--space-8)',
-                animationDelay: `${index * 0.2}s`
-              }}
-            >
-              <div 
-                className={`${feature.reverse ? 'lg:col-start-2' : ''}`}
-                style={{ 
-                  paddingLeft: 'var(--space-2)',
-                  paddingRight: 'var(--space-2)'
-                }}
+            {/* Icon & Title */}
+            <div className="flex items-center gap-4 mb-6">
+              <motion.div
+                className="flex-shrink-0 w-14 h-14 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl"
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
-                <div 
-                  className="flex items-center justify-center feature-icon-hover group cursor-pointer bg-primary/10 dark:bg-blue-900/30"
-                  style={{ 
-                    width: 'var(--space-16)',
-                    height: 'var(--space-16)',
-                    borderRadius: 'var(--space-6)',
-                    marginBottom: 'var(--space-6)'
-                  }}
-                >
-                  <feature.icon 
-                    className="transition-transform duration-300 group-hover:scale-110 text-primary dark:text-blue-400"
-                    style={{ width: 'var(--space-8)', height: 'var(--space-8)' }}
-                  />
-                </div>
-                <h3 
-                  className="text-card-title text-gray-900 dark:text-white"
-                  style={{ marginBottom: 'var(--space-3)' }}
-                >
-                  {feature.title}
-                </h3>
-                <p 
-                  className="text-body leading-relaxed text-gray-600 dark:text-gray-300"
-                  style={{ marginBottom: 'var(--space-4)' }}
-                >
-                  {feature.description}
+                {icon}
+              </motion.div>
+              <div>
+                <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-1">
+                  {subtitle}
                 </p>
-                <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                  {feature.benefits.map((benefit, benefitIndex) => (
-                    <li key={benefitIndex} className="flex items-center text-gray-600 dark:text-gray-300">
-                      <CheckCircle 
-                        className="flex-shrink-0 text-green-500 dark:text-green-400"
-                        style={{ 
-                          width: 'var(--space-5)',
-                          height: 'var(--space-5)',
-                          marginRight: 'var(--space-3)'
-                        }}
-                      />
-                      <span className="text-sm sm:text-base">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div 
-                className={`${feature.reverse ? 'lg:col-start-1' : ''} feature-mockup-hover`}
-                style={{ 
-                  paddingLeft: 'var(--space-2)',
-                  paddingRight: 'var(--space-2)'
-                }}
-              >
-                {feature.mockup}
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                  {title}
+                </h2>
               </div>
             </div>
-          );
-          })}
-        </div>
 
-        {/* CTA after features */}
-        <div className="text-center mt-16">
-          <Link to="/generator">
-            <button 
-              className="magic-cta group genie-lamp"
-              aria-label="Get started with AI-powered resume optimization"
-            >
-              Begin Your Journey
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </Link>
+            {/* Description */}
+            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+              {description}
+            </p>
+
+            {/* Feature List */}
+            <ul className="space-y-4 mt-8">
+              {features.map((feature, index) => (
+                <FeatureCheck key={index} text={feature} index={index} />
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Image/Mockup Side */}
+          <motion.div
+            className={`relative ${reverse ? 'lg:order-1' : 'lg:order-2'}`}
+            initial={{ opacity: 0, x: reverse ? -50 : 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? -50 : 50 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="relative group">
+              {/* Glow Effect */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 dark:from-blue-400/10 dark:via-purple-400/10 dark:to-pink-400/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Image Container */}
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-gray-700 overflow-hidden transform transition-transform duration-300 group-hover:scale-[1.02]">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-transparent dark:from-blue-400/5 dark:via-purple-400/5 pointer-events-none" />
+
+                {imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    alt={imageAlt}
+                    className="w-full h-auto"
+                  />
+                ) : (
+                  <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+                    <Sparkles className="w-16 h-16 text-gray-400 dark:text-gray-600" />
+                  </div>
+                )}
+              </div>
+
+              {/* Decorative Elements */}
+              <motion.div
+                className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-2xl opacity-30 dark:opacity-20"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.div
+                className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full blur-2xl opacity-30 dark:opacity-20"
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.3, 0.4, 0.3],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
+  );
+};
+
+export default function FeaturesSection() {
+  const features = [
+    {
+      title: "Intelligent Resume Transformation",
+      subtitle: "AI-Powered Excellence",
+      description: "Our advanced AI analyzes job descriptions and tailors your resume to match exactly what recruiters are looking for, highlighting your most relevant skills and achievements.",
+      features: [
+        "Smart keyword optimization for ATS compatibility",
+        "Dynamic content restructuring based on job requirements",
+        "Achievement quantification and impact highlighting",
+        "Industry-specific language and terminology adaptation",
+      ],
+      icon: <AIBrainIcon className="w-8 h-8 text-primary dark:text-blue-400" />,
+      imageSrc: undefined, // Add your resume preview image path here
+    },
+    {
+      title: "ATS-Optimized Formatting",
+      subtitle: "Pass Every Screen",
+      description: "Get past applicant tracking systems with professionally formatted resumes that maintain readability for both AI scanners and human recruiters.",
+      features: [
+        "Clean, parser-friendly document structure",
+        "Optimal section organization and hierarchy",
+        "Compatible with all major ATS platforms",
+        "Professional templates that impress humans too",
+      ],
+      icon: <ATSShieldIcon className="w-8 h-8 text-primary dark:text-blue-400" />,
+      imageSrc: undefined,
+    },
+    {
+      title: "Lightning-Fast Generation",
+      subtitle: "Speed Meets Quality",
+      description: "Generate professional resumes and cover letters in seconds, not hours. Our optimized AI engine delivers quality results faster than traditional methods.",
+      features: [
+        "Complete resume in 40-60 seconds",
+        "Instant preview and editing capabilities",
+        "Quick iterations for multiple job applications",
+        "Export-ready documents with one click",
+      ],
+      icon: <SpeedOptimizationIcon className="w-8 h-8 text-primary dark:text-blue-400" />,
+      imageSrc: undefined,
+    },
+  ];
+
+  return (
+    <div className="bg-gradient-to-b from-white via-gray-50/50 to-white dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-900">
+      {features.map((feature, index) => (
+        <FeatureSection
+          key={index}
+          {...feature}
+          reverse={index % 2 === 1}
+        />
+      ))}
+    </div>
   );
 }
