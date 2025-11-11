@@ -18,7 +18,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, signOut, isLoading } = useAuth();
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
-  
+
   // Check subscription status for Pro features
   const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
     queryKey: ["/api/subscription/status"],
@@ -211,23 +211,25 @@ export default function Header() {
                 </div>
               )}
             </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-                aria-label="Toggle navigation menu"
-              >
-                {isMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
-              </button>
-            </div>
           </div>
         </nav>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-gray-600 hover:text-gray-900 transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {isMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+      </div>
+    </nav>
 
         {/* Mobile menu */}
         {isMenuOpen && (

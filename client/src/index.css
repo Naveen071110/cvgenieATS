@@ -2447,6 +2447,22 @@ select {
   animation: icon-pulse 2s ease-in-out infinite;
 }
 
+/* Mobile menu fade-in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
 /* Watercolor Background Styles */
 .hero-section {
   position: relative !important;
