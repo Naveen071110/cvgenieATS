@@ -1,0 +1,47 @@
+I need you to redesign the testimonial card in the "Real People. Real Interview Success." section. The current card looks cramped and poorly structured. Here's exactly what needs to be fixed:
+
+SPECIFIC CHANGES NEEDED:
+
+1. CARD CONTAINER:
+   - Increase padding from current to: padding: 40px 32px (top/bottom: 40px, left/right: 32px)
+   - Change background to a lighter shade: bg-slate-800 or bg-slate-700/50 (currently too dark)
+   - Add stronger border with better visibility: border-2 border-slate-600 (not the current subtle border)
+   - Ensure rounded corners: rounded-2xl
+   - Add shadow for depth: shadow-2xl
+   - Set max-width: 680px and center it with mx-auto
+
+2. STAR RATING:
+   - Keep stars but add margin-bottom: 24px to separate from quote
+   - Star size should be slightly smaller if currently large
+
+3. TESTIMONIAL QUOTE TEXT:
+   - Reduce font-size to: text-base or text-lg (16px-18px max)
+   - Set line-height: leading-relaxed (1.625)
+   - Add margin-bottom: 28px to create space before author section
+   - Text color should be text-gray-200 or text-slate-200 for readability
+
+4. AUTHOR SECTION (Avatar + Info):
+   - Wrap in a flex container with items-center and gap-4
+   - Avatar: Keep at 48px x 48px, ensure proper border-radius: rounded-full
+   - Add margin-top: auto or mt-6 to push it away from quote
+
+5. AUTHOR NAME:
+   - Font-size: text-base (16px)
+   - Font-weight: font-semibold
+   - Color: text-white
+   - Margin-bottom: 2px
+
+6. JOB TITLE ("Software Engineer"):
+   - Font-size: text-sm (14px)
+   - Color: text-slate-400
+   - No margin-bottom
+
+7. COMPANY NAME ("Tech Corp"):
+   - Font-size: text-sm (14px)  
+   - Color: text-slate-500
+   - Display with the briefcase icon on same line
+
+VISUAL GOAL: 
+The card should look spacious, professional, and clearly separated from the background. Text should have room to breathe. The hierarchy should be: Stars → Quote (most prominent) → Author info (smaller, bottom).
+
+Please locate the testimonial card component code and apply these exact styling changes.
