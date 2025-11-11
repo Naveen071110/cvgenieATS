@@ -314,39 +314,20 @@ export default function HeroSection() {
                 </div>
               </div>
             </div>
-            {/* Hero Illustration */}
-            <div className="hidden lg:block lg:ml-auto">
-              {/* Placeholder for your hero illustration component */}
-              <div className="w-full h-full flex items-center justify-center">
-                {/* Replace with your actual illustration or image */}
-                <svg
-                  className="w-full h-auto max-w-md"
-                  viewBox="0 0 500 500"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    cx="250"
-                    cy="250"
-                    r="240"
-                    stroke="url(#heroGradient)"
-                    strokeWidth="10"
-                  />
-                  <defs>
-                    <linearGradient
-                      id="heroGradient"
-                      x1="0"
-                      y1="0"
-                      x2="1"
-                      y2="1"
-                    >
-                      <stop offset="0%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#8B5CF6" />
-                    </linearGradient>
-                  </defs>
-                  {/* Add more SVG elements for a detailed illustration */}
-                </svg>
-              </div>
+            {/* Hero Image */}
+            <div className="hidden lg:flex lg:justify-center lg:items-center">
+              <img
+                src="/hero-ai-resume.jpg"
+                alt="Stylized AI-powered resume motif"
+                className="w-full h-auto animate-fade-in-up animation-delay-600"
+                style={{
+                  maxWidth: '420px',
+                  marginTop: '32px',
+                  marginBottom: '32px',
+                  borderRadius: '12px',
+                  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+                }}
+              />
             </div>
           </div>
 
