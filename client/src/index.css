@@ -2394,3 +2394,23 @@ select {
 @media (prefers-reduced-motion: reduce) {
 .hero-blob { animation: none !important; }
 }
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Enhanced Star Rating Animation */
+@keyframes star-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8));
+  }
+}
+
+.star-glow:hover {
+  animation: star-pulse 1s ease-in-out infinite;
+}
