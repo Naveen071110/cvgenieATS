@@ -134,9 +134,9 @@ export default function TestimonialsSection() {
                 style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '2px' }} 
               />
 
-              <CardContent className="relative z-10 p-8">
+              <CardContent className="relative z-10 p-10">
                 {/* Star Rating with Glow */}
-                <div className="flex items-center gap-1 mb-4">
+                <div className="flex items-center gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star
                       key={i}
@@ -149,7 +149,7 @@ export default function TestimonialsSection() {
                 </div>
 
                 {/* Testimonial Quote */}
-                <blockquote className="mb-6">
+                <blockquote className="mb-8">
                   <p className="text-base font-medium text-white dark:text-white leading-relaxed tracking-wide">
                     "{testimonial.quote}"
                   </p>
