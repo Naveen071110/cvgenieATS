@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   CheckCircle,
@@ -6,15 +6,100 @@ import {
   Users,
   FileText,
   Zap,
-  Sparkles, // Import Sparkles icon
+  Sparkles,
+  TrendingUp,
+  Award,
+  Building2,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { StatsWidget } from "./stats-widget";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
 import MailIcon from "../assets/icons/mail.svg?react";
+
+// Animated counter hook
+const useAnimatedCounter = (end: number, duration: number = 2000, shouldAnimate: boolean = false) => {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    if (!shouldAnimate || hasAnimated) return;
+    
+    setHasAnimated(true);
+    let startTime: number | null = null;
+    const startValue = 0;
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentCount = Math.floor(startValue + (end - startValue) * easeOutQuart);
+      
+      setCount(currentCount);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setCount(end);
+      }
+
+
+// Animated Stat Card Component
+const AnimatedStatCard = ({ 
+  icon, 
+  value, 
+  suffix = '', 
+  label, 
+  decimals = 0,
+  shouldAnimate 
+}: { 
+  icon: React.ReactNode; 
+  value: number; 
+  suffix?: string; 
+  label: string; 
+  decimals?: number;
+  shouldAnimate: boolean;
+}) => {
+  const animatedValue = useAnimatedCounter(value, 2000, shouldAnimate);
+  
+  const displayValue = decimals > 0 
+    ? (animatedValue / Math.pow(10, decimals)).toFixed(decimals)
+    : animatedValue;
+
+  return (
+    <div 
+      className="bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-xl p-6 md:p-8 text-center border-2 border-white/20 dark:border-white/10 shadow-lg hover:shadow-xl hover:border-white/30 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-1"
+      role="article"
+      aria-label={`${label}: ${value}${suffix}`}
+    >
+      <div className="flex justify-center mb-4 text-white/90">
+        {icon}
+      </div>
+      <div 
+        className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {displayValue}{suffix}
+      </div>
+      <div className="text-sm md:text-base text-white/80 font-medium">
+        {label}
+      </div>
+    </div>
+  );
+};
+
+    };
+
+    requestAnimationFrame(animate);
+  }, [end, duration, shouldAnimate, hasAnimated]);
+
+  return count;
+};
 
 const rotatingTexts = [
   "Any Job",
@@ -68,6 +153,8 @@ export default function HeroSection() {
   const [gradientShift, setGradientShift] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [shouldAnimateStats, setShouldAnimateStats] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -105,6 +192,30 @@ export default function HeroSection() {
       return () => clearInterval(progressInterval);
     }
   }, [isLoading]);
+
+  // Intersection observer for stats animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !shouldAnimateStats) {
+            setShouldAnimateStats(true);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => {
+      if (statsRef.current) {
+        observer.unobserve(statsRef.current);
+      }
+    };
+  }, [shouldAnimateStats]);
 
   const handleCreateResume = () => {
     setIsLoading(true);
@@ -383,11 +494,44 @@ export default function HeroSection() {
           </div>
 
           {/* Stats Section */}
-          <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-              we are just getting started
+          <div 
+            ref={statsRef}
+            className="mt-20 py-12 px-6 md:px-8 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl shadow-2xl"
+          >
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white text-center mb-10 md:mb-12">
+              We are Just Getting Started
             </h2>
-            <StatsWidget />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              <AnimatedStatCard
+                icon={<Users className="w-8 h-8 md:w-10 md:h-10" />}
+                value={100}
+                suffix="+"
+                label="Active Users"
+                shouldAnimate={shouldAnimateStats}
+              />
+              <AnimatedStatCard
+                icon={<TrendingUp className="w-8 h-8 md:w-10 md:h-10" />}
+                value={94}
+                suffix="%"
+                label="Success Rate"
+                shouldAnimate={shouldAnimateStats}
+              />
+              <AnimatedStatCard
+                icon={<Building2 className="w-8 h-8 md:w-10 md:h-10" />}
+                value={500}
+                suffix="+"
+                label="Companies Hired From"
+                shouldAnimate={shouldAnimateStats}
+              />
+              <AnimatedStatCard
+                icon={<Star className="w-8 h-8 md:w-10 md:h-10" />}
+                value={4.9}
+                suffix="/5"
+                label="User Rating"
+                decimals={1}
+                shouldAnimate={shouldAnimateStats}
+              />
+            </div>
           </div>
         </div>
       </div>

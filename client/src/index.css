@@ -2569,3 +2569,43 @@ select {
 .star-glow:hover {
   animation: star-pulse 1s ease-in-out infinite;
 }
+
+/* Enhanced Statistics Section Styles */
+.stats-section-enhanced {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-section-enhanced::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: stats-glow 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes stats-glow {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(10%, 10%);
+    opacity: 0.5;
+  }
+}
+
+/* Stat card hover effects */
+.stat-card-enhanced {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+.stat-card-enhanced:hover {
+  transform: translateY(-4px) scale(1.02);
+}
