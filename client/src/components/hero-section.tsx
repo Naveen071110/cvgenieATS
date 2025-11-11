@@ -6,6 +6,7 @@ import {
   Users,
   FileText,
   Zap,
+  Sparkles, // Import Sparkles icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -113,8 +114,41 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="hero-section">
-      {/* Decorative watercolor SVG layer below content */}
+    <section
+      className="relative min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/10"
+      role="region"
+      aria-label="Hero section with resume generation services"
+    >
+      {/* Animated Background Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="particle-container">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="particle"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${15 + Math.random() * 10}s`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="20" r="2" fill="currentColor" className="text-primary" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+        </svg>
+      </div>
+
       <div className="hero-bg" aria-hidden="true">
         <svg
           width="100%"
@@ -172,78 +206,115 @@ export default function HeroSection() {
         aria-labelledby="hero-title"
       >
         <div
-          className="relative w-full text-center"
+          className="max-w-7xl mx-auto relative z-10"
           style={{
-            maxWidth: "var(--container-2xl)",
             margin: "0 auto",
             paddingLeft: "var(--space-4)",
             paddingRight: "var(--space-4)",
           }}
         >
-          <h1
-            id="hero-title"
-            className="display-lg text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 dark:text-white fade-in-up"
-            style={{ marginBottom: "var(--space-6)" }}
-          >
-            Get Noticed Faster. Land More Interviews for{" "}
-            <span
-              className={`inline-block min-w-0 transition-opacity duration-300 text-primary dark:text-blue-400 ${
-                isVisible ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {rotatingTexts[currentTextIndex]}
-            </span>
-          </h1>
-          <p
-            className="lead text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-gray-600 dark:text-gray-300 fade-in-up"
-            style={{ marginBottom: "var(--space-8)", animationDelay: "0.2s" }}
-          >
-            Transform your resume into interview invitations. Our intelligent AI crafts
-            personalized resumes that bypass automated screening systems and reach real recruiters—in seconds.
-          </p>
-          <div
-            className="flex flex-col sm:flex-row justify-center items-center w-full fade-in-up"
-            style={{
-              gap: "var(--space-4)",
-              marginBottom: "var(--space-8)",
-              animationDelay: "0.4s",
-            }}
-          >
-            {isLoading ? (
-              <div className="w-full sm:w-auto flex flex-col items-center gap-4">
-                <Spinner />
-                <ProgressIndicator progress={progress} />
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Generating your resume...
-                </span>
-              </div>
-            ) : (
-              <Link to="/generator">
-                <button
-                  className="magic-cta group relative inline-flex items-center"
-                  onClick={handleCreateResume}
-                  aria-label="Start your free resume generation - Go to generator page"
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h1
+                id="hero-title"
+                className="hero-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in-up"
+              >
+                Land Your Dream{" "}
+                <span
+                  className={`inline-block min-w-0 transition-opacity duration-300 text-primary dark:text-blue-400 ${
+                    isVisible ? "opacity-100" : "opacity-0"
+                  }`}
                 >
-                  <FileText className="w-5 h-5 mr-2" aria-hidden="true" />
-                  Grant My Wish
-                  <ArrowRight
-                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                  {rotatingTexts[currentTextIndex]}
+                </span>
+              </h1>
+              <p
+                className="hero-subtitle text-xl sm:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl leading-relaxed animate-fade-in-up animation-delay-200"
+                style={{ animationDelay: "0.2s" }}
+              >
+                Create ATS-optimized resumes and cover letters in seconds with AI.
+                Get past filters, impress recruiters, and land more interviews.
+              </p>
+              <div
+                className="flex flex-col sm:flex-row justify-center lg:justify-start items-center w-full fade-in-up"
+                style={{
+                  gap: "var(--space-4)",
+                  marginBottom: "var(--space-8)",
+                  animationDelay: "0.4s",
+                }}
+              >
+                {isLoading ? (
+                  <div className="w-full sm:w-auto flex flex-col items-center gap-4">
+                    <Spinner />
+                    <ProgressIndicator progress={progress} />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Generating your resume...
+                    </span>
+                  </div>
+                ) : (
+                  <Link to="/generator">
+                    <Button
+                      size="lg"
+                      className="magic-cta genie-lamp text-lg px-10 py-7 rounded-full shadow-2xl font-bold tracking-wide animate-fade-in-up animation-delay-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.6)] dark:hover:shadow-[0_0_40px_rgba(167,139,250,0.8)] transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-purple-500/50 dark:focus:ring-purple-400/50"
+                      onClick={handleCreateResume}
+                      aria-label="Start your free resume generation - Go to generator page"
+                    >
+                      <Sparkles className="mr-2 h-6 w-6" aria-hidden="true" />
+                      Grant My Wish
+                      <ArrowRight
+                        className="ml-2 h-6 w-6"
+                        aria-hidden="true"
+                      />
+                    </Button>
+                  </Link>
+                )}
+                <div
+                  className="flex items-center text-gray-600 dark:text-gray-300"
+                  style={{ gap: "var(--space-3)" }}
+                >
+                  <Zap
+                    className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 dark:text-yellow-400"
                     aria-hidden="true"
                   />
-                </button>
-              </Link>
-            )}
-            <div
-              className="flex items-center text-gray-600 dark:text-gray-300"
-              style={{ gap: "var(--space-3)" }}
-            >
-              <Zap
-                className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 dark:text-yellow-400"
-                aria-hidden="true"
-              />
-              <span className="text-sm font-medium">
-                Generated in 40-60 seconds
-              </span>
+                  <span className="text-sm font-medium">
+                    Generated in 40-60 seconds
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* Hero Illustration */}
+            <div className="hidden lg:block lg:ml-auto">
+              {/* Placeholder for your hero illustration component */}
+              <div className="w-full h-full flex items-center justify-center">
+                {/* Replace with your actual illustration or image */}
+                <svg
+                  className="w-full h-auto max-w-md"
+                  viewBox="0 0 500 500"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="250"
+                    cy="250"
+                    r="240"
+                    stroke="url(#heroGradient)"
+                    strokeWidth="10"
+                  />
+                  <defs>
+                    <linearGradient
+                      id="heroGradient"
+                      x1="0"
+                      y1="0"
+                      x2="1"
+                      y2="1"
+                    >
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
+                    </linearGradient>
+                  </defs>
+                  {/* Add more SVG elements for a detailed illustration */}
+                </svg>
+              </div>
             </div>
           </div>
 
@@ -306,12 +377,12 @@ export default function HeroSection() {
           {/* Stats Section */}
           <div className="mt-20 py-12 px-4 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-              Trusted by Few
+              Trusted by Thousands
             </h2>
             <StatsWidget />
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
