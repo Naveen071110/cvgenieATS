@@ -115,7 +115,7 @@ export default function TestimonialsSection() {
                 style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '1px' }} 
               />
 
-              <CardContent className="relative z-10 p-8 sm:p-10 md:p-12">
+              <CardContent className="relative z-10 px-8 py-12 sm:px-10 sm:py-14 md:px-12 md:py-16">
                 {/* Testimonial Quote - Reduced Size */}
                 <blockquote className="mb-8">
                   <p className="text-base font-normal text-slate-800 dark:text-gray-100 leading-relaxed tracking-normal">
