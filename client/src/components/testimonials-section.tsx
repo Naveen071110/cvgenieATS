@@ -14,26 +14,6 @@ const testimonials = [
     rating: 5,
     quote: "CVGenie transformed my resume completely. I went from zero callbacks to three interview invitations in just one week. The ATS optimization really works!",
   },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "Product Manager",
-    company: "Innovation Labs",
-    image: null,
-    verified: true,
-    rating: 5,
-    quote: "The AI-powered cover letters are incredible. Each one felt personalized and professional. I landed my dream job at a Fortune 500 company!",
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    role: "Marketing Director",
-    company: "Growth Agency",
-    image: null,
-    verified: true,
-    rating: 5,
-    quote: "I was skeptical at first, but the results speak for themselves. My resume now passes ATS filters and actually gets read by recruiters. Worth every penny!",
-  },
 ];
 
 // Generate avatar color based on name
@@ -117,7 +97,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Testimonial Cards Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 max-w-2xl mx-auto gap-8">
           {testimonials.map((testimonial, index) => (
             <Card
               key={testimonial.id}
