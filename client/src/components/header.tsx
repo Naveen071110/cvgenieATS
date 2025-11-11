@@ -172,7 +172,7 @@ export default function Header() {
                     variant="ghost"
                     size="sm"
                     onClick={() => signOut()}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                     aria-label="Sign Out"
                   >
                     <LogOut 
@@ -195,7 +195,7 @@ export default function Header() {
                       title: "Sign In",
                       description: "Access your account to manage your generations."
                     })}
-                    className="text-gray-700 border-gray-300 hover:bg-gray-50"
+                    className="text-gray-700 border-gray-300 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-800"
                     aria-label="Sign In"
                   >
                     <User 
@@ -211,25 +211,23 @@ export default function Header() {
                 </div>
               )}
             </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                aria-label="Toggle navigation menu"
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            </div>
           </div>
         </nav>
-
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-gray-600 hover:text-gray-900 transition-colors"
-            aria-label="Toggle navigation menu"
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
-        </div>
-      </div>
-    </nav>
 
         {/* Mobile menu */}
         {isMenuOpen && (
