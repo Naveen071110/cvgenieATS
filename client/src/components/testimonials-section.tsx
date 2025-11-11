@@ -156,17 +156,7 @@ export default function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Trust Footer */}
-        <div
-          className={`text-center mt-16 transition-all duration-1000 delay-500 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-        >
-          <p className="text-slate-600 dark:text-gray-400 text-sm font-medium">
-            ⭐ Trusted by 10,000+ professionals worldwide
-          </p>
         </div>
-      </div>
     </section>
   );
 }
