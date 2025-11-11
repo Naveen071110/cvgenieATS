@@ -1,0 +1,62 @@
+Elevate Product Feature Sections with Alternating Layout, Stylized Checkmarks, Whitespace & Animation
+
+Required Updates for "Intelligent Resume Transformation" and Similar Product Feature Sections:
+
+Alternating Left-Right Layout
+
+For each consecutive feature section, alternate the content/image alignment (i.e., text left/image right, then image left/text right, and so on).
+
+Use CSS flex, grid, or conditional classNames to switch their direction responsively.
+
+Maintain perfect mobile responsiveness—on small screens both text and mockup should stack vertically with clean spacing.
+
+Add More Whitespace
+
+Increase vertical padding/margin between each feature section for greater separation and breathing room.
+
+Use consistent spacing tokens/values from your design system for both mobile and desktop.
+
+Feature Checkmarks
+
+Swap current checkmarks with stylized icons (preferably SVG) that use your primary brand color (or gradient fill/stroke).
+
+Add micro-interactions: when hovered or focused, checkmarks can bounce slightly, glow, or animate a fill effect.
+
+Ensure large enough contrast for both dark and light modes.
+
+Resume Preview Mockup
+
+Make the resume mockup/image more prominent by:
+
+Increasing its size slightly (within layout constraints).
+
+Adding a soft shadow and a subtle border or gradient halo to help it “pop” on the page.
+
+Make sure the image/preview adapts contrast for both color schemes (optionally, tinted overlay for one theme if needed).
+
+Section Animations
+
+Add scroll-triggered fade-in, slide-up, or reveal animations for each feature section as the user scrolls.
+
+Can use existing animation library (AOS, Framer Motion, etc.), or simple CSS keyframes and IntersectionObserver for performance.
+
+Animations should be subtle and run once as sections enter viewport, with accessibility considerations (accessible motion).
+
+No Global or Risky Changes
+
+All code and style changes must be strictly scoped to the product feature section and associated checkmark/icon components.
+
+Existing code for other parts of the site must not be altered or broken.
+
+Light/Dark Mode Consistency
+
+All new visual changes, gradients, icons, and spacing must display beautifully in both color modes. Use theme tokens or CSS variables as needed.
+
+Preview in both themes before finalizing.
+
+Test
+
+Confirm alternating sections, spacing, checkmark style/interactivity, animations, and resume preview enhancements all work flawlessly on mobile, tablet, and desktop.
+
+Result:
+Your product feature sections will have visual rhythm (alternating layout), more breathing room, more eye-catching checkmarks, a standout resume mockup, and modern scroll animations—while remaining safe, responsive, and theme-consistent.
