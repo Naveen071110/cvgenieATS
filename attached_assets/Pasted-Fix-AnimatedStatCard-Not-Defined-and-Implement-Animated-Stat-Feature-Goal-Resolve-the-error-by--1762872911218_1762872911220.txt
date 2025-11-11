@@ -1,0 +1,70 @@
+Fix AnimatedStatCard Not Defined and Implement Animated Stat Feature
+
+Goal:
+Resolve the error by properly defining and importing the AnimatedStatCard React component. Integrate it so the statistics section uses animated counting and icons, ensuring component safety and style consistency.
+
+Instructions:
+
+Define the AnimatedStatCard Component
+
+If AnimatedStatCard component does not exist, create it in /src/components/AnimatedStatCard.tsx (or the proper local directory).
+
+The component should:
+
+Accept props: icon, value (number to animate to), label (stat description), and any needed styling classes.
+
+Use a counting/animation hook (e.g. react-countup, framer-motion, or a custom useCountUp logic) to animate from 0 to the provided number when the component comes into view.
+
+Display the icon above the number, then the animated number, then the label.
+
+Use accessible markup and color theming for both light/dark mode.
+
+Import AnimatedStatCard
+
+In hero-section.tsx (or wherever the stat cards are rendered), add:
+
+js
+import AnimatedStatCard from './AnimatedStatCard'
+Update import paths as necessary depending on your folder structure.
+
+Icon Support
+
+Make sure the icons (<Users/>, etc.) passed in as props are defined and imported from your icon library (e.g., Lucide, Heroicons, custom SVGs).
+
+If icons are theme-aware, use appropriate classes for fill/color based on mode.
+
+Replace Direct Usage
+
+Where you render list/grid of stats, use:
+
+jsx
+<AnimatedStatCard
+  icon={<Users className="w-8 h-8 md:w-10 md:h-10" />}
+  value={100}
+  label="Smart Resume Intelligence"
+  // any other styling props or theme classes
+/>
+Repeat for each statistic box as needed.
+
+Accessibility
+
+Add aria-labels to icons and alt text or aria-live region for animated numbers.
+
+Make sure animation does not interfere with keyboard navigation or page loading.
+
+Test and Polish
+
+Confirm that the stat boxes render correctly, animate on scroll, and show icons above numbers.
+
+Ensure animation only triggers when component is in view, not repeatedly.
+
+Review responsiveness and styling in both light and dark modes.
+
+Safety
+
+Do not modify any unrelated components or files apart from the AnimatedStatCard and stats section as needed.
+
+Preview all changes for regressions before final merge.
+
+Summary:
+Define and import AnimatedStatCard to resolve undefined errors, safely animate statistic values on scroll, and show icons—all in theme-consistent, visually rich stat boxes.
