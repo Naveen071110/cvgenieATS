@@ -219,7 +219,7 @@ export default function HeroSection() {
                 id="hero-title"
                 className="hero-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in-up"
               >
-                Land Your Dream{" "}
+                Get Noticed Faster. Land More Interviews for{" "}
                 <span
                   className={`inline-block min-w-0 transition-opacity duration-300 text-primary dark:text-blue-400 ${
                     isVisible ? "opacity-100" : "opacity-0"
