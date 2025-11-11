@@ -2410,6 +2410,43 @@ select {
   border: 1px solid var(--color-primary-200);
 }
 
+/* Feature Card Enhancements */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+/* Icon pulse animation on hover */
+@keyframes icon-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.feature-card:hover svg {
+  animation: icon-pulse 2s ease-in-out infinite;
+}
+
 /* Watercolor Background Styles */
 .hero-section {
   position: relative !important;
