@@ -116,19 +116,6 @@ export default function TestimonialsSection() {
               />
 
               <CardContent className="relative z-10 p-8 sm:p-10 md:p-12">
-                {/* Star Rating with Glow - More Prominent */}
-                <div className="flex items-center gap-1.5 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-6 h-6 fill-yellow-400 text-yellow-400 transition-all duration-300 hover:scale-125 hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
-                      style={{
-                        filter: "drop-shadow(0 0 4px rgba(250, 204, 21, 0.4))",
-                      }}
-                    />
-                  ))}
-                </div>
-
                 {/* Testimonial Quote - Reduced Size */}
                 <blockquote className="mb-8">
                   <p className="text-base font-normal text-slate-800 dark:text-gray-100 leading-relaxed tracking-normal">
@@ -154,7 +141,7 @@ export default function TestimonialsSection() {
                     )}
                   </div>
 
-                  {/* Name, Role, Company - Reduced Sizes */}
+                  {/* Name, Role - Reduced Sizes */}
                   <div className="flex-1 min-w-0 space-y-1">
                     <p className="font-semibold text-slate-900 dark:text-white text-[0.95rem] truncate">
                       {testimonial.name}
@@ -162,12 +149,6 @@ export default function TestimonialsSection() {
                     <p className="text-[0.85rem] text-slate-600 dark:text-gray-400 truncate">
                       {testimonial.role}
                     </p>
-                    <div className="flex items-center gap-1.5">
-                      <Building2 className="w-3.5 h-3.5 text-slate-500 dark:text-gray-500 flex-shrink-0" />
-                      <p className="text-[0.85rem] text-slate-500 dark:text-gray-500 truncate">
-                        {testimonial.company}
-                      </p>
-                    </div>
                   </div>
                 </div>
               </CardContent>
