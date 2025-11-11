@@ -1,0 +1,74 @@
+Upgrade Feature Cards for Visual Appeal, Interactivity, and Theme Consistency
+
+Feature Card Visual & UX Upgrade Tasks:
+
+Animated SVG Icons
+
+Replace current static icons in all four feature cards with SVG icons that support simple animations.
+
+Add micro-interactions for the icons:
+
+On hover: rotate slightly, scale up, or pulse smoothly.
+
+Use CSS animation or SVG SMIL for light, performant motion.
+
+Icons should adapt their fill/stroke color based on light or dark mode for visibility and branding.
+
+Card Hover Effects
+
+When users hover over a card:
+
+Lift the card with transform: translateY(-5px) (can add a small scale up too).
+
+Add a soft box-shadow for depth effect.
+
+Smooth transition for transform and shadow (e.g., transition: all 0.3s ease).
+
+Backgrounds & Borders
+
+Set subtle gradients as card backgrounds, using brand color blends (e.g. blue-violet, teal-blue, etc.), with color values that swap for light/dark mode (use CSS variables or theme props).
+
+Add a 1px semi-transparent border (fade color for dark/light) and optional inner or drop shadow for dimension.
+
+Icon Alignment & Readability
+
+Center-align icons vertically and horizontally within their cards.
+
+Maintain proper spacing between icon, title, and description.
+
+Card layout must remain responsive, readable, and visually balanced for mobile, tablet, and desktop breakpoints.
+
+Improved Padding & Spacing
+
+Increase padding inside cards for comfortable visual breathing room (min 24px horizontal/vertical).
+
+Ensure consistent spacing between all cards and grid columns/rows.
+
+Card and Icon Accessibility
+
+Use accessible button or div markup for all interactive/hoveable areas, and make icons accessible with aria-labels if necessary.
+
+Ensure sufficient color contrast for all text, backgrounds, and borders in both themes.
+
+Disabled/Card Boundary Handling
+
+Make sure no other card or container code is modified—only update the feature card section and helpers.
+
+Do not override grid, layout, or global CSS that could affect unrelated components.
+
+Mobile/Tablet/Desktop Testing
+
+Preview final cards in all breakpoints and both color modes.
+
+Make sure all new visual/animation effects are smooth, clear, and do not break touch/click events.
+
+Implementation Notes:
+
+Use CSS variables, theme props, or tailwind classes for all new color, gradient, and shadow values so theme support is consistent.
+
+Keep all card styles scoped to their component—no global overrides.
+
+Carefully review and test to confirm previous code and card layout remain unchanged elsewhere.
+
+Result:
+The four feature cards should look modern, premium, and interactive in both themes, with visually distinct icons, smooth hover/micro-interactions, well-spaced content, and no regression risk.
