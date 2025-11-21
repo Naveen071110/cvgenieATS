@@ -1,0 +1,73 @@
+Use the existing PerformanceMonitor utility to monitor web vitals (especially on mobile) so bottlenecks can be identified, without modifying or breaking any existing logic, configuration, payment integrations, or routing.​
+
+Hard safety rules
+Do not change or remove any existing application logic, routes, payment code, environment variables, or build configuration. Only touch the performance‑related utilities and their wiring.​
+
+Do not rename or move existing exports (like PerformanceMonitor, preloadCriticalResources, lazyLoadImages) from ./lib/performance. Keep all public APIs exactly the same.​
+
+Do not add duplicate imports or duplicate function declarations (avoid the “already been declared” problem). If something is already imported, reuse it.​
+
+1) Inspect and, if needed, complete PerformanceMonitor implementation
+Open client/src/lib/performance.ts (or the equivalent file where PerformanceMonitor is defined).
+
+Ensure there is a singleton class or module similar to:
+
+PerformanceMonitor.getInstance()
+
+monitorWebVitals() method
+
+If monitorWebVitals() is already implemented, do not change its signature or how it’s called; only improve its internal logic if needed.​
+
+Inside monitorWebVitals():
+
+Use a web‑vitals style approach (e.g., web-vitals library if already present, or performance APIs) to track at least:
+
+Largest Contentful Paint (LCP)
+
+First Input Delay (FID) / Interaction to Next Paint (INP)
+
+Cumulative Layout Shift (CLS)
+
+For now, log metrics to the console in development only so behavior is observable but harmless:
+
+Example: console.log('[Perf]', metric.name, metric.value);
+
+If there is already logic to send metrics to an endpoint, leave it as is; do not add new network calls unless clearly stubbed and disabled in production.​
+
+2) Ensure monitorWebVitals() is initialized once in the client entry
+Open client/src/main.tsx (or equivalent React entry file).
+
+Verify that PerformanceMonitor is imported from ./lib/performance only once, together with any other performance exports:
+
+ts
+import { PerformanceMonitor, preloadCriticalResources, lazyLoadImages } from "./lib/performance";
+Do not import PerformanceMonitor or preloadCriticalResources from any other path (no duplicate imports).​
+
+Just after imports and before rendering <App />, ensure there is exactly one initialization block like:
+
+ts
+const perfMonitor = PerformanceMonitor.getInstance();
+perfMonitor.monitorWebVitals();
+If this code already exists, do not change it; only add it if missing.
+
+Do not wrap this in extra conditions unless absolutely necessary; keep behavior identical besides enabling metrics.​
+
+3) No behavior changes for the rest of the app
+Do not alter how components render, how routes work, or how Dodo Payments / Neon DB integration behaves; performance monitoring must be read‑only (metrics collection only).​
+
+Do not introduce any new global side effects other than listening for performance metrics and optionally logging them.​
+
+4) Testing
+After changes:
+
+Run the app in development mode.
+
+Open DevTools console and verify you see performance metric logs (e.g., LCP, CLS) once the page loads and as you interact.
+
+Confirm there are no new TypeScript or runtime errors, especially:
+
+No duplicate identifier/import errors.
+
+No crashes in main.tsx or performance.ts.
+
+Confirm the UI and flows (landing page, generator, payments) behave exactly as before; only logging should be new.
