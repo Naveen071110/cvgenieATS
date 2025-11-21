@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save, Crown, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,8 @@ import Lottie from "lottie-react";
 import DocumentUploadIcon from '@/assets/icons/document-upload.svg?react';
 import AtsOptimizationIcon from '@/assets/icons/ats-optimization.svg?react';
 import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
-// Lazy load heavy generator components
-const FileUpload = lazy(() => import("@/components/file-upload").then(m => ({ default: m.FileUpload })));
-const AILoadingState = lazy(() => import("@/components/ai-loading-state").then(m => ({ default: m.AILoadingState })));
+import { FileUpload } from "@/components/file-upload";
+import { AILoadingState } from "@/components/ai-loading-state";
 
 // Define supported formats
 const SUPPORTED_FORMATS = {
@@ -133,17 +132,6 @@ export default function Generator() {
   const [aiStep, setAIStep] = useState(0);
   const [aiProgress, setAIProgress] = useState(0);
 
-  // Initialize loading state manager
-  useEffect(() => {
-    const manager = LoadingStateManager.getInstance();
-    const unsubscribe = manager.subscribe((step, progress) => {
-      setAIStep(step);
-      setAIProgress(progress);
-    });
-
-    return unsubscribe;
-  }, []);
-
   // Get subscription status (only for authenticated users)
   const { data: subscriptionStatus, refetch: refetchSubscription } = useQuery<SubscriptionStatus>({
     queryKey: ["/api/subscription/status"],
@@ -218,22 +206,6 @@ export default function Generator() {
 
       // Start AI processing animation
       setIsAIProcessing(true);
-      const manager = LoadingStateManager.getInstance();
-      manager.showAIProcessing();
-
-      // Simulate realistic progress updates
-      const progressSteps = [
-        { step: 0, progress: 25, delay: 1000 },
-        { step: 1, progress: 50, delay: 2500 },
-        { step: 2, progress: 75, delay: 4000 },
-        { step: 3, progress: 90, delay: 5500 },
-      ];
-
-      progressSteps.forEach(({ step, progress, delay }) => {
-        setTimeout(() => {
-          manager.updateProgress(step, progress);
-        }, delay);
-      });
 
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -248,10 +220,6 @@ export default function Generator() {
       return response.json();
     },
     onSuccess: (data) => {
-      // Complete the loading animation
-      const manager = LoadingStateManager.getInstance();
-      manager.updateProgress(3, 100);
-
       setTimeout(() => {
         // Ensure we have valid data before setting state
         if (!data.optimizedResume || data.optimizedResume.trim() === '') {
@@ -262,7 +230,6 @@ export default function Generator() {
             variant: "destructive",
           });
           setIsAIProcessing(false);
-          manager.reset();
           return;
         }
 
@@ -274,7 +241,6 @@ export default function Generator() {
             variant: "destructive",
           });
           setIsAIProcessing(false);
-          manager.reset();
           return;
         }
 
@@ -292,7 +258,6 @@ export default function Generator() {
 
         queryClient.invalidateQueries({ queryKey: ["/api/usage"] });
         setIsAIProcessing(false);
-        manager.reset();
 
         toast({
           title: "Success!",
@@ -302,7 +267,6 @@ export default function Generator() {
     },
     onError: (error: Error) => {
       setIsAIProcessing(false);
-      LoadingStateManager.getInstance().reset();
       // Check if the error is about usage limits
       if (error.message.includes("usage limit exceeded")) {
         openAuthDialog({
@@ -362,7 +326,6 @@ export default function Generator() {
     setIsAIProcessing(false);
     setAIStep(0);
     setAIProgress(0);
-    LoadingStateManager.getInstance().reset();
   };
 
   const downloadDocument = (content: string, filename: string) => {
@@ -468,7 +431,7 @@ export default function Generator() {
                         setResumeContent('');
                         setIsEditingResumeContent(false);
                       }}
-                      selectedFile={extractedResume ? new File([], extractedResume.fileName) : null}
+                      selectedFile={extractedResume ? new File([], extractedResume.filename) : null}
                       isUploading={extractResumeMutation.isPending}
                       uploadProgress={extractResumeMutation.isPending ? 50 : 0}
                       uploadStage={extractResumeMutation.isPending ? 'extracting' : ''}

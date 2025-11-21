@@ -14,10 +14,12 @@ import { Link } from "wouter";
 // Removed import for ResumeComparison as it will be lazy loaded
 import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
 
-// Lazy load heavy below-the-fold sections
-const FeaturesSection = lazy(() => import("@/components/features-section").then(m => ({ default: m.FeaturesSection })));
-const TestimonialsSection = lazy(() => import("@/components/testimonials-section").then(m => ({ default: m.TestimonialsSection })));
-const PricingSection = lazy(() => import("@/components/pricing-section").then(m => ({ default: m.PricingSection })));
+// Lazy load heavy below-the-fold sections  
+// Default exports
+const FeaturesSection = lazy(() => import("@/components/features-section"));
+const TestimonialsSection = lazy(() => import("@/components/testimonials-section"));
+const PricingSection = lazy(() => import("@/components/pricing-section"));
+// Named exports
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
 const ResumeComparison = lazy(() => import("@/components/resume-comparison").then(m => ({ default: m.ResumeComparison })));
