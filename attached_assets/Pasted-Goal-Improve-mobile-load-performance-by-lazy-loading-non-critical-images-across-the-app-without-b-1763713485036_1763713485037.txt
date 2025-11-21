@@ -1,0 +1,99 @@
+Goal:
+Improve mobile load performance by lazy‑loading non‑critical images across the app, without breaking the current layout or behavior. Keep above‑the‑fold/hero imagery eager‑loaded so the initial view still feels instant.
+
+1. Audit where images are used
+Scan the React client codebase (especially in src/components) for all <img> tags and any image‑heavy components.
+
+Pay special attention to:
+
+Hero/landing sections
+
+Feature cards
+
+Testimonial avatars / logos
+
+Statistics / logos / partner logos
+
+Footer or secondary illustration sections
+
+2. Decide which images should be lazy vs eager
+Do NOT lazy load:
+
+Critical above‑the‑fold images: logo in header, main hero illustration, anything visible immediately without scrolling.
+
+Lazy load:
+
+Any image that appears only after scrolling (testimonials, feature illustrations, stat icons, secondary screenshots, footer images, etc.).
+
+3. Create a reusable LazyImage component
+Add a new component, for example at src/components/LazyImage.tsx, that:
+
+Accepts at least: src, alt, className, width, height.
+
+Uses the native loading="lazy" attribute on the <img> tag.
+
+Ensures width and height (or appropriate CSS) are set so layout doesn’t shift (avoids CLS).
+
+Optional but recommended:
+
+If you want to be closer to the original suggestion, you may use an IntersectionObserver inside this component:
+
+Initially render <img data-src={src} ...> with a low‑res placeholder or blank.
+
+When the image comes into view, set the real src from data-src.
+
+Clean up the observer on unmount.
+
+Example (simple version):
+
+tsx
+// src/components/LazyImage.tsx
+import React from "react";
+
+type LazyImageProps = React.ImgHTMLAttributes<HTMLImageElement>;
+
+export const LazyImage: React.FC<LazyImageProps> = ({ loading = "lazy", ...props }) => {
+  return <img loading={loading} {...props} />;
+};
+If you implement IntersectionObserver, keep it encapsulated in this component and don’t modify global behavior.
+
+4. Replace non‑critical <img> usages with LazyImage
+For all below‑the‑fold images you identified earlier, replace:
+
+tsx
+<img src={...} alt="..." className="..." />
+with:
+
+tsx
+<LazyImage src={...} alt="..." className="..." />
+Keep the same classes and attributes so the layout and styling don’t change.
+
+Do not change any logic or props other than using the new component.
+
+5. Keep hero and critical images eager‑loaded
+In hero/header components (e.g. hero-section.tsx, header.tsx), do not convert the primary hero illustration or logo to lazy loading.
+
+You may still wrap them with LazyImage but set loading="eager" explicitly if you use the shared component there.
+
+6. Testing and safety
+After changes, run the app in development and:
+
+Check that all images appear correctly when scrolled into view (no broken images).
+
+Verify that hero and header images still appear instantly on page load.
+
+Inspect the Network tab on mobile throttling: confirm many images are only requested as you scroll.
+
+Confirm there are no syntax errors introduced; do not modify unrelated JSX structure.
+
+7. Scope & constraints
+Scope all changes to:
+
+The new LazyImage component file.
+
+Existing components where <img> is replaced with <LazyImage> for non‑critical images.
+
+Do not touch server code, routing, or subscription logic.
+
+Do not introduce any breaking changes to the current design; keep all classes and layout as they are.
+
