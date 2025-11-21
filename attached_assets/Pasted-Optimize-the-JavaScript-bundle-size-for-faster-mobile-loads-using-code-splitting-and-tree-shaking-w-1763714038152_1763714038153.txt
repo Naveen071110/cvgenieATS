@@ -1,0 +1,87 @@
+Optimize the JavaScript bundle size for faster mobile loads using code splitting and tree shaking, while keeping all existing logic, routing, payments, environment variables, and working UI exactly as they are.​
+
+Hard safety rules (must follow)
+
+Do not change or remove any server code, payment integration (Dodo/Neon), environment variables, or build scripts.​
+
+Do not rename or move existing modules/exports that other parts of the app depend on.​
+
+Do not lazy‑load any above‑the‑fold content such as the main header, hero section, or anything the user sees immediately on page load.​
+
+Keep all visual behavior and routes identical; only how and when JS is loaded should change.​
+
+1) Audit current bundle and largest modules (read‑only)
+Without changing configs, inspect the Vite build output or existing bundle analysis (if any) to see which client modules are largest (for example: big UI libraries, icon packs, analytics, or rarely used pages).​
+
+Identify good candidates for code splitting, such as:
+
+Non‑critical routes (Pricing page, Features page, etc.).​
+
+Heavy UI sections that appear below the fold (complex hero illustration blocks, testimonials carousel, large charts, etc.).​
+
+2) Apply route‑level code splitting with React.lazy and Suspense
+In the React router configuration (where routes like /, /generator, /features, /pricing are defined), convert non‑critical route components to be loaded with React.lazy.​
+
+Example pattern (adapt to existing router file, without renaming existing component files):​
+
+tsx
+// Before (eager import)
+import PricingPage from "./pages/PricingPage";
+
+// After (lazy import)
+const PricingPage = React.lazy(() => import("./pages/PricingPage"));
+Wrap lazily loaded routes with <React.Suspense> using a simple, already‑styled loader/spinner that you reuse from your design system, to avoid adding new complex UI.​
+
+Only lazy‑load routes not required for the initial hero experience (for example, pricing, features, about, etc.).​
+
+3) Component‑level splitting for heavy below‑the‑fold sections
+For large, visually rich sections that are not immediately visible on initial load (e.g., testimonials, advanced feature sections, stats graphs), convert them into lazily loaded components as well.​
+
+Example pattern for a large section in the main landing page:​
+
+tsx
+// Before
+import TestimonialsSection from "./components/TestimonialsSection";
+
+// After
+const TestimonialsSection = React.lazy(
+  () => import("./components/TestimonialsSection")
+);
+Keep these wrapped in <React.Suspense> with an unobtrusive fallback while they load.​
+
+Do not lazy‑load small, simple components that are already cheap, to avoid complexity without benefit.​
+
+4) Improve tree shaking via imports (no behavior changes)
+Review imports from large libraries (UI kits, icon sets, utility libraries).​
+
+Replace any “namespace” or whole‑package imports with named imports so the bundler can tree‑shake unused code.​
+
+Bad (harder to tree‑shake):​
+
+ts
+import * as Icons from "lucide-react";
+Better:​
+
+ts
+import { CheckCircle, ArrowRight } from "lucide-react";
+Do not change what is rendered or which icons/components are used—only change how they are imported for better tree shaking.​
+
+5) Avoid double imports or breaking exports
+When changing imports to React.lazy, ensure there is only one import path per component; do not leave the old eager import line alongside the new lazy definition.​
+
+Keep the component names the same as before (for example, PricingPage stays PricingPage), so the rest of the code does not need modifications.​
+
+6) Testing and verification
+Run the dev server and navigate through all routes (home, generator, features, pricing, etc.) to ensure:
+
+No route throws a runtime error.​
+
+Suspense fallbacks appear briefly only when a lazily loaded route/component is first visited.​
+
+Run a production build and confirm that:
+
+The main bundle size is smaller, and some pages/sections are in their own chunk files.​
+
+No SSR or hydration errors are introduced (if SSR is used).​
+
+Confirm all Dodo Payments, Neon DB, auth, and subscription flows still work exactly as before.
