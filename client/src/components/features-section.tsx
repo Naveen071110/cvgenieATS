@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import AIBrainIcon from '../assets/icons/ai-brain.svg?react';
 import ATSShieldIcon from '../assets/icons/ats-shield.svg?react';
 import SpeedOptimizationIcon from '../assets/icons/speed-optimization.svg?react';
+import { LazyImage } from "@/components/LazyImage";
 
 interface FeatureCheckProps {
   text: string;
@@ -138,7 +139,7 @@ const FeatureSection = ({
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-transparent dark:from-blue-400/5 dark:via-purple-400/5 pointer-events-none" />
 
                 {imageSrc ? (
-                  <img
+                  <LazyImage
                     src={imageSrc}
                     alt={imageAlt}
                     className="w-full h-auto"

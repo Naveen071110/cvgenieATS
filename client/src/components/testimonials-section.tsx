@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
+import { LazyImage } from "@/components/LazyImage";
 
 export default function TestimonialsSection() {
   const [isVisible, setIsVisible] = useState(false);

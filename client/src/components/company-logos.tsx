@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { LazyImage } from "@/components/LazyImage";
 
 // Mock company data - in a real app, these would be actual company logos
 const companies = [
@@ -37,7 +38,13 @@ export function CompanyLogos({ className }: CompanyLogosProps) {
                 title={company.name}
               >
                 <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                  
+                  <LazyImage
+                    src={company.logo}
+                    alt={company.name}
+                    className="h-8 w-8 object-contain" // Adjusted size for span context
+                    height={32}
+                    width={32}
+                  />
                 </span>
               </div>
             ))}
@@ -52,7 +59,13 @@ export function CompanyLogos({ className }: CompanyLogosProps) {
                 title={company.name}
               >
                 <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                  
+                  <LazyImage
+                    src={company.logo}
+                    alt={company.name}
+                    className="h-8 w-8 object-contain" // Adjusted size for span context
+                    height={32}
+                    width={32}
+                  />
                 </span>
               </div>
             ))}

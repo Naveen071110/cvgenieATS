@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from './ui/card';
@@ -6,6 +5,7 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { CheckCircle, ArrowRight, Target, Zap, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LazyImage } from "@/components/LazyImage";
 
 interface ResumeComparisonProps {
   className?: string;
@@ -60,14 +60,14 @@ const improvements: ImprovementDetail[] = [
   }
 ];
 
-function AnimatedCounter({ 
-  value, 
-  duration = 1000, 
-  suffix = "" 
-}: { 
-  value: number; 
-  duration?: number; 
-  suffix?: string; 
+function AnimatedCounter({
+  value,
+  duration = 1000,
+  suffix = ""
+}: {
+  value: number;
+  duration?: number;
+  suffix?: string;
 }) {
   const [count, setCount] = useState(0);
 
@@ -78,11 +78,11 @@ function AnimatedCounter({
     const updateCount = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
+
       // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const currentValue = Math.floor(startValue + (value - startValue) * easeOutQuart);
-      
+
       setCount(currentValue);
 
       if (progress < 1) {
@@ -101,12 +101,12 @@ function AnimatedCounter({
   );
 }
 
-function ATSScoreBar({ 
-  score, 
-  isVisible = false 
-}: { 
-  score: number; 
-  isVisible?: boolean; 
+function ATSScoreBar({
+  score,
+  isVisible = false
+}: {
+  score: number;
+  isVisible?: boolean;
 }) {
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'bg-green-500';
@@ -147,17 +147,17 @@ function ATSScoreBar({
   );
 }
 
-function ImprovementTooltip({ 
-  improvement, 
-  children 
-}: { 
-  improvement: ImprovementDetail; 
-  children: React.ReactNode; 
+function ImprovementTooltip({
+  improvement,
+  children
+}: {
+  improvement: ImprovementDetail;
+  children: React.ReactNode;
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div 
+    <div
       className="relative inline-block"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -196,7 +196,7 @@ export function ResumeComparison({ className }: ResumeComparisonProps) {
 
   const handleToggle = async () => {
     setIsTransitioning(true);
-    
+
     // Small delay to show loading state
     setTimeout(() => {
       setCurrentView(currentView === 'before' ? 'after' : 'before');
@@ -271,7 +271,7 @@ export function ResumeComparison({ className }: ResumeComparisonProps) {
                         {currentView === 'before' ? 'Needs Work' : 'ATS Ready'}
                       </Badge>
                     </div>
-                    
+
                     <div className="space-y-4 text-sm">
                       {currentView === 'before' ? (
                         <>
@@ -286,6 +286,12 @@ export function ResumeComparison({ className }: ResumeComparisonProps) {
                           </div>
                           <div className="bg-red-50 p-3 rounded">
                             <p className="text-xs text-red-600">⚠ Missing key sections and quantified achievements</p>
+                          </div>
+                          {/* Placeholder for the image that will be lazy-loaded */}
+                          <div className="relative w-full h-40 bg-gray-300 rounded-lg animate-pulse">
+                            <span className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+                              Original Resume Screenshot
+                            </span>
                           </div>
                         </>
                       ) : (
@@ -302,6 +308,12 @@ export function ResumeComparison({ className }: ResumeComparisonProps) {
                           </div>
                           <div className="bg-green-50 p-3 rounded">
                             <p className="text-xs text-green-600">✓ Optimized with industry keywords and quantified achievements</p>
+                          </div>
+                          {/* Placeholder for the image that will be lazy-loaded */}
+                          <div className="relative w-full h-40 bg-gray-300 rounded-lg animate-pulse">
+                            <span className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+                              Optimized Resume Screenshot
+                            </span>
                           </div>
                         </>
                       )}
@@ -376,7 +388,7 @@ export function ResumeComparison({ className }: ResumeComparisonProps) {
 
           {/* CTA */}
           <div className="text-center mt-12">
-            <button 
+            <button
               onClick={handleToggle}
               disabled={isTransitioning}
               className="cta-vibrant interactive-button cta-animate group disabled:opacity-50 disabled:hover:transform-none disabled:hover:scale-100"

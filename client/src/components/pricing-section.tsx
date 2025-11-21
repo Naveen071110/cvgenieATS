@@ -1,6 +1,7 @@
 import { Check, Star } from "lucide-react"
 import { useState } from "react"
 import { useUser } from "@clerk/clerk-react"
+import { LazyImage } from "@/components/LazyImage"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
 import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"

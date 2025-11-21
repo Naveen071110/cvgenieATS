@@ -1,6 +1,8 @@
-
 import { TrustBadges } from './trust-badges';
 import { CompanyLogos } from './company-logos';
+import { Shield, Lock, CheckCircle, Star } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { LazyImage } from "@/components/LazyImage";
 
 export function TrustIndicatorsSection() {
   return (
@@ -9,7 +11,7 @@ export function TrustIndicatorsSection() {
         <div className="space-y-16">
           {/* Trust Badges */}
           <TrustBadges />
-          
+
           {/* Company Logos */}
           <CompanyLogos />
         </div>

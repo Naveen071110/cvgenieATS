@@ -19,6 +19,7 @@ import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
 import MailIcon from "../assets/icons/mail.svg?react";
 import AnimatedStatCard from "./AnimatedStatCard";
+import { LazyImage } from "@/components/LazyImage";
 
 
 
@@ -316,7 +317,7 @@ export default function HeroSection() {
             </div>
             {/* Hero Image */}
             <div className="hidden lg:flex lg:justify-center lg:items-center">
-              <img
+              <LazyImage
                 src="/hero-ai-resume.jpg"
                 alt="Stylized AI-powered resume motif"
                 className="w-full h-auto animate-fade-in-up animation-delay-600"
@@ -332,6 +333,8 @@ export default function HeroSection() {
                   e.currentTarget.style.display = 'none';
                 }}
                 loading="eager"
+                width={600}
+                height={400}
               />
             </div>
           </div>
