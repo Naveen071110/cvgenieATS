@@ -3,7 +3,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { PerformanceMonitor, preloadCriticalResources, lazyLoadImages } from "./lib/performance";
-import { preloadCriticalResources } from "./utils/preloadCriticalResources";
 
 // Initialize performance monitoring
 const perfMonitor = PerformanceMonitor.getInstance();
