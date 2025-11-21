@@ -30,17 +30,20 @@ export class PerformanceMonitor {
 
   // Monitor Core Web Vitals
   monitorWebVitals(): void {
+    // Only log in development to avoid console noise in production
+    const isDev = import.meta.env.DEV;
+
     // First Contentful Paint
     new PerformanceObserver((list) => {
       list.getEntries().forEach((entry) => {
-        console.log(`📊 FCP: ${entry.startTime.toFixed(2)}ms`);
+        if (isDev) console.log(`📊 FCP: ${entry.startTime.toFixed(2)}ms`);
       });
     }).observe({ entryTypes: ['paint'] });
 
     // Largest Contentful Paint
     new PerformanceObserver((list) => {
       list.getEntries().forEach((entry) => {
-        console.log(`📊 LCP: ${entry.startTime.toFixed(2)}ms`);
+        if (isDev) console.log(`📊 LCP: ${entry.startTime.toFixed(2)}ms`);
       });
     }).observe({ entryTypes: ['largest-contentful-paint'] });
 
@@ -48,9 +51,36 @@ export class PerformanceMonitor {
     new PerformanceObserver((list) => {
       list.getEntries().forEach((entry: any) => {
         if (entry.hadRecentInput) return;
-        console.log(`📊 CLS: ${entry.value.toFixed(4)}`);
+        if (isDev) console.log(`📊 CLS: ${entry.value.toFixed(4)}`);
       });
     }).observe({ entryTypes: ['layout-shift'] });
+
+    // First Input Delay / Interaction to Next Paint
+    try {
+      new PerformanceObserver((list) => {
+        list.getEntries().forEach((entry: any) => {
+          if (isDev) {
+            // FID measures the time from when a user first interacts to when browser responds
+            console.log(`📊 FID: ${entry.processingStart - entry.startTime}ms`);
+          }
+        });
+      }).observe({ type: 'first-input', buffered: true });
+    } catch (e) {
+      // first-input might not be supported in all browsers
+    }
+
+    // Track INP (Interaction to Next Paint) if supported
+    try {
+      new PerformanceObserver((list) => {
+        list.getEntries().forEach((entry: any) => {
+          if (isDev && entry.duration) {
+            console.log(`📊 INP: ${entry.duration.toFixed(2)}ms`);
+          }
+        });
+      }).observe({ type: 'event', durationThreshold: 40, buffered: true });
+    } catch (e) {
+      // event timing might not be supported in all browsers
+    }
   }
 }
 
