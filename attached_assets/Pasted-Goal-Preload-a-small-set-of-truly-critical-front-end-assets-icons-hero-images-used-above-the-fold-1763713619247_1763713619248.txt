@@ -1,0 +1,88 @@
+Goal:
+Preload a small set of truly critical front‑end assets (icons/hero images used above the fold) to improve initial render performance on mobile, while keeping all existing code, configuration, and behavior exactly as they are.​
+
+Hard constraints (do NOT violate these):
+
+Do not modify or remove any existing logic, components, routes, payment code, environment variables, or build configuration.​
+
+Only add small, scoped code for preloading, and only in the client (React) side.​
+
+Keep the app’s current visual behavior and layout identical, besides potential performance improvements.​
+
+1) Create a tiny preload helper
+Add a new utility function in a safe place like src/utils/preloadCriticalResources.ts (or similar).
+
+Implement it so it adds <link rel="preload"> tags for a very small list of critical image/icon assets that are used above the fold (for example, hero icons, main illustration, or primary SVGs).
+
+Example structure (adjust paths to actual existing assets in the project):
+
+ts
+// src/utils/preloadCriticalResources.ts
+export const preloadCriticalResources = (): void => {
+  if (typeof document === "undefined") return;
+
+  const criticalResources = [
+    "/src/assets/icons/ai-powered.svg",
+    "/src/assets/icons/ats-shield.svg",
+    "/src/assets/icons/multi-format-export.svg",
+    // Add only a few truly critical hero images/icons here
+  ];
+
+  criticalResources.forEach((resource) => {
+    // Avoid duplicating <link> tags if they already exist
+    const alreadyExists = document.querySelector(
+      `link[rel="preload"][href="${resource}"]`
+    );
+    if (alreadyExists) return;
+
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = resource;
+    document.head.appendChild(link);
+  });
+};
+Do not change any existing files’ contents beyond adding this new helper and imports where needed.​
+
+2) Call the helper early in the app bootstrap
+In the main client entry (for example src/main.tsx, src/index.tsx, or whichever file mounts React), import and call this helper once, at the very top of the file, before rendering the app.
+
+Example:
+
+ts
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { preloadCriticalResources } from "./utils/preloadCriticalResources";
+
+// NEW: start preloading a few key assets, without touching other logic
+preloadCriticalResources();
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+Do not modify any other imports, providers, or logic in this file besides adding the new import and single function call.​
+
+3) Keep the preload list small and relevant
+Only include assets that are definitely needed for the initial viewport (e.g., hero icons, first visible illustrations), not every image in the app, to avoid wasting bandwidth.​
+
+Do not preload JavaScript bundles or fonts here unless they are clearly identified as critical; keep the scope to a few images/icons at first.​
+
+4) Testing & safety checks
+After changes, run the app and confirm:
+
+There are no TypeScript or runtime errors.
+
+The UI looks exactly the same as before.
+
+In the browser DevTools Network tab, the preloaded assets appear as early requested resources.
+
+If any issue occurs, the entire optimization can be reverted by:
+
+Removing the preloadCriticalResources import and call from the main entry file.
+
+Deleting the preloadCriticalResources.ts helper file.
+
+This revert path must be kept simple and safe.
