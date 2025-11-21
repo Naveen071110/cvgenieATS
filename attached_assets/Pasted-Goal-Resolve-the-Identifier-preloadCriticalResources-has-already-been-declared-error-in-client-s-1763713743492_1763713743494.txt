@@ -1,0 +1,58 @@
+Goal:
+Resolve the Identifier 'preloadCriticalResources' has already been declared error in client/src/main.tsx without changing any existing logic, configuration, or behavior, and keep all performance helpers working as before.​
+
+Error details to fix:
+In client/src/main.tsx the following imports now exist:​
+
+ts
+import App from "./App";
+import { PerformanceMonitor, preloadCriticalResources, lazyLoadImages } from "./lib/performance";
+import { preloadCriticalResources } from "./utils/preloadCriticalResources";
+This declares preloadCriticalResources twice (from two different modules), which causes the crash.​
+
+Tasks
+Use only one preloadCriticalResources source (prefer the existing one)
+
+Keep the import from ./lib/performance as the single source of truth for preloadCriticalResources and lazyLoadImages, since this module already exists and is wired into the app.​
+
+Remove the extra import line for the helper we just added:
+
+ts
+import { preloadCriticalResources } from "./utils/preloadCriticalResources";
+Do not change anything else in main.tsx beyond deleting this one duplicate import line.​
+
+If the new helper file is unused, leave it or clean it up safely
+
+Check ./utils/preloadCriticalResources.ts (or whatever file was created).
+
+If no other file imports it, you can either:
+
+Leave it unused for now (harmless), or
+
+Delete the file only if it is truly not imported anywhere else.
+
+Do not rename, move, or modify ./lib/performance or any existing exports in it.​
+
+Confirm preloadCriticalResources is still called once at startup
+
+In main.tsx, make sure preloadCriticalResources() is still called from the ./lib/performance import before rendering <App />, exactly as it was before this error.​
+
+Do not add a second call; it should run only once on app bootstrap.​
+
+Do not touch any server, Dodo Payments, or Neon DB configuration
+
+Ignore the Dodo Payments warning logs for now; they are not causing the syntax crash.
+
+Do not modify anything in server/index.ts, payment config, env variables, or DB logic as part of this fix.​
+
+Testing
+
+After removing the duplicate import, run the dev server again.
+
+Confirm:
+
+The Identifier 'preloadCriticalResources' has already been declared error is gone.
+
+The app starts and behaves exactly as before.
+
+Preload logic from ./lib/performance still executes without errors.
