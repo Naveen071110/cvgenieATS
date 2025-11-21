@@ -1,43 +1,6 @@
-import { Star, CheckCircle, Building2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar components
-import { Briefcase } from "lucide-react"; // Import Briefcase icon
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    role: "Software Engineer",
-    company: "Tech Corp",
-    image: null, // Will use fallback avatar
-    verified: true,
-    rating: 5,
-    quote: "CVGenie transformed my resume completely. I went from zero callbacks to three interview invitations in just one week. The ATS optimization really works!",
-  },
-];
-
-// Generate avatar color based on name
-const getAvatarColor = (name: string) => {
-  const colors = [
-    "from-blue-500 to-purple-500",
-    "from-purple-500 to-pink-500",
-    "from-pink-500 to-rose-500",
-    "from-teal-500 to-cyan-500",
-    "from-indigo-500 to-blue-500",
-  ];
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
-};
-
-// Get initials from name
-const getInitials = (name: string) => {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-};
+import { Card, CardContent } from "@/components/ui/card";
+import { Star } from "lucide-react";
 
 export default function TestimonialsSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -97,66 +60,40 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        {/* Testimonial Cards Grid */}
-        <div className="grid grid-cols-1 max-w-[700px] mx-auto gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card
-              key={testimonial.id}
-              className={`relative overflow-hidden rounded-xl border border-slate-200/60 dark:border-slate-700/60 transition-all duration-700 hover:scale-[1.02] hover:shadow-xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-              }`}
-              style={{ transitionDelay: `${index * 150}ms`, boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)' }}
-            >
-              {/* Subtle Background Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-white/30 to-slate-50/50 dark:from-slate-800/50 dark:via-slate-800/30 dark:to-slate-800/50" />
+        {/* Coming Soon Placeholder */}
+        <div className="max-w-[700px] mx-auto">
+          <Card
+            className={`relative overflow-hidden rounded-xl border border-slate-200/60 dark:border-slate-700/60 transition-all duration-700 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+            }`}
+            style={{ boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)' }}
+          >
+            {/* Subtle Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-white/30 to-slate-50/50 dark:from-slate-800/50 dark:via-slate-800/30 dark:to-slate-800/50" />
 
-              {/* Very Subtle Border Accent */}
-              <div className="absolute inset-0 border border-transparent bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-400/10 dark:via-purple-400/10 dark:to-pink-400/10 rounded-xl" 
-                style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '1px' }} 
-              />
-
-              <CardContent className="relative z-10 px-8 py-12 sm:px-10 sm:py-14 md:px-12 md:py-16">
-                {/* Testimonial Quote - Reduced Size */}
-                <blockquote className="mb-8">
-                  <p className="text-base font-normal text-slate-800 dark:text-gray-100 leading-relaxed tracking-normal">
-                    "{testimonial.quote}"
-                  </p>
-                </blockquote>
-
-                {/* Author Info */}
-                <div className="flex items-center gap-4">
-                  {/* Avatar with Verified Badge */}
-                  <div className="relative flex-shrink-0">
-                    <div
-                      className={`w-14 h-14 rounded-full bg-gradient-to-br ${getAvatarColor(
-                        testimonial.name
-                      )} flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white dark:border-gray-700`}
-                    >
-                      {getInitials(testimonial.name)}
-                    </div>
-                    {testimonial.verified && (
-                      <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow-md">
-                        <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 fill-current" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Name, Role - Reduced Sizes */}
-                  <div className="flex-1 min-w-0 space-y-1">
-                    <p className="font-semibold text-slate-900 dark:text-white text-[0.95rem] truncate">
-                      {testimonial.name}
-                    </p>
-                    <p className="text-[0.85rem] text-slate-600 dark:text-gray-400 truncate">
-                      {testimonial.role}
-                    </p>
-                  </div>
+            <CardContent className="relative z-10 px-8 py-20 sm:px-10 sm:py-24 md:px-12 md:py-28 text-center">
+              <div className="flex justify-center mb-6">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-8 h-8 text-yellow-400 fill-yellow-400 opacity-50"
+                    />
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              </div>
 
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+                Success Stories Coming Soon
+              </h3>
+
+              <p className="text-lg text-slate-600 dark:text-gray-400 max-w-md mx-auto">
+                We're collecting testimonials from professionals who've landed their dream jobs with CVGenie. Check back soon!
+              </p>
+            </CardContent>
+          </Card>
         </div>
+      </div>
     </section>
   );
 }
