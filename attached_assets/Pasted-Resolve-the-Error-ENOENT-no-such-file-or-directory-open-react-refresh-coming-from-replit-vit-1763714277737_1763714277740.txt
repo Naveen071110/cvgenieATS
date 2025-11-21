@@ -1,0 +1,69 @@
+Resolve the Error: ENOENT: no such file or directory, open '/@react-refresh' coming from @replit/vite-plugin-runtime-error-modal, without undoing the recent performance/code‑splitting changes and without modifying Dodo/Neon/server config.​
+
+1) Confirm source of the error
+Open the stack trace: it shows @replit/vite-plugin-runtime-error-modal/src/index.ts calling fs.readFileSync('/@react-refresh').
+
+This path is a virtual Vite module for React Fast Refresh, not a real file, which is why fs.readFileSync fails with ENOENT.​
+
+This is a dev‑only tooling issue, not a production bug, and not related to payments or database. Do not touch server/index.ts or any Dodo/Neon config.​
+
+2) Update Vite config to ignore virtual /@react-refresh in the runtime‑error plugin
+Open the Vite config file: client/vite.config.ts or vite.config.ts (whichever exists).
+
+Locate the usage of runtimeErrorModal or vite-plugin-runtime-error-modal inside the plugins array. It will look something like:
+
+ts
+import runtimeErrorModal from "@replit/vite-plugin-runtime-error-modal";
+
+export default defineConfig({
+  plugins: [
+    react(),
+    runtimeErrorModal(),
+    // other plugins...
+  ],
+});
+Wrap or configure this plugin so that it ignores HMR messages for virtual modules whose path starts with /@, especially /@react-refresh.​
+
+If the plugin accepts no options, the safest minimal change is to temporarily disable it (dev‑only visual error overlay), leaving all other plugins intact:
+
+ts
+export default defineConfig({
+  plugins: [
+    react(),
+    // Temporarily disable runtime error modal to avoid ENOENT on /@react-refresh
+    // runtimeErrorModal(),
+  ],
+});
+Do not remove or change any other plugin configuration; only comment out or remove runtimeErrorModal() from the plugins array.​
+
+Do not add any new imports or modify how React Refresh is configured; let Vite’s react() plugin handle it as before.​
+
+3) Make sure app code from point 4 remains unchanged
+Do not revert the code‑splitting or lazy‑loading of routes/components that were just added, unless they are clearly causing separate runtime errors.​
+
+In particular, do not undo changes in:
+
+src/App.tsx
+
+src/pages/home.tsx
+
+src/components/header.tsx
+
+src/components/hero-section.tsx
+
+unless there is a direct syntax/runtime error in those files. The /@react-refresh ENOENT is coming from the tooling plugin, not from those modules.​
+
+4) Safety checks
+Restart the dev server after updating vite.config.*.
+
+Confirm:
+
+The ENOENT /@react-refresh error no longer appears.
+
+The app starts normally and all pages (home, generator, features, pricing) still work and load.
+
+Dodo Payments warnings about “No products found” are still just logs and do not crash the app.
+
+Once things are stable, you may later re‑enable runtimeErrorModal() with an additional guard if the plugin adds options to ignore virtual paths; until then, it is safe to leave it disabled in dev.​
+
+Only the Vite plugin wiring should be changed here; do not touch application logic, server code, or performance utilities.
