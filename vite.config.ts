@@ -10,7 +10,8 @@ export default defineConfig({
     svgr({
       include: "**/*.svg?react",
     }),
-    runtimeErrorOverlay(),
+    // Temporarily disabled to avoid ENOENT on virtual /@react-refresh module
+    // runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [
