@@ -6,12 +6,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import Home from "@/pages/home";
 
 // Import Clerk publishable key
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-// Lazy load non-critical pages
+// Eager load only the home page for immediate display
+import Home from "@/pages/home";
+
+// Lazy load all other routes to reduce initial bundle size
 const Generator = lazy(() => import("@/pages/generator"));
 const ResumeHistoryPage = lazy(() => import("@/pages/resume-history"));
 const Terms = lazy(() => import("@/pages/terms"));

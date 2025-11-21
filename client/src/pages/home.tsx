@@ -1,17 +1,26 @@
+import { lazy, Suspense } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
-import FeaturesSection from "@/components/features-section";
-import TestimonialsSection from "@/components/testimonials-section";
-import PricingSection from "@/components/pricing-section";
-import { FAQSection } from "@/components/faq-section";
+// Removed import for FeaturesSection as it will be lazy loaded
+// Removed import for TestimonialsSection as it will be lazy loaded
+// Removed import for PricingSection as it will be lazy loaded
+// Removed import for FAQSection as it will be lazy loaded
 import Footer from "@/components/footer";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { TrustIndicatorsSection } from "@/components/trust-indicators-section";
-import { ResumeComparison } from "@/components/resume-comparison";
+// Removed import for TrustIndicatorsSection as it will be lazy loaded
+// Removed import for ResumeComparison as it will be lazy loaded
 import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
+
+// Lazy load heavy below-the-fold sections
+const FeaturesSection = lazy(() => import("@/components/features-section").then(m => ({ default: m.FeaturesSection })));
+const TestimonialsSection = lazy(() => import("@/components/testimonials-section").then(m => ({ default: m.TestimonialsSection })));
+const PricingSection = lazy(() => import("@/components/pricing-section").then(m => ({ default: m.PricingSection })));
+const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
+const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
+const ResumeComparison = lazy(() => import("@/components/resume-comparison").then(m => ({ default: m.ResumeComparison })));
 
 export default function Home() {
   return (
@@ -31,7 +40,7 @@ export default function Home() {
                 Watch how our AI transforms a basic resume into an interview-generating powerhouse in under 60 seconds
               </p>
             </div>
-            
+
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-gray-700 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-800 p-8">
               <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center relative overflow-hidden">
                 {/* Placeholder for video - replace with actual video when available */}
@@ -46,9 +55,9 @@ export default function Home() {
                   <p className="text-sm text-slate-500 dark:text-gray-400 mt-2">See before/after resume transformation</p>
                 </div>
                 {/* Uncomment when video is ready:
-                <video 
-                  src="/videos/resume-demo.mp4" 
-                  controls 
+                <video
+                  src="/videos/resume-demo.mp4"
+                  controls
                   className="w-full h-full object-cover"
                   style={{ borderRadius: "8px" }}
                   poster="/images/video-thumbnail.jpg"
@@ -57,7 +66,7 @@ export default function Home() {
                 </video>
                 */}
               </div>
-              
+
               <div className="grid md:grid-cols-3 gap-6 mt-8">
                 <div className="text-center p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-gray-700">
                   <div className="text-2xl font-bold text-primary dark:text-blue-400 mb-1">40-60s</div>
@@ -91,10 +100,10 @@ export default function Home() {
                   Ready to Land More Interviews?
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                  Join thousands of professionals who transformed their job search with resumes that actually get read. 
+                  Join thousands of professionals who transformed their job search with resumes that actually get read.
                   Start getting noticed by recruiters today—completely free!
                 </p>
-                
+
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600 dark:text-green-400">

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save, Crown, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,9 @@ import Lottie from "lottie-react";
 import DocumentUploadIcon from '@/assets/icons/document-upload.svg?react';
 import AtsOptimizationIcon from '@/assets/icons/ats-optimization.svg?react';
 import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
-import { FileUpload } from "@/components/file-upload";
-import { AILoadingState, LoadingStateManager } from "@/components/ai-loading-state";
+// Lazy load heavy generator components
+const FileUpload = lazy(() => import("@/components/file-upload").then(m => ({ default: m.FileUpload })));
+const AILoadingState = lazy(() => import("@/components/ai-loading-state").then(m => ({ default: m.AILoadingState })));
 
 // Define supported formats
 const SUPPORTED_FORMATS = {
@@ -342,8 +343,7 @@ export default function Generator() {
     // Reset previous extraction and results
     setExtractedResume(null);
     setResumeContent("");
-    setGenerationResult(null);
-    setSampleResumeError(null); // Clear any previous errors
+    setIsEditingResumeContent(false);
     // Extract content from uploaded file
     extractResumeMutation.mutate(file);
   };
@@ -460,21 +460,23 @@ export default function Generator() {
                 <div className="space-y-4">
                   <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Upload Your Resume</h3>
                   <p className="text-sm text-slate-500 dark:text-gray-400">{SUPPORTED_FORMATS.description}</p>
-                  <FileUpload
-                    onFileSelect={handleFileUpload}
-                    onFileRemove={() => {
-                      setExtractedResume(null);
-                      setResumeContent('');
-                      setIsEditingResumeContent(false);
-                    }}
-                    selectedFile={extractedResume ? new File([], extractedResume.fileName) : null}
-                    isUploading={extractResumeMutation.isPending}
-                    uploadProgress={extractResumeMutation.isPending ? 50 : 0}
-                    uploadStage={extractResumeMutation.isPending ? 'extracting' : ''}
-                    acceptedTypes={defaultAcceptedTypes}
-                    maxSize={SUPPORTED_FORMATS.maxSizeMB}
-                    isProcessing={isAIProcessing}
-                  />
+                  <Suspense fallback={<div className="flex items-center justify-center py-12"><div className="branded-spinner"></div></div>}>
+                    <FileUpload
+                      onFileSelect={handleFileUpload}
+                      onFileRemove={() => {
+                        setExtractedResume(null);
+                        setResumeContent('');
+                        setIsEditingResumeContent(false);
+                      }}
+                      selectedFile={extractedResume ? new File([], extractedResume.fileName) : null}
+                      isUploading={extractResumeMutation.isPending}
+                      uploadProgress={extractResumeMutation.isPending ? 50 : 0}
+                      uploadStage={extractResumeMutation.isPending ? 'extracting' : ''}
+                      acceptedTypes={defaultAcceptedTypes}
+                      maxSize={SUPPORTED_FORMATS.maxSizeMB}
+                      isProcessing={isAIProcessing}
+                    />
+                  </Suspense>
                 </div>
 
                 {/* Sample Resume Error Display */}
@@ -864,12 +866,14 @@ export default function Generator() {
       </main>
 
       {/* AI Processing Loading Overlay */}
-      <AILoadingState
-        isVisible={isAIProcessing}
-        currentStep={aiStep}
-        progress={aiProgress}
-        onComplete={() => setIsAIProcessing(false)}
-      />
+      <Suspense fallback={<div className="flex items-center justify-center py-12"><div className="branded-spinner"></div></div>}>
+        <AILoadingState
+          isVisible={isAIProcessing}
+          currentStep={aiStep}
+          progress={aiProgress}
+          onComplete={() => setIsAIProcessing(false)}
+        />
+      </Suspense>
 
       {/* Subscription Modal */}
       <SubscriptionModal 
