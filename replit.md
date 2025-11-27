@@ -46,6 +46,14 @@ Preferred communication style: Simple, everyday language.
 - **Hero Section Update**: Changed main heading from "Transform Your Career with" to "Transform Your Resume for" for clearer value proposition
 - **Component Cleanup**: Streamlined FAQ component structure by removing unnecessary help section and reducing margins/padding
 
+### Multi-Format Document Export (November 27, 2025)
+- **PDF Export**: Professional PDF generation with proper formatting, section headers, and bullet points using pdf-lib
+- **DOCX Export**: Microsoft Word document export with styled headers, proper structure, and professional formatting
+- **TXT Export**: Plain text export for maximum compatibility
+- **ExportDropdown Component**: Clean dropdown menu for format selection with loading states
+- **Watermark for Free Users**: Free tier exports include CVGenie watermark, removed for Pro subscribers
+- **Dark Mode Support**: Export dropdown fully styled for both light and dark themes
+
 ### Enhanced Generator Experience
 - **Inline Editing Interface**: Results now display on-screen with edit/save functionality instead of immediate downloads
 - **Document Preview**: Users can review generated content in formatted preview before editing or downloading
