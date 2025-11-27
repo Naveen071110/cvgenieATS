@@ -1,0 +1,100 @@
+You are an expert performance optimization engineer. I need you to optimize the performance 
+of my CVGenie resume builder application. Here are the specific issues to fix:
+
+## CRITICAL ISSUES TO SOLVE:
+
+1. **Image Optimization**
+   - Current: Large uncompressed images are causing loading delays
+   - Solution: Implement image optimization using Next.js Image component or similar
+   - Requirements:
+     * Convert images to WebP format with fallback to PNG/JPG
+     * Create responsive image sizes for mobile, tablet, desktop
+     * Set proper width/height to prevent layout shift
+     * Add loading="lazy" for off-screen images
+     * Compress all images to < 100KB for web
+
+2. **Lazy Loading Implementation**
+   - Current: Three major sections show loading spinners indicating slow asset loading
+   - Solution: Implement intersection observer based lazy loading
+   - Sections to lazy load:
+     * Company logo carousel section
+     * Feature showcase images/sections
+     * Trust badges and testimonial images
+     * Below-fold content generally
+
+3. **Skeleton Loader UI**
+   - Current: Blank white spaces appear while content loads
+   - Solution: Add skeleton/placeholder UI components
+   - Add skeleton screens for:
+     * Hero section images
+     * Statistics cards (before counter animation)
+     * Company logos carousel
+     * Feature cards with images
+     * Pricing cards
+
+4. **Animation Performance**
+   - Current: Statistics counter animation ("100+", "94%", etc.) may cause rendering jank
+   - Solution: 
+     * Use CSS animations instead of JavaScript where possible
+     * Implement requestAnimationFrame for smooth animations
+     * Consider using react-countup optimized for performance
+     * Disable animations on mobile for battery efficiency
+
+5. **Code & Asset Splitting**
+   - Current: Likely loading all assets upfront
+   - Solution:
+     * Implement dynamic imports for below-fold sections
+     * Use route-based code splitting
+     * Load pricing/FAQ sections on demand
+     * Implement proper caching headers
+
+6. **Mobile Optimization**
+   - Current: Unclear how layout adapts to mobile screens
+   - Solution:
+     * Test at 320px, 375px, 768px breakpoints
+     * Ensure touch targets are 48px minimum
+     * Company logo carousel should auto-scroll on mobile
+     * Stack feature cards vertically on mobile
+     * Make pricing table mobile-friendly
+     * Optimize font sizes and spacing for mobile
+
+7. **Remove Duplicate Content**
+   - Current: Company logos rendered twice in DOM
+   - Solution: Refactor to use single component with possible duplication via CSS if needed
+
+## IMPLEMENTATION DETAILS:
+
+Technology Stack (based on app):
+- Framework: React/Next.js
+- Styling: Tailwind CSS (implied)
+- State Management: [TBD - needs inspection]
+- Image Library: [Current solution]
+
+Performance Targets:
+- Lighthouse Score: Aim for 90+
+- First Contentful Paint (FCP): < 1.5s
+- Largest Contentful Paint (LCP): < 2.5s
+- Cumulative Layout Shift (CLS): < 0.1
+- Time to Interactive (TTI): < 3.5s
+
+## DELIVERABLES NEEDED:
+
+1. Audit report showing current performance metrics
+2. Image optimization script/process
+3. Lazy loading component wrapper
+4. Skeleton loader components
+5. Animation optimization code
+6. Mobile responsive CSS fixes
+7. Updated page structure eliminating duplicates
+8. Caching strategy (service worker or headers)
+9. Performance monitoring implementation
+10. Before/after comparison metrics
+
+## MOBILE VIEWPORT TESTING SIZES:
+- iPhone 12: 390x844
+- iPhone SE: 375x667  
+- iPad: 768x1024
+- Pixel 6: 412x915
+
+Please provide optimized code, configuration changes, and a implementation roadmap with 
+estimated performance improvements for each fix.
