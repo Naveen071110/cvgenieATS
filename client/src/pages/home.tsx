@@ -30,50 +30,7 @@ export default function Home() {
       <main>
         <HeroSection />
 
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                See CVGenie in Action
-              </h2>
-              <p className="text-lg text-slate-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Watch how our AI transforms a basic resume into an interview-generating powerhouse in under 60 seconds
-              </p>
-            </div>
-
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-gray-700 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-800 p-8">
-              <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/10"></div>
-                <div className="relative z-10 text-center p-8">
-                  <div className="w-20 h-20 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <svg className="w-8 h-8 text-primary dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                  </div>
-                  <p className="text-slate-600 dark:text-gray-300 font-medium">Demo Video Coming Soon</p>
-                  <p className="text-sm text-slate-500 dark:text-gray-400 mt-2">See before/after resume transformation</p>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6 mt-8">
-                <div className="text-center p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-gray-700">
-                  <div className="text-2xl font-bold text-primary dark:text-blue-400 mb-1">40-60s</div>
-                  <p className="text-sm text-slate-600 dark:text-gray-300">Generation Time</p>
-                </div>
-                <div className="text-center p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-gray-700">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">3x More</div>
-                  <p className="text-sm text-slate-600 dark:text-gray-300">Interview Callbacks</p>
-                </div>
-                <div className="text-center p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-gray-700">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">95%+</div>
-                  <p className="text-sm text-slate-600 dark:text-gray-300">ATS Pass Rate</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="generator" className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+        <section id="generator" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-slate-900 dark:to-slate-800">
           <div className="max-w-4xl mx-auto text-center">
             <Card className="shadow-2xl border border-slate-200 dark:border-gray-700 floating-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
               <CardContent className="p-12">
