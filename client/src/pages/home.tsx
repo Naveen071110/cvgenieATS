@@ -1,12 +1,9 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, memo } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "wouter";
-import { InteractiveDemo } from "@/components/interactive-demo";
 import {
   FeatureSectionSkeleton,
   TestimonialsSectionSkeleton,
@@ -15,13 +12,14 @@ import {
   TrustBadgesSkeleton,
   CompanyLogosSkeleton,
 } from "@/components/ui/section-skeletons";
+import { LazyLoadSection } from "@/hooks/useIntersectionLoader";
 
 const FeaturesSection = lazy(() => import("@/components/features-section"));
 const TestimonialsSection = lazy(() => import("@/components/testimonials-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
-const ResumeComparison = lazy(() => import("@/components/resume-comparison").then(m => ({ default: m.ResumeComparison })));
+const InteractiveDemo = lazy(() => import("@/components/interactive-demo").then(m => ({ default: m.InteractiveDemo })));
 
 export default function Home() {
   return (
@@ -67,46 +65,91 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="py-12">
-          <Suspense fallback={<FeatureSectionSkeleton />}>
-            <FeaturesSection />
-          </Suspense>
-        </div>
+        <LazyLoadSection 
+          fallback={<FeatureSectionSkeleton />}
+          rootMargin="400px"
+          minHeight="400px"
+        >
+          <div className="py-12">
+            <Suspense fallback={<FeatureSectionSkeleton />}>
+              <FeaturesSection />
+            </Suspense>
+          </div>
+        </LazyLoadSection>
         
-        <div className="py-12">
-          <InteractiveDemo />
-        </div>
+        <LazyLoadSection 
+          fallback={<div className="py-12 min-h-[300px]" />}
+          rootMargin="300px"
+          minHeight="300px"
+        >
+          <div className="py-12">
+            <Suspense fallback={<div className="py-12 min-h-[300px]" />}>
+              <InteractiveDemo />
+            </Suspense>
+          </div>
+        </LazyLoadSection>
         
-        <div className="py-12">
-          <Suspense fallback={
+        <LazyLoadSection 
+          fallback={
             <div className="py-16 bg-gray-50 dark:bg-slate-900">
               <div className="max-w-7xl mx-auto px-4">
                 <TrustBadgesSkeleton />
                 <CompanyLogosSkeleton />
               </div>
             </div>
-          }>
-            <TrustIndicatorsSection />
-          </Suspense>
-        </div>
+          }
+          rootMargin="300px"
+          minHeight="300px"
+        >
+          <div className="py-12">
+            <Suspense fallback={
+              <div className="py-16 bg-gray-50 dark:bg-slate-900">
+                <div className="max-w-7xl mx-auto px-4">
+                  <TrustBadgesSkeleton />
+                  <CompanyLogosSkeleton />
+                </div>
+              </div>
+            }>
+              <TrustIndicatorsSection />
+            </Suspense>
+          </div>
+        </LazyLoadSection>
         
-        <div className="py-12">
-          <Suspense fallback={<TestimonialsSectionSkeleton />}>
-            <TestimonialsSection />
-          </Suspense>
-        </div>
+        <LazyLoadSection 
+          fallback={<TestimonialsSectionSkeleton />}
+          rootMargin="300px"
+          minHeight="400px"
+        >
+          <div className="py-12">
+            <Suspense fallback={<TestimonialsSectionSkeleton />}>
+              <TestimonialsSection />
+            </Suspense>
+          </div>
+        </LazyLoadSection>
         
-        <div className="py-12">
-          <Suspense fallback={<PricingSectionSkeleton />}>
-            <PricingSection />
-          </Suspense>
-        </div>
+        <LazyLoadSection 
+          fallback={<PricingSectionSkeleton />}
+          rootMargin="300px"
+          minHeight="500px"
+        >
+          <div className="py-12">
+            <Suspense fallback={<PricingSectionSkeleton />}>
+              <PricingSection />
+            </Suspense>
+          </div>
+        </LazyLoadSection>
         
-        <div className="py-12">
-          <Suspense fallback={<FAQSkeleton />}>
-            <FAQSection />
-          </Suspense>
-        </div>
+        <LazyLoadSection 
+          fallback={<FAQSkeleton />}
+          rootMargin="300px"
+          minHeight="400px"
+        >
+          <div className="py-12">
+            <Suspense fallback={<FAQSkeleton />}>
+              <FAQSection />
+            </Suspense>
+          </div>
+        </LazyLoadSection>
       </main>
       <Footer />
     </div>

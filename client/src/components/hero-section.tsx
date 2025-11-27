@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   ArrowRight,
   CheckCircle,
@@ -20,6 +20,7 @@ import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react"
 import MailIcon from "../assets/icons/mail.svg?react";
 import AnimatedStatCard from "./AnimatedStatCard";
 import { LazyImage } from "@/components/LazyImage";
+import { useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
 
 
 
@@ -77,8 +78,13 @@ export default function HeroSection() {
   const [progress, setProgress] = useState(0);
   const [shouldAnimateStats, setShouldAnimateStats] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+  const shouldDisableAnimations = isMobile || prefersReducedMotion;
 
   useEffect(() => {
+    if (shouldDisableAnimations) return;
+    
     const interval = setInterval(() => {
       setIsVisible(false);
       setTimeout(() => {
@@ -88,15 +94,17 @@ export default function HeroSection() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [shouldDisableAnimations]);
 
   useEffect(() => {
+    if (shouldDisableAnimations) return;
+    
     const gradientInterval = setInterval(() => {
       setGradientShift((prev) => (prev + 1) % 360);
     }, 100);
 
     return () => clearInterval(gradientInterval);
-  }, []);
+  }, [shouldDisableAnimations]);
 
   // Simulate loading states and progress
   useEffect(() => {

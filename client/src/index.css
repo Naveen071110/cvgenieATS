@@ -3,6 +3,63 @@
 @tailwind utilities;
 
 /* ===========================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   =========================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .particle-container,
+  .particle {
+    display: none !important;
+  }
+  
+  .animate-float {
+    animation: none !important;
+  }
+  
+  .animate-gradient-shift {
+    animation: none !important;
+    background-position: 0% 50% !important;
+  }
+  
+  .animate-pulse-slow {
+    animation: none !important;
+    opacity: 0.6 !important;
+  }
+  
+  .floating-card {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ===========================
    HERO ANIMATIONS
    =========================== */
 
@@ -1803,9 +1860,6 @@ select {
 
 /* High DPI displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* Optimize for retina displays */
-  border-width: 0.5px;
-
   .feature-card,
   .interactive-card {
     box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.08), 0 3px 5px -1px rgba(0, 0, 0, 0.04);
