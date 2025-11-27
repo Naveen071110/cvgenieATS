@@ -745,4 +745,100 @@ export function registerRoutes(app: Express) {
       res.status(500).json({ error: "Failed to reset subscriptions" });
     }
   });
+
+  // POST /api/export/pdf - Export content to PDF
+  app.post("/api/export/pdf", async (req, res) => {
+    try {
+      const { content, filename = "document.pdf" } = req.body;
+
+      if (!content || typeof content !== "string") {
+        return res.status(400).json({ error: "Content is required" });
+      }
+
+      // Check if user is Pro (optional auth)
+      let isPro = false;
+      try {
+        const auth = getAuth(req);
+        if (auth?.userId) {
+          const subscription = await getUserSubscriptionStatus(auth.userId);
+          isPro = subscription?.isPro || false;
+        }
+      } catch (e) {
+        // User not authenticated, continue as free user
+      }
+
+      const pdfBuffer = await documentGenerator.generatePDFFromText(content, { isPro });
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.send(pdfBuffer);
+    } catch (error: any) {
+      console.error("Error generating PDF:", error);
+      res.status(500).json({ error: "Failed to generate PDF" });
+    }
+  });
+
+  // POST /api/export/docx - Export content to DOCX
+  app.post("/api/export/docx", async (req, res) => {
+    try {
+      const { content, filename = "document.docx" } = req.body;
+
+      if (!content || typeof content !== "string") {
+        return res.status(400).json({ error: "Content is required" });
+      }
+
+      // Check if user is Pro (optional auth)
+      let isPro = false;
+      try {
+        const auth = getAuth(req);
+        if (auth?.userId) {
+          const subscription = await getUserSubscriptionStatus(auth.userId);
+          isPro = subscription?.isPro || false;
+        }
+      } catch (e) {
+        // User not authenticated, continue as free user
+      }
+
+      const docxBuffer = await documentGenerator.generateDOCXFromText(content, { isPro });
+
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.send(docxBuffer);
+    } catch (error: any) {
+      console.error("Error generating DOCX:", error);
+      res.status(500).json({ error: "Failed to generate DOCX" });
+    }
+  });
+
+  // POST /api/export/txt - Export content to TXT
+  app.post("/api/export/txt", async (req, res) => {
+    try {
+      const { content, filename = "document.txt" } = req.body;
+
+      if (!content || typeof content !== "string") {
+        return res.status(400).json({ error: "Content is required" });
+      }
+
+      // Check if user is Pro (optional auth)
+      let isPro = false;
+      try {
+        const auth = getAuth(req);
+        if (auth?.userId) {
+          const subscription = await getUserSubscriptionStatus(auth.userId);
+          isPro = subscription?.isPro || false;
+        }
+      } catch (e) {
+        // User not authenticated, continue as free user
+      }
+
+      const txtBuffer = documentGenerator.generateTXTFromText(content, { isPro });
+
+      res.setHeader("Content-Type", "text/plain");
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.send(txtBuffer);
+    } catch (error: any) {
+      console.error("Error generating TXT:", error);
+      res.status(500).json({ error: "Failed to generate TXT" });
+    }
+  });
 }

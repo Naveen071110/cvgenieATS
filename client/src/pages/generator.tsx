@@ -16,6 +16,7 @@ import AtsOptimizationIcon from '@/assets/icons/ats-optimization.svg?react';
 import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
 import { FileUpload } from "@/components/file-upload";
 import { AILoadingState } from "@/components/ai-loading-state";
+import { ExportDropdown } from "@/components/ExportDropdown";
 
 // Define supported formats
 const SUPPORTED_FORMATS = {
@@ -675,25 +676,12 @@ export default function Generator() {
                       {isEditingResume ? <Save className="w-4 h-4 mr-1" /> : <Edit className="w-4 h-4 mr-1" />}
                       {isEditingResume ? 'Save' : 'Edit'}
                     </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        if (editedResume && editedResume.trim()) {
-                          downloadDocument(editedResume, 'optimized-resume.txt');
-                        } else {
-                          toast({
-                            title: "Download Error",
-                            description: "No resume content available to download.",
-                            variant: "destructive",
-                          });
-                        }
-                      }}
-                      className="bg-blue-50 text-blue-700 hover:bg-blue-100"
-                      disabled={!editedResume || editedResume.trim() === ''}
-                    >
-                      <Download className="w-4 h-4 mr-1" />
-                      Download TXT
-                    </Button>
+                    <ExportDropdown
+                      content={editedResume}
+                      filename="optimized-resume"
+                      variant="resume"
+                      disabled={isAIProcessing || !editedResume || editedResume.trim() === ''}
+                    />
                   </div>
                 </div>
               </CardHeader>
@@ -708,8 +696,8 @@ export default function Generator() {
                     disabled={isAIProcessing}
                   />
                 ) : (
-                  <div className="bg-slate-50 p-4 rounded-lg">
-                    <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-96 overflow-y-auto leading-relaxed">
+                  <div className="bg-slate-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 dark:text-gray-200 max-h-96 overflow-y-auto leading-relaxed">
                       {editedResume || "No resume content available. Please try generating again."}
                     </pre>
                   </div>
@@ -718,11 +706,11 @@ export default function Generator() {
             </Card>
 
             {/* Cover Letter Section */}
-            <Card className="shadow-xl border border-slate-200 floating-card">
+            <Card className="shadow-xl border border-slate-200 dark:border-gray-700 dark:bg-gray-800 floating-card">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center">
-                    <CoverLetterIcon className="w-5 h-5 mr-2" />
+                  <CardTitle className="flex items-center dark:text-white">
+                    <CoverLetterIcon className="w-5 h-5 mr-2 text-green-500" />
                     Personalized Cover Letter
                   </CardTitle>
                   <div className="flex gap-2">
@@ -735,25 +723,12 @@ export default function Generator() {
                       {isEditingCoverLetter ? <Save className="w-4 h-4 mr-1" /> : <Edit className="w-4 h-4 mr-1" />}
                       {isEditingCoverLetter ? 'Save' : 'Edit'}
                     </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        if (editedCoverLetter && editedCoverLetter.trim()) {
-                          downloadDocument(editedCoverLetter, 'cover-letter.txt');
-                        } else {
-                          toast({
-                            title: "Download Error",
-                            description: "No cover letter content available to download.",
-                            variant: "destructive",
-                          });
-                        }
-                      }}
-                      className="bg-green-50 text-green-700 hover:bg-green-100"
-                      disabled={!editedCoverLetter || editedCoverLetter.trim() === ''}
-                    >
-                      <Download className="w-4 h-4 mr-1" />
-                      Download TXT
-                    </Button>
+                    <ExportDropdown
+                      content={editedCoverLetter}
+                      filename="cover-letter"
+                      variant="coverLetter"
+                      disabled={isAIProcessing || !editedCoverLetter || editedCoverLetter.trim() === ''}
+                    />
                   </div>
                 </div>
               </CardHeader>
@@ -763,13 +738,13 @@ export default function Generator() {
                     value={editedCoverLetter}
                     onChange={(e) => setEditedCoverLetter(e.target.value)}
                     rows={15}
-                    className="font-mono text-sm"
+                    className="font-mono text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Edit your cover letter here..."
                     disabled={isAIProcessing}
                   />
                 ) : (
-                  <div className="bg-slate-50 p-4 rounded-lg">
-                    <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 max-h-80 overflow-y-auto">
+                  <div className="bg-slate-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 dark:text-gray-200 max-h-80 overflow-y-auto">
                       {editedCoverLetter || "No cover letter content available. Please try generating again."}
                     </pre>
                   </div>
@@ -778,47 +753,21 @@ export default function Generator() {
             </Card>
 
             {/* Actions */}
-            <Card className="shadow-xl border border-slate-200 floating-card">
+            <Card className="shadow-xl border border-slate-200 dark:border-gray-700 dark:bg-gray-800 floating-card">
               <CardContent className="p-6">
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Button
                     onClick={resetGenerator}
                     variant="outline"
                     size="lg"
                     disabled={isAIProcessing}
+                    data-testid="generate-another-btn"
                   >
                     Generate Another Resume
                   </Button>
-                  <Button
-                    onClick={() => {
-                      if (editedResume && editedResume.trim()) {
-                        downloadDocument(editedResume, 'optimized-resume.txt');
-                      } else {
-                        toast({
-                          title: "Download Error",
-                          description: "No resume content available to download.",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
-
-                      if (editedCoverLetter && editedCoverLetter.trim()) {
-                        downloadDocument(editedCoverLetter, 'cover-letter.txt');
-                      } else {
-                        toast({
-                          title: "Download Error", 
-                          description: "No cover letter content available to download.",
-                          variant: "destructive",
-                        });
-                      }
-                    }}
-                    size="lg"
-                    className="bg-primary hover:bg-primary/90"
-                    disabled={isAIProcessing || !editedResume || !editedCoverLetter}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Both Documents
-                  </Button>
+                  <div className="flex gap-2 items-center text-sm text-slate-600 dark:text-gray-400">
+                    <span>Use the Export buttons above to download as PDF, DOCX, or TXT</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
