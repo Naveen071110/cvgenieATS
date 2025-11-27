@@ -1467,6 +1467,24 @@ select:focus,
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover,
+.animation-paused {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .animate-marquee {
+    animation-duration: 20s;
+  }
 }
 
 .pricing-card-flip {

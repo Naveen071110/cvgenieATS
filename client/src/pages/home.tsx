@@ -1,37 +1,35 @@
 import { lazy, Suspense } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
-// Removed import for FeaturesSection as it will be lazy loaded
-// Removed import for TestimonialsSection as it will be lazy loaded
-// Removed import for PricingSection as it will be lazy loaded
-// Removed import for FAQSection as it will be lazy loaded
 import Footer from "@/components/footer";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-// Removed import for TrustIndicatorsSection as it will be lazy loaded
-// Removed import for ResumeComparison as it will be lazy loaded
-import { InteractiveDemo } from "@/components/interactive-demo"; // Added import for InteractiveDemo
+import { InteractiveDemo } from "@/components/interactive-demo";
+import {
+  FeatureSectionSkeleton,
+  TestimonialsSectionSkeleton,
+  PricingSectionSkeleton,
+  FAQSkeleton,
+  TrustBadgesSkeleton,
+  CompanyLogosSkeleton,
+} from "@/components/ui/section-skeletons";
 
-// Lazy load heavy below-the-fold sections  
-// Default exports
 const FeaturesSection = lazy(() => import("@/components/features-section"));
 const TestimonialsSection = lazy(() => import("@/components/testimonials-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
-// Named exports
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
 const ResumeComparison = lazy(() => import("@/components/resume-comparison").then(m => ({ default: m.ResumeComparison })));
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-200">
       <Header />
       <main>
         <HeroSection />
 
-        {/* Video Demo Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
@@ -45,28 +43,16 @@ export default function Home() {
 
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-gray-700 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-800 p-8">
               <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center relative overflow-hidden">
-                {/* Placeholder for video - replace with actual video when available */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/10"></div>
                 <div className="relative z-10 text-center p-8">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-20 h-20 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <svg className="w-8 h-8 text-primary dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z"/>
                     </svg>
                   </div>
                   <p className="text-slate-600 dark:text-gray-300 font-medium">Demo Video Coming Soon</p>
                   <p className="text-sm text-slate-500 dark:text-gray-400 mt-2">See before/after resume transformation</p>
                 </div>
-                {/* Uncomment when video is ready:
-                <video
-                  src="/videos/resume-demo.mp4"
-                  controls
-                  className="w-full h-full object-cover"
-                  style={{ borderRadius: "8px" }}
-                  poster="/images/video-thumbnail.jpg"
-                >
-                  Your browser does not support the video tag.
-                </video>
-                */}
               </div>
 
               <div className="grid md:grid-cols-3 gap-6 mt-8">
@@ -87,7 +73,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Generator CTA Section */}
         <section id="generator" className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-slate-900 dark:to-slate-800">
           <div className="max-w-4xl mx-auto text-center">
             <Card className="shadow-2xl border border-slate-200 dark:border-gray-700 floating-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
@@ -106,7 +91,6 @@ export default function Home() {
                   Start getting noticed by recruiters today—completely free!
                 </p>
 
-
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
                   <div className="flex items-center text-green-600 dark:text-green-400">
                     <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full mr-2"></div>
@@ -121,30 +105,50 @@ export default function Home() {
                     <span className="text-sm font-medium">ATS-friendly resume templates</span>
                   </div>
                 </div>
-
-
               </CardContent>
             </Card>
           </div>
         </section>
 
         <div className="py-12">
-          <FeaturesSection />
+          <Suspense fallback={<FeatureSectionSkeleton />}>
+            <FeaturesSection />
+          </Suspense>
         </div>
+        
         <div className="py-12">
           <InteractiveDemo />
         </div>
+        
         <div className="py-12">
-          <TrustIndicatorsSection />
+          <Suspense fallback={
+            <div className="py-16 bg-gray-50 dark:bg-slate-900">
+              <div className="max-w-7xl mx-auto px-4">
+                <TrustBadgesSkeleton />
+                <CompanyLogosSkeleton />
+              </div>
+            </div>
+          }>
+            <TrustIndicatorsSection />
+          </Suspense>
         </div>
+        
         <div className="py-12">
-          <TestimonialsSection />
+          <Suspense fallback={<TestimonialsSectionSkeleton />}>
+            <TestimonialsSection />
+          </Suspense>
         </div>
+        
         <div className="py-12">
-          <PricingSection />
+          <Suspense fallback={<PricingSectionSkeleton />}>
+            <PricingSection />
+          </Suspense>
         </div>
+        
         <div className="py-12">
-          <FAQSection />
+          <Suspense fallback={<FAQSkeleton />}>
+            <FAQSection />
+          </Suspense>
         </div>
       </main>
       <Footer />
