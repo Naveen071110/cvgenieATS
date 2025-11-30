@@ -160,81 +160,65 @@ export default function HeroSection() {
       role="region"
       aria-label="Hero section with resume generation services"
     >
-      {/* Animated Background Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="particle-container">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="particle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${15 + Math.random() * 10}s`,
-              }}
-            />
-          ))}
+      {/* Animated Background Particles - reduced count for performance */}
+      {!shouldDisableAnimations && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="particle-container">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="particle"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${15 + Math.random() * 10}s`,
+                }}
+              />
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Background Pattern - simplified */}
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]">
+        <div className="w-full h-full bg-[radial-gradient(circle_at_1px_1px,currentColor_1px,transparent_0)] bg-[length:40px_40px] text-primary" />
       </div>
 
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5 dark:opacity-10">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-              <circle cx="20" cy="20" r="2" fill="currentColor" className="text-primary" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-        </svg>
-      </div>
-
-      <div className="hero-bg" aria-hidden="true">
-        <svg
-          width="100%"
-          height="100%"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <radialGradient id="wcA" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#9ec5fe" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#9ec5fe" stopOpacity="0" />
-            </radialGradient>
-            <radialGradient id="wcB" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#b1e3c1" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#b1e3c1" stopOpacity="0" />
-            </radialGradient>
-            <filter id="wcBlur" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="10" />
-            </filter>
-          </defs>
-          {/* Blurred watercolor washes */}
-          <g className="hero-blob" style={{ transformOrigin: "18% 62%" }}>
-            <circle
-              cx="18"
-              cy="62"
-              r="28"
-              fill="url(#wcA)"
-              filter="url(#wcBlur)"
-            />
-          </g>
-          <g
-            className="hero-blob hero-blob--alt"
-            style={{ transformOrigin: "82% 28%" }}
-          >
-            <circle
-              cx="82"
-              cy="28"
-              r="24"
-              fill="url(#wcB)"
-              filter="url(#wcBlur)"
-            />
-          </g>
-        </svg>
-      </div>
-      <div className="hero-bg-blob" aria-hidden="true"></div>
+      {/* Simplified background blobs - static on mobile */}
+      {!shouldDisableAnimations && (
+        <>
+          <div className="hero-bg" aria-hidden="true">
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <radialGradient id="wcA" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#9ec5fe" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#9ec5fe" stopOpacity="0" />
+                </radialGradient>
+                <radialGradient id="wcB" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#b1e3c1" stopOpacity="0.18" />
+                  <stop offset="100%" stopColor="#b1e3c1" stopOpacity="0" />
+                </radialGradient>
+                <filter id="wcBlur" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="10" />
+                </filter>
+              </defs>
+              <g className="hero-blob" style={{ transformOrigin: "18% 62%" }}>
+                <circle cx="18" cy="62" r="28" fill="url(#wcA)" filter="url(#wcBlur)" />
+              </g>
+              <g className="hero-blob hero-blob--alt" style={{ transformOrigin: "82% 28%" }}>
+                <circle cx="82" cy="28" r="24" fill="url(#wcB)" filter="url(#wcBlur)" />
+              </g>
+            </svg>
+          </div>
+          <div className="hero-bg-blob" aria-hidden="true"></div>
+        </>
+      )}
       <div
         className="hero-content"
         style={{
