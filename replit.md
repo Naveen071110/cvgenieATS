@@ -58,3 +58,19 @@ Deepseek API is fully integrated for intelligent content generation. This includ
 
 ### Date and Time
 - **date-fns**: JavaScript date utility library.
+
+## Recent Changes
+
+### Landing Page Performance Optimizations (November 30, 2025)
+- **Removed Testimonials Section**: Removed placeholder testimonials section pending real user testimonials
+- **Removed Company Logos Carousel**: Eliminated animated brand logos marquee for faster load times
+- **Simplified Features Section**: Removed framer-motion animations, replaced with lightweight CSS-only transitions
+- **Reduced Hero Particles**: Decreased particle count from 20 to 8 and conditionally disabled on mobile
+- **Simplified Background Pattern**: Replaced SVG pattern with CSS gradient for better performance
+- **Conditional Background Blobs**: SVG blobs only render on desktop with animations enabled
+
+### Mobile Performance Optimizations (November 27, 2025)
+- **Viewport-Triggered Loading**: Created useIntersectionLoader hook for lazy loading below-the-fold sections
+- **LazyLoadSection Component**: Wraps sections to defer loading until near viewport
+- **Disabled Mobile Animations**: Particle effects, gradient shifts, and floating animations disabled on mobile (<768px)
+- **Reduced Motion Support**: Full prefers-reduced-motion media query support for accessibility
