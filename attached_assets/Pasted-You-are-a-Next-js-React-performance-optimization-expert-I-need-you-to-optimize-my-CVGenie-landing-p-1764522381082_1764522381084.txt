@@ -1,0 +1,51 @@
+You are a Next.js/React performance optimization expert. I need you to optimize my CVGenie landing page for speed and UX. 
+
+IMPORTANT: Do NOT change any existing code integrations, APIs, or functional code that could break the app (Clerk auth, Supabase, payment processing, etc.)
+
+REQUIRED CHANGES:
+
+1. **REMOVE** the company logos/brands scroll animation section that appears just before the testimonials section. Delete the entire component completely - find any carousel/marquee component showing Google, Apple, Amazon, Netflix, Adobe, Spotify, Uber, Airbnb, Slack logos and remove it.
+
+2. **REMOVE** the testimonials section entirely. Delete the "Real People. Real Interview Success." heading and "Success Stories Coming Soon" section - we'll add real testimonials later when we have them.
+
+3. **OPTIMIZE initial load performance** by:
+   - Moving the "Intelligent Resume Transformation" (detailed feature explanation with 4 bullet points) BELOW the fold or to a separate page
+   - Moving the "ATS-Optimized Formatting" (detailed feature explanation) BELOW the fold  
+   - Keeping the 4 quick feature cards (Smart Resume Intelligence, Beat Applicant Filters, Lightning-Fast Results, Personalized Every Time) but reduce animation on first load
+   - Consider lazy loading for all sections below the pricing/FAQ sections
+
+4. **Streamline the hero section** - keep hero title, subtitle, CTA button, and stats cards, but defer heavy animations until after page interactive
+
+5. **Keep all existing functionality intact**:
+   - Do NOT touch Generator page link
+   - Do NOT touch Pricing page or payment logic
+   - Do NOT modify Clerk authentication
+   - Do NOT change any API integrations
+   - Do NOT modify Supabase connections
+   - Keep the ATS Score analyzer tool functional
+   - Keep all navigation working
+
+6. **Make sure to**:
+   - Use next/dynamic for code splitting where appropriate
+   - Add Suspense boundaries for deferred components
+   - Use React.lazy() for heavy components loaded below fold
+   - Add skeleton loaders for async components
+   - Maintain responsive design for mobile/tablet
+   - Keep dark mode toggle working
+
+After making changes, test that:
+- Hero section loads quickly
+- All navigation still works
+- Generator page link opens correctly
+- No console errors
+- Pricing section is accessible
+- Mobile responsive design maintained
+
+Files to check/modify:
+- Main landing page component (app/page.tsx or pages/index.tsx)
+- Any carousel/marquee components (look for logos section)
+- Testimonial components
+- Feature section components
+- Check for unused animations or transitions that can be removed
+
+Start by showing me the current structure of the main landing page, then make the optimizations one by one.

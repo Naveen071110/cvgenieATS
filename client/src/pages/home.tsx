@@ -6,16 +6,13 @@ import { Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   FeatureSectionSkeleton,
-  TestimonialsSectionSkeleton,
   PricingSectionSkeleton,
   FAQSkeleton,
   TrustBadgesSkeleton,
-  CompanyLogosSkeleton,
 } from "@/components/ui/section-skeletons";
 import { LazyLoadSection } from "@/hooks/useIntersectionLoader";
 
 const FeaturesSection = lazy(() => import("@/components/features-section"));
-const TestimonialsSection = lazy(() => import("@/components/testimonials-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
@@ -94,35 +91,21 @@ export default function Home() {
             <div className="py-16 bg-gray-50 dark:bg-slate-900">
               <div className="max-w-7xl mx-auto px-4">
                 <TrustBadgesSkeleton />
-                <CompanyLogosSkeleton />
               </div>
             </div>
           }
           rootMargin="300px"
-          minHeight="300px"
+          minHeight="200px"
         >
           <div className="py-12">
             <Suspense fallback={
               <div className="py-16 bg-gray-50 dark:bg-slate-900">
                 <div className="max-w-7xl mx-auto px-4">
                   <TrustBadgesSkeleton />
-                  <CompanyLogosSkeleton />
                 </div>
               </div>
             }>
               <TrustIndicatorsSection />
-            </Suspense>
-          </div>
-        </LazyLoadSection>
-        
-        <LazyLoadSection 
-          fallback={<TestimonialsSectionSkeleton />}
-          rootMargin="300px"
-          minHeight="400px"
-        >
-          <div className="py-12">
-            <Suspense fallback={<TestimonialsSectionSkeleton />}>
-              <TestimonialsSection />
             </Suspense>
           </div>
         </LazyLoadSection>
