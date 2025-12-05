@@ -332,7 +332,22 @@ export default function HeroSection() {
           </div>
 
           {/* Feature Cards Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+            <div className="feature-card group bg-gradient-to-br from-blue-50/80 via-white/60 to-purple-50/80 dark:from-blue-950/40 dark:via-gray-800/60 dark:to-purple-950/40 border border-blue-200/50 dark:border-blue-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/20 dark:hover:shadow-blue-400/30 hover:border-blue-300/70 dark:hover:border-blue-500/50">
+              <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <AIBrainIcon
+                  className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-300"
+                  aria-hidden="true"
+                />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                Smart Resume Intelligence
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Harness cutting-edge AI that understands what recruiters want and
+                positions you as the perfect candidate for every role.
+              </p>
+            </div>
             <div className="feature-card group bg-gradient-to-br from-purple-50/80 via-white/60 to-pink-50/80 dark:from-purple-950/40 dark:via-gray-800/60 dark:to-pink-950/40 border border-purple-200/50 dark:border-purple-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-purple-500/20 dark:hover:shadow-purple-400/30 hover:border-purple-300/70 dark:hover:border-purple-500/50">
               <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
                 <ATSShieldIcon
