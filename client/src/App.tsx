@@ -19,6 +19,7 @@ const ResumeHistoryPage = lazy(() => import("@/pages/resume-history"));
 const Terms = lazy(() => import("@/pages/terms"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const PricingPolicy = lazy(() => import("@/pages/pricing-policy"));
+const About = lazy(() => import("@/pages/about"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
@@ -48,6 +49,11 @@ function Router() {
       <Route path="/pricing-policy">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
           <PricingPolicy />
+        </Suspense>
+      </Route>
+      <Route path="/about">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
+          <About />
         </Suspense>
       </Route>
       <Route>

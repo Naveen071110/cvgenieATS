@@ -61,26 +61,21 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* About */}
-          <div className="md:col-span-2 lg:col-span-1">
-            <h4 className="typography-body font-semibold text-white mb-2 md:mb-4 text-sm md:text-base">About CVgenie</h4>
-            <div className="text-slate-400 text-xs md:text-sm leading-relaxed space-y-2">
-              <p>
-                CVgenie was built to solve a real problem for job seekers: most resumes never get seen by humans because large companies use ATS (Applicant Tracking Systems) to automatically filter and sort applications.
-              </p>
-              <p>
-                With years of resume wrangling and product-building experience, we've focused on making ATS-friendly resumes simple, fast, and accessible.
-              </p>
-              <p>
-                Our core features are designed for real users—not just for bots—so you can match your resume to any job description, spot instant keyword gaps, and apply with confidence.
-              </p>
-              <p>
-                Today CVgenie runs on modern, scalable tech (Clerk for login, NeonDB for serverless databases), and we're building more agent-driven tools to help automate the job search and application process from start to finish.
-              </p>
-              <p>
-                Building in public means everything here is shaped by your feedback. If you have ideas, suggestions, or want to test early features, reach out any time.
-              </p>
-            </div>
+          {/* Company */}
+          <div>
+            <h4 className="typography-body font-semibold text-white mb-2 md:mb-4 text-sm md:text-base">Company</h4>
+            <ul className="space-y-1 md:space-y-2">
+              <li>
+                <Link to="/about" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">
+                  About CVGenie
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:singhnaveen360@gmail.com" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">
+                  Contact Us
+                </a>
+              </li>
+            </ul>
           </div>
 
           {/* Legal */}
