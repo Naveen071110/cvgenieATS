@@ -101,6 +101,16 @@ export default function Header() {
               >
                 Generator
               </Link>
+              {user && (
+                <Link 
+                  to="/dashboard"
+                  className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
+                  aria-label="Go to Dashboard"
+                  data-testid="link-dashboard"
+                >
+                  Dashboard
+                </Link>
+              )}
               {user && isPro && (
                 <Link 
                   to="/resume-history"
@@ -251,6 +261,18 @@ export default function Header() {
               >
                 Generator
               </Link>
+              {user && (
+                <Link
+                  to="/dashboard"
+                  className="block rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  style={{ padding: 'var(--space-3)' }}
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-label="Go to Dashboard"
+                  data-testid="link-dashboard-mobile"
+                >
+                  Dashboard
+                </Link>
+              )}
               {user && isPro && (
                 <Link
                   to="/resume-history"
