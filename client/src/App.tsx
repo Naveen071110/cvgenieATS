@@ -21,6 +21,7 @@ const Privacy = lazy(() => import("@/pages/privacy"));
 const PricingPolicy = lazy(() => import("@/pages/pricing-policy"));
 const About = lazy(() => import("@/pages/about"));
 const Dashboard = lazy(() => import("@/pages/dashboard"));
+const ATSScore = lazy(() => import("@/pages/ats-score"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
@@ -60,6 +61,11 @@ function Router() {
       <Route path="/dashboard">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
           <Dashboard />
+        </Suspense>
+      </Route>
+      <Route path="/ats-score">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
+          <ATSScore />
         </Suspense>
       </Route>
       <Route>

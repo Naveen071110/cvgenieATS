@@ -101,6 +101,13 @@ export default function Header() {
               >
                 Generator
               </Link>
+              <Link 
+                to="/ats-score"
+                className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
+                aria-label="Check your ATS Score"
+              >
+                ATS Score
+              </Link>
               {user && (
                 <Link 
                   to="/dashboard"
@@ -260,6 +267,15 @@ export default function Header() {
                 aria-label="Go to Generator page"
               >
                 Generator
+              </Link>
+              <Link
+                to="/ats-score"
+                className="block rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                style={{ padding: 'var(--space-3)' }}
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="Check your ATS Score"
+              >
+                ATS Score
               </Link>
               {user && (
                 <Link

@@ -16,7 +16,6 @@ const FeaturesSection = lazy(() => import("@/components/features-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
-const InteractiveDemo = lazy(() => import("@/components/interactive-demo").then(m => ({ default: m.InteractiveDemo })));
 
 export default function Home() {
   return (
@@ -74,17 +73,6 @@ export default function Home() {
           </div>
         </LazyLoadSection>
         
-        <LazyLoadSection 
-          fallback={<div className="py-12 min-h-[300px]" />}
-          rootMargin="300px"
-          minHeight="300px"
-        >
-          <div className="py-12">
-            <Suspense fallback={<div className="py-12 min-h-[300px]" />}>
-              <InteractiveDemo />
-            </Suspense>
-          </div>
-        </LazyLoadSection>
         
         <LazyLoadSection 
           fallback={

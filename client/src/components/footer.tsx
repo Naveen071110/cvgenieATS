@@ -36,6 +36,11 @@ export default function Footer() {
             <h4 className="typography-body font-semibold text-white mb-2 md:mb-4 text-sm md:text-base">Product</h4>
             <ul className="space-y-1 md:space-y-2">
               <li>
+                <Link to="/ats-score" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">
+                  ATS Score Checker
+                </Link>
+              </li>
+              <li>
                 <button
                   onClick={() => {
                     const element = document.getElementById("features");
@@ -57,7 +62,6 @@ export default function Footer() {
                   Pricing
                 </button>
               </li>
-
             </ul>
           </div>
 
