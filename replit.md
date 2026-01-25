@@ -81,3 +81,12 @@ Deepseek API is fully integrated for intelligent content generation. This includ
 - **LazyLoadSection Component**: Wraps sections to defer loading until near viewport
 - **Disabled Mobile Animations**: Particle effects, gradient shifts, and floating animations disabled on mobile (<768px)
 - **Reduced Motion Support**: Full prefers-reduced-motion media query support for accessibility
+
+### SaaS Dashboard App Shell (January 25, 2026)
+- **AppShell Component**: Created new `client/src/components/app-shell/AppShell.tsx` with left sidebar navigation and top bar
+- **Sidebar Navigation**: Dashboard, Generate Resume, ATS Score, Resume History (with Pro badge), Upgrade to Pro button, Help & Support
+- **Top Bar**: Page title, theme toggle, user avatar with dropdown menu (email display, sign out)
+- **Dashboard Redesign**: Updated to use AppShell layout with improved stat cards (larger values, smaller labels), quick action buttons, and cleaner activity section
+- **Auth-Based Navigation**: Marketing nav (Features/Pricing) now hidden for logged-in users in both desktop and mobile header
+- **Home Page Redirect**: Logged-in users automatically redirected from home (/) to dashboard (/dashboard)
+- **Mobile Responsive**: Sidebar becomes collapsible drawer on mobile with smooth transitions
