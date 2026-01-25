@@ -1,0 +1,156 @@
+Goal: Add a beautiful minimalist /dashboard page for logged-in users using placeholder UI only (no new API calls yet), so we improve UX without risking crashes. Must work perfectly in both light and dark mode. Do not modify any existing configuration, server code, payments, or routing behavior beyond adding the new page component (and only if it doesn’t already exist).
+
+Hard safety rules (must follow exactly)
+
+Do not touch server/ files, Dodo payments logic, environment variables, DB queries, or Vite config.
+
+Do not refactor routing in App.tsx. The /dashboard route already exists—keep it exactly as-is.
+​
+
+Do not change main.tsx performance imports/initialization.
+​
+
+Only add new files and minimal, scoped UI code; if an existing pages/dashboard file exists, edit only that file and keep exports consistent.
+
+No breaking JSX changes (ensure all tags close correctly).
+
+Repo-specific context to respect
+
+Routing uses wouter and already lazy-loads Dashboard via const Dashboard = lazy(() => import("./pages/dashboard")) and a <Route path="/dashboard">. Do not change this.
+​
+
+Auth is via Clerk, and a compatibility hook exists: useAuth() in AuthContext.tsx. Use this only for greeting + gating UI. Do not change auth logic.
+​
+
+Styling must match existing global styles in index.css and use your existing theme approach (light/dark). Do not alter global CSS unless absolutely required; prefer Tailwind classes/local styles.
+​
+
+What to build (Dashboard UI)
+
+Create/Edit client/src/pages/dashboard.tsx
+
+Default export must remain export default function Dashboard() (or match current export exactly).
+
+Use useAuth() to read:
+
+user and isLoading
+​
+
+Behavior:
+
+While isLoading, show a clean skeleton loader (minimal).
+
+If !user, show a friendly “Please sign in to view your dashboard” card with a button/link back to home or sign-in (do not add new auth flows).
+
+If user exists, render the dashboard UI.
+
+Minimalist layout (premium feel)
+
+Page container: max width (e.g., max-w-6xl mx-auto), generous padding, responsive spacing.
+
+Structure:
+
+Top row: Welcome header + small “Plan” pill (placeholder).
+
+Next: 3–4 stat cards (placeholders).
+
+Next: Quick actions row (buttons).
+
+Next: Recent activity list with empty state.
+
+Content (placeholders only; no API calls)
+
+Welcome area:
+
+“Welcome back, {firstName or name}” (fallback to “Welcome back” if missing).
+​
+
+Subtitle like “Generate a resume, check ATS score, or upgrade anytime.”
+
+Plan pill:
+
+Display “Free” as default placeholder.
+
+If you want, you may optionally read plan from an existing front-end hook later, but NOT in this task.
+
+Stat cards (placeholders):
+
+“Resumes generated” → 0
+
+“ATS checks” → 0
+
+“Exports” → 0
+
+“Last active” → “—”
+Each card should have icon + label + big number.
+
+Quick actions (must be visually strong):
+
+Primary: “Generate Resume” → link to /generator
+
+Secondary: “ATS Score” → link to /ats-score
+
+Tertiary: “Upgrade to Pro” → link to your existing pricing page/section (e.g., /pricing-policy or whichever exists)
+Keep these links consistent with existing routes in App.tsx.
+​
+
+Recent activity:
+
+Show an empty state card:
+
+Title: “Recent activity”
+
+Body: “No activity yet. Generate your first resume to see it here.”
+Do not implement data fetching.
+
+Design requirements (light + dark mode)
+
+Use theme-aware classes so it looks equally clean in both modes:
+
+Cards: light mode bg-white/70 border border-black/5, dark mode bg-white/5 border border-white/10
+
+Text: light mode text-slate-900, dark mode text-slate-100
+
+Muted text: light mode text-slate-600, dark mode text-slate-400
+
+Add subtle hover micro-interactions:
+
+Cards: transition transform hover:-translate-y-0.5 hover:shadow-lg
+
+Buttons: gradient primary with noticeable hover/focus, but keep minimalist.
+
+Componentization (safe + isolated)
+
+If helpful, create small new components under client/src/components/dashboard/:
+
+StatCard.tsx
+
+QuickActionButton.tsx
+
+Skeleton.tsx
+This is optional; keep it simple and avoid touching existing shared components unless necessary.
+
+Accessibility + responsiveness
+
+Buttons should be at least 44px tall.
+
+Ensure keyboard focus styles are visible in both themes.
+
+Mobile layout: stack cards and actions in a single column with spacing.
+
+Testing checklist (must do)
+
+App compiles with zero TS/JSX errors.
+
+/dashboard loads for logged-in users and shows the new UI.
+
+Logged-out users see a friendly sign-in prompt (no crash).
+
+No existing pages/routes changed: /, /generator, /ats-score, /privacy, /terms, etc. still work.
+​
+
+Verify light mode + dark mode visually (no unreadable text).
+
+Deliverable
+
+A polished, minimalist dashboard page at /dashboard using placeholders only, with flawless light/dark styling and no changes to existing config or critical code paths.
