@@ -1,0 +1,156 @@
+Goal: Turn the logged-in experience into a polished SaaS dashboard “app shell” with a left sidebar + top bar, fix the “Welcome back” heading being cut off, and hide the marketing nav (Features/Pricing/etc.) for authenticated users. Do not change any existing server config, environment variables, payment logic, or routing behavior beyond safe UI gating/redirects. All updates must work in both light and dark mode.
+
+Hard safety rules (must follow)
+
+Do NOT edit server/ files or any Dodo/Neon/payment/subscription logic.
+
+Do NOT change Vite config, build config, env vars, or existing exports/signatures.
+
+Make changes only in client UI components (dashboard page + header/nav components + optional small redirect logic).
+
+Avoid large refactors; keep edits incremental and reversible.
+
+Ensure JSX tags are properly closed (we previously had header JSX crashes—be extra careful).
+
+Repo context
+
+Routing uses wouter and /dashboard already exists as a lazy route in App.tsx. Do not alter existing route definitions; only improve the dashboard page + nav UI.
+​
+
+Logged-in state is available via useAuth() in AuthContext.tsx. Use it only for conditional rendering/redirects.
+​
+
+A) Fix the “Welcome back” cut-off (critical)
+Open the dashboard page (client/src/pages/dashboard.tsx or client/src/pages/Dashboard.tsx depending on current filename).
+
+Remove any negative margins or overflow clipping around the header area (e.g., overflow-hidden on parent wrappers that clip text).
+
+Ensure the dashboard main content has safe top padding and doesn’t sit under any fixed/sticky top bar:
+
+Add a consistent pt-6/pt-8 to the main content container, and if a sticky header exists, ensure offset (e.g., pt-20) only when needed.
+
+Confirm heading wraps properly on smaller screens:
+
+Add leading-tight, break-words, and remove overly large text-6xl if it causes clipping; keep it premium but not oversized.
+
+B) Create a real SaaS “App Shell” for logged-in users
+1) Build a dashboard layout component (isolated + reusable)
+Create a new layout component:
+client/src/components/app-shell/AppShell.tsx
+
+It should render:
+
+Left Sidebar (desktop): fixed column with logo + nav items + Upgrade + Support.
+
+Top Bar (mobile + desktop): contains page title, dark-mode toggle, and user menu (email/avatar + sign out).
+
+Main Content Area: where dashboard sections render.
+
+Use theme-safe styling:
+
+Cards/surfaces should use the design tokens already in index.css (via Tailwind classes mapping to CSS vars).
+​
+
+Ensure both light/dark are consistent: sidebar background, borders, hover states, active nav state.
+
+2) Sidebar nav items (minimal, as per your request)
+In the sidebar, show only “app” actions (not marketing):
+
+Dashboard (Overview)
+
+Generate Resume → /generator
+
+ATS Score → /ats-score
+
+(Optional but nice) Resume History → /resume-history (label “Pro”, and if clicked by free users it can show your existing Pro gating; do not change backend)
+​
+
+Upgrade to Pro (button/link)
+
+Settings (optional placeholder, can be disabled)
+
+Add:
+
+Active state styling (left accent bar or highlighted background)
+
+Icons (lucide-react if already used in project)
+
+Collapsible mobile sidebar (hamburger button in top bar; drawer slides in/out)
+
+3) Update dashboard page to use AppShell
+Wrap the dashboard content inside <AppShell> so it looks like a real SaaS product.
+
+Keep the dashboard content minimalist but more “premium”:
+
+Header row: Welcome + plan pill (Free/Pro placeholder for now)
+
+Stat cards: keep 3–4 but improve hierarchy (bigger value, smaller label)
+
+Quick actions: place them near top, with one primary button and two secondary
+
+Recent Activity: cleaner empty state (icon + text + CTA “Generate your first resume”)
+
+C) Hide marketing header/nav for logged-in users
+Right now, your top nav shows Generator/ATS Score/Dashboard/Features/Pricing even when logged in (marketing-style). Replace this with app navigation only when authenticated.
+
+Steps:
+
+Locate your header/nav component (likely client/src/components/header.tsx or similar).
+
+Use useAuth() to determine if a user is authenticated.
+​
+
+Conditional rendering:
+
+If not logged in: show existing marketing header (keep Features/Pricing, etc.) exactly as-is.
+
+If logged in: show the AppShell top bar only (or a minimal header), and remove marketing links completely.
+
+Do not remove any existing header code—only branch based on auth state to prevent regressions.
+
+Important: Keep dark mode toggle + user menu accessible in the logged-in header/top bar.
+
+D) Route behavior: send logged-in users to dashboard (safe redirect)
+User requirement: “logged in users should be taken to the dashboard only.”
+
+Implement the safest version:
+
+On the Home page (client/src/pages/home.tsx), add:
+
+If useAuth().user exists, redirect to /dashboard immediately.
+
+Do NOT change global router config; only add a small guard in Home.
+
+Make sure:
+
+Redirect does not loop (only redirect from / → /dashboard).
+
+Logged-out users still see the marketing home page.
+
+E) UX polish improvements (add these too)
+Add consistent spacing: increase vertical rhythm (space-y-6/8) so it feels like a real SaaS dashboard.
+
+Improve card contrast: use a slightly lighter surface + subtle border + shadow (both themes).
+
+Better typography hierarchy: reduce heading size slightly, increase weight, and improve tracking.
+
+Make buttons consistent: one primary gradient CTA, secondaries outlined/neutral, strong hover/focus states.
+
+Mobile-first: sidebar becomes a drawer; cards stack; buttons become full-width.
+
+QA checklist (must pass)
+No JSX syntax errors (especially in header).
+
+Logged-out experience unchanged.
+
+Logged-in experience: no Features/Pricing in top nav; sidebar-driven dashboard feel.
+
+/generator and /ats-score still work and are reachable from sidebar.
+​
+
+Light/dark mode consistent for sidebar, top bar, cards, buttons.
+​
+
+No changes to server, payments, env vars, or build config.
+
+If any file names differ (e.g., header filename or dashboard filename), locate them first and ask before guessing paths.

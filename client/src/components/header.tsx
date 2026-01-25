@@ -89,7 +89,7 @@ export default function Header() {
               <span className="text-card-title text-primary dark:text-blue-400">CVGenie</span>
             </div>
 
-            {/* Navigation Links */}
+            {/* Navigation Links - Marketing nav hidden for logged-in users */}
             <div 
               className="hidden md:flex items-center"
               style={{ gap: 'var(--space-8)' }}
@@ -128,20 +128,24 @@ export default function Header() {
                   Resume History
                 </Link>
               )}
-              <button 
-                onClick={() => scrollToSection("features")}
-                className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
-                aria-label="Scroll to Features section"
-              >
-                Features
-              </button>
-              <button 
-                onClick={() => scrollToSection("pricing")}
-                className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
-                aria-label="Scroll to Pricing section"
-              >
-                Pricing
-              </button>
+              {!user && (
+                <>
+                  <button 
+                    onClick={() => scrollToSection("features")}
+                    className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
+                    aria-label="Scroll to Features section"
+                  >
+                    Features
+                  </button>
+                  <button 
+                    onClick={() => scrollToSection("pricing")}
+                    className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
+                    aria-label="Scroll to Pricing section"
+                  >
+                    Pricing
+                  </button>
+                </>
+              )}
 
               {/* Theme Toggle */}
               <ThemeToggle />
@@ -301,22 +305,26 @@ export default function Header() {
                   Resume History
                 </Link>
               )}
-              <button
-                onClick={() => scrollToSection("features")}
-                className="block w-full text-left rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                style={{ padding: 'var(--space-3)' }}
-                aria-label="Scroll to Features section"
-              >
-                Features
-              </button>
-              <button
-                onClick={() => scrollToSection("pricing")}
-                className="block w-full text-left rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                style={{ padding: 'var(--space-3)' }}
-                aria-label="Scroll to Pricing section"
-              >
-                Pricing
-              </button>
+              {!user && (
+                <>
+                  <button
+                    onClick={() => scrollToSection("features")}
+                    className="block w-full text-left rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    style={{ padding: 'var(--space-3)' }}
+                    aria-label="Scroll to Features section"
+                  >
+                    Features
+                  </button>
+                  <button
+                    onClick={() => scrollToSection("pricing")}
+                    className="block w-full text-left rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    style={{ padding: 'var(--space-3)' }}
+                    aria-label="Scroll to Pricing section"
+                  >
+                    Pricing
+                  </button>
+                </>
+              )}
 
               {/* Mobile Theme Toggle */}
               <div 

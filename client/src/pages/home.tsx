@@ -1,4 +1,4 @@
-import { lazy, Suspense, memo } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
@@ -11,6 +11,8 @@ import {
   TrustBadgesSkeleton,
 } from "@/components/ui/section-skeletons";
 import { LazyLoadSection } from "@/hooks/useIntersectionLoader";
+import { useAuth } from "@/context/AuthContext";
+import { useLocation } from "wouter";
 
 const FeaturesSection = lazy(() => import("@/components/features-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
@@ -18,6 +20,19 @@ const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ de
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
 
 export default function Home() {
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation("/dashboard");
+    }
+  }, [user, isLoading, setLocation]);
+
+  if (!isLoading && user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-200">
       <Header />
