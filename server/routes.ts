@@ -235,9 +235,14 @@ Generate a professional cover letter now:`;
 }
 
 export function registerRoutes(app: Express) {
-  // File upload endpoint
+  // File upload endpoint (requires auth)
   app.post("/api/upload", upload.single("resume"), async (req, res) => {
     try {
+      const userId = getAuth(req)?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "Please sign in to continue" });
+      }
+
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   CheckCircle,
@@ -13,7 +13,6 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
@@ -21,6 +20,7 @@ import MailIcon from "../assets/icons/mail.svg?react";
 import AnimatedStatCard from "./AnimatedStatCard";
 import { LazyImage } from "@/components/LazyImage";
 import { useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 
 
@@ -73,14 +73,12 @@ const ProgressIndicator = ({ progress }: { progress: number }) => (
 export default function HeroSection() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-  const [gradientShift, setGradientShift] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [shouldAnimateStats, setShouldAnimateStats] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
   const shouldDisableAnimations = isMobile || prefersReducedMotion;
+  const { requireAuthThenNavigate, AuthDialog } = useRequireAuth();
 
   useEffect(() => {
     if (shouldDisableAnimations) return;
@@ -95,33 +93,6 @@ export default function HeroSection() {
 
     return () => clearInterval(interval);
   }, [shouldDisableAnimations]);
-
-  useEffect(() => {
-    if (shouldDisableAnimations) return;
-    
-    const gradientInterval = setInterval(() => {
-      setGradientShift((prev) => (prev + 1) % 360);
-    }, 100);
-
-    return () => clearInterval(gradientInterval);
-  }, [shouldDisableAnimations]);
-
-  // Simulate loading states and progress
-  useEffect(() => {
-    if (isLoading) {
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(progressInterval);
-            setIsLoading(false);
-            return 100;
-          }
-          return prev + 10;
-        });
-      }, 500);
-      return () => clearInterval(progressInterval);
-    }
-  }, [isLoading]);
 
   // Intersection observer for stats animation
   useEffect(() => {
@@ -148,10 +119,7 @@ export default function HeroSection() {
   }, [shouldAnimateStats]);
 
   const handleCreateResume = () => {
-    setIsLoading(true);
-    setProgress(0); // Reset progress
-    // In a real app, this would trigger the resume generation process
-    // For demonstration, we'll let the useEffect handle the progress
+    requireAuthThenNavigate("/generator");
   };
 
   return (
@@ -268,31 +236,19 @@ export default function HeroSection() {
                   animationDelay: "0.4s",
                 }}
               >
-                {isLoading ? (
-                  <div className="w-full sm:w-auto flex flex-col items-center gap-4">
-                    <Spinner />
-                    <ProgressIndicator progress={progress} />
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      Generating your resume...
-                    </span>
-                  </div>
-                ) : (
-                  <Link to="/generator">
-                    <Button
-                      size="lg"
-                      className="magic-cta genie-lamp text-lg px-10 py-7 rounded-full shadow-2xl font-bold tracking-wide animate-fade-in-up animation-delay-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.6)] dark:hover:shadow-[0_0_40px_rgba(167,139,250,0.8)] transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-purple-500/50 dark:focus:ring-purple-400/50"
-                      onClick={handleCreateResume}
-                      aria-label="Start your free resume generation - Go to generator page"
-                    >
-                      <Sparkles className="mr-2 h-6 w-6" aria-hidden="true" />
-                      Grant My Wish
-                      <ArrowRight
-                        className="ml-2 h-6 w-6"
-                        aria-hidden="true"
-                      />
-                    </Button>
-                  </Link>
-                )}
+                <Button
+                  size="lg"
+                  className="magic-cta genie-lamp text-lg px-10 py-7 rounded-full shadow-2xl font-bold tracking-wide animate-fade-in-up animation-delay-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.6)] dark:hover:shadow-[0_0_40px_rgba(167,139,250,0.8)] transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-purple-500/50 dark:focus:ring-purple-400/50"
+                  onClick={handleCreateResume}
+                  aria-label="Start your free resume generation - Sign in required"
+                >
+                  <Sparkles className="mr-2 h-6 w-6" aria-hidden="true" />
+                  Grant My Wish
+                  <ArrowRight
+                    className="ml-2 h-6 w-6"
+                    aria-hidden="true"
+                  />
+                </Button>
                 <div
                   className="flex items-center text-gray-600 dark:text-gray-300"
                   style={{ gap: "var(--space-3)" }}
@@ -437,6 +393,7 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
+      <AuthDialog />
     </section>
   );
 }

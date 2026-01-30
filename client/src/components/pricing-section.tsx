@@ -1,7 +1,6 @@
 import { Check, Star } from "lucide-react"
 import { useState } from "react"
 import { useUser } from "@clerk/clerk-react"
-import { LazyImage } from "@/components/LazyImage"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
 import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
@@ -11,7 +10,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useAuthDialog } from "@/hooks/useAuthDialog"
 import { LoginDialog } from "@/components/LoginDialog"
 import { SubscriptionModal } from "@/components/SubscriptionModal"
-import { Link } from "wouter"
+import { Link, useLocation } from "wouter"
 
 const freePlanFeatures = [
   {
@@ -31,8 +30,8 @@ const freePlanFeatures = [
     description: "Compatible with all job applications"
   },
   {
-    text: "No signup required",
-    description: "Start immediately without barriers"
+    text: "Quick Google sign-in",
+    description: "Get started in seconds"
   }
 ];
 
@@ -155,6 +154,19 @@ export default function PricingSection() {
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const { isSignedIn } = useUser();
+  const [, setLocation] = useLocation();
+
+  const handleFreeClick = () => {
+    if (!isSignedIn) {
+      localStorage.setItem("auth_redirect", "/generator");
+      openAuthDialog({
+        title: "Sign in to continue",
+        description: "Please sign in to access the resume generator.",
+      });
+    } else {
+      setLocation("/generator");
+    }
+  };
 
   const handleUpgradeClick = () => {
     if (!isSignedIn) {
@@ -205,8 +217,9 @@ export default function PricingSection() {
             description="Perfect for trying CVGenie"
             features={freePlanFeatures}
             buttonText="Start Free"
-            buttonLink="/generator"
+            buttonLink="#"
             highlighted={false}
+            onClick={handleFreeClick}
           />
 
           {/* Pro Plan */}

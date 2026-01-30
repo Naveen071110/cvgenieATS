@@ -6,14 +6,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-// Import Clerk publishable key
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-// Eager load only the home page for immediate display
 import Home from "@/pages/home";
 
-// Lazy load all other routes to reduce initial bundle size
 const Generator = lazy(() => import("@/pages/generator"));
 const ResumeHistoryPage = lazy(() => import("@/pages/resume-history"));
 const Terms = lazy(() => import("@/pages/terms"));
@@ -30,12 +28,16 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/generator">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
-          <Generator />
+          <ProtectedRoute>
+            <Generator />
+          </ProtectedRoute>
         </Suspense>
       </Route>
       <Route path="/resume-history">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
-          <ResumeHistoryPage />
+          <ProtectedRoute>
+            <ResumeHistoryPage />
+          </ProtectedRoute>
         </Suspense>
       </Route>
       <Route path="/terms">
@@ -60,12 +62,16 @@ function Router() {
       </Route>
       <Route path="/dashboard">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
-          <Dashboard />
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
         </Suspense>
       </Route>
       <Route path="/ats-score">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
-          <ATSScore />
+          <ProtectedRoute>
+            <ATSScore />
+          </ProtectedRoute>
         </Suspense>
       </Route>
       <Route>

@@ -8,7 +8,14 @@ interface LoginDialogProps {
   description?: string
 }
 
+function getRedirectUrl(): string {
+  const savedRedirect = localStorage.getItem("auth_redirect");
+  return savedRedirect || "/dashboard";
+}
+
 export function LoginDialog({ open, onOpenChange, title, description }: LoginDialogProps) {
+  const redirectUrl = open ? getRedirectUrl() : "/dashboard";
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md p-0 overflow-hidden" aria-describedby="login-dialog-description">
@@ -18,7 +25,7 @@ export function LoginDialog({ open, onOpenChange, title, description }: LoginDia
         </DialogHeader>
         <SignIn
           routing="virtual"
-          afterSignInUrl="/generator"
+          afterSignInUrl={redirectUrl}
           appearance={{
             elements: {
               rootBox: "w-full",

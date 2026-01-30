@@ -64,7 +64,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center text-blue-600 dark:text-blue-400">
                     <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mr-2"></div>
-                    <span className="text-sm font-medium">No signup required</span>
+                    <span className="text-sm font-medium">Quick sign-in with Google</span>
                   </div>
                   <div className="flex items-center text-purple-600 dark:text-purple-400">
                     <div className="w-2 h-2 bg-purple-500 dark:bg-purple-400 rounded-full mr-2"></div>
