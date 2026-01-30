@@ -1,0 +1,165 @@
+Goal: Enforce authentication so users cannot use Generator, ATS Score, Dashboard, Resume History, exports, or any “app” functionality unless they are logged in. Update all homepage CTAs so they either (a) open the login flow or (b) redirect to login before continuing. Do this without breaking existing routing, payments, or configuration, and keep light/dark mode styling consistent.
+
+Hard safety rules (must follow)
+
+Do NOT change any server configuration, environment variables, or payment/subscription logic.
+
+Do NOT refactor routing or rename routes/components; only add minimal guards and CTA behavior changes.
+
+Do NOT remove existing UI sections; only adjust click behavior + conditional rendering.
+
+Ensure no JSX tag mismatch or syntax errors are introduced (recent header edits have caused crashes before).
+
+Verify changes in both light and dark mode.
+
+1) Define “protected routes” list (client-side)
+Implement a single source of truth for protected pages:
+
+/generator
+
+/ats-score
+
+/dashboard
+
+/resume-history
+
+Any other routes that represent “app usage” (exports, etc.)
+
+Do NOT protect marketing/legal pages:
+
+/ (home)
+
+/about
+
+/privacy
+
+/terms
+
+/pricing-policy (or pricing page)
+
+2) Add a small ProtectedRoute wrapper (client-side only)
+Create a lightweight ProtectedRoute component that:
+
+Reads auth state from your existing useAuth() hook.
+
+While auth is loading, shows a clean spinner/skeleton (theme-consistent).
+
+If user is not logged in, redirects to a login flow and optionally preserves the intended destination.
+
+Implementation requirements:
+
+Must NOT change existing auth logic; only consume useAuth().
+
+Must work with your router approach (wouter). Keep it simple:
+
+If not authenticated, redirect to / and immediately open sign-in OR redirect to a dedicated /sign-in route if you already have one.
+
+Store the intended destination in query param (e.g. ?redirect=/generator) or localStorage so after login you can send them back.
+
+3) Apply the guard to app routes (minimal changes)
+In App.tsx routing:
+
+Wrap ONLY the protected routes with ProtectedRoute.
+
+Do not change the route list or existing lazy imports except wrapping the component render.
+
+Example concept (adapt to your current wouter setup):
+
+<Route path="/generator">{() => <ProtectedRoute><Generator/></ProtectedRoute>}</Route>
+
+Same for ATS Score, Dashboard, Resume History.
+
+Important:
+
+Keep Home unguarded.
+
+Keep legal pages unguarded.
+
+4) Make homepage CTAs require login
+On the homepage (and anywhere else publicly visible):
+
+Any CTA that leads to a protected feature must require login:
+
+“Generate Resume”
+
+“ATS Score”
+
+“Upload Resume”
+
+“Start Free / Get Started”
+
+Any “Try now” buttons
+
+Behavior:
+
+If user is logged in → navigate directly to the feature.
+
+If user is logged out → open sign-in (Clerk) or redirect to sign-in page, then return the user to the intended feature after successful login.
+
+Implementation requirements:
+
+Create a reusable helper like requireLoginThenNavigate("/generator") so you don’t copy/paste logic.
+
+Ensure the CTA buttons look unchanged (do not redesign), only behavior changes.
+
+Ensure light/dark mode hover/focus states remain correct.
+
+5) Block “usage” actions even if a user bypasses the UI (API protection)
+To prevent unauthenticated use via direct API calls:
+
+Ensure backend endpoints that generate resumes / ATS scoring / exports require authentication.
+
+Specifically:
+
+If any endpoint currently allows anonymous access (e.g. export endpoints), add auth check and return 401 if no user.
+
+Important: do not change payment endpoints or subscription behavior.
+
+Keep error responses user-friendly (e.g. { error: "Please sign in to continue" }).
+
+(If exports are intentionally allowed for guests, skip protecting exports—but your goal says “only after login they can use features”, so protect them too.)
+
+6) UX: show “Sign in to continue” modal/toast
+When a logged-out user clicks a protected CTA:
+
+Show a small modal or toast: “Please sign in to continue”
+
+Then trigger sign-in.
+
+Make it theme-aware (light/dark) and accessible.
+
+7) Post-login redirect
+After login completes:
+
+Redirect user to the original destination (from query param/localStorage).
+
+If no destination is stored, default to /dashboard.
+
+8) Testing checklist (must do)
+Logged-out user:
+
+Can view homepage and marketing pages.
+
+Clicking any app CTA triggers login and does not allow feature usage without auth.
+
+Directly visiting /generator or /dashboard redirects to login.
+
+Directly calling protected APIs returns 401.
+
+Logged-in user:
+
+Can use generator/ATS score/dashboard normally.
+
+All CTAs go directly to features.
+
+Verify both light and dark mode UI (buttons, modal/toast, loading states).
+
+Before you start (ask me if unclear)
+If you cannot find:
+
+The homepage CTA components/file (likely pages/home.tsx or hero component),
+
+The sign-in route or Clerk sign-in trigger method,
+ask me which file contains those CTAs and how sign-in is launched in this project—do not guess.
+
+This update must be implemented with minimal, isolated changes to avoid crashing the app.
