@@ -45,19 +45,11 @@ const upload = multer({
   },
 });
 
-/**
- * Helper function to get user subscription status.
- * @param userId - The ID of the user.
- * @returns The subscription status of the user.
- */
 async function getUserSubscriptionStatus(userId: string) {
   try {
-    // Dynamically import to avoid circular dependencies or ensure it's available
-    const { getUserSubscription } = await import("./database/subscriptionQueries");
     return await getUserSubscription(userId);
   } catch (error) {
     console.error("Error fetching user subscription status:", error);
-    // Return a default free status if fetching fails
     return { isPro: false, subscriptionStatus: 'free' };
   }
 }
@@ -318,18 +310,7 @@ export function registerRoutes(app: Express) {
       const resumePath = outputs.resumeDOCX || '';
       const coverLetterPath = outputs.coverLetterDOCX || '';
 
-      // Step 6: Save to in-memory storage
-      const sessionId = `session_${timestamp}`;
-
-      await storage.createGeneration({
-        sessionId,
-        originalResume: resumeText,
-        jobDescription,
-        optimizedResume,
-        coverLetter,
-      });
-
-      // Step 7: Save to Neon Postgres if user is authenticated
+      // Step 6: Save to Neon Postgres
       try {
         await insertResume(
           userId,
@@ -601,8 +582,7 @@ export function registerRoutes(app: Express) {
         });
       }
 
-      // Initialize user record as FREE before creating checkout (if they don't exist)
-      const { updateUserSubscription, getUserSubscription } = await import("./database/subscriptionQueries"); // Import locally if not global
+      const { updateUserSubscription } = await import("./database/subscriptionQueries");
       const existingSubscription = await getUserSubscription(userId);
 
       // Only initialize if user doesn't exist or is not already Pro

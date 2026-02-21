@@ -138,7 +138,7 @@ export default function Generator() {
     queryKey: ["/api/subscription/status"],
     enabled: !!user,
     retry: false,
-    refetchOnMount: true,
+    staleTime: 30000,
     refetchOnWindowFocus: true,
   });
 

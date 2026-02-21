@@ -1,5 +1,6 @@
 import { sql } from "./neon";
 import { usageSessions } from "@shared/schema";
+import { dbCache, CACHE_KEYS, CACHE_TTL } from "./cache";
 
 export interface UserSubscription {
   userId: string;
@@ -11,45 +12,48 @@ export interface UserSubscription {
 
 /**
  * Get user subscription status from Neon database by Clerk user ID
+ * Uses in-memory cache with 60s TTL to reduce DB hits
  */
 export async function getUserSubscription(userId: string): Promise<UserSubscription> {
+  const cacheKey = CACHE_KEYS.subscription(userId);
+  const cached = dbCache.get<UserSubscription>(cacheKey);
+  if (cached) return cached;
+
   try {
     const result = await sql`
-      SELECT session_id, is_pro, subscription_status, dodo_customer_id, dodo_subscription_id
+      SELECT is_pro, subscription_status, dodo_customer_id, dodo_subscription_id
       FROM usage_sessions
       WHERE session_id = ${userId}
       LIMIT 1
     `;
 
     if (result.length === 0 || !result[0]) {
-      // No record found - user is FREE by default
-      return {
+      const free: UserSubscription = {
         userId,
         isPro: false,
         subscriptionStatus: 'free',
         dodoCustomerId: null,
         dodoSubscriptionId: null,
       };
+      dbCache.set(cacheKey, free, CACHE_TTL.subscription);
+      return free;
     }
 
     const subscription = result[0];
-    
-    // STRICT: Only set isPro if BOTH conditions are true:
-    // 1. Database has is_pro = 1
-    // 2. subscription_status is explicitly "active"
     const isActive = subscription.subscription_status === 'active';
     const isPro = subscription.is_pro === 1 && isActive;
     
-    return {
+    const sub: UserSubscription = {
       userId,
       isPro,
       subscriptionStatus: subscription.subscription_status || 'free',
       dodoCustomerId: subscription.dodo_customer_id,
       dodoSubscriptionId: subscription.dodo_subscription_id,
     };
+    dbCache.set(cacheKey, sub, CACHE_TTL.subscription);
+    return sub;
   } catch (error) {
     console.error("Error fetching user subscription:", error);
-    // On error, default to FREE tier
     return {
       userId,
       isPro: false,
@@ -71,8 +75,6 @@ export async function updateUserSubscription(
   subscriptionStatus: string
 ): Promise<void> {
   try {
-    // STRICT: Only set isPro to 1 if status is explicitly "active"
-    // Any other status (free, cancelled, expired, etc.) = isPro: 0
     const isPro = subscriptionStatus === 'active' ? 1 : 0;
     
     const existing = await sql`
@@ -89,13 +91,13 @@ export async function updateUserSubscription(
         WHERE session_id = ${userId}
       `;
     } else {
-      // New user - insert with specified status
       await sql`
         INSERT INTO usage_sessions (session_id, generations_used, is_pro, dodo_customer_id, dodo_subscription_id, subscription_status)
         VALUES (${userId}, 0, ${isPro}, ${dodoCustomerId}, ${dodoSubscriptionId}, ${subscriptionStatus})
       `;
     }
     
+    dbCache.invalidate(CACHE_KEYS.subscription(userId));
     console.log(`Updated subscription for user ${userId}: isPro=${isPro}, status=${subscriptionStatus}`);
   } catch (error) {
     console.error("Error updating user subscription:", error);

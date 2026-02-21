@@ -235,6 +235,7 @@ export function AppShell({ children, title = "Dashboard" }: AppShellProps) {
     queryKey: ["/api/subscription/status"],
     enabled: !!user,
     retry: false,
+    staleTime: 30000,
   });
 
   const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';

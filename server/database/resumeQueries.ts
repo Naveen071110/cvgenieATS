@@ -1,4 +1,5 @@
 import { sql } from './neon';
+import { dbCache, CACHE_KEYS, CACHE_TTL } from './cache';
 
 export interface Resume {
   id: number;
@@ -10,7 +11,13 @@ export interface Resume {
   updated_at: Date;
 }
 
-// Insert new resume into NEON POSTGRES ONLY
+export interface ResumeSummary {
+  id: number;
+  job_description: string | null;
+  created_at: Date;
+  has_cover_letter: boolean;
+}
+
 export async function insertResume(
   userId: string, 
   resumeText: string, 
@@ -22,36 +29,45 @@ export async function insertResume(
     VALUES (${userId}, ${resumeText}, ${coverLetter || null}, ${jobDescription || null})
     RETURNING *
   `;
+  dbCache.invalidate(CACHE_KEYS.resumeHistory(userId));
   return result[0] as Resume;
 }
 
-// Get all resumes for user from NEON POSTGRES ONLY
 export async function getResumesByUserId(userId: string): Promise<Resume[]> {
+  const cacheKey = CACHE_KEYS.resumeHistory(userId);
+  const cached = dbCache.get<Resume[]>(cacheKey);
+  if (cached) return cached;
+
   const result = await sql`
-    SELECT * FROM resumes 
+    SELECT id, user_id, resume_text, cover_letter, job_description, created_at, updated_at
+    FROM resumes 
     WHERE user_id = ${userId}
     ORDER BY created_at DESC
   `;
-  return result as Resume[];
+  const resumes = result as Resume[];
+  dbCache.set(cacheKey, resumes, CACHE_TTL.resumeHistory);
+  return resumes;
 }
 
-// Get single resume by ID
 export async function getResumeById(id: number, userId: string): Promise<Resume | null> {
   const result = await sql`
-    SELECT * FROM resumes 
+    SELECT id, user_id, resume_text, cover_letter, job_description, created_at, updated_at
+    FROM resumes 
     WHERE id = ${id} AND user_id = ${userId}
     LIMIT 1
   `;
   return (result[0] as Resume) || null;
 }
 
-// Delete resume by ID
 export async function deleteResume(id: number, userId: string): Promise<boolean> {
   const result = await sql`
     DELETE FROM resumes 
     WHERE id = ${id} AND user_id = ${userId}
     RETURNING id
   `;
+  if (result.length > 0) {
+    dbCache.invalidate(CACHE_KEYS.resumeHistory(userId));
+  }
   return result.length > 0;
 }
 
