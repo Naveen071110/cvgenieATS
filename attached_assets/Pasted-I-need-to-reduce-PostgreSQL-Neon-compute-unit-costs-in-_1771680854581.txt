@@ -1,0 +1,111 @@
+I need to reduce PostgreSQL (Neon) compute unit costs in this project.
+This is CV Genie — a SaaS app using Drizzle ORM + Neon serverless 
+PostgreSQL, Node.js/Express backend, FastAPI Python backend, and Clerk 
+for auth.
+
+DO NOT touch any UI components, API response shapes, Clerk auth logic, 
+or the Drizzle schema structure. All existing features must work exactly 
+as before. Only optimize how and when the database is accessed.
+
+---
+
+### STEP 1 — Audit All DB Connections
+- Find every place a Neon/Drizzle database connection is initialized 
+  in both the Express (Node.js) and FastAPI (Python) services
+- Check if connections are being created per-request instead of being 
+  reused from a single pool
+- Check if the Neon connection string being used is the POOLED connection 
+  string (port 5432 with pgbouncer) or the direct connection string
+- Report all findings before making any changes
+
+---
+
+### STEP 2 — Fix Connection Pooling
+- In the Express/Node.js backend:
+  - Ensure the Drizzle client is initialized ONCE at app startup, 
+    not inside individual route handlers or middleware
+  - If using `neon()` or `Pool` from `@neondatabase/serverless`, 
+    make sure it is a singleton instance
+  - Set max pool connections to 5 (this is a small SaaS app)
+  - Add idle connection timeout of 10 seconds so Neon can scale to zero
+    when the app is idle
+- In the FastAPI (Python) backend:
+  - Check if SQLAlchemy or psycopg2 connection is created per request
+  - If yes, refactor to use a connection pool with a max of 3 connections
+    and a pool_recycle of 300 seconds
+
+---
+
+### STEP 3 — Cache Usage Limit Checks
+- The free/pro usage limit (3 generations for free users) is likely 
+  checked on every resume/cover letter generation request
+- Add a short-lived in-memory cache (TTL: 60 seconds) for the user's 
+  current generation count, keyed by Clerk user ID
+- On a successful generation, invalidate that user's cache entry 
+  immediately so the count stays accurate
+- Do NOT cache this in any way that could allow a free user to bypass 
+  the 3-generation limit
+
+---
+
+### STEP 4 — Cache Dashboard & History Reads
+- The Dashboard loads stats (total generations, plan status) and the 
+  Resume History section on every visit
+- Add in-memory caching with a 30-second TTL for:
+  - User's resume generation history (keyed by Clerk user ID)
+  - User's current plan/tier status (keyed by Clerk user ID)
+- Invalidate the history cache immediately after a new generation 
+  completes so the user always sees their latest resume
+- Use a simple Map-based cache in Node.js — do NOT add any new 
+  npm packages for this
+
+---
+
+### STEP 5 — Optimize Drizzle Queries
+- Review all Drizzle ORM queries across the codebase
+- Check for any SELECT queries that fetch all columns (`select()`) 
+  when only a few fields are needed — replace with specific field selects
+- Check for any queries inside loops — replace with batch queries using 
+  `inArray()` or a single JOIN
+- Add database indexes (if not already present) on:
+  - `userId` column in the resumes/generations table 
+    (for user history lookups)
+  - `createdAt` column if resumes are sorted/filtered by date
+- Show me the exact SQL for each new index before creating it
+
+---
+
+### STEP 6 — Optimize TanStack React Query Cache (Frontend)
+- Review all `useQuery` hooks in the React frontend that call 
+  backend API endpoints which trigger DB reads
+- For queries fetching resume history or user plan status, 
+  ensure `staleTime` is set to at least 30000 (30 seconds) so the 
+  browser doesn't refetch on every component mount
+- For queries fetching user session/auth status via Clerk, confirm 
+  they are NOT triggering backend DB calls unnecessarily
+- Do NOT change any query keys, data shapes, or mutation logic
+
+---
+
+### STEP 7 — Check the In-Memory Storage Abstraction Layer
+- The architecture notes mention "in-memory storage with an abstraction 
+  layer" alongside the Drizzle PostgreSQL schema
+- Check if any operations are accidentally hitting BOTH the in-memory 
+  store AND the PostgreSQL DB (duplicate writes/reads)
+- If yes, consolidate so each operation only uses one storage layer
+- Do NOT remove the abstraction layer interface — only fix redundant calls
+
+---
+
+### STEP 8 — Final Verification
+After all changes, confirm:
+  ✅ Resume generation (free + pro) works correctly with limits enforced
+  ✅ Resume History page loads with correct data
+  ✅ Dashboard stats are accurate
+  ✅ PDF upload and parsing still works via FastAPI
+  ✅ Clerk authentication and session management is untouched
+  ✅ All API endpoints return the same response structure as before
+  ✅ App starts without errors on both Node.js and FastAPI services
+
+Provide a final summary of every change made and the estimated 
+reduction in PostgreSQL compute units.
