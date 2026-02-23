@@ -1,0 +1,73 @@
+There are two UI bugs to fix in the CV Genie dashboard. 
+Do NOT change any backend logic, API calls, auth flow, 
+or data. Only fix the layout and routing behaviour described below.
+
+---
+
+### BUG 1 — Fix the Giant Blank Space on Dashboard
+
+When a user logs in and lands on /dashboard, the main content 
+area on the right side of the AppShell is almost entirely black 
+and blank. The actual dashboard content (Welcome back, stats, 
+quick actions) is pushed all the way to the bottom of the screen.
+
+Steps to fix:
+- Open `client/src/components/app-shell/AppShell.tsx`
+- Check the main content wrapper div — it likely has an incorrect 
+  min-height, padding-top, margin-top, or a flex/grid misconfiguration 
+  that is pushing content down
+- Check if there is any absolute/fixed positioned element with a 
+  large height sitting above the content area
+- Check the Dashboard page component 
+  (`client/src/pages/Dashboard.tsx` or similar) for any 
+  wrapper div with excessive padding, margin, or height values
+- Fix the layout so dashboard content starts at the top of the 
+  main content area, right below the top bar
+- Do NOT change any colors, fonts, card designs, or stat values
+- The sidebar must remain exactly as it is
+
+---
+
+### BUG 2 — ATS Score Opens Inline on the Right Side
+
+Currently clicking "ATS Score" in the sidebar likely navigates 
+to a separate /ats-score route that renders a new full page.
+
+Change this behaviour so that:
+- Clicking "ATS Score" in the sidebar does NOT navigate away 
+  from the dashboard layout
+- Instead, the ATS Score content renders in the main content 
+  area on the RIGHT side, inside the existing AppShell layout 
+  (same way Dashboard content renders on the right)
+- The sidebar stays visible and the "ATS Score" nav item 
+  stays highlighted/active when selected
+- Implement this using the existing Wouter router — 
+  just ensure the /ats-score route uses the AppShell wrapper 
+  the same way /dashboard does
+- If ATS Score is already using AppShell, check why the layout 
+  breaks when navigating to it and fix the wrapper
+
+Implementation approach:
+- In your router setup (likely `client/src/App.tsx`), wrap the 
+  ATS Score route inside the same AppShell component that 
+  wraps the Dashboard route
+- The ATS Score page content should render in the main content 
+  slot of AppShell, NOT as a standalone full-page component
+- Do NOT change any ATS Score calculation logic, API calls, 
+  or result display components
+
+---
+
+### STEP 3 — Final Verification
+
+After both fixes, confirm:
+  ✅ Dashboard content is visible immediately at the top of 
+     the main area after login — no blank space
+  ✅ Clicking ATS Score shows the content in the right panel 
+     inside the same AppShell layout with sidebar still visible
+  ✅ Clicking Dashboard in the sidebar goes back to dashboard 
+     content in the same layout
+  ✅ All other sidebar links (Generate Resume, Resume History, 
+     Upgrade to Pro, Help & Support) still work as before
+  ✅ Mobile responsive layout is not broken
+  ✅ No console errors on either page
