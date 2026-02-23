@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Upload, FileText, Mail, Download, CheckCircle, ArrowLeft, Edit, Save, Crown, Loader2, Sparkles } from "lucide-react";
+import { Upload, FileText, Mail, Download, CheckCircle, Edit, Save, Crown, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { LoginDialog } from "@/components/LoginDialog";
+import { AppShell } from "@/components/app-shell/AppShell";
 import { SubscriptionModal } from "@/components/SubscriptionModal";
 import { useAuthDialog } from "@/hooks/useAuthDialog";
 import Lottie from "lottie-react";
@@ -389,23 +390,8 @@ export default function Generator() {
   const defaultAcceptedTypes = SUPPORTED_FORMATS.accept.split(',');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-gray-900 dark:to-gray-800">
-      {/* Header */}
-      <header className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-slate-200 dark:border-gray-700">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-gray-400" />
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">CV</span>
-              </div>
-              <span className="text-xl font-bold text-slate-900 dark:text-white">CVGenie</span>
-            </Link>
-          </div>
-        </nav>
-      </header>
-
-      <main className="container mx-auto px-4 py-12 max-w-4xl main-content">
+    <AppShell title="Generate Resume">
+      <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="typography-headline text-slate-900 dark:text-white mb-4">
             AI-Powered Resume Generator
@@ -775,7 +761,7 @@ export default function Generator() {
         )}
 
 
-      </main>
+      </div>
 
       {/* AI Processing Loading Overlay */}
       <Suspense fallback={<div className="flex items-center justify-center py-12"><div className="branded-spinner"></div></div>}>
@@ -799,6 +785,6 @@ export default function Generator() {
           });
         }}
       />
-    </div>
+    </AppShell>
   );
 }

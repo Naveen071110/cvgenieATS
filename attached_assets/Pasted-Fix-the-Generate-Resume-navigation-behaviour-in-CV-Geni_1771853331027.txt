@@ -1,0 +1,67 @@
+Fix the "Generate Resume" navigation behaviour in CV Genie Dashboard.
+
+Currently, clicking "Generate Resume" in the sidebar either 
+navigates to a separate full page or breaks out of the AppShell 
+layout. This was just fixed for ATS Score — apply the exact 
+same pattern to Generate Resume.
+
+DO NOT change any resume generation logic, AI API calls, 
+PDF upload handling, form fields, or output/download behaviour. 
+Only fix the layout and routing.
+
+---
+
+### STEP 1 — Fix the Route Wrapper in App.tsx
+
+- Open `client/src/App.tsx` (or wherever Wouter routes are defined)
+- Find the route for Generate Resume 
+  (likely `/generate`, `/generate-resume`, or `/resume`)
+- Confirm it is wrapped inside the same AppShell component 
+  that now wraps /dashboard and /ats-score
+- If it is NOT wrapped in AppShell, wrap it the same way 
+  the ATS Score route was just fixed
+- The Generate Resume page component should render in the 
+  MAIN CONTENT SLOT of AppShell — sidebar must stay visible
+
+---
+
+### STEP 2 — Fix the Page Component Layout
+
+- Open the Generate Resume page component 
+  (likely `client/src/pages/GenerateResume.tsx` or similar)
+- Check if it has any full-screen wrappers like `min-h-screen`, 
+  `fixed`, `absolute`, or `w-screen` that would cause it to 
+  break out of the AppShell layout
+- Remove any such overrides so the component fits naturally 
+  inside the main content area
+- Do NOT change any form layout, input fields, 
+  step indicators, or result preview components
+
+---
+
+### STEP 3 — Sidebar Active State
+
+- When the user is on the Generate Resume route, the 
+  "Generate Resume" sidebar item must appear highlighted/active
+- Confirm the sidebar uses the current route to determine 
+  the active item (same as Dashboard and ATS Score)
+- If not, apply the same active state logic already used 
+  for the other sidebar items
+
+---
+
+### STEP 4 — Final Verification
+
+After the fix, confirm:
+  ✅ Clicking "Generate Resume" in the sidebar renders the 
+     form in the right content area — sidebar stays visible
+  ✅ PDF upload, job description input, and AI generation 
+     all work exactly as before
+  ✅ Resume output preview and download (PDF, DOCX, TXT) 
+     still work correctly
+  ✅ Free user generation limit (3 generations) still enforced
+  ✅ No blank space or layout breaks on the Generate Resume page
+  ✅ Navigating back to Dashboard or ATS Score from the 
+     sidebar works correctly
+  ✅ No console errors on the Generate Resume page
+  ✅ Mobile responsive layout is not broken
