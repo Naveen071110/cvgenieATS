@@ -33,11 +33,18 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /pdf|doc|docx|txt/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    const allowedExtensions = /\.(pdf|doc|docx|txt)$/i;
+    const allowedMimeTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'application/octet-stream',
+    ];
+    const extname = allowedExtensions.test(path.extname(file.originalname));
+    const mimetype = allowedMimeTypes.includes(file.mimetype) || allowedExtensions.test(file.originalname);
 
-    if (mimetype && extname) {
+    if (extname || mimetype) {
       return cb(null, true);
     } else {
       cb(new Error("Only PDF, DOC, DOCX, and TXT files are allowed"));
@@ -254,6 +261,52 @@ export function registerRoutes(app: Express) {
       });
     } catch (error: any) {
       console.error("Upload error:", error);
+      res.status(500).json({ error: error.message || "Failed to process file" });
+    }
+  });
+
+  // Extract resume endpoint - returns fields expected by the frontend generator
+  app.post("/api/extract-resume", upload.single("resume"), async (req, res) => {
+    try {
+      const userId = getAuth(req)?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "Please sign in to continue" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const filePath = req.file.path;
+
+      // Normalise mimetype — browsers sometimes send application/octet-stream
+      // for DOCX files, so fall back to extension-based detection
+      let mimetype = req.file.mimetype;
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      if (mimetype === 'application/octet-stream') {
+        if (ext === '.docx') mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        else if (ext === '.txt') mimetype = 'text/plain';
+        else if (ext === '.pdf') mimetype = 'application/pdf';
+      }
+
+      const result = await documentParser.extractText(filePath, mimetype);
+
+      // Clean up uploaded file
+      try { fs.unlinkSync(filePath); } catch (_) { /* ignore cleanup errors */ }
+
+      if (!result.isValid) {
+        return res.status(422).json({
+          error: "Could not extract readable text from this file. Please check the file is not empty or corrupted and try again."
+        });
+      }
+
+      res.json({
+        filename: req.file.originalname,
+        extractedContent: result.content,
+        wordCount: result.wordCount,
+      });
+    } catch (error: any) {
+      console.error("Extract-resume error:", error);
       res.status(500).json({ error: error.message || "Failed to process file" });
     }
   });

@@ -196,22 +196,18 @@ export default function Generator() {
   // Generate mutation
   const generateMutation = useMutation({
     mutationFn: async () => {
-      const formData = new FormData();
-      formData.append("sessionId", sessionId);
-      formData.append("jobDescription", jobDescription);
-      formData.append("resumeContent", resumeContent); // Use edited content
-
-      // Create a new file from the edited content for compatibility
-      const blob = new Blob([resumeContent], { type: 'text/plain' });
-      const editedFile = new File([blob], extractedResume?.filename || 'resume.txt', { type: 'text/plain' });
-      formData.append("resume", editedFile);
-
       // Start AI processing animation
       setIsAIProcessing(true);
 
       const response = await fetch("/api/generate", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resumeText: resumeContent,
+          jobDescription,
+          sessionId,
+          format: "docx",
+        }),
       });
 
       if (!response.ok) {
