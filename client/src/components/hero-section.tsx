@@ -9,7 +9,6 @@ import {
   Sparkles,
   TrendingUp,
   Award,
-  Building2,
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -362,7 +361,7 @@ export default function HeroSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               <AnimatedStatCard
                 icon={<Users className="w-8 h-8 md:w-10 md:h-10" />}
-                value={100}
+                value={10}
                 suffix="+"
                 label="Active Users"
                 shouldAnimate={shouldAnimateStats}
@@ -371,14 +370,14 @@ export default function HeroSection() {
                 icon={<TrendingUp className="w-8 h-8 md:w-10 md:h-10" />}
                 value={94}
                 suffix="%"
-                label="Success Rate"
+                label="ATS Pass Rate"
                 shouldAnimate={shouldAnimateStats}
               />
               <AnimatedStatCard
-                icon={<Building2 className="w-8 h-8 md:w-10 md:h-10" />}
-                value={500}
+                icon={<FileText className="w-8 h-8 md:w-10 md:h-10" />}
+                value={100}
                 suffix="+"
-                label="Companies Hired From"
+                label="Resumes Optimized"
                 shouldAnimate={shouldAnimateStats}
               />
               <AnimatedStatCard
