@@ -42,9 +42,11 @@ export const dbCache = new MemoryCache();
 export const CACHE_KEYS = {
   subscription: (userId: string) => `sub:${userId}`,
   resumeHistory: (userId: string) => `history:${userId}`,
+  resumeById: (id: number, userId: string) => `resume:${userId}:${id}`,
 };
 
 export const CACHE_TTL = {
-  subscription: 60_000,
-  resumeHistory: 30_000,
+  subscription: 120_000,   // 2 min — subscription status changes rarely
+  resumeHistory: 60_000,   // 1 min — list only changes on insert/delete
+  resumeById: 300_000,     // 5 min — individual resumes never change
 };

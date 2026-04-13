@@ -10,7 +10,7 @@ import { insertResume, getResumesByUserId, getResumeById, deleteResume } from ".
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription } from "./services/dodoPayments";
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
 import type { ResumeData } from "./documentGenerator"; // Assuming ResumeData is exported from documentGenerator
-import { getUserSubscription } from "./database/subscriptionQueries"; // Assuming getUserSubscription is exported from subscriptionQueries
+import { getUserSubscription, updateUserSubscription } from "./database/subscriptionQueries";
 
 const tmpDir = path.join(process.cwd(), "tmp");
 
@@ -635,7 +635,6 @@ export function registerRoutes(app: Express) {
         });
       }
 
-      const { updateUserSubscription } = await import("./database/subscriptionQueries");
       const existingSubscription = await getUserSubscription(userId);
 
       // Only initialize if user doesn't exist or is not already Pro

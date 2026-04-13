@@ -50,13 +50,19 @@ export async function getResumesByUserId(userId: string): Promise<Resume[]> {
 }
 
 export async function getResumeById(id: number, userId: string): Promise<Resume | null> {
+  const cacheKey = CACHE_KEYS.resumeById(id, userId);
+  const cached = dbCache.get<Resume>(cacheKey);
+  if (cached) return cached;
+
   const result = await sql`
     SELECT id, user_id, resume_text, cover_letter, job_description, created_at, updated_at
     FROM resumes 
     WHERE id = ${id} AND user_id = ${userId}
     LIMIT 1
   `;
-  return (result[0] as Resume) || null;
+  const resume = (result[0] as Resume) || null;
+  if (resume) dbCache.set(cacheKey, resume, CACHE_TTL.resumeById);
+  return resume;
 }
 
 export async function deleteResume(id: number, userId: string): Promise<boolean> {
@@ -67,6 +73,7 @@ export async function deleteResume(id: number, userId: string): Promise<boolean>
   `;
   if (result.length > 0) {
     dbCache.invalidate(CACHE_KEYS.resumeHistory(userId));
+    dbCache.invalidate(CACHE_KEYS.resumeById(id, userId));
   }
   return result.length > 0;
 }

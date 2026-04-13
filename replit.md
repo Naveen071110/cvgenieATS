@@ -82,15 +82,17 @@ Deepseek API is fully integrated for intelligent content generation. This includ
 - **Disabled Mobile Animations**: Particle effects, gradient shifts, and floating animations disabled on mobile (<768px)
 - **Reduced Motion Support**: Full prefers-reduced-motion media query support for accessibility
 
-### PostgreSQL/Neon Compute Cost Optimization (February 2026)
-- **In-Memory Cache Module**: Created `server/database/cache.ts` with TTL-based Map cache for subscription status (60s) and resume history (30s)
-- **Subscription Query Caching**: `getUserSubscription` now returns cached results within 60s TTL, invalidated on subscription updates and webhook events
-- **Resume History Caching**: `getResumesByUserId` cached with 30s TTL, invalidated on insert/delete operations
-- **Removed Dynamic Imports**: Fixed `getUserSubscriptionStatus` helper in routes.ts that was creating a new `import()` on every API call
+### PostgreSQL/Neon Compute Cost Optimization (February 2026, extended April 2026)
+- **In-Memory Cache Module**: Created `server/database/cache.ts` with TTL-based Map cache for subscription status, resume history, and individual resumes
+- **Subscription Query Caching**: `getUserSubscription` cached with 120s TTL (up from 60s), invalidated on subscription updates and webhook events
+- **Resume History Caching**: `getResumesByUserId` cached with 60s TTL (up from 30s), invalidated on insert/delete operations
+- **Individual Resume Caching**: `getResumeById` now cached with 300s TTL, invalidated on delete
+- **UPSERT for subscription writes**: `updateUserSubscription` now uses a single `INSERT...ON CONFLICT DO UPDATE` instead of SELECT+INSERT/UPDATE (halves DB queries per subscription event)
+- **Removed Dynamic Imports**: Both `getUserSubscriptionStatus` helper and `updateUserSubscription` in routes.ts are now static imports — no `await import()` on hot paths
 - **Removed Duplicate Storage Writes**: `/api/generate` no longer writes to both in-memory storage AND Neon DB (only Neon)
 - **Optimized SELECT Queries**: Replaced `SELECT *` with explicit column lists in subscription and resume queries
 - **Frontend Query Optimization**: All `useQuery` hooks for `/api/subscription/status` now use `staleTime: 30000` to prevent refetching on every component mount (header, AppShell, dashboard, generator, ResumeHistory)
-- **Database Indexes**: Already present on `user_id`, `created_at`, `session_id`, and `dodo_customer_id` columns
+- **Database Indexes**: Present on `user_id`, `created_at`, `session_id`, and `dodo_customer_id` columns
 
 ### SaaS Dashboard App Shell (January 25, 2026)
 - **AppShell Component**: Created new `client/src/components/app-shell/AppShell.tsx` with left sidebar navigation and top bar

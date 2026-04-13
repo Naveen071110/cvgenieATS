@@ -76,27 +76,18 @@ export async function updateUserSubscription(
 ): Promise<void> {
   try {
     const isPro = subscriptionStatus === 'active' ? 1 : 0;
-    
-    const existing = await sql`
-      SELECT id FROM usage_sessions WHERE session_id = ${userId} LIMIT 1
+
+    // Single UPSERT — eliminates the extra SELECT before INSERT/UPDATE
+    await sql`
+      INSERT INTO usage_sessions (session_id, generations_used, is_pro, dodo_customer_id, dodo_subscription_id, subscription_status)
+      VALUES (${userId}, 0, ${isPro}, ${dodoCustomerId}, ${dodoSubscriptionId}, ${subscriptionStatus})
+      ON CONFLICT (session_id) DO UPDATE SET
+        is_pro = ${isPro},
+        dodo_customer_id = ${dodoCustomerId},
+        dodo_subscription_id = ${dodoSubscriptionId},
+        subscription_status = ${subscriptionStatus}
     `;
 
-    if (existing.length > 0) {
-      await sql`
-        UPDATE usage_sessions
-        SET is_pro = ${isPro},
-            dodo_customer_id = ${dodoCustomerId},
-            dodo_subscription_id = ${dodoSubscriptionId},
-            subscription_status = ${subscriptionStatus}
-        WHERE session_id = ${userId}
-      `;
-    } else {
-      await sql`
-        INSERT INTO usage_sessions (session_id, generations_used, is_pro, dodo_customer_id, dodo_subscription_id, subscription_status)
-        VALUES (${userId}, 0, ${isPro}, ${dodoCustomerId}, ${dodoSubscriptionId}, ${subscriptionStatus})
-      `;
-    }
-    
     dbCache.invalidate(CACHE_KEYS.subscription(userId));
     console.log(`Updated subscription for user ${userId}: isPro=${isPro}, status=${subscriptionStatus}`);
   } catch (error) {
