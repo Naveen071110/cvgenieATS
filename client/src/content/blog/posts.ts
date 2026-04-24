@@ -305,6 +305,83 @@ export const blogPosts: BlogPost[] = [
 <p>Sending 50 generic applications is less effective than sending 20 tailored ones. Quality beats quantity in the job search, and tailoring is the single highest-leverage change most job seekers can make to their application strategy.</p>
     `.trim(),
   },
+  {
+    slug: "linkedin-profile-optimization-guide",
+    title: "How to Optimize Your LinkedIn Profile to Attract Recruiters",
+    date: "2026-02-24",
+    excerpt:
+      "Your LinkedIn profile is often the first thing a recruiter sees — even before your resume. Here's a step-by-step guide to making it work harder for your job search.",
+    tags: ["LinkedIn", "Job Search", "Career Advice"],
+    readingTime: 6,
+    content: `
+<h2>Why LinkedIn Profile Optimization Matters</h2>
+<p>Recruiters don't wait for you to apply to their jobs — they actively search LinkedIn for candidates. If your profile isn't optimized, you're invisible to the recruiters who could hand you an interview without you ever submitting an application.</p>
+<p>LinkedIn has its own internal search algorithm, and like Google, it ranks profiles based on keyword relevance, completeness, and engagement. A well-optimized profile can generate inbound messages from recruiters in your target field on a regular basis.</p>
+
+<h2>Your Headline: The Most Underused Real Estate on LinkedIn</h2>
+<p>Most people use their headline as a job title: "Marketing Manager at Acme Corp." This is a missed opportunity. Your headline appears in search results, connection requests, and comment threads — it's working even when you're not.</p>
+<p>Instead, use your headline to communicate your value and target role:</p>
+<ul>
+  <li><strong>Before:</strong> "Marketing Manager at Acme Corp"</li>
+  <li><strong>After:</strong> "B2B Marketing Manager | Demand Generation & Content Strategy | HubSpot, Salesforce"</li>
+</ul>
+<p>Pack in relevant keywords for the role you want, not just the role you have.</p>
+
+<h2>The About Section: Write for Humans, Optimize for Search</h2>
+<p>Your About section (summary) is 2,600 characters of opportunity that most people waste on vague, third-person prose. Instead:</p>
+<ul>
+  <li>Write in first person — it's a professional network, not a CV</li>
+  <li>Open with a hook that captures your professional story in 2–3 lines</li>
+  <li>Include the job titles and skills you want to be found for</li>
+  <li>End with a clear call to action (open to opportunities, connect, email me)</li>
+</ul>
+<p>LinkedIn shows only the first 3 lines before the "see more" cutoff — make those lines count.</p>
+
+<h2>Experience Section: Use Resume-Quality Bullet Points</h2>
+<p>LinkedIn's Experience section often reads like a job description ("Responsible for managing team...") rather than an achievement record. Apply the same Action + Scope + Result formula you'd use on your resume:</p>
+<ul>
+  <li>Quantify impact wherever possible</li>
+  <li>Use strong action verbs that match your target job descriptions</li>
+  <li>Include keywords your industry uses — this directly affects LinkedIn search ranking</li>
+</ul>
+
+<h2>Skills Section: Strategic Keyword Placement</h2>
+<p>The Skills section is one of LinkedIn's primary search filters. Recruiters frequently filter by skill. Add up to 50 skills, prioritizing the ones most relevant to roles you're targeting.</p>
+<p>Tips:</p>
+<ul>
+  <li>Pin your top 3 skills (they appear prominently)</li>
+  <li>Focus on hard skills, tools, and methodologies — not soft skills like "teamwork"</li>
+  <li>Get endorsements for key skills to boost credibility (and ask colleagues directly — most people are happy to reciprocate)</li>
+</ul>
+
+<h2>The Profile Photo and Banner</h2>
+<p>Profiles with a professional photo receive 21× more profile views and 36× more messages, according to LinkedIn's own data.</p>
+<ul>
+  <li><strong>Photo:</strong> Headshot with a clean background, professional dress, neutral expression. No selfies or group photos cropped down.</li>
+  <li><strong>Banner:</strong> Most people leave this as the default blue gradient. A custom banner (your industry, a simple branded background, or a relevant image) immediately signals that you're active and intentional about your profile.</li>
+</ul>
+
+<h2>Open to Work: Use It Strategically</h2>
+<p>LinkedIn's "Open to Work" feature sends signals to recruiters. You have two options:</p>
+<ul>
+  <li><strong>Visible to all:</strong> Shows a green "#OpenToWork" frame on your photo — signals active job seeking publicly</li>
+  <li><strong>Visible to recruiters only:</strong> Hidden from your network — better if you're employed and don't want your employer to see you're looking</li>
+</ul>
+<p>If you're actively job seeking, being visible to recruiters only is usually the safer choice. Recruiters on LinkedIn Recruiter can still see you're open — your current employer typically cannot.</p>
+
+<h2>Activity and Engagement</h2>
+<p>LinkedIn's algorithm rewards active users. You don't need to post daily, but occasional engagement dramatically increases your profile visibility:</p>
+<ul>
+  <li>Comment thoughtfully on posts in your industry — your name and headline appear in every comment</li>
+  <li>Share articles or insights relevant to your field 1–2× per week</li>
+  <li>Congratulate connections on new roles (the algorithm picks this up)</li>
+</ul>
+<p>Even 15 minutes of engagement per week can meaningfully increase how often your profile surfaces in recruiter searches.</p>
+
+<h2>The LinkedIn + Resume Combination</h2>
+<p>Your LinkedIn profile and your resume should tell the same story with consistent job titles, dates, and companies — but they don't need to be identical. LinkedIn is more conversational and can include context and personality that doesn't belong on a formal resume. Think of them as complementary: the resume gets you through ATS, and LinkedIn gets you found before you even apply.</p>
+    `.trim(),
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {

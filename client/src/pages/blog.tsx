@@ -24,6 +24,11 @@ export default function Blog() {
       "Actionable tips on ATS optimization, resume writing, cover letters, and job search strategy from the CVGenie team.";
     return () => {
       document.title = "CVGenie — AI Resume & Cover Letter Generator";
+      const metaDescCleanup = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      if (metaDescCleanup) {
+        metaDescCleanup.content =
+          "CVGenie uses AI to generate ATS-optimized resumes and cover letters tailored to any job description. Try free today.";
+      }
     };
   }, []);
 
