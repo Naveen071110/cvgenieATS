@@ -31,6 +31,42 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://cvgenieats.com/blog</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/how-ats-works-and-why-it-matters</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/resume-bullet-points-that-get-interviews</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/cover-letter-that-gets-read</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/ats-resume-formatting-guide</loc>
+    <lastmod>2026-03-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/tailoring-resume-for-every-job</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cvgenieats.com/privacy</loc>
     <lastmod>2025-12-19</lastmod>
     <changefreq>yearly</changefreq>

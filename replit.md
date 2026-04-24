@@ -94,6 +94,15 @@ Deepseek API is fully integrated for intelligent content generation. This includ
 - **Frontend Query Optimization**: All `useQuery` hooks for `/api/subscription/status` now use `staleTime: 30000` to prevent refetching on every component mount (header, AppShell, dashboard, generator, ResumeHistory)
 - **Database Indexes**: Present on `user_id`, `created_at`, `session_id`, and `dodo_customer_id` columns
 
+### Static Blog Page (April 24, 2026)
+- **Zero DB Cost Blog**: Added a fully static blog with zero DB queries, zero new server endpoints — all content is bundled into the frontend JS by Vite
+- **Content Data File**: `client/src/content/blog/posts.ts` — TypeScript array of 5 seed posts on ATS, resume writing, cover letters, formatting, tailoring; each post has `slug`, `title`, `date`, `excerpt`, `tags`, `readingTime`, and full HTML `content`
+- **Blog Listing Page**: `/blog` — 2-column card grid with tags, dates, reading time, excerpts, "Read more" links, and a "Try CVGenie Free" CTA banner
+- **Blog Post Page**: `/blog/:slug` — individual post with prose typography, tags, date/reading time meta, CTA, "More from the Blog" related posts, 404 fallback for unknown slugs
+- **Header Navigation**: "Blog" link added to both desktop and mobile menus for non-authenticated visitors
+- **Routes**: Registered `/blog` and `/blog/:slug` as lazy-loaded public routes in `App.tsx`
+- **Sitemap**: All 5 post URLs + `/blog` listing added to `client/public/sitemap.xml`
+
 ### SaaS Dashboard App Shell (January 25, 2026)
 - **AppShell Component**: Created new `client/src/components/app-shell/AppShell.tsx` with left sidebar navigation and top bar
 - **Sidebar Navigation**: Dashboard, Generate Resume, ATS Score, Resume History (with Pro badge), Upgrade to Pro button, Help & Support

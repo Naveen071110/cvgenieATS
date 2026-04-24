@@ -20,6 +20,8 @@ const PricingPolicy = lazy(() => import("@/pages/pricing-policy"));
 const About = lazy(() => import("@/pages/about"));
 const Dashboard = lazy(() => import("@/pages/dashboard"));
 const ATSScore = lazy(() => import("@/pages/ats-score"));
+const Blog = lazy(() => import("@/pages/blog"));
+const BlogPost = lazy(() => import("@/pages/blog-post"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
@@ -72,6 +74,16 @@ function Router() {
           <ProtectedRoute>
             <ATSScore />
           </ProtectedRoute>
+        </Suspense>
+      </Route>
+      <Route path="/blog/:slug">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
+          <BlogPost />
+        </Suspense>
+      </Route>
+      <Route path="/blog">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
+          <Blog />
         </Suspense>
       </Route>
       <Route>

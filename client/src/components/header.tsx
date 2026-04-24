@@ -145,6 +145,13 @@ export default function Header() {
                   >
                     Pricing
                   </button>
+                  <Link
+                    to="/blog"
+                    className="text-body transition-colors text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400"
+                    aria-label="Go to Blog"
+                  >
+                    Blog
+                  </Link>
                 </>
               )}
 
@@ -324,6 +331,15 @@ export default function Header() {
                   >
                     Pricing
                   </button>
+                  <Link
+                    to="/blog"
+                    className="block rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    style={{ padding: 'var(--space-3)' }}
+                    onClick={() => setIsMenuOpen(false)}
+                    aria-label="Go to Blog"
+                  >
+                    Blog
+                  </Link>
                 </>
               )}
 
