@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { Link, useParams } from "wouter";
 import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { getPostBySlug, blogPosts } from "@/content/blog/posts";
 
 function formatDate(dateStr: string): string {
@@ -12,19 +15,28 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const post = slug ? getPostBySlug(slug) : undefined;
 
+  useEffect(() => {
+    if (post) {
+      document.title = `${post.title} | CVGenie Blog`;
+      let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement("meta");
+        metaDesc.name = "description";
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.content = post.excerpt;
+    } else {
+      document.title = "Post Not Found | CVGenie Blog";
+    }
+    return () => {
+      document.title = "CVGenie — AI Resume & Cover Letter Generator";
+    };
+  }, [post]);
+
   if (!post) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900 flex flex-col">
-        <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
-          <nav className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center h-16">
-              <Link to="/blog" className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Blog
-              </Link>
-            </div>
-          </nav>
-        </header>
+        <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center px-4">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Post not found</h1>
@@ -38,6 +50,7 @@ export default function BlogPost() {
             </Link>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -46,35 +59,19 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <title>{`${post.title} | CVGenie Blog`}</title>
-      <meta name="description" content={post.excerpt} />
-
-      {/* Header */}
-      <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
-        <nav className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link
-              to="/blog"
-              className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Blog
-            </Link>
-            <Link
-              to="/"
-              className="flex items-center space-x-2"
-            >
-              <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-purple-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-sm">CV</span>
-              </div>
-              <span className="text-base font-bold text-slate-900 dark:text-white">CVGenie</span>
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       {/* Article */}
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
+        {/* Back link */}
+        <Link
+          to="/blog"
+          className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-8 font-medium"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Blog
+        </Link>
+
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-6">
           {post.tags.map((tag) => (
@@ -163,17 +160,7 @@ export default function BlogPost() {
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-700 py-8">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-500">
-          <span>© {new Date().getFullYear()} CVGenie. All rights reserved.</span>
-          <div className="flex items-center gap-6">
-            <Link to="/blog" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Blog</Link>
-            <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Privacy</Link>
-            <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Terms</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

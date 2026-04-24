@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { blogPosts } from "@/content/blog/posts";
 
 function formatDate(dateStr: string): string {
@@ -9,37 +12,26 @@ function formatDate(dateStr: string): string {
 }
 
 export default function Blog() {
+  useEffect(() => {
+    document.title = "Blog — ATS & Resume Tips | CVGenie";
+    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content =
+      "Actionable tips on ATS optimization, resume writing, cover letters, and job search strategy from the CVGenie team.";
+    return () => {
+      document.title = "CVGenie — AI Resume & Cover Letter Generator";
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <title>Blog — ATS & Resume Tips | CVGenie</title>
-      <meta
-        name="description"
-        content="Actionable tips on ATS optimization, resume writing, cover letters, and job search strategy from the CVGenie team."
-      />
+      <Header />
 
-      {/* Simple header matching about/terms pages */}
-      <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">CV</span>
-              </div>
-              <span className="text-xl font-bold text-slate-900 dark:text-white">CVGenie</span>
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link to="/about" className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                About
-              </Link>
-              <Link to="/generator" className="text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors font-medium">
-                Try CVGenie Free
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </header>
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
         {/* Page heading */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
@@ -133,17 +125,7 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Minimal footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-700 mt-16 py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-500">
-          <span>© {new Date().getFullYear()} CVGenie. All rights reserved.</span>
-          <div className="flex items-center gap-6">
-            <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Privacy</Link>
-            <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Terms</Link>
-            <Link to="/about" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">About</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
