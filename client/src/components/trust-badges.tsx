@@ -1,4 +1,4 @@
-import { CreditCard, Globe, FileDown, ShieldCheck } from 'lucide-react';
+import { Database, Globe, FileDown, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Badge {
@@ -8,8 +8,8 @@ interface Badge {
 
 const trustBadges: Badge[] = [
   {
-    icon: <CreditCard className="w-4 h-4" />,
-    label: 'Free to start, no card needed',
+    icon: <Database className="w-4 h-4" />,
+    label: 'No resume data stored',
   },
   {
     icon: <Globe className="w-4 h-4" />,
