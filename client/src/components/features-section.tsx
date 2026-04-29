@@ -23,48 +23,52 @@ const FeatureCheck = ({ text }: FeatureCheckProps) => {
   );
 };
 
-// Mockup 1 — Keyword matching: Job description → Resume bullet
+// Mockup 1 — Keyword matching: Job description (left) → Resume bullet (right)
 const KeywordMatchMockup = () => (
-  <div className="aspect-[4/3] bg-gradient-to-br from-slate-50 to-blue-50/40 dark:from-gray-800 dark:to-gray-900 p-5 flex flex-col justify-center">
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3.5 mb-3">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-        <FileText className="w-3 h-3" />
-        Job Description
+  <div className="aspect-[4/3] bg-gradient-to-br from-slate-50 to-blue-50/40 dark:from-gray-800 dark:to-gray-900 p-4 sm:p-5 flex items-center">
+    <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2 sm:gap-3 w-full">
+      {/* Left card — Job Description */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 flex flex-col">
+        <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+          <FileText className="w-3 h-3 flex-shrink-0" />
+          <span className="truncate">Job Description</span>
+        </div>
+        <p className="text-[11px] sm:text-[12px] leading-relaxed text-gray-700 dark:text-gray-300">
+          PM to lead{' '}
+          <mark className="bg-yellow-200 dark:bg-yellow-700/50 text-yellow-900 dark:text-yellow-100 px-1 rounded font-medium">cross-functional teams</mark>
+          , build{' '}
+          <mark className="bg-yellow-200 dark:bg-yellow-700/50 text-yellow-900 dark:text-yellow-100 px-1 rounded font-medium">API integrations</mark>
+          {' '}and drive{' '}
+          <mark className="bg-yellow-200 dark:bg-yellow-700/50 text-yellow-900 dark:text-yellow-100 px-1 rounded font-medium">revenue growth</mark>.
+        </p>
       </div>
-      <p className="text-[12px] leading-relaxed text-gray-700 dark:text-gray-300">
-        We're looking for a PM to lead{' '}
-        <mark className="bg-yellow-200 dark:bg-yellow-700/50 text-yellow-900 dark:text-yellow-100 px-1 rounded font-medium">cross-functional teams</mark>
-        , build{' '}
-        <mark className="bg-yellow-200 dark:bg-yellow-700/50 text-yellow-900 dark:text-yellow-100 px-1 rounded font-medium">API integrations</mark>
-        , and drive measurable{' '}
-        <mark className="bg-yellow-200 dark:bg-yellow-700/50 text-yellow-900 dark:text-yellow-100 px-1 rounded font-medium">revenue growth</mark>.
-      </p>
-    </div>
 
-    <div className="flex items-center justify-center gap-2 my-1">
-      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 dark:bg-blue-900/40 rounded-full">
-        <Sparkles className="w-3 h-3 text-primary dark:text-blue-300" />
-        <span className="text-[10px] font-semibold text-primary dark:text-blue-300">
-          CVGenie matches these
-        </span>
+      {/* Center label — CVGenie matches these → */}
+      <div className="flex flex-col items-center justify-center px-1">
+        <div className="flex flex-col items-center gap-1.5 px-2 py-2 bg-primary/10 dark:bg-blue-900/40 rounded-lg">
+          <Sparkles className="w-3 h-3 text-primary dark:text-blue-300" />
+          <span className="text-[9px] sm:text-[10px] font-semibold text-primary dark:text-blue-300 text-center leading-tight">
+            CVGenie matches these
+          </span>
+          <span className="text-base font-bold text-primary dark:text-blue-300 leading-none -mt-0.5">→</span>
+        </div>
       </div>
-      <div className="h-px flex-1 bg-gradient-to-r from-primary/40 via-transparent to-transparent" />
-    </div>
 
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3.5 mt-3">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-        <CheckCircle2 className="w-3 h-3 text-green-600 dark:text-green-400" />
-        Your Tailored Bullet
+      {/* Right card — Tailored bullet */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 flex flex-col">
+        <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+          <CheckCircle2 className="w-3 h-3 text-green-600 dark:text-green-400 flex-shrink-0" />
+          <span className="truncate">Your Tailored Bullet</span>
+        </div>
+        <p className="text-[11px] sm:text-[12px] leading-relaxed text-gray-700 dark:text-gray-300">
+          Led{' '}
+          <strong className="text-blue-700 dark:text-blue-300 font-semibold">cross-functional teams</strong>
+          {' '}of 12 to ship 3{' '}
+          <strong className="text-blue-700 dark:text-blue-300 font-semibold">API integrations</strong>
+          , driving $2.4M in{' '}
+          <strong className="text-blue-700 dark:text-blue-300 font-semibold">revenue growth</strong>.
+        </p>
       </div>
-      <p className="text-[12px] leading-relaxed text-gray-700 dark:text-gray-300">
-        Led{' '}
-        <strong className="text-blue-700 dark:text-blue-300 font-semibold">cross-functional teams</strong>
-        {' '}of 12 to ship 3{' '}
-        <strong className="text-blue-700 dark:text-blue-300 font-semibold">API integrations</strong>
-        , driving $2.4M in{' '}
-        <strong className="text-blue-700 dark:text-blue-300 font-semibold">revenue growth</strong>.
-      </p>
     </div>
   </div>
 );
