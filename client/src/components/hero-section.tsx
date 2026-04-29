@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
-  CheckCircle,
-  Clock,
   Users,
   FileText,
   Zap,
   Sparkles,
   TrendingUp,
-  Award,
   Star,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
@@ -17,7 +15,6 @@ import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
 import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
 import MailIcon from "../assets/icons/mail.svg?react";
 import AnimatedStatCard from "./AnimatedStatCard";
-import { LazyImage } from "@/components/LazyImage";
 import { useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 
@@ -147,11 +144,6 @@ export default function HeroSection() {
         </div>
       )}
 
-      {/* Background Pattern - simplified */}
-      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]">
-        <div className="w-full h-full bg-[radial-gradient(circle_at_1px_1px,currentColor_1px,transparent_0)] bg-[length:40px_40px] text-primary" />
-      </div>
-
       {/* Simplified background blobs - static on mobile */}
       {!shouldDisableAnimations && (
         <>
@@ -262,27 +254,105 @@ export default function HeroSection() {
                 </div>
               </div>
             </div>
-            {/* Hero Image */}
+            {/* Hero Product Mockup */}
             <div className="hidden lg:flex lg:justify-center lg:items-center">
-              <LazyImage
-                src="/hero-ai-resume.jpg"
-                alt="Stylized AI-powered resume motif"
-                className="w-full h-auto animate-fade-in-up animation-delay-600"
-                style={{
-                  maxWidth: '420px',
-                  marginTop: '32px',
-                  marginBottom: '32px',
-                  borderRadius: '12px',
-                  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-                }}
-                onError={(e) => {
-                  console.error('Hero image failed to load');
-                  e.currentTarget.style.display = 'none';
-                }}
-                loading="eager"
-                width={600}
-                height={400}
-              />
+              <div
+                className="relative w-full max-w-[460px] mx-auto animate-fade-in-up animation-delay-600"
+                style={{ marginTop: '32px', marginBottom: '32px' }}
+                aria-label="Sample of a CVGenie-tailored resume"
+                role="img"
+              >
+                {/* Floating ATS Score Badge */}
+                <div className="absolute -top-4 -right-4 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-2.5">
+                  <div className="flex items-center justify-center w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/40">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 leading-tight">
+                      ATS Score
+                    </div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                      94<span className="text-sm text-gray-500">/100</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Resume Document */}
+                <div
+                  className="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+                  style={{ boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)' }}
+                >
+                  {/* Tailored-for badge */}
+                  <div className="px-6 pt-5 pb-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-primary dark:text-blue-300">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Tailored for: Senior Product Manager
+                    </div>
+                  </div>
+
+                  {/* Resume header */}
+                  <div className="px-6 pt-5 pb-4">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
+                      Sarah Chen
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                      Senior Product Manager · San Francisco, CA
+                    </div>
+                  </div>
+
+                  {/* Section divider */}
+                  <div className="px-6">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 pb-1.5">
+                      Experience
+                    </div>
+                  </div>
+
+                  {/* Job entry */}
+                  <div className="px-6 pt-4 pb-5">
+                    <div className="flex items-baseline justify-between gap-2 mb-2">
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                        Lead Product Manager · Atlas Inc.
+                      </div>
+                      <div className="text-[11px] text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                        2022 — Present
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2.5">
+                      <li className="flex gap-2 text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <span className="text-gray-400 mt-1.5">•</span>
+                        <span>
+                          Led <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">cross-functional</mark> team of 12 engineers and designers to ship 3 major <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">API integrations</mark>.
+                        </span>
+                      </li>
+                      <li className="flex gap-2 text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <span className="text-gray-400 mt-1.5">•</span>
+                        <span>
+                          Drove <mark className="bg-green-100 dark:bg-green-900/40 text-green-900 dark:text-green-200 font-semibold px-1 rounded">$2.4M ARR</mark> growth by launching enterprise tier and refining onboarding funnel.
+                        </span>
+                      </li>
+                      <li className="flex gap-2 text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <span className="text-gray-400 mt-1.5">•</span>
+                        <span>
+                          Owned product <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">roadmap</mark> and <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">stakeholder alignment</mark> across 4 business units.
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Floating "matched keywords" pill */}
+                <div className="absolute -bottom-4 -left-4 z-20 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-4 py-2 flex items-center gap-2">
+                  <div className="flex -space-x-1">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
+                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></span>
+                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-purple-500 border-2 border-white dark:border-gray-800"></span>
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+                    18 keywords matched
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -296,11 +366,10 @@ export default function HeroSection() {
                 />
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                Smart Resume Intelligence
+                Keyword matching from any job posting
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Harness cutting-edge AI that understands what recruiters want and
-                positions you as the perfect candidate for every role.
+                Paste a job description and CVGenie pulls the exact phrases ATS bots scan for — then rewrites your bullets to include them naturally.
               </p>
             </div>
             <div className="feature-card group bg-gradient-to-br from-purple-50/80 via-white/60 to-pink-50/80 dark:from-purple-950/40 dark:via-gray-800/60 dark:to-pink-950/40 border border-purple-200/50 dark:border-purple-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-purple-500/20 dark:hover:shadow-purple-400/30 hover:border-purple-300/70 dark:hover:border-purple-500/50">
@@ -311,11 +380,10 @@ export default function HeroSection() {
                 />
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                Beat Applicant Filters
+                Formatted to pass every ATS scan
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Expertly formatted to sail through automated screening—ensuring
-                your resume reaches hiring managers, not rejection folders.
+                Single-column layout, standard section labels, no tables or columns — the formatting rules that stop ATS from garbling your experience.
               </p>
             </div>
             <div className="feature-card group bg-gradient-to-br from-teal-50/80 via-white/60 to-cyan-50/80 dark:from-teal-950/40 dark:via-gray-800/60 dark:to-cyan-950/40 border border-teal-200/50 dark:border-teal-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-teal-500/20 dark:hover:shadow-teal-400/30 hover:border-teal-300/70 dark:hover:border-teal-500/50">
@@ -326,11 +394,10 @@ export default function HeroSection() {
                 />
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                Lightning-Fast Results
+                A tailored resume in under 60 seconds
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Start applying in minutes, not days. Create polished,
-                interview-ready documents while others are still formatting.
+                Paste your resume and the job description. CVGenie generates a fully tailored resume and cover letter in about a minute.
               </p>
             </div>
             <div className="feature-card group bg-gradient-to-br from-indigo-50/80 via-white/60 to-violet-50/80 dark:from-indigo-950/40 dark:via-gray-800/60 dark:to-violet-950/40 border border-indigo-200/50 dark:border-indigo-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/30 hover:border-indigo-300/70 dark:hover:border-indigo-500/50">
@@ -341,11 +408,10 @@ export default function HeroSection() {
                 />
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                Personalized Every Time
+                Different resume for every application
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Each application gets custom-crafted content that speaks directly
-                to the employer's needs and gets you noticed.
+                The same experience, reframed for each role's priorities. No more copy-pasting and hoping for the best.
               </p>
             </div>
           </div>

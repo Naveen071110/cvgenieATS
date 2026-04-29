@@ -1,4 +1,4 @@
-import { Shield, Lock, Eye, CreditCard } from 'lucide-react';
+import { CreditCard, Globe, FileDown, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Badge {
@@ -8,21 +8,21 @@ interface Badge {
 
 const trustBadges: Badge[] = [
   {
-    icon: <Lock className="w-4 h-4" />,
-    label: 'SSL Encrypted',
-  },
-  {
-    icon: <Shield className="w-4 h-4" />,
-    label: 'Privacy First',
-  },
-  {
-    icon: <Eye className="w-4 h-4" />,
-    label: 'No Data Sharing',
-  },
-  {
     icon: <CreditCard className="w-4 h-4" />,
-    label: 'Secure Payments',
-  }
+    label: 'Free to start, no card needed',
+  },
+  {
+    icon: <Globe className="w-4 h-4" />,
+    label: 'Works with any job board',
+  },
+  {
+    icon: <FileDown className="w-4 h-4" />,
+    label: 'Exports to PDF, DOCX & TXT',
+  },
+  {
+    icon: <ShieldCheck className="w-4 h-4" />,
+    label: 'ATS-tested formatting',
+  },
 ];
 
 interface TrustBadgesProps {

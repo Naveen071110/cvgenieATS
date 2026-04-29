@@ -2,8 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
-import { Sparkles } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { FileText, ClipboardPaste, Download } from "lucide-react";
 import {
   FeatureSectionSkeleton,
   PricingSectionSkeleton,
@@ -39,40 +38,62 @@ export default function Home() {
       <main>
         <HeroSection />
 
-        <section id="generator" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-slate-900 dark:to-slate-800">
-          <div className="max-w-4xl mx-auto text-center">
-            <Card className="shadow-2xl border border-slate-200 dark:border-gray-700 floating-card bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-              <CardContent className="p-12">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center">
-                    <Sparkles className="w-8 h-8 text-white" />
-                  </div>
-                </div>
+        <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-800">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-14">
+              <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
+                How it works
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                Three simple steps
+              </h2>
+              <p className="text-lg text-slate-600 dark:text-gray-400 max-w-2xl mx-auto">
+                From your existing resume to a tailored, ATS-ready document in about a minute.
+              </p>
+            </div>
 
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-                  Ready to Land More Interviews?
-                </h2>
-                <p className="text-lg text-slate-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                  Join thousands of professionals who transformed their job search with resumes that actually get read.
-                  Start getting noticed by recruiters today—completely free!
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-                  <div className="flex items-center text-green-600 dark:text-green-400">
-                    <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full mr-2"></div>
-                    <span className="text-sm font-medium">Free resume builder - 3 generations/month</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
+              {[
+                {
+                  num: 1,
+                  icon: <FileText className="w-6 h-6" aria-hidden="true" />,
+                  title: "Upload your resume",
+                  body: "Paste your existing resume text or upload a DOCX/TXT file. CVGenie reads your background exactly as-is — no rewriting your story.",
+                },
+                {
+                  num: 2,
+                  icon: <ClipboardPaste className="w-6 h-6" aria-hidden="true" />,
+                  title: "Paste the job description",
+                  body: "Drop in any job posting. CVGenie extracts the keywords, required skills, and tone the recruiter is looking for.",
+                },
+                {
+                  num: 3,
+                  icon: <Download className="w-6 h-6" aria-hidden="true" />,
+                  title: "Download your tailored resume",
+                  body: "In about 60 seconds you get an ATS-optimized resume and matching cover letter, ready to submit.",
+                },
+              ].map((step) => (
+                <div
+                  key={step.num}
+                  className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 transition-colors duration-200"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
+                      {step.num}
+                    </div>
+                    <div className="text-primary dark:text-blue-400">
+                      {step.icon}
+                    </div>
                   </div>
-                  <div className="flex items-center text-blue-600 dark:text-blue-400">
-                    <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mr-2"></div>
-                    <span className="text-sm font-medium">Quick sign-in with Google</span>
-                  </div>
-                  <div className="flex items-center text-purple-600 dark:text-purple-400">
-                    <div className="w-2 h-2 bg-purple-500 dark:bg-purple-400 rounded-full mr-2"></div>
-                    <span className="text-sm font-medium">ATS-friendly resume templates</span>
-                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
+                    {step.body}
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
           </div>
         </section>
 
