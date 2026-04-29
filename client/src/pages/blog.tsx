@@ -1,7 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
-import { Link } from "wouter";
+import { useEffect, useMemo } from "react";
+import { Link, useSearch, useLocation } from "wouter";
 import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -13,7 +12,20 @@ function formatDate(dateStr: string): string {
 }
 
 export default function Blog() {
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const search = useSearch();
+  const [, navigate] = useLocation();
+  const activeTag = useMemo(() => {
+    const params = new URLSearchParams(search);
+    return params.get("tag");
+  }, [search]);
+
+  function setActiveTag(tag: string | null) {
+    if (tag) {
+      navigate(`/blog?tag=${encodeURIComponent(tag)}`);
+    } else {
+      navigate("/blog");
+    }
+  }
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
