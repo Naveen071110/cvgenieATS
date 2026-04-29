@@ -255,24 +255,24 @@ export default function HeroSection() {
               </div>
             </div>
             {/* Hero Product Mockup */}
-            <div className="hidden lg:flex lg:justify-center lg:items-center">
+            <div className="flex justify-center items-center mt-8 lg:mt-0 px-2 sm:px-0">
               <div
-                className="relative w-full max-w-[460px] mx-auto animate-fade-in-up animation-delay-600"
-                style={{ marginTop: '32px', marginBottom: '32px' }}
+                className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] mx-auto animate-fade-in-up animation-delay-600"
+                style={{ marginTop: '16px', marginBottom: '16px' }}
                 aria-label="Sample of a CVGenie-tailored resume"
                 role="img"
               >
                 {/* Floating ATS Score Badge */}
-                <div className="absolute -top-4 -right-4 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-2.5">
-                  <div className="flex items-center justify-center w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/40">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+                <div className="absolute -top-3 -right-2 sm:-top-4 sm:-right-4 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-2.5">
+                  <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-green-100 dark:bg-green-900/40">
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
                   </div>
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 leading-tight">
+                    <div className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 leading-tight">
                       ATS Score
                     </div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                      94<span className="text-sm text-gray-500">/100</span>
+                    <div className="text-base sm:text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                      94<span className="text-xs sm:text-sm text-gray-500">/100</span>
                     </div>
                   </div>
                 </div>
@@ -283,56 +283,56 @@ export default function HeroSection() {
                   style={{ boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)' }}
                 >
                   {/* Tailored-for badge */}
-                  <div className="px-6 pt-5 pb-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-b border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-primary dark:text-blue-300">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Tailored for: Senior Product Manager
+                  <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-2.5 sm:pb-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-primary dark:text-blue-300">
+                      <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                      <span className="truncate">Tailored for: Senior Product Manager</span>
                     </div>
                   </div>
 
                   {/* Resume header */}
-                  <div className="px-6 pt-5 pb-4">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
+                  <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4">
+                    <div className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white leading-tight">
                       Sarah Chen
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5">
                       Senior Product Manager · San Francisco, CA
                     </div>
                   </div>
 
                   {/* Section divider */}
-                  <div className="px-6">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 pb-1.5">
+                  <div className="px-4 sm:px-6">
+                    <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 pb-1.5">
                       Experience
                     </div>
                   </div>
 
                   {/* Job entry */}
-                  <div className="px-6 pt-4 pb-5">
+                  <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-4 sm:pb-5">
                     <div className="flex items-baseline justify-between gap-2 mb-2">
-                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                      <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">
                         Lead Product Manager · Atlas Inc.
                       </div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                      <div className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 whitespace-nowrap">
                         2022 — Present
                       </div>
                     </div>
 
-                    <ul className="space-y-2.5">
-                      <li className="flex gap-2 text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
-                        <span className="text-gray-400 mt-1.5">•</span>
+                    <ul className="space-y-2 sm:space-y-2.5">
+                      <li className="flex gap-2 text-[11px] sm:text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <span className="text-gray-400 mt-1 sm:mt-1.5">•</span>
                         <span>
                           Led <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">cross-functional</mark> team of 12 engineers and designers to ship 3 major <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">API integrations</mark>.
                         </span>
                       </li>
-                      <li className="flex gap-2 text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
-                        <span className="text-gray-400 mt-1.5">•</span>
+                      <li className="flex gap-2 text-[11px] sm:text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <span className="text-gray-400 mt-1 sm:mt-1.5">•</span>
                         <span>
                           Drove <mark className="bg-green-100 dark:bg-green-900/40 text-green-900 dark:text-green-200 font-semibold px-1 rounded">$2.4M ARR</mark> growth by launching enterprise tier and refining onboarding funnel.
                         </span>
                       </li>
-                      <li className="flex gap-2 text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
-                        <span className="text-gray-400 mt-1.5">•</span>
+                      <li className="flex gap-2 text-[11px] sm:text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <span className="text-gray-400 mt-1 sm:mt-1.5">•</span>
                         <span>
                           Owned product <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">roadmap</mark> and <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">stakeholder alignment</mark> across 4 business units.
                         </span>
@@ -342,13 +342,13 @@ export default function HeroSection() {
                 </div>
 
                 {/* Floating "matched keywords" pill */}
-                <div className="absolute -bottom-4 -left-4 z-20 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-4 py-2 flex items-center gap-2">
+                <div className="absolute -bottom-3 -left-2 sm:-bottom-4 sm:-left-4 z-20 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2">
                   <div className="flex -space-x-1">
-                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
-                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></span>
-                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-purple-500 border-2 border-white dark:border-gray-800"></span>
+                    <span className="inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
+                    <span className="inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></span>
+                    <span className="inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-purple-500 border-2 border-white dark:border-gray-800"></span>
                   </div>
-                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+                  <span className="text-[11px] sm:text-xs font-semibold text-gray-700 dark:text-gray-200">
                     18 keywords matched
                   </span>
                 </div>
