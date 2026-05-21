@@ -346,18 +346,17 @@ export function registerRoutes(app: Express) {
       // Step 5: Generate documents
       const timestamp = Date.now();
       const baseFilename = `generated_${timestamp}`;
-      
-      // Assuming documentGenerator.generateMultipleFormats accepts isPro flag
-      const outputs = await documentGenerator.generateMultipleFormats(
-        optimizedResume,
-        coverLetter,
-        baseFilename,
-        [format],
-        isPro // Pass isPro flag here
-      );
 
-      const resumePath = outputs.resumeDOCX || '';
-      const coverLetterPath = outputs.coverLetterDOCX || '';
+      const resumeBuffer = await documentGenerator.generateDOCXFromText(optimizedResume, { isPro, documentType: 'resume' });
+      const coverLetterBuffer = await documentGenerator.generateDOCXFromText(coverLetter, { isPro, documentType: 'coverLetter' });
+
+      const resumeFilename = `${baseFilename}_resume.docx`;
+      const coverLetterFilename = `${baseFilename}_cover_letter.docx`;
+      const resumePath = path.join(tmpDir, resumeFilename);
+      const coverLetterPath = path.join(tmpDir, coverLetterFilename);
+
+      fs.writeFileSync(resumePath, resumeBuffer);
+      fs.writeFileSync(coverLetterPath, coverLetterBuffer);
 
       // Step 6: Save to Neon Postgres
       try {
