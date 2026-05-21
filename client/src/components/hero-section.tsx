@@ -286,17 +286,17 @@ export default function HeroSection() {
                   <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-2.5 sm:pb-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-primary dark:text-blue-300">
                       <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
-                      <span className="truncate">Tailored for: Senior Product Manager</span>
+                      <span className="truncate">Tailored for: Senior Data Engineer</span>
                     </div>
                   </div>
 
                   {/* Resume header */}
                   <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4">
                     <div className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white leading-tight">
-                      Sarah Chen
+                      Naveen Guru
                     </div>
                     <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5">
-                      Senior Product Manager · San Francisco, CA
+                      Data Analyst / Engineer · New Delhi, India
                     </div>
                   </div>
 
@@ -311,10 +311,10 @@ export default function HeroSection() {
                   <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-4 sm:pb-5">
                     <div className="flex items-baseline justify-between gap-2 mb-2">
                       <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">
-                        Lead Product Manager · Atlas Inc.
+                        Data Specialist · Wipro DOP
                       </div>
                       <div className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                        2022 — Present
+                        Dec 2021 — Present
                       </div>
                     </div>
 
@@ -322,19 +322,19 @@ export default function HeroSection() {
                       <li className="flex gap-2 text-[11px] sm:text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
                         <span className="text-gray-400 mt-1 sm:mt-1.5">•</span>
                         <span>
-                          Led <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">cross-functional</mark> team of 12 engineers and designers to ship 3 major <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">API integrations</mark>.
+                          Designed end-to-end <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">ETL workflows</mark> using <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">Informatica</mark> &amp; IICS on AWS Appstream.
                         </span>
                       </li>
                       <li className="flex gap-2 text-[11px] sm:text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
                         <span className="text-gray-400 mt-1 sm:mt-1.5">•</span>
                         <span>
-                          Drove <mark className="bg-green-100 dark:bg-green-900/40 text-green-900 dark:text-green-200 font-semibold px-1 rounded">$2.4M ARR</mark> growth by launching enterprise tier and refining onboarding funnel.
+                          Built advanced <mark className="bg-green-100 dark:bg-green-900/40 text-green-900 dark:text-green-200 font-semibold px-1 rounded">SQL</mark> queries for data extraction &amp; cleansing, improving analytics quality.
                         </span>
                       </li>
                       <li className="flex gap-2 text-[11px] sm:text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
                         <span className="text-gray-400 mt-1 sm:mt-1.5">•</span>
                         <span>
-                          Owned product <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">roadmap</mark> and <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">stakeholder alignment</mark> across 4 business units.
+                          Led training for 3+ engineers; recognised by US team for <mark className="bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-200 font-semibold px-1 rounded">exceptional delivery</mark>.
                         </span>
                       </li>
                     </ul>
