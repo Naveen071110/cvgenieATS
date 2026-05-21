@@ -8,6 +8,7 @@ import {
   FileText,
   BarChart3,
   History,
+  Brain,
   Crown,
   HelpCircle,
   Menu,
@@ -46,6 +47,7 @@ function Sidebar({
     { to: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" />, label: "Dashboard" },
     { to: "/generator", icon: <FileText className="w-5 h-5" />, label: "Generate Resume" },
     { to: "/ats-score", icon: <BarChart3 className="w-5 h-5" />, label: "ATS Score" },
+    { to: "/interview-prep", icon: <Brain className="w-5 h-5" />, label: "Interview Prep" },
     { to: "/resume-history", icon: <History className="w-5 h-5" />, label: "Resume History", badge: isPro ? undefined : "Pro", requiresPro: true },
   ];
 

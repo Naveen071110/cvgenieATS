@@ -567,6 +567,65 @@ export function registerRoutes(app: Express) {
     }
   });
 
+  // POST /api/interview-questions — generate mock interview questions from resume text (requires auth)
+  app.post("/api/interview-questions", requireAuth(), async (req, res) => {
+    try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const { resumeText, jobTitle } = req.body;
+
+      if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
+        return res.status(400).json({ error: "A resume with at least 50 characters is required." });
+      }
+
+      const roleHint = jobTitle && typeof jobTitle === "string" && jobTitle.trim()
+        ? `The candidate is targeting the role: ${jobTitle.trim()}.`
+        : "Infer the target role from the resume.";
+
+      const prompt = `You are an expert interview coach. Analyse the resume below and generate exactly 9 tailored mock interview questions — 3 Behavioral, 3 Skills-based, and 3 Role-specific. ${roleHint}
+
+For each question also provide a short coaching tip (1-2 sentences) on what a strong answer should cover.
+
+Return ONLY a valid JSON array with exactly 9 objects. Each object must have these fields:
+- "category": one of "Behavioral", "Skills-based", or "Role-specific"
+- "question": the interview question string
+- "tip": coaching tip string
+
+No markdown fences, no explanation, just the raw JSON array.
+
+RESUME:
+${resumeText.trim().slice(0, 6000)}`;
+
+      const raw = await callGemini(prompt);
+
+      // Extract JSON array from the response (strip any accidental markdown)
+      const jsonMatch = raw.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) {
+        return res.status(500).json({ error: "Failed to parse interview questions from AI response." });
+      }
+
+      const questions = JSON.parse(jsonMatch[0]) as Array<{
+        category: string;
+        question: string;
+        tip: string;
+      }>;
+
+      if (!Array.isArray(questions) || questions.length === 0) {
+        return res.status(500).json({ error: "AI returned no questions. Please try again." });
+      }
+
+      res.json({ questions });
+    } catch (error: any) {
+      console.error("Interview questions error:", error);
+      res.status(500).json({ error: "Failed to generate interview questions. Please try again." });
+    }
+  });
+
   // POST /api/subscription/create-checkout - Create Dodo Payments checkout link (requires auth)
   app.post("/api/subscription/create-checkout", requireAuth(), async (req, res) => {
     try {
