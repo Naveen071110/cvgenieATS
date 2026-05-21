@@ -62,85 +62,82 @@ async function getUserSubscriptionStatus(userId: string) {
 }
 
 /**
- * Gemini API helper function with retry logic
- * Migrated from DeepSeek - handles all AI calls with exponential backoff
- * @param prompt - The text prompt to send to Gemini
- * @returns The generated text response
- * @throws Error if all retry attempts fail
+ * DeepSeek API helper with retry logic and exponential backoff.
+ * Uses the OpenAI-compatible chat completions endpoint.
  */
-async function callGemini(prompt: string): Promise<string> {
-  const key = process.env.GEMINI_API_KEY;
+async function callDeepSeek(prompt: string): Promise<string> {
+  const key = process.env.DEEPSEEK_API_KEY;
 
   if (!key) {
-    throw new Error("GEMINI_API_KEY is not configured in environment variables");
+    throw new Error("DEEPSEEK_API_KEY is not configured in environment variables");
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`;
+  const url = "https://api.deepseek.com/v1/chat/completions";
   const payload = {
-    contents: [{
-      role: "user",
-      parts: [{ text: prompt }]
-    }]
+    model: "deepseek-chat",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.7,
+    max_tokens: 4096,
   };
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
 
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${key}`,
+        },
         body: JSON.stringify(payload),
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
 
       if (!res.ok) {
         if (res.status === 429 || res.status >= 500) {
-          // Retry with exponential backoff for rate limits and server errors
           if (attempt < 2) {
-            await new Promise(r => setTimeout(r, 1250 * (attempt + 1)));
+            await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
             continue;
           }
         }
-        throw new Error(`Gemini API error: ${res.status} ${res.statusText}`);
+        throw new Error(`DeepSeek API error: ${res.status} ${res.statusText}`);
       }
 
       const data = await res.json();
-      const output = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      const output = data.choices?.[0]?.message?.content?.trim();
 
       if (output && output.length > 0) {
         return output;
       }
 
-      // Empty response, retry if attempts remain
       if (attempt < 2) {
-        await new Promise(r => setTimeout(r, 1250 * (attempt + 1)));
+        await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
         continue;
       }
 
-      throw new Error("Gemini returned empty response");
+      throw new Error("DeepSeek returned an empty response");
     } catch (err: any) {
-      if (err.name === 'AbortError') {
+      if (err.name === "AbortError") {
         if (attempt < 2) {
-          await new Promise(r => setTimeout(r, 1250 * (attempt + 1)));
+          await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
           continue;
         }
-        throw new Error("Gemini API request timeout after 3 attempts");
+        throw new Error("DeepSeek API request timed out after 3 attempts");
       }
-
       if (attempt === 2) {
-        throw new Error(`Gemini API failed after 3 tries: ${err.message}`);
+        throw new Error(`DeepSeek API failed after 3 attempts: ${err.message}`);
       }
     }
   }
 
-  throw new Error("No valid response from Gemini after all retry attempts");
+  throw new Error("No valid response from DeepSeek after all retry attempts");
 }
 
-// Generate optimized resume using Gemini
+// Generate optimized resume using DeepSeek
 async function generateOptimizedResume(resumeText: string, jobDescription: string): Promise<string> {
   const prompt = `You are an expert resume writer and ATS optimization specialist. Create a professional, ATS-compliant resume based on the provided information.
 
@@ -161,13 +158,12 @@ ${jobDescription}
 
 Generate an optimized, ATS-compliant resume now:`;
 
-  return await callGemini(prompt);
+  return await callDeepSeek(prompt);
 }
 
 /**
- * Two-pass ATS strict formatting (Gemini-migrated)
+ * Two-pass ATS strict formatting (second DeepSeek pass)
  * CRITICAL: This is the second AI pass that ensures strict ATS compliance
- * Preserves all original logic from DeepSeek implementation
  * @param resumeText - The initially optimized resume text
  * @returns ATS-compliant formatted resume or original if formatting fails
  */
@@ -188,7 +184,7 @@ ${resumeText}
 Output ONLY the plain text ATS-compliant resume, no explanation or decoration:`;
 
   try {
-    const atsCompliantResume = await callGemini(atsPrompt);
+    const atsCompliantResume = await callDeepSeek(atsPrompt);
 
     // Validate ATS format
     if (!atsCompliantResume || atsCompliantResume.length < 100) {
@@ -210,7 +206,7 @@ Output ONLY the plain text ATS-compliant resume, no explanation or decoration:`;
   }
 }
 
-// Generate cover letter using Gemini
+// Generate cover letter using DeepSeek
 async function generateCoverLetter(resumeText: string, jobDescription: string): Promise<string> {
   const prompt = `You are an expert cover letter writer. Create a professional, personalized cover letter based on the resume and job description provided.
 
@@ -230,7 +226,7 @@ ${jobDescription}
 
 Generate a professional cover letter now:`;
 
-  return await callGemini(prompt);
+  return await callDeepSeek(prompt);
 }
 
 export function registerRoutes(app: Express) {
@@ -311,7 +307,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // Generate resume and cover letter endpoint (Gemini-migrated)
+  // Generate resume and cover letter endpoint (DeepSeek)
   app.post("/api/generate", async (req, res) => {
     try {
       const { resumeText, coverLetterText, jobDescription, format = "pdf" } = req.body;
@@ -327,7 +323,7 @@ export function registerRoutes(app: Express) {
         });
       }
 
-      console.log("Starting Gemini-powered generation...");
+      console.log("Starting DeepSeek-powered generation...");
 
       // Step 1: Check user's Pro status for watermark and speed
       const userSubscription = await getUserSubscriptionStatus(userId);
@@ -335,11 +331,11 @@ export function registerRoutes(app: Express) {
 
       console.log('[Generate] User Pro status:', isPro ? 'Pro (no watermark, instant generation)' : 'Free (with watermark, delayed generation)');
 
-      // Step 2: Generate optimized resume with Gemini
+      // Step 2: Generate optimized resume with DeepSeek
       let optimizedResume = await generateOptimizedResume(resumeText, jobDescription);
       console.log("Initial optimization complete");
 
-      // Step 3: Apply strict ATS formatting (second Gemini pass)
+      // Step 3: Apply strict ATS formatting (second DeepSeek pass)
       optimizedResume = await applyATSStrictFormat(optimizedResume);
       console.log("ATS formatting applied");
 
@@ -400,7 +396,7 @@ export function registerRoutes(app: Express) {
       console.error("Generation error:", error);
 
       // User-friendly error message
-      const errorMessage = error.message?.includes("Gemini") || error.message?.includes("API")
+      const errorMessage = error.message?.includes("DeepSeek") || error.message?.includes("API")
         ? "Sorry, our resume AI is temporarily unavailable. Please try again in a few minutes."
         : "Failed to generate documents. Please check your input and try again.";
 
@@ -601,7 +597,7 @@ No markdown fences, no explanation, just the raw JSON array.
 RESUME:
 ${resumeText.trim().slice(0, 6000)}`;
 
-      const raw = await callGemini(prompt);
+      const raw = await callDeepSeek(prompt);
 
       // Extract JSON array from the response (strip any accidental markdown)
       const jsonMatch = raw.match(/\[[\s\S]*\]/);
