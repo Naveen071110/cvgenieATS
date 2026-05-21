@@ -609,14 +609,30 @@ ${resumeText.trim().slice(0, 6000)}`;
         return res.status(500).json({ error: "Failed to parse interview questions from AI response." });
       }
 
-      const questions = JSON.parse(jsonMatch[0]) as Array<{
-        category: string;
-        question: string;
-        tip: string;
-      }>;
+      const parsed = JSON.parse(jsonMatch[0]) as Array<unknown>;
 
-      if (!Array.isArray(questions) || questions.length === 0) {
+      if (!Array.isArray(parsed) || parsed.length === 0) {
         return res.status(500).json({ error: "AI returned no questions. Please try again." });
+      }
+
+      const VALID_CATEGORIES = new Set(["Behavioral", "Skills-based", "Role-specific"]);
+
+      const questions = parsed
+        .filter(
+          (q): q is { category: string; question: string; tip: string } =>
+            typeof q === "object" &&
+            q !== null &&
+            typeof (q as any).category === "string" &&
+            typeof (q as any).question === "string" &&
+            typeof (q as any).tip === "string" &&
+            VALID_CATEGORIES.has((q as any).category)
+        )
+        .slice(0, 12);
+
+      if (questions.length < 3) {
+        return res.status(500).json({
+          error: "Could not generate enough interview questions. Please try again.",
+        });
       }
 
       res.json({ questions });

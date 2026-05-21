@@ -249,6 +249,9 @@ export default function Generator() {
         setEditedResume(data.optimizedResume);
         setEditedCoverLetter(data.coverLetter);
 
+        // Persist latest resume for Interview Prep (session-scoped)
+        try { sessionStorage.setItem("cvgenie_last_resume", data.optimizedResume); } catch (_) {}
+
         // Increment generation counter for Free users
         if (!subscriptionStatus?.isPro || subscriptionStatus?.subscriptionStatus !== 'active') {
           setGenerationsUsed(prev => prev + 1);

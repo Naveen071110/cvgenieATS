@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell/AppShell";
@@ -148,19 +148,40 @@ function GroupedQuestions({ questions }: { questions: InterviewQuestion[] }) {
 
 function InterviewPrepContent() {
   const { user } = useAuth();
-  const [resumeText, setResumeText] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
-  const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(null);
-  const [questions, setQuestions] = useState<InterviewQuestion[] | null>(null);
 
-  const { data: subscriptionData } = useQuery<SubscriptionStatus>({
+  const { data: subscriptionData, isLoading: subLoading } = useQuery<SubscriptionStatus>({
     queryKey: ["/api/subscription/status"],
     enabled: !!user,
     staleTime: 30000,
   });
 
   const isPro =
-    subscriptionData?.isPro && subscriptionData?.subscriptionStatus === "active";
+    !subLoading &&
+    subscriptionData?.isPro &&
+    subscriptionData?.subscriptionStatus === "active";
+
+  // For Free users: auto-load the most recent in-session resume from sessionStorage.
+  // This is written by the generator page on successful generation.
+  const sessionResume = (() => {
+    try { return sessionStorage.getItem("cvgenie_last_resume") || ""; } catch { return ""; }
+  })();
+
+  // Start blank; useEffect fills from sessionStorage once Pro status is known.
+  const [resumeText, setResumeText] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(null);
+  const [questions, setQuestions] = useState<InterviewQuestion[] | null>(null);
+  const [sessionLoaded, setSessionLoaded] = useState(false);
+
+  // Once subscription status resolves, auto-load session resume for Free users.
+  useEffect(() => {
+    if (subLoading) return;
+    if (sessionLoaded) return;
+    if (!isPro && sessionResume && !resumeText) {
+      setResumeText(sessionResume);
+    }
+    setSessionLoaded(true);
+  }, [subLoading, isPro, sessionResume]);
 
   const { data: historyData, isLoading: historyLoading } = useQuery<{
     resumes: ResumeHistoryItem[];
@@ -176,7 +197,9 @@ function InterviewPrepContent() {
         resumeText: resumeText.trim(),
         jobTitle: jobTitle.trim() || undefined,
       });
-      return res.json() as Promise<{ questions: InterviewQuestion[] }>;
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error || "Failed to generate questions");
+      return body as { questions: InterviewQuestion[] };
     },
     onSuccess: (data) => {
       setQuestions(data.questions);
@@ -196,6 +219,7 @@ function InterviewPrepContent() {
   }
 
   const canGenerate = resumeText.trim().length >= 50;
+  const hasSessionResume = sessionResume.trim().length >= 50;
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
@@ -204,12 +228,17 @@ function InterviewPrepContent() {
           Interview Prep
         </h1>
         <p className="text-slate-500 dark:text-slate-400">
-          Paste your resume and get 9 tailored mock interview questions with coaching tips.
+          Get 9 tailored mock interview questions based on your resume, with coaching tips for each.
         </p>
       </div>
 
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 space-y-5">
-        {isPro && historyData && historyData.resumes.length > 0 && (
+
+        {/* Pro: history dropdown */}
+        {isPro && historyLoading && (
+          <Skeleton className="h-10 w-full rounded-lg" />
+        )}
+        {isPro && !historyLoading && historyData && historyData.resumes.length > 0 && (
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               Load from resume history
@@ -234,25 +263,40 @@ function InterviewPrepContent() {
           </div>
         )}
 
-        {isPro && historyLoading && (
-          <Skeleton className="h-10 w-full rounded-lg" />
+        {/* Free: auto-loaded session resume note */}
+        {!isPro && hasSessionResume && (
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+            <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-blue-800 dark:text-blue-300">
+              Your most recent resume has been loaded automatically.{" "}
+              <Link to="/#pricing" className="underline font-medium inline-flex items-center gap-1">
+                <Crown className="w-3 h-3" />Upgrade to Pro
+              </Link>{" "}
+              to switch between saved resumes.
+            </p>
+          </div>
         )}
 
-        {!isPro && (
+        {/* Free: no session resume nudge */}
+        {!isPro && !hasSessionResume && (
           <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
             <Crown className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
             <p className="text-sm text-amber-800 dark:text-amber-300">
-              <span className="font-semibold">Pro tip:</span> Upgrade to Pro to load any saved resume directly from your history.{" "}
+              Generate a resume first and it will be loaded here automatically. Or paste your resume text below.{" "}
               <Link to="/#pricing" className="underline font-medium">
-                Upgrade
-              </Link>
+                Upgrade to Pro
+              </Link>{" "}
+              to access your full resume history.
             </p>
           </div>
         )}
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-            Your resume <span className="text-slate-400 font-normal">(paste plain text)</span>
+            Your resume{" "}
+            <span className="text-slate-400 font-normal">
+              {!isPro && hasSessionResume ? "(auto-loaded — editable)" : "(paste plain text)"}
+            </span>
           </label>
           <Textarea
             value={resumeText}
@@ -336,13 +380,13 @@ function InterviewPrepContent() {
         </div>
       )}
 
-      {!questions && !generateMutation.isPending && resumeText.trim().length === 0 && (
+      {!questions && !generateMutation.isPending && !hasSessionResume && !isPro && resumeText.trim().length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
             <Brain className="w-7 h-7 text-slate-400 dark:text-slate-500" />
           </div>
           <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-4">
-            No resume yet? Generate one first and come back here to prep for your interview.
+            No resume generated yet this session. Generate one first and it will appear here automatically.
           </p>
           <Link
             to="/generator"
