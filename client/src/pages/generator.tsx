@@ -139,8 +139,8 @@ export default function Generator() {
     queryKey: ["/api/subscription/status"],
     enabled: !!user,
     retry: false,
-    staleTime: 30000,
-    refetchOnWindowFocus: true,
+    staleTime: 300000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   // Track generations used in current session

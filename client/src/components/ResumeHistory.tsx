@@ -34,7 +34,8 @@ export default function ResumeHistory() {
     queryKey: ["/api/subscription/status"],
     enabled: !!isSignedIn,
     retry: false,
-    staleTime: 30000,
+    staleTime: 300000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';

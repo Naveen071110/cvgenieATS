@@ -754,12 +754,13 @@ ${resumeText.trim().slice(0, 6000)}`;
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Always fetch fresh data from database, never cache
-      const subscription = await getUserSubscription(userId); // Use direct import
+      const subscription = await getUserSubscription(userId);
 
       // STRICT: User is Pro ONLY if both isPro=1 AND subscriptionStatus='active'
       const isPro = Boolean(subscription?.isPro && subscription?.subscriptionStatus === 'active');
 
+      // Cache at the HTTP layer too — browser won't re-request for 5 minutes
+      res.set('Cache-Control', 'private, max-age=300');
       res.json({
         isPro,
         subscriptionStatus: subscription?.subscriptionStatus || 'free',

@@ -46,7 +46,7 @@ export default function ResumeGenerator() {
   const { data: subscriptionStatus, isLoading: isLoadingSubscription } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/subscription/status'],
     retry: 1,
-    staleTime: 60000, // Cache for 1 minute
+    staleTime: 300000, // 5 minutes — subscription changes only on payment
   });
 
   const isPro = subscriptionStatus?.isPro && subscriptionStatus?.subscriptionStatus === 'active';

@@ -16,10 +16,9 @@ export function useSubscription() {
   const { data, isLoading, error } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/subscription/status'],
     enabled: isSignedIn,
-    staleTime: 30000, // 30 seconds
+    staleTime: 300000, // 5 minutes — subscription changes only on payment
     retry: 1,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true, // Always fetch fresh data on mount
+    refetchOnWindowFocus: false,
   });
 
   const refreshSubscription = () => {

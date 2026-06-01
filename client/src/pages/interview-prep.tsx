@@ -152,7 +152,8 @@ function InterviewPrepContent() {
   const { data: subscriptionData, isLoading: subLoading } = useQuery<SubscriptionStatus>({
     queryKey: ["/api/subscription/status"],
     enabled: !!user,
-    staleTime: 30000,
+    staleTime: 300000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const isPro =

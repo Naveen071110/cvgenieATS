@@ -46,7 +46,7 @@ export const CACHE_KEYS = {
 };
 
 export const CACHE_TTL = {
-  subscription: 120_000,   // 2 min — subscription status changes rarely
-  resumeHistory: 60_000,   // 1 min — list only changes on insert/delete
-  resumeById: 300_000,     // 5 min — individual resumes never change
+  subscription: 600_000,   // 10 min — only changes on payment webhook
+  resumeHistory: 300_000,  // 5 min — list only changes on insert/delete
+  resumeById: 900_000,     // 15 min — individual resumes never change
 };
