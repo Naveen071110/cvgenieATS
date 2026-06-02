@@ -3,6 +3,23 @@
 ## Overview
 CVGenie is a microSaaS application that leverages AI to generate ATS-optimized resumes and personalized cover letters. It supports PDF resume uploads, job description pasting, and outputs tailored documents. The project aims to provide a clean, ProjectOS-inspired UI/UX, offering both free and pro tiers.
 
+## Protected Files
+
+The following files handle core resume and cover letter generation. **Do not modify these files during UI updates, bug fixes, or unrelated feature additions.** Any change must be tested end-to-end before deploying.
+
+| File | What it does |
+|------|-------------|
+| `server/routes.ts` | DeepSeek API call (`callDeepSeek`), resume optimisation (`generateOptimizedResume`), ATS formatting (`applyATSStrictFormat`), cover letter generation (`generateCoverLetter`), and the `POST /api/generate` endpoint |
+| `server/documentGenerator.ts` | Converts AI text into downloadable files — `generatePDFFromText`, `generateDOCXFromText`, `generateTXTFromText` — including free-tier watermarks |
+| `server/documentParser.ts` | Extracts plain text from uploaded resume files (PDF via Python, DOCX via mammoth, TXT) before passing to AI |
+
+**Rules:**
+- Do not rename, move, or refactor these files without explicit instruction.
+- Do not change AI prompts, API endpoints, model names, or document packaging logic unless the task explicitly targets generation.
+- After any change to these files, trigger a full end-to-end generation test before deploying.
+
+---
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 

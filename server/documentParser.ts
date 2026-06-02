@@ -1,3 +1,10 @@
+// ============================================================
+// CRITICAL — DO NOT MODIFY THIS FILE WITHOUT EXPLICIT INSTRUCTION
+// This file handles resume file parsing (PDF, DOCX, TXT uploads).
+// It extracts plain text from uploaded resumes before AI generation.
+// Changes here can break the file upload flow for all users.
+// Any edits must be tested end-to-end before deploying.
+// ============================================================
 
 import mammoth from 'mammoth';
 import fs from 'fs';
@@ -12,6 +19,7 @@ interface ParsedContent {
 }
 
 class DocumentParser {
+  // CRITICAL — DO NOT MODIFY: Main file parsing dispatcher. Routes uploaded files to the correct extractor.
   async extractText(filePath: string, mimeType: string): Promise<ParsedContent> {
     switch (mimeType) {
       case 'application/pdf':
@@ -28,6 +36,7 @@ class DocumentParser {
     }
   }
   
+  // CRITICAL — DO NOT MODIFY: DOCX text extraction. Used for all .docx resume uploads.
   async extractFromDOCX(filePath: string): Promise<ParsedContent> {
     try {
       const result = await mammoth.extractRawText({ path: filePath });
@@ -42,6 +51,7 @@ class DocumentParser {
     }
   }
   
+  // CRITICAL — DO NOT MODIFY: TXT text extraction. Used for all .txt resume uploads.
   async extractFromTXT(filePath: string): Promise<ParsedContent> {
     try {
       const content = await readFile(filePath, 'utf-8');
@@ -55,6 +65,7 @@ class DocumentParser {
     }
   }
   
+  // CRITICAL — DO NOT MODIFY: PDF text extraction. Calls the Python pdf_extractor.py script.
   async extractFromPDF(filePath: string): Promise<ParsedContent> {
     // Use existing PDF extraction logic from pdf_extractor.py
     try {

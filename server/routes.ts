@@ -1,3 +1,15 @@
+// ============================================================
+// CRITICAL — DO NOT MODIFY THIS FILE WITHOUT EXPLICIT INSTRUCTION
+// This file contains the core AI generation pipeline:
+//   - callDeepSeek()           — DeepSeek API integration
+//   - generateOptimizedResume() — AI resume optimisation (pass 1)
+//   - applyATSStrictFormat()   — ATS compliance formatting (pass 2)
+//   - generateCoverLetter()    — AI cover letter generation
+//   - POST /api/generate       — end-to-end generation endpoint
+// Changes to any of the above can break generation for ALL users.
+// Any edits must be tested end-to-end before deploying.
+// ============================================================
+
 import type { Express, Request } from "express";
 import { storage } from "./storage";
 import documentGenerator from "./documentGenerator";
@@ -61,6 +73,7 @@ async function getUserSubscriptionStatus(userId: string) {
   }
 }
 
+// CRITICAL — DO NOT MODIFY: DeepSeek API integration. Any change here affects ALL AI generation.
 /**
  * DeepSeek API helper with retry logic and exponential backoff.
  * Uses the OpenAI-compatible chat completions endpoint.
@@ -137,6 +150,7 @@ async function callDeepSeek(prompt: string): Promise<string> {
   throw new Error("No valid response from DeepSeek after all retry attempts");
 }
 
+// CRITICAL — DO NOT MODIFY: AI resume optimisation (pass 1). Changes here affect all resume output.
 // Generate optimized resume using DeepSeek
 async function generateOptimizedResume(resumeText: string, jobDescription: string): Promise<string> {
   const prompt = `You are an expert resume writer and ATS optimization specialist. Create a professional, ATS-compliant resume based on the provided information.
@@ -161,6 +175,7 @@ Generate an optimized, ATS-compliant resume now:`;
   return await callDeepSeek(prompt);
 }
 
+// CRITICAL — DO NOT MODIFY: ATS formatting pass (pass 2). Altering prompts or validation changes ATS output quality.
 /**
  * Two-pass ATS strict formatting (second DeepSeek pass)
  * CRITICAL: This is the second AI pass that ensures strict ATS compliance
@@ -206,6 +221,7 @@ Output ONLY the plain text ATS-compliant resume, no explanation or decoration:`;
   }
 }
 
+// CRITICAL — DO NOT MODIFY: AI cover letter generation. Changes here affect all cover letter output.
 // Generate cover letter using DeepSeek
 async function generateCoverLetter(resumeText: string, jobDescription: string): Promise<string> {
   const prompt = `You are an expert cover letter writer. Create a professional, personalized cover letter based on the resume and job description provided.
@@ -307,6 +323,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
+  // CRITICAL — DO NOT MODIFY: End-to-end generation endpoint. Orchestrates all AI + document steps.
   // Generate resume and cover letter endpoint (DeepSeek)
   app.post("/api/generate", async (req, res) => {
     try {

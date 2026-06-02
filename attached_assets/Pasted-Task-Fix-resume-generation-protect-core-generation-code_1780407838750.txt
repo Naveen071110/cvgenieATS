@@ -1,0 +1,34 @@
+Task: Fix resume generation + protect core generation code from future changes
+Part 1 — Diagnose & fix resume generation
+Resume generation is currently broken. Before making any changes, do the following:
+
+Read the existing resume and cover letter generation code fully — do not modify it yet.
+Check the browser console and server logs for errors related to generation or file download.
+Verify that the DeepSeek API key is correctly set in the environment variables and is being passed properly in the API call.
+Check that the API call to DeepSeek is being made correctly — correct endpoint, correct model name, correct request format.
+Check the file packaging step — the step that takes the AI's output and creates the downloadable .docx or .pdf file. This is where a previous bug occurred (the file creation was crashing even though the AI response was fine).
+Fix only what is broken. Do not rewrite or restructure the generation logic — make the smallest change necessary to get it working.
+Test end-to-end: trigger a resume generation and confirm the file downloads correctly before marking this done.
+
+Part 2 — Protect core generation code from future changes
+The resume and cover letter generation code is critical and must not be accidentally modified during unrelated updates. Do the following:
+
+Identify all files and functions responsible for: calling the DeepSeek API, processing the AI response, and creating/packaging the downloadable file.
+Add a clearly visible warning comment block at the top of each of those files, like this:
+
+// ============================================================
+// CRITICAL — DO NOT MODIFY THIS FILE WITHOUT EXPLICIT INSTRUCTION
+// This file handles core resume/cover letter generation logic.
+// Changes here can break generation for all users.
+// Any edits must be tested end-to-end before deploying.
+// ============================================================
+
+Add the same warning as an inline comment above every core generation function inside those files.
+In the project's README.md (create one if it doesn't exist), add a section called "Protected Files" that lists every file involved in resume/cover letter generation, with a note that these must not be touched during UI updates, bug fixes, or feature additions unless the task explicitly involves generation.
+Do not move, rename, or refactor any of these files as part of this task.
+
+Important rules for this task:
+
+Do not change any UI, routing, or unrelated logic.
+Do not upgrade or swap any libraries.
+If you are unsure whether a fix requires touching the core generation code, stop and ask before proceeding.

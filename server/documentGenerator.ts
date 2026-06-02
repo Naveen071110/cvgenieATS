@@ -1,3 +1,12 @@
+// ============================================================
+// CRITICAL — DO NOT MODIFY THIS FILE WITHOUT EXPLICIT INSTRUCTION
+// This file handles document packaging for resume/cover letter generation.
+// It converts AI-generated text into downloadable .docx and .pdf files,
+// and applies watermarks for free-tier users.
+// Changes here can break downloads for ALL users.
+// Any edits must be tested end-to-end before deploying.
+// ============================================================
+
 import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, BorderStyle } from 'docx';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
@@ -8,6 +17,7 @@ interface ExportOptions {
   documentType?: 'resume' | 'coverLetter';
 }
 
+// CRITICAL — DO NOT MODIFY: PDF generation. Changes here affect layout, watermarks, and font rendering for all users.
 export async function generatePDFFromText(content: string, options: ExportOptions = {}): Promise<Buffer> {
   const { isPro = false } = options;
   
@@ -122,6 +132,7 @@ export async function generatePDFFromText(content: string, options: ExportOption
   return Buffer.from(pdfBytes);
 }
 
+// CRITICAL — DO NOT MODIFY: DOCX generation. Changes here affect formatting and watermarks for all downloaded resumes.
 export async function generateDOCXFromText(content: string, options: ExportOptions = {}): Promise<Buffer> {
   const { isPro = false } = options;
   
@@ -238,6 +249,7 @@ export async function generateDOCXFromText(content: string, options: ExportOptio
   return buffer;
 }
 
+// CRITICAL — DO NOT MODIFY: TXT export. Changes here affect plain-text downloads and watermarks.
 export function generateTXTFromText(content: string, options: ExportOptions = {}): Buffer {
   const { isPro = false } = options;
   
