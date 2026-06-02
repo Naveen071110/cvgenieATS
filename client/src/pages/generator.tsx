@@ -215,7 +215,9 @@ export default function Generator() {
         throw new Error(error.error || "Failed to generate documents");
       }
 
-      return response.json();
+      const result = await response.json();
+      // Backend returns the resume under `resume`; the rest of the UI expects `optimizedResume`.
+      return { ...result, optimizedResume: result.optimizedResume ?? result.resume };
     },
     onSuccess: (data) => {
       setTimeout(() => {
