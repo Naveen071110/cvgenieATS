@@ -69,9 +69,17 @@ app.use('/assets', (req, res, next) => {
   next();
 });
 
-// Cache CSS and JS files for 1 hour with revalidation
+// Cache hashed CSS/JS files for 1 year — Vite appends content hashes so files
+// are safe to cache immutably. HTML files are served without caching so users
+// always get the latest entry point with updated chunk URLs.
 app.use(/\.(css|js)$/, (req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  next();
+});
+
+// Never cache HTML — browser must always re-fetch so it picks up new chunk hashes
+app.use(/\.html$/, (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   next();
 });
 
