@@ -148,7 +148,6 @@ const PricingCard = ({
 };
 
 export default function PricingSection() {
-  console.log("PricingSection: Component is rendering");
   const headerAnimation = useScrollAnimation({ threshold: 0.2 });
   const cardsAnimation = useScrollAnimation({ threshold: 0.3 });
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
@@ -207,34 +206,38 @@ export default function PricingSection() {
 
         <div
           ref={cardsAnimation.ref}
-          className={`grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto scroll-fade-in ${cardsAnimation.isVisible ? 'visible' : ''}`}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto"
         >
           {/* Free Plan */}
-          <PricingCard
-            title="Free"
-            price="$0"
-            period="/month"
-            description="Perfect for trying CVGenie"
-            features={freePlanFeatures}
-            buttonText="Start Free"
-            buttonLink="#"
-            highlighted={false}
-            onClick={handleFreeClick}
-          />
+          <div className={`scroll-fade-in scroll-fade-in-delay-1 ${cardsAnimation.isVisible ? 'visible' : ''}`}>
+            <PricingCard
+              title="Free"
+              price="$0"
+              period="/month"
+              description="Perfect for trying CVGenie"
+              features={freePlanFeatures}
+              buttonText="Start Free"
+              buttonLink="#"
+              highlighted={false}
+              onClick={handleFreeClick}
+            />
+          </div>
 
           {/* Pro Plan */}
-          <PricingCard
-            title="Pro"
-            price="$9.99"
-            period="/month"
-            description="For serious job seekers"
-            features={proPlanFeatures}
-            buttonText="Upgrade to Pro"
-            buttonLink="#"
-            highlighted={true}
-            popular={true}
-            onClick={handleUpgradeClick}
-          />
+          <div className={`scroll-fade-in scroll-fade-in-delay-2 ${cardsAnimation.isVisible ? 'visible' : ''}`}>
+            <PricingCard
+              title="Pro"
+              price="$9.99"
+              period="/month"
+              description="For serious job seekers"
+              features={proPlanFeatures}
+              buttonText="Upgrade to Pro"
+              buttonLink="#"
+              highlighted={true}
+              popular={true}
+              onClick={handleUpgradeClick}
+            />
+          </div>
         </div>
 
         {/* Value Proposition */}

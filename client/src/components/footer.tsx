@@ -108,7 +108,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-800 mt-6 md:mt-12 pt-4 md:pt-8 flex flex-col sm:flex-row justify-between items-center">
           <p className="typography-small text-slate-400 text-xs md:text-sm">
-            © 2025 CVGenie. All rights reserved.
+            © 2026 CVGenie. All rights reserved.
           </p>
         </div>
       </div>

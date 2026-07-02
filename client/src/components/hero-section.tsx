@@ -263,7 +263,7 @@ export default function HeroSection() {
                 role="img"
               >
                 {/* Floating ATS Score Badge */}
-                <div className="absolute -top-3 -right-2 sm:-top-4 sm:-right-4 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-2.5">
+                <div className={`absolute -top-3 -right-2 sm:-top-4 sm:-right-4 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-2.5${!shouldDisableAnimations ? ' animate-badge-float-a' : ''}`}>
                   <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-green-100 dark:bg-green-900/40">
                     <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
                   </div>
@@ -279,7 +279,7 @@ export default function HeroSection() {
 
                 {/* Resume Document */}
                 <div
-                  className="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+                  className={`relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden${!shouldDisableAnimations ? ' animate-mockup-float' : ''}`}
                   style={{ boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)' }}
                 >
                   {/* Tailored-for badge */}
@@ -342,7 +342,7 @@ export default function HeroSection() {
                 </div>
 
                 {/* Floating "matched keywords" pill */}
-                <div className="absolute -bottom-3 -left-2 sm:-bottom-4 sm:-left-4 z-20 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2">
+                <div className={`absolute -bottom-3 -left-2 sm:-bottom-4 sm:-left-4 z-20 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2${!shouldDisableAnimations ? ' animate-badge-float-b' : ''}`}>
                   <div className="flex -space-x-1">
                     <span className="inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800"></span>
                     <span className="inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></span>

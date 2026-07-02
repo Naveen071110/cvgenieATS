@@ -42,6 +42,13 @@
     transform: none !important;
   }
   
+  .animate-badge-float-a,
+  .animate-badge-float-b,
+  .animate-mockup-float {
+    animation: none !important;
+    transform: none !important;
+  }
+  
   .backdrop-blur-sm,
   .backdrop-blur-md,
   .backdrop-blur-lg {
@@ -118,8 +125,48 @@
   }
 }
 
+@keyframes badgeFloatA {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes badgeFloatB {
+  0%, 100% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes mockupFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-badge-float-a {
+  animation: badgeFloatA 4s ease-in-out infinite;
+}
+
+.animate-badge-float-b {
+  animation: badgeFloatB 4s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-mockup-float {
+  animation: mockupFloat 6s ease-in-out infinite;
 }
 
 .animate-gradient-shift {

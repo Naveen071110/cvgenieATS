@@ -1,8 +1,8 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
-import { FileText, ClipboardPaste, Download } from "lucide-react";
+import { FileText, ClipboardPaste, Download, ChevronRight } from "lucide-react";
 import {
   FeatureSectionSkeleton,
   PricingSectionSkeleton,
@@ -21,6 +21,8 @@ const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-
 export default function Home() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const [stepsVisible, setStepsVisible] = useState(false);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -28,9 +30,44 @@ export default function Home() {
     }
   }, [user, isLoading, setLocation]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStepsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (stepsRef.current) observer.observe(stepsRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   if (!isLoading && user) {
     return null;
   }
+
+  const steps = [
+    {
+      num: 1,
+      icon: <FileText className="w-6 h-6" aria-hidden="true" />,
+      title: "Upload your resume",
+      body: "Paste your existing resume text or upload a DOCX/TXT file. CVGenie reads your background exactly as-is — no rewriting your story.",
+    },
+    {
+      num: 2,
+      icon: <ClipboardPaste className="w-6 h-6" aria-hidden="true" />,
+      title: "Paste the job description",
+      body: "Drop in any job posting. CVGenie extracts the keywords, required skills, and tone the recruiter is looking for.",
+    },
+    {
+      num: 3,
+      icon: <Download className="w-6 h-6" aria-hidden="true" />,
+      title: "Download your tailored resume",
+      body: "In about 60 seconds you get an ATS-optimized resume and matching cover letter, ready to submit.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-200">
@@ -52,45 +89,37 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
-              {[
-                {
-                  num: 1,
-                  icon: <FileText className="w-6 h-6" aria-hidden="true" />,
-                  title: "Upload your resume",
-                  body: "Paste your existing resume text or upload a DOCX/TXT file. CVGenie reads your background exactly as-is — no rewriting your story.",
-                },
-                {
-                  num: 2,
-                  icon: <ClipboardPaste className="w-6 h-6" aria-hidden="true" />,
-                  title: "Paste the job description",
-                  body: "Drop in any job posting. CVGenie extracts the keywords, required skills, and tone the recruiter is looking for.",
-                },
-                {
-                  num: 3,
-                  icon: <Download className="w-6 h-6" aria-hidden="true" />,
-                  title: "Download your tailored resume",
-                  body: "In about 60 seconds you get an ATS-optimized resume and matching cover letter, ready to submit.",
-                },
-              ].map((step) => (
-                <div
-                  key={step.num}
-                  className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 transition-colors duration-200"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
-                      {step.num}
+            <div ref={stepsRef} className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-stretch">
+              {steps.map((step, index) => (
+                <div key={step.num} className="contents">
+                  <div
+                    className={`relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-200 scroll-fade-in${stepsVisible ? ' visible' : ''}`}
+                    style={{ transitionDelay: `${index * 100}ms` }}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
+                        {step.num}
+                      </div>
+                      <div className="text-primary dark:text-blue-400">
+                        {step.icon}
+                      </div>
                     </div>
-                    <div className="text-primary dark:text-blue-400">
-                      {step.icon}
-                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
+                      {step.body}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
-                    {step.body}
-                  </p>
+                  {index < steps.length - 1 && (
+                    <div className="hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 z-10"
+                      style={{ left: `calc(${(index + 1) * 33.333}% - 16px)` }}>
+                      <div className="flex items-center gap-1 text-slate-300 dark:text-slate-600">
+                        <div className="w-8 border-t-2 border-dashed border-slate-300 dark:border-slate-600" />
+                        <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
