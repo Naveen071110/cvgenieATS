@@ -61,25 +61,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Configure caching headers for static assets
+// Cache /assets/* for 1 year — Vite content-hashes every filename so files are
+// safe to cache indefinitely. We lock res.setHeader so that the downstream
+// express.static (serve-static / send package) cannot override it with its
+// default max-age=0.
 app.use('/assets', (req, res, next) => {
-  // Cache static assets for 1 year
   res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
   res.setHeader('Expires', new Date(Date.now() + 31536000000).toUTCString());
-  next();
-});
-
-// Cache hashed CSS/JS files for 1 year — Vite appends content hashes so files
-// are safe to cache immutably. HTML files are served without caching so users
-// always get the latest entry point with updated chunk URLs.
-app.use(/\.(css|js)$/, (req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-  next();
-});
-
-// Never cache HTML — browser must always re-fetch so it picks up new chunk hashes
-app.use(/\.html$/, (req, res, next) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  const _setHeader = res.setHeader.bind(res);
+  (res as any).setHeader = (name: string, value: any) => {
+    if (typeof name === 'string' && name.toLowerCase() === 'cache-control') return res;
+    return _setHeader(name, value);
+  };
   next();
 });
 
