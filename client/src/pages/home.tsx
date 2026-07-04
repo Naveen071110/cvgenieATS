@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { motion } from "framer-motion";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
@@ -21,28 +22,12 @@ const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-
 export default function Home() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
-  const stepsRef = useRef<HTMLDivElement>(null);
-  const [stepsVisible, setStepsVisible] = useState(false);
 
   useEffect(() => {
     if (!isLoading && user) {
       setLocation("/dashboard");
     }
   }, [user, isLoading, setLocation]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setStepsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    if (stepsRef.current) observer.observe(stepsRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   if (!isLoading && user) {
     return null;
@@ -89,12 +74,16 @@ export default function Home() {
               </p>
             </div>
 
-            <div ref={stepsRef} className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-stretch">
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-stretch" style={{ perspective: 800 }}>
               {steps.map((step, index) => (
                 <div key={step.num} className="contents">
-                  <div
-                    className={`relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-200 scroll-fade-in${stepsVisible ? ' visible' : ''}`}
-                    style={{ transitionDelay: `${index * 100}ms` }}
+                  <motion.div
+                    className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 hover:shadow-lg transition-colors duration-200"
+                    initial={{ opacity: 0, rotateX: 15, y: 40 }}
+                    whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
+                    viewport={{ once: true, margin: "-80px" }}
                   >
                     <div className="flex items-center gap-3 mb-4">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
@@ -110,7 +99,7 @@ export default function Home() {
                     <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
                       {step.body}
                     </p>
-                  </div>
+                  </motion.div>
                   {index < steps.length - 1 && (
                     <div className="hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 z-10"
                       style={{ left: `calc(${(index + 1) * 33.333}% - 16px)` }}>

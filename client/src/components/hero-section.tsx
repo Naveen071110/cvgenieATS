@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { motion, useMotionValue, useTransform, useSpring, useScroll } from "framer-motion";
 import {
   ArrowRight,
   Users,
@@ -71,10 +72,30 @@ export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(true);
   const [shouldAnimateStats, setShouldAnimateStats] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
   const shouldDisableAnimations = isMobile || prefersReducedMotion;
   const { requireAuthThenNavigate, AuthDialog } = useRequireAuth();
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), { stiffness: 150, damping: 25 });
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
+  const { scrollY } = useScroll();
+  const blobParallaxY = useTransform(scrollY, [0, 700], [0, 80]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (shouldDisableAnimations || !heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   useEffect(() => {
     if (shouldDisableAnimations) return;
@@ -120,6 +141,9 @@ export default function HeroSection() {
 
   return (
     <section
+      ref={heroRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className="relative min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/10"
       role="region"
       aria-label="Hero section with resume generation services"
@@ -144,10 +168,10 @@ export default function HeroSection() {
         </div>
       )}
 
-      {/* Simplified background blobs - static on mobile */}
+      {/* Simplified background blobs - static on mobile, parallax on desktop */}
       {!shouldDisableAnimations && (
-        <>
-          <div className="hero-bg" aria-hidden="true">
+        <motion.div style={{ y: blobParallaxY }} aria-hidden="true">
+          <div className="hero-bg">
             <svg
               width="100%"
               height="100%"
@@ -175,8 +199,8 @@ export default function HeroSection() {
               </g>
             </svg>
           </div>
-          <div className="hero-bg-blob" aria-hidden="true"></div>
-        </>
+          <div className="hero-bg-blob"></div>
+        </motion.div>
       )}
       <div
         className="hero-content"
@@ -256,9 +280,12 @@ export default function HeroSection() {
             </div>
             {/* Hero Product Mockup */}
             <div className="flex justify-center items-center mt-8 lg:mt-0 px-2 sm:px-0">
-              <div
+              <motion.div
                 className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] mx-auto animate-fade-in-up animation-delay-600"
-                style={{ marginTop: '16px', marginBottom: '16px' }}
+                style={shouldDisableAnimations
+                  ? { marginTop: '16px', marginBottom: '16px' }
+                  : { marginTop: '16px', marginBottom: '16px', rotateX, rotateY, transformPerspective: 1200 }
+                }
                 aria-label="Sample of a CVGenie-tailored resume"
                 role="img"
               >
@@ -352,7 +379,7 @@ export default function HeroSection() {
                     18 keywords matched
                   </span>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 

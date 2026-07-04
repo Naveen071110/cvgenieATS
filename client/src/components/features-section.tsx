@@ -1,5 +1,5 @@
 import { CheckCircle2, FileText, Zap, Sparkles } from 'lucide-react';
-import { useRef, useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import AIBrainIcon from '../assets/icons/ai-brain.svg?react';
 import ATSShieldIcon from '../assets/icons/ats-shield.svg?react';
 import SpeedOptimizationIcon from '../assets/icons/speed-optimization.svg?react';
@@ -182,29 +182,16 @@ const FeatureSection = ({
   mockup,
   reverse = false,
 }: FeatureSectionProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="py-12 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <div ref={ref} className={`grid lg:grid-cols-2 gap-10 lg:gap-14 items-center ${reverse ? 'lg:flex-row-reverse' : ''}`}>
-          <div
-            className={`space-y-5 ${reverse ? 'lg:order-2' : 'lg:order-1'} ${reverse ? 'slide-in-right' : 'slide-in-left'} ${isVisible ? 'visible' : ''}`}
+        <div className={`grid lg:grid-cols-2 gap-10 lg:gap-14 items-center ${reverse ? 'lg:flex-row-reverse' : ''}`}>
+          <motion.div
+            className={`space-y-5 ${reverse ? 'lg:order-2' : 'lg:order-1'}`}
+            initial={{ opacity: 0, x: reverse ? 50 : -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-60px" }}
           >
             <div className="flex items-center gap-4 mb-5">
               <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl">
@@ -229,15 +216,20 @@ const FeatureSection = ({
                 <FeatureCheck key={index} text={feature} />
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div
-            className={`relative ${reverse ? 'lg:order-1' : 'lg:order-2'} ${reverse ? 'slide-in-left' : 'slide-in-right'} ${isVisible ? 'visible' : ''}`}
+          <motion.div
+            className={`relative ${reverse ? 'lg:order-1' : 'lg:order-2'}`}
+            initial={{ opacity: 0, rotateY: reverse ? 12 : -12, x: reverse ? 40 : -40 }}
+            whileInView={{ opacity: 1, rotateY: 0, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-60px" }}
+            style={{ transformPerspective: 1000 }}
           >
             <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
               {mockup}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
