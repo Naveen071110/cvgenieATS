@@ -86,7 +86,7 @@ export default function Home() {
                     whileInView={shouldDisableAnimations ? undefined : { opacity: 1, rotateX: 0, y: 0 }}
                     whileHover={shouldDisableAnimations ? undefined : { y: -4, transition: { duration: 0.2 } }}
                     transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
-                    viewport={{ once: true, margin: "-80px" }}
+                    viewport={{ once: true, amount: 0.1 }}
                   >
                     <div className="flex items-center gap-3 mb-4">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
