@@ -1,5 +1,6 @@
 import { CheckCircle2, FileText, Zap, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useIsMobile, useReducedMotion } from '@/hooks/useIntersectionLoader';
 import AIBrainIcon from '../assets/icons/ai-brain.svg?react';
 import ATSShieldIcon from '../assets/icons/ats-shield.svg?react';
 import SpeedOptimizationIcon from '../assets/icons/speed-optimization.svg?react';
@@ -182,14 +183,18 @@ const FeatureSection = ({
   mockup,
   reverse = false,
 }: FeatureSectionProps) => {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+  const shouldDisableAnimations = isMobile || prefersReducedMotion;
+
   return (
     <section className="py-12 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className={`grid lg:grid-cols-2 gap-10 lg:gap-14 items-center ${reverse ? 'lg:flex-row-reverse' : ''}`}>
           <motion.div
             className={`space-y-5 ${reverse ? 'lg:order-2' : 'lg:order-1'}`}
-            initial={{ opacity: 0, x: reverse ? 50 : -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={shouldDisableAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? 50 : -50 }}
+            whileInView={shouldDisableAnimations ? undefined : { opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             viewport={{ once: true, margin: "-60px" }}
           >
@@ -220,8 +225,8 @@ const FeatureSection = ({
 
           <motion.div
             className={`relative ${reverse ? 'lg:order-1' : 'lg:order-2'}`}
-            initial={{ opacity: 0, rotateY: reverse ? 12 : -12, x: reverse ? 40 : -40 }}
-            whileInView={{ opacity: 1, rotateY: 0, x: 0 }}
+            initial={shouldDisableAnimations ? { opacity: 1, rotateY: 0, x: 0 } : { opacity: 0, rotateY: reverse ? 12 : -12, x: reverse ? 40 : -40 }}
+            whileInView={shouldDisableAnimations ? undefined : { opacity: 1, rotateY: 0, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
             viewport={{ once: true, margin: "-60px" }}
             style={{ transformPerspective: 1000 }}

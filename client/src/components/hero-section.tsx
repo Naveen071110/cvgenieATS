@@ -84,6 +84,7 @@ export default function HeroSection() {
   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
   const { scrollY } = useScroll();
   const blobParallaxY = useTransform(scrollY, [0, 700], [0, 80]);
+  const textParallaxY = useTransform(scrollY, [0, 700], [0, -30]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (shouldDisableAnimations || !heroRef.current) return;
@@ -222,7 +223,10 @@ export default function HeroSection() {
           }}
         >
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
+            <motion.div
+              className="text-center lg:text-left"
+              style={!shouldDisableAnimations ? { y: textParallaxY } : {}}
+            >
               <h1
                 id="hero-title"
                 className="hero-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in-up"
@@ -277,7 +281,7 @@ export default function HeroSection() {
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
             {/* Hero Product Mockup */}
             <div className="flex justify-center items-center mt-8 lg:mt-0 px-2 sm:px-0">
               <motion.div

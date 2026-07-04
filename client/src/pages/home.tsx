@@ -10,7 +10,7 @@ import {
   FAQSkeleton,
   TrustBadgesSkeleton,
 } from "@/components/ui/section-skeletons";
-import { LazyLoadSection } from "@/hooks/useIntersectionLoader";
+import { LazyLoadSection, useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "wouter";
 
@@ -22,6 +22,9 @@ const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-
 export default function Home() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+  const shouldDisableAnimations = isMobile || prefersReducedMotion;
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -79,9 +82,9 @@ export default function Home() {
                 <div key={step.num} className="contents">
                   <motion.div
                     className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 hover:shadow-lg transition-colors duration-200"
-                    initial={{ opacity: 0, rotateX: 15, y: 40 }}
-                    whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    initial={shouldDisableAnimations ? { opacity: 1, rotateX: 0, y: 0 } : { opacity: 0, rotateX: 15, y: 40 }}
+                    whileInView={shouldDisableAnimations ? undefined : { opacity: 1, rotateX: 0, y: 0 }}
+                    whileHover={shouldDisableAnimations ? undefined : { y: -4, transition: { duration: 0.2 } }}
                     transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
                     viewport={{ once: true, margin: "-80px" }}
                   >
