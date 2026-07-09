@@ -2509,6 +2509,38 @@ select {
   border: 1px solid var(--color-primary-200);
 }
 
+/* Bento-style feature grid */
+.bento-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .bento-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .bento-feature-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, auto));
+  }
+
+  .feature-card--big {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .feature-card--accent {
+    grid-column: span 2 / span 2;
+  }
+}
+
 /* Feature Card Enhancements */
 .feature-card {
   position: relative;

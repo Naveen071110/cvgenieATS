@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect } from "react";
-import { motion } from "framer-motion";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
@@ -25,6 +25,24 @@ export default function Home() {
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
   const shouldDisableAnimations = isMobile || prefersReducedMotion;
+  const [activeStep, setActiveStep] = useState(0);
+  const howItWorksRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: howItWorksProgress } = useScroll({
+    target: howItWorksRef,
+    offset: ["start start", "end end"],
+  });
+  const step1Height = useTransform(howItWorksProgress, [0, 0.33], ["0%", "100%"]);
+  const step2Height = useTransform(howItWorksProgress, [0.33, 0.66], ["0%", "100%"]);
+
+  useEffect(() => {
+    if (shouldDisableAnimations) return;
+    const unsubscribe = howItWorksProgress.on("change", (latest) => {
+      if (latest < 0.33) setActiveStep(0);
+      else if (latest < 0.66) setActiveStep(1);
+      else setActiveStep(2);
+    });
+    return () => unsubscribe();
+  }, [howItWorksProgress, shouldDisableAnimations]);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -63,60 +81,132 @@ export default function Home() {
       <main>
         <HeroSection />
 
-        <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-800">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-14">
-              <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
-                How it works
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                Three simple steps
-              </h2>
-              <p className="text-lg text-slate-600 dark:text-gray-400 max-w-2xl mx-auto">
-                From your existing resume to a tailored, ATS-ready document in about a minute.
-              </p>
-            </div>
+        {shouldDisableAnimations ? (
+          <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-800">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
+                  How it works
+                </p>
+                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                  Three simple steps
+                </h2>
+                <p className="text-lg text-slate-600 dark:text-gray-400 max-w-2xl mx-auto">
+                  From your existing resume to a tailored, ATS-ready document in about a minute.
+                </p>
+              </div>
 
-            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-stretch" style={{ perspective: 800 }}>
-              {steps.map((step, index) => (
-                <div key={step.num} className="contents">
-                  <motion.div
-                    className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-primary/40 dark:hover:border-blue-400/40 hover:shadow-lg transition-colors duration-200"
-                    initial={shouldDisableAnimations ? { opacity: 1, rotateX: 0, y: 0 } : { opacity: 0, rotateX: 15, y: 40 }}
-                    whileInView={shouldDisableAnimations ? undefined : { opacity: 1, rotateX: 0, y: 0 }}
-                    whileHover={shouldDisableAnimations ? undefined : { y: -4, transition: { duration: 0.2 } }}
-                    transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
-                    viewport={{ once: true, amount: 0.1 }}
-                  >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
-                        {step.num}
+              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-stretch">
+                {steps.map((step, index) => (
+                  <div key={step.num} className="contents">
+                    <div className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
+                          {step.num}
+                        </div>
+                        <div className="text-primary dark:text-blue-400">
+                          {step.icon}
+                        </div>
                       </div>
-                      <div className="text-primary dark:text-blue-400">
-                        {step.icon}
-                      </div>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                        {step.title}
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
+                        {step.body}
+                      </p>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
-                      {step.body}
-                    </p>
-                  </motion.div>
-                  {index < steps.length - 1 && (
-                    <div className="hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 z-10"
-                      style={{ left: `calc(${(index + 1) * 33.333}% - 16px)` }}>
-                      <div className="flex items-center gap-1 text-slate-300 dark:text-slate-600">
-                        <div className="w-8 border-t-2 border-dashed border-slate-300 dark:border-slate-600" />
-                        <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                    {index < steps.length - 1 && (
+                      <div className="hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 z-10"
+                        style={{ left: `calc(${(index + 1) * 33.333}% - 16px)` }}>
+                        <div className="flex items-center gap-1 text-slate-300 dark:text-slate-600">
+                          <div className="w-8 border-t-2 border-dashed border-slate-300 dark:border-slate-600" />
+                          <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : (
+          <section id="how-it-works" ref={howItWorksRef} className="relative h-[300vh] bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-800">
+            <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center w-full">
+                <div className="space-y-10">
+                  <div>
+                    <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
+                      How it works
+                    </p>
+                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight leading-[1.05]">
+                      Three simple steps
+                    </h2>
+                  </div>
+
+                  <div className="relative space-y-10">
+                    {steps.map((step, index) => (
+                      <div key={step.num} className="flex gap-6">
+                        <div className="flex flex-col items-center">
+                          <motion.div
+                            initial={false}
+                            animate={{
+                              scale: activeStep === index ? 1.15 : 1,
+                              backgroundColor: activeStep === index ? "#3b82f6" : "rgb(226, 232, 240)",
+                            }}
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shadow-sm relative z-10 flex-shrink-0"
+                          >
+                            {step.num}
+                          </motion.div>
+                          {index < steps.length - 1 && (
+                            <div className="w-0.5 flex-1 min-h-[40px] bg-slate-200 dark:bg-slate-700 mt-2 mb-2 rounded-full overflow-hidden">
+                              <motion.div
+                                style={{ height: index === 0 ? step1Height : step2Height }}
+                                className="bg-primary dark:bg-blue-400 w-full"
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <motion.div
+                          animate={{ opacity: activeStep === index ? 1 : 0.5, x: activeStep === index ? 6 : 0 }}
+                          className="space-y-2 pb-2"
+                        >
+                          <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                            {step.title}
+                          </h3>
+                          <p className="text-base text-slate-600 dark:text-gray-400 leading-relaxed max-w-md">
+                            {step.body}
+                          </p>
+                        </motion.div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="relative aspect-square max-w-md mx-auto hidden lg:block">
+                  <motion.div
+                    key={activeStep}
+                    initial={{ opacity: 0, scale: 0.85, rotateY: 25 }}
+                    animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                    transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                    className="w-full h-full rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 p-10 flex flex-col justify-center items-center gap-8 bg-slate-50/60 dark:bg-slate-800/60"
+                  >
+                    <div className="w-28 h-28 rounded-3xl flex items-center justify-center text-white bg-primary shadow-xl">
+                      {steps[activeStep].icon}
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                        Step 0{activeStep + 1}
+                      </div>
+                      <h4 className="text-2xl font-bold text-slate-900 dark:text-white">
+                        {steps[activeStep].title}
+                      </h4>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         <LazyLoadSection 
           fallback={<FeatureSectionSkeleton />}

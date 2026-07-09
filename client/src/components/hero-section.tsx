@@ -387,23 +387,37 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Feature Cards Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-            <div className="feature-card group bg-gradient-to-br from-blue-50/80 via-white/60 to-purple-50/80 dark:from-blue-950/40 dark:via-gray-800/60 dark:to-purple-950/40 border border-blue-200/50 dark:border-blue-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/20 dark:hover:shadow-blue-400/30 hover:border-blue-300/70 dark:hover:border-blue-500/50">
+          {/* Feature Cards Section — bento-style scroll reveal */}
+          <div className="bento-feature-grid mt-16">
+            <motion.div
+              className="feature-card feature-card--big group bg-gradient-to-br from-blue-50/80 via-white/60 to-purple-50/80 dark:from-blue-950/40 dark:via-gray-800/60 dark:to-purple-950/40 border border-blue-200/50 dark:border-blue-700/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 text-left transition-colors duration-300 hover:border-blue-300/70 dark:hover:border-blue-500/50"
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.6, delay: 0, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
               <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <AIBrainIcon
                   className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-300"
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-2">
                 Keyword matching from any job posting
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Paste a job description and CVGenie pulls the exact phrases ATS bots scan for — then rewrites your bullets to include them naturally.
               </p>
-            </div>
-            <div className="feature-card group bg-gradient-to-br from-purple-50/80 via-white/60 to-pink-50/80 dark:from-purple-950/40 dark:via-gray-800/60 dark:to-pink-950/40 border border-purple-200/50 dark:border-purple-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-purple-500/20 dark:hover:shadow-purple-400/30 hover:border-purple-300/70 dark:hover:border-purple-500/50">
+            </motion.div>
+            <motion.div
+              className="feature-card group bg-gradient-to-br from-purple-50/80 via-white/60 to-pink-50/80 dark:from-purple-950/40 dark:via-gray-800/60 dark:to-pink-950/40 border border-purple-200/50 dark:border-purple-700/30 backdrop-blur-sm rounded-2xl p-6 text-left transition-colors duration-300 hover:border-purple-300/70 dark:hover:border-purple-500/50"
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
               <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
                 <ATSShieldIcon
                   className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-purple-600 dark:group-hover:text-purple-300"
@@ -416,8 +430,15 @@ export default function HeroSection() {
               <p className="text-gray-600 dark:text-gray-300">
                 Single-column layout, standard section labels, no tables or columns — the formatting rules that stop ATS from garbling your experience.
               </p>
-            </div>
-            <div className="feature-card group bg-gradient-to-br from-teal-50/80 via-white/60 to-cyan-50/80 dark:from-teal-950/40 dark:via-gray-800/60 dark:to-cyan-950/40 border border-teal-200/50 dark:border-teal-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-teal-500/20 dark:hover:shadow-teal-400/30 hover:border-teal-300/70 dark:hover:border-teal-500/50">
+            </motion.div>
+            <motion.div
+              className="feature-card group bg-gradient-to-br from-teal-50/80 via-white/60 to-cyan-50/80 dark:from-teal-950/40 dark:via-gray-800/60 dark:to-cyan-950/40 border border-teal-200/50 dark:border-teal-700/30 backdrop-blur-sm rounded-2xl p-6 text-left transition-colors duration-300 hover:border-teal-300/70 dark:hover:border-teal-500/50"
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
               <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <SpeedOptimizationIcon
                   className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-teal-600 dark:group-hover:text-teal-300"
@@ -430,21 +451,28 @@ export default function HeroSection() {
               <p className="text-gray-600 dark:text-gray-300">
                 Paste your resume and the job description. CVGenie generates a fully tailored resume and cover letter in about a minute.
               </p>
-            </div>
-            <div className="feature-card group bg-gradient-to-br from-indigo-50/80 via-white/60 to-violet-50/80 dark:from-indigo-950/40 dark:via-gray-800/60 dark:to-violet-950/40 border border-indigo-200/50 dark:border-indigo-700/30 backdrop-blur-sm rounded-xl p-6 text-left transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/30 hover:border-indigo-300/70 dark:hover:border-indigo-500/50">
+            </motion.div>
+            <motion.div
+              className="feature-card feature-card--accent group bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-700 dark:to-purple-900 border border-indigo-500/30 rounded-2xl p-6 text-left transition-colors duration-300"
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
               <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
                 <MailIcon
-                  className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-300"
+                  className="w-12 h-12 text-white transition-all duration-300"
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Different resume for every application
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-indigo-100">
                 The same experience, reframed for each role's priorities. No more copy-pasting and hoping for the best.
               </p>
-            </div>
+            </motion.div>
           </div>
 
           {/* Stats Section */}
