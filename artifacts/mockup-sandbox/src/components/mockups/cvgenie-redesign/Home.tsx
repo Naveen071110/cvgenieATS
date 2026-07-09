@@ -301,23 +301,10 @@ const BentoGrid = () => {
                 We analyze job descriptions and optimize your resume with the exact keywords hiring managers are looking for.
               </p>
             </div>
-            <div className="mt-16 flex items-center gap-6 relative z-10">
-              <div className="flex -space-x-4">
-                {[1,2,3,4].map(i => (
-                  <motion.div 
-                    key={i} 
-                    whileHover={{ y: -5, scale: 1.1 }}
-                    className="w-14 h-14 rounded-full border-4 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 overflow-hidden shadow-lg cursor-pointer"
-                  >
-                    <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800" />
-                  </motion.div>
-                ))}
-                <div className="w-14 h-14 rounded-full border-4 border-white dark:border-slate-900 bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-lg">
-                  +10k
-                </div>
-              </div>
+            <div className="mt-16 flex items-center gap-3 relative z-10">
+              <ArrowRight size={18} className="text-indigo-600 dark:text-indigo-400" />
               <div className="text-sm font-black text-slate-900 dark:text-slate-200 uppercase tracking-widest">
-                Join 10,000+ job seekers
+                Built for job seekers who want an edge
               </div>
             </div>
           </motion.div>
@@ -367,7 +354,7 @@ const BentoGrid = () => {
               <span className="text-indigo-400 text-sm font-black uppercase tracking-widest">Success</span>
             </div>
             <div className="text-sm text-slate-400 dark:text-slate-300 leading-relaxed font-medium">
-              Increase in interview callbacks for Pro users.
+              Of resumes pass automated ATS keyword screening after optimization.
             </div>
           </motion.div>
 
@@ -804,15 +791,11 @@ export function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5 }}
-                className="flex items-center gap-8 pt-8 border-t border-slate-200 dark:border-slate-800 transition-colors"
+                className="flex items-center gap-3 pt-8 border-t border-slate-200 dark:border-slate-800 transition-colors"
               >
-                <div className="flex -space-x-3">
-                  {[1,2,3].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800" />
-                  ))}
-                </div>
+                <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400" />
                 <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                  Trusted by <span className="text-slate-900 dark:text-white transition-colors font-black">20,000+</span> pros
+                  Free to start &middot; No credit card required
                 </div>
               </motion.div>
             </div>
