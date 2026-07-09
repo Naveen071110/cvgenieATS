@@ -19,6 +19,29 @@ const PricingSection = lazy(() => import("@/components/pricing-section"));
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
 
+function ScrollReveal({
+  children,
+  shouldDisableAnimations,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  shouldDisableAnimations: boolean;
+  delay?: number;
+}) {
+  if (shouldDisableAnimations) return <>{children}</>;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 48, scale: 0.96, rotateX: 6 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.7, delay, ease: "easeOut" }}
+      style={{ transformPerspective: 1000 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
@@ -229,7 +252,9 @@ export default function Home() {
         >
           <div className="py-12">
             <Suspense fallback={<FeatureSectionSkeleton />}>
-              <FeaturesSection />
+              <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
+                <FeaturesSection />
+              </ScrollReveal>
             </Suspense>
           </div>
         </LazyLoadSection>
@@ -254,7 +279,9 @@ export default function Home() {
                 </div>
               </div>
             }>
-              <TrustIndicatorsSection />
+              <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
+                <TrustIndicatorsSection />
+              </ScrollReveal>
             </Suspense>
           </div>
         </LazyLoadSection>
@@ -266,7 +293,9 @@ export default function Home() {
         >
           <div className="py-12">
             <Suspense fallback={<PricingSectionSkeleton />}>
-              <PricingSection />
+              <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
+                <PricingSection />
+              </ScrollReveal>
             </Suspense>
           </div>
         </LazyLoadSection>
@@ -278,7 +307,9 @@ export default function Home() {
         >
           <div className="py-12">
             <Suspense fallback={<FAQSkeleton />}>
-              <FAQSection />
+              <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
+                <FAQSection />
+              </ScrollReveal>
             </Suspense>
           </div>
         </LazyLoadSection>
