@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
@@ -138,8 +138,8 @@ export default function Home() {
                     <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
                       How it works
                     </p>
-                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight leading-[1.05]">
-                      Three simple steps
+                    <h2 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white tracking-tighter leading-[1.02]">
+                      From job post to interview
                     </h2>
                   </div>
 
@@ -182,26 +182,40 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="relative aspect-square max-w-md mx-auto hidden lg:block">
+                <div className="relative aspect-square max-w-md mx-auto hidden lg:block" style={{ perspective: 1200 }}>
                   <motion.div
-                    key={activeStep}
-                    initial={{ opacity: 0, scale: 0.85, rotateY: 25 }}
-                    animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                    transition={{ type: "spring", damping: 20, stiffness: 100 }}
-                    className="w-full h-full rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 p-10 flex flex-col justify-center items-center gap-8 bg-slate-50/60 dark:bg-slate-800/60"
-                  >
-                    <div className="w-28 h-28 rounded-3xl flex items-center justify-center text-white bg-primary shadow-xl">
-                      {steps[activeStep].icon}
-                    </div>
-                    <div className="text-center space-y-2">
-                      <div className="text-xs font-bold uppercase tracking-widest text-slate-400">
-                        Step 0{activeStep + 1}
+                    aria-hidden
+                    animate={{ scale: [1, 1.15, 1], opacity: [0.35, 0.55, 0.35] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -inset-10 rounded-full bg-primary/30 dark:bg-blue-500/20 blur-3xl"
+                  />
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeStep}
+                      initial={{ opacity: 0, scale: 0.8, rotateY: 55, rotateX: -8 }}
+                      animate={{ opacity: 1, scale: 1, rotateY: 0, rotateX: 0 }}
+                      exit={{ opacity: 0, scale: 0.85, rotateY: -55, rotateX: 8 }}
+                      transition={{ type: "spring", damping: 18, stiffness: 90 }}
+                      style={{ transformStyle: "preserve-3d" }}
+                      className="relative w-full h-full rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 p-10 flex flex-col justify-center items-center gap-8 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm"
+                    >
+                      <motion.div
+                        animate={{ y: [0, -12, 0], rotate: [0, 3, 0, -3, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-28 h-28 rounded-3xl flex items-center justify-center text-white bg-primary shadow-xl"
+                      >
+                        {steps[activeStep].icon}
+                      </motion.div>
+                      <div className="text-center space-y-2">
+                        <div className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                          Step 0{activeStep + 1}
+                        </div>
+                        <h4 className="text-2xl font-bold text-slate-900 dark:text-white">
+                          {steps[activeStep].title}
+                        </h4>
                       </div>
-                      <h4 className="text-2xl font-bold text-slate-900 dark:text-white">
-                        {steps[activeStep].title}
-                      </h4>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
