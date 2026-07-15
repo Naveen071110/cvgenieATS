@@ -145,64 +145,27 @@ export default function HeroSection() {
       ref={heroRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/10"
+      className="relative min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16 overflow-hidden bg-gray-950"
       role="region"
       aria-label="Hero section with resume generation services"
     >
-      {/* Animated Background Particles - reduced count for performance */}
-      {!shouldDisableAnimations && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="particle-container">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="particle"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${15 + Math.random() * 10}s`,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Video background */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        src="https://res.cloudinary.com/bcpfhdgi/video/upload/v1784145325/Abstract_brutalist_digital_lands__1080p_202607160121_u1gvoi.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+      />
 
-      {/* Simplified background blobs - static on mobile, parallax on desktop */}
-      {!shouldDisableAnimations && (
-        <motion.div style={{ y: blobParallaxY }} aria-hidden="true">
-          <div className="hero-bg">
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-            >
-              <defs>
-                <radialGradient id="wcA" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#9ec5fe" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#9ec5fe" stopOpacity="0" />
-                </radialGradient>
-                <radialGradient id="wcB" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#b1e3c1" stopOpacity="0.18" />
-                  <stop offset="100%" stopColor="#b1e3c1" stopOpacity="0" />
-                </radialGradient>
-                <filter id="wcBlur" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="10" />
-                </filter>
-              </defs>
-              <g className="hero-blob" style={{ transformOrigin: "18% 62%" }}>
-                <circle cx="18" cy="62" r="28" fill="url(#wcA)" filter="url(#wcBlur)" />
-              </g>
-              <g className="hero-blob hero-blob--alt" style={{ transformOrigin: "82% 28%" }}>
-                <circle cx="82" cy="28" r="24" fill="url(#wcB)" filter="url(#wcBlur)" />
-              </g>
-            </svg>
-          </div>
-          <div className="hero-bg-blob"></div>
-        </motion.div>
-      )}
+      {/* Dark gradient overlay — ensures text is always readable */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-br from-gray-950/80 via-gray-900/70 to-blue-950/75"
+      />
       <div
         className="hero-content"
         style={{
@@ -229,11 +192,11 @@ export default function HeroSection() {
             >
               <h1
                 id="hero-title"
-                className="hero-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight animate-fade-in-up"
+                className="hero-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight animate-fade-in-up"
               >
                 Get Noticed Faster. Land More Interviews for{" "}
                 <span
-                  className={`inline-block min-w-0 transition-opacity duration-300 text-primary dark:text-blue-400 ${
+                  className={`inline-block min-w-0 transition-opacity duration-300 text-blue-300 ${
                     isVisible ? "opacity-100" : "opacity-0"
                   }`}
                 >
@@ -241,7 +204,7 @@ export default function HeroSection() {
                 </span>
               </h1>
               <p
-                className="hero-subtitle text-xl sm:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl leading-relaxed animate-fade-in-up animation-delay-200"
+                className="hero-subtitle text-xl sm:text-2xl text-white/85 mb-8 max-w-3xl leading-relaxed animate-fade-in-up animation-delay-200"
                 style={{ animationDelay: "0.2s" }}
               >
                 Create ATS-optimized resumes and cover letters in seconds with AI.
@@ -269,11 +232,11 @@ export default function HeroSection() {
                   />
                 </Button>
                 <div
-                  className="flex items-center text-gray-600 dark:text-gray-300"
+                  className="flex items-center text-white/75"
                   style={{ gap: "var(--space-3)" }}
                 >
                   <Zap
-                    className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 dark:text-yellow-400"
+                    className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400"
                     aria-hidden="true"
                   />
                   <span className="text-sm font-medium">
