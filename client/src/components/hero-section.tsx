@@ -141,6 +141,7 @@ export default function HeroSection() {
   };
 
   return (
+    <>
     <section
       ref={heroRef}
       onMouseMove={handleMouseMove}
@@ -161,10 +162,10 @@ export default function HeroSection() {
         aria-hidden="true"
       />
 
-      {/* Dark gradient overlay — ensures text is always readable */}
+      {/* Subtle scrim — lets the video's depth show while keeping text readable */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-gray-950/85 via-gray-950/75 to-gray-950/90"
+        className="absolute inset-0 bg-gradient-to-b from-gray-950/50 via-gray-950/30 to-gray-950/60"
       />
       <div
         className="hero-content"
@@ -349,9 +350,19 @@ export default function HeroSection() {
               </motion.div>
             </div>
           </div>
+        </div>
+      </div>
+      <AuthDialog />
+    </section>
 
+    {/* Features & stats — outside the video hero */}
+    <section
+      className="relative px-4 sm:px-6 lg:px-8 py-16"
+      aria-label="Product features and stats"
+    >
+      <div className="max-w-7xl mx-auto">
           {/* Feature Cards Section — bento-style scroll reveal */}
-          <div className="bento-feature-grid mt-16">
+          <div className="bento-feature-grid">
             <motion.div
               className="feature-card feature-card--big group bg-gradient-to-br from-blue-50/80 via-white/60 to-purple-50/80 dark:from-blue-950/40 dark:via-gray-800/60 dark:to-purple-950/40 border border-blue-200/50 dark:border-blue-700/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 text-left transition-colors duration-300 hover:border-blue-300/70 dark:hover:border-blue-500/50"
               initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
@@ -478,9 +489,8 @@ export default function HeroSection() {
               />
             </div>
           </div>
-        </div>
       </div>
-      <AuthDialog />
     </section>
+    </>
   );
 }
