@@ -152,7 +152,7 @@ export default function HeroSection() {
       {/* Video background */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="https://res.cloudinary.com/bcpfhdgi/video/upload/v1784145325/Abstract_brutalist_digital_lands__1080p_202607160121_u1gvoi.mp4"
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4"
         autoPlay
         muted
         loop
@@ -164,7 +164,7 @@ export default function HeroSection() {
       {/* Dark gradient overlay — ensures text is always readable */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-br from-gray-950/80 via-gray-900/70 to-blue-950/75"
+        className="absolute inset-0 bg-gradient-to-b from-gray-950/85 via-gray-950/75 to-gray-950/90"
       />
       <div
         className="hero-content"
@@ -192,9 +192,11 @@ export default function HeroSection() {
             >
               <h1
                 id="hero-title"
-                className="hero-title text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight animate-fade-in-up"
+                className="hero-display-font hero-title text-5xl sm:text-6xl lg:text-7xl text-white mb-6 leading-[0.98] tracking-tight animate-fade-rise"
               >
-                Get Noticed Faster. Land More Interviews for{" "}
+                Get Noticed Faster.{" "}
+                <em className="not-italic text-white/80">Land More Interviews</em>{" "}
+                for{" "}
                 <span
                   className={`inline-block min-w-0 transition-opacity duration-300 text-blue-300 ${
                     isVisible ? "opacity-100" : "opacity-0"
@@ -204,23 +206,21 @@ export default function HeroSection() {
                 </span>
               </h1>
               <p
-                className="hero-subtitle text-xl sm:text-2xl text-white/85 mb-8 max-w-3xl leading-relaxed animate-fade-in-up animation-delay-200"
-                style={{ animationDelay: "0.2s" }}
+                className="hero-subtitle text-lg sm:text-xl text-white/90 mb-8 max-w-3xl leading-relaxed animate-fade-rise-delay"
               >
                 Create ATS-optimized resumes and cover letters in seconds with AI.
                 Get past filters, impress recruiters, and land more interviews.
               </p>
               <div
-                className="flex flex-col sm:flex-row justify-center lg:justify-start items-center w-full fade-in-up"
+                className="flex flex-col sm:flex-row justify-center lg:justify-start items-center w-full animate-fade-rise-delay-2"
                 style={{
                   gap: "var(--space-4)",
                   marginBottom: "var(--space-8)",
-                  animationDelay: "0.4s",
                 }}
               >
                 <Button
                   size="lg"
-                  className="magic-cta genie-lamp text-lg px-10 py-7 rounded-full shadow-2xl font-bold tracking-wide animate-fade-in-up animation-delay-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.6)] dark:hover:shadow-[0_0_40px_rgba(167,139,250,0.8)] transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-purple-500/50 dark:focus:ring-purple-400/50"
+                  className="liquid-glass text-lg px-12 py-7 rounded-full text-white font-medium tracking-wide hover:scale-[1.03] hover:bg-white/10 transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-white/30"
                   onClick={handleCreateResume}
                   aria-label="Start your free resume generation - Sign in required"
                 >
