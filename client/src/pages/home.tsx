@@ -4,6 +4,11 @@ import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
 import { FileText, ClipboardPaste, Download, ChevronRight } from "lucide-react";
+import resumeDocImg from "@assets/generated_images/icon-resume-doc-3d.webp";
+import clipboardImg from "@assets/generated_images/icon-clipboard-3d.webp";
+import downloadImg from "@assets/generated_images/icon-download-3d.webp";
+
+const stepImages = [resumeDocImg, clipboardImg, downloadImg];
 import {
   FeatureSectionSkeleton,
   PricingSectionSkeleton,
@@ -222,13 +227,31 @@ export default function Home() {
                       style={{ transformStyle: "preserve-3d" }}
                       className="relative w-full h-full rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 p-10 flex flex-col justify-center items-center gap-8 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm"
                     >
-                      <motion.div
-                        animate={{ y: [0, -12, 0], rotate: [0, 3, 0, -3, 0] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="w-28 h-28 rounded-3xl flex items-center justify-center text-white bg-primary shadow-xl"
-                      >
-                        {steps[activeStep].icon}
-                      </motion.div>
+                      <div className="step-icon-stage">
+                        <motion.div
+                          aria-hidden
+                          animate={{ scale: [1, 1.18, 1], opacity: [0.4, 0.7, 0.4] }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                          className="absolute inset-0 -m-6 rounded-full bg-primary/25 dark:bg-blue-400/20 blur-2xl"
+                        />
+                        <motion.div
+                          aria-hidden
+                          animate={{ scaleX: [1, 0.75, 1], opacity: [0.45, 0.25, 0.45] }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                          className="absolute left-1/2 -translate-x-1/2 -bottom-4 w-24 h-3 rounded-full bg-slate-900/25 dark:bg-black/50 blur-md"
+                        />
+                        <motion.img
+                          src={stepImages[activeStep]}
+                          alt=""
+                          width={160}
+                          height={160}
+                          loading="lazy"
+                          decoding="async"
+                          className="relative z-10 w-36 h-36 lg:w-40 lg:h-40 object-contain icon-3d-img"
+                          animate={{ y: [0, -12, 0], rotate: [0, 2.5, 0, -2.5, 0] }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      </div>
                       <div className="text-center space-y-2">
                         <div className="text-xs font-bold uppercase tracking-widest text-slate-400">
                           Step 0{activeStep + 1}

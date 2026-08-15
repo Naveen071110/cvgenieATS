@@ -11,10 +11,11 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import AIBrainIcon from "../assets/icons/ai-brain.svg?react";
-import ATSShieldIcon from "../assets/icons/ats-shield.svg?react";
-import SpeedOptimizationIcon from "../assets/icons/speed-optimization.svg?react";
-import MailIcon from "../assets/icons/mail.svg?react";
+import aiBrainImg from "@assets/generated_images/icon-ai-brain-3d.webp";
+import atsShieldImg from "@assets/generated_images/icon-ats-shield-3d.webp";
+import speedBoltImg from "@assets/generated_images/icon-speed-bolt-3d.webp";
+import mailDocImg from "@assets/generated_images/icon-mail-doc-3d.webp";
+import Icon3D from "./Icon3D";
 import AnimatedStatCard from "./AnimatedStatCard";
 import { useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
@@ -365,16 +366,20 @@ export default function HeroSection() {
           <div className="bento-feature-grid">
             <motion.div
               className="feature-card feature-card--big group bg-gradient-to-br from-blue-50/80 via-white/60 to-purple-50/80 dark:from-blue-950/40 dark:via-gray-800/60 dark:to-purple-950/40 border border-blue-200/50 dark:border-blue-700/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 text-left transition-colors duration-300 hover:border-blue-300/70 dark:hover:border-blue-500/50"
-              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
-              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
-              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 48, scale: 0.94, rotateX: 14 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -10, rotateX: -2, scale: 1.015, transition: { duration: 0.25 } }}
+              style={shouldDisableAnimations ? undefined : { transformPerspective: 1000, transformStyle: "preserve-3d" }}
               transition={{ duration: 0.6, delay: 0, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-                <AIBrainIcon
-                  className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-300"
-                  aria-hidden="true"
+              <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
+                <Icon3D
+                  src={aiBrainImg}
+                  size={96}
+                  disabled={shouldDisableAnimations}
+                  glowColor="rgba(59, 130, 246, 0.4)"
+                  floatDelay={0}
                 />
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-2">
@@ -386,16 +391,20 @@ export default function HeroSection() {
             </motion.div>
             <motion.div
               className="feature-card group bg-gradient-to-br from-purple-50/80 via-white/60 to-pink-50/80 dark:from-purple-950/40 dark:via-gray-800/60 dark:to-pink-950/40 border border-purple-200/50 dark:border-purple-700/30 backdrop-blur-sm rounded-2xl p-6 text-left transition-colors duration-300 hover:border-purple-300/70 dark:hover:border-purple-500/50"
-              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
-              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
-              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 48, scale: 0.94, rotateX: 14 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -10, rotateX: -2, scale: 1.015, transition: { duration: 0.25 } }}
+              style={shouldDisableAnimations ? undefined : { transformPerspective: 1000, transformStyle: "preserve-3d" }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
-                <ATSShieldIcon
-                  className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-purple-600 dark:group-hover:text-purple-300"
-                  aria-hidden="true"
+              <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
+                <Icon3D
+                  src={atsShieldImg}
+                  size={84}
+                  disabled={shouldDisableAnimations}
+                  glowColor="rgba(168, 85, 247, 0.4)"
+                  floatDelay={0.8}
                 />
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
@@ -407,16 +416,20 @@ export default function HeroSection() {
             </motion.div>
             <motion.div
               className="feature-card group bg-gradient-to-br from-teal-50/80 via-white/60 to-cyan-50/80 dark:from-teal-950/40 dark:via-gray-800/60 dark:to-cyan-950/40 border border-teal-200/50 dark:border-teal-700/30 backdrop-blur-sm rounded-2xl p-6 text-left transition-colors duration-300 hover:border-teal-300/70 dark:hover:border-teal-500/50"
-              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
-              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
-              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 48, scale: 0.94, rotateX: 14 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -10, rotateX: -2, scale: 1.015, transition: { duration: 0.25 } }}
+              style={shouldDisableAnimations ? undefined : { transformPerspective: 1000, transformStyle: "preserve-3d" }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-                <SpeedOptimizationIcon
-                  className="w-12 h-12 text-primary dark:text-blue-400 transition-all duration-300 group-hover:text-teal-600 dark:group-hover:text-teal-300"
-                  aria-hidden="true"
+              <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
+                <Icon3D
+                  src={speedBoltImg}
+                  size={84}
+                  disabled={shouldDisableAnimations}
+                  glowColor="rgba(20, 184, 166, 0.4)"
+                  floatDelay={1.6}
                 />
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
@@ -428,16 +441,20 @@ export default function HeroSection() {
             </motion.div>
             <motion.div
               className="feature-card feature-card--accent group bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-indigo-700 dark:to-purple-900 border border-indigo-500/30 rounded-2xl p-6 text-left transition-colors duration-300"
-              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.95 }}
-              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1 }}
-              whileHover={shouldDisableAnimations ? undefined : { y: -6, transition: { duration: 0.2 } }}
+              initial={shouldDisableAnimations ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 48, scale: 0.94, rotateX: 14 }}
+              whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              whileHover={shouldDisableAnimations ? undefined : { y: -10, rotateX: -2, scale: 1.015, transition: { duration: 0.25 } }}
+              style={shouldDisableAnimations ? undefined : { transformPerspective: 1000, transformStyle: "preserve-3d" }}
               transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <div className="flex items-center justify-center w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
-                <MailIcon
-                  className="w-12 h-12 text-white transition-all duration-300"
-                  aria-hidden="true"
+              <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
+                <Icon3D
+                  src={mailDocImg}
+                  size={84}
+                  disabled={shouldDisableAnimations}
+                  glowColor="rgba(255, 255, 255, 0.35)"
+                  floatDelay={2.4}
                 />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">
@@ -450,10 +467,16 @@ export default function HeroSection() {
           </div>
 
           {/* Stats Section */}
-          <div 
+          <motion.div
             ref={statsRef}
-            className="mt-20 py-12 px-6 md:px-8 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl shadow-2xl"
+            className="stats-panel-3d relative mt-20 py-12 px-6 md:px-8 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl shadow-2xl overflow-hidden"
+            initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, y: 60, rotateX: 10, scale: 0.97 }}
+            whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+            style={shouldDisableAnimations ? undefined : { transformPerspective: 1200 }}
           >
+            <div aria-hidden="true" className="stats-panel-sheen" />
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white text-center mb-10 md:mb-12">
               We are Just Getting Started
             </h2>
@@ -488,7 +511,7 @@ export default function HeroSection() {
                 shouldAnimate={shouldAnimateStats}
               />
             </div>
-          </div>
+          </motion.div>
       </div>
     </section>
     </>
