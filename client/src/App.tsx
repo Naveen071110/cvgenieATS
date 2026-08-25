@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ConsentProvider } from "@/context/ConsentContext";
+import { CookieBanner } from "@/components/CookieBanner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -111,10 +113,13 @@ function App() {
   const appContent = (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <ConsentProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+            <CookieBanner />
+          </TooltipProvider>
+        </ConsentProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -1,8 +1,10 @@
 import { Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
 import { Link } from "wouter"
 import SecurityLockIcon from "../assets/icons/security-lock.svg?react";
+import { useConsent } from "@/hooks/useConsent";
 
 export default function Footer() {
+  const { openPreferences } = useConsent();
   return (
     <footer className="bg-slate-900 text-white py-6 md:py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -100,6 +102,15 @@ export default function Footer() {
                 <Link to="/pricing-policy" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">
                   Pricing Policy
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={openPreferences}
+                  className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base text-left"
+                >
+                  Cookie Preferences
+                </button>
               </li>
               <li><a href="mailto:singhnaveen360@gmail.com" className="typography-body text-slate-400 hover:text-primary transition-colors text-sm md:text-base">Contact</a></li>
             </ul>

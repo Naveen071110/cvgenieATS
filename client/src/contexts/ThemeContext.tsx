@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { getCookie, setCookie } from "@/lib/cookies/client";
+import { KNOWN_COOKIE_KEYS } from "../../../shared/cookies/types";
 
 type Theme = "light" | "dark";
 
@@ -14,8 +16,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window === "undefined") return "light";
     
+    // Check cookie first, fallback to localStorage
+    const cookieTheme = getCookie<Theme>(KNOWN_COOKIE_KEYS.THEME);
+    if (cookieTheme === 'light' || cookieTheme === 'dark') return cookieTheme;
+
     const stored = localStorage.getItem("theme") as Theme | null;
-    if (stored) return stored;
+    if (stored === 'light' || stored === 'dark') return stored;
     
     return window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
@@ -28,6 +34,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.classList.remove("light", "dark");
     root.classList.add(theme);
     
+    // Set both cookie (if functional consent allowed) and localStorage fallback
+    setCookie(KNOWN_COOKIE_KEYS.THEME, theme, { maxAge: 365 * 24 * 60 * 60 });
     localStorage.setItem("theme", theme);
   }, [theme]);
 

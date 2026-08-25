@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 import { clerkMiddleware } from "@clerk/express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -8,6 +9,7 @@ import { initializeResumeTable } from "./database/resumeQueries";
 import { initializeUsageSessionsTable } from "./database/subscriptionQueries";
 import dodoWebhookRouter from "./webhooks/dodoPayments";
 import { listAvailableProducts, PRODUCT_ID } from "./services/dodoPayments";
+import { getOrCreateGuestSession, setCsrfCookie } from "./cookies/server";
 
 import fs from "fs";
 
@@ -63,6 +65,14 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(cookieParser());
+
+// Initialize guest session and CSRF token endpoint
+app.get("/api/csrf-token", (req, res) => {
+  const token = setCsrfCookie(res);
+  getOrCreateGuestSession(req, res);
+  res.json({ csrfToken: token });
+});
 
 // Apply Clerk middleware globally (only if key is configured, otherwise fallback safely for public routes)
 const clerkPublishableKey = process.env.CLERK_PUBLISHABLE_KEY || process.env.VITE_CLERK_PUBLISHABLE_KEY;
