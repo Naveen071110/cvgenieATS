@@ -1,6 +1,6 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/context/AuthContext";
 
 interface SubscriptionStatus {
   isPro: boolean;
@@ -10,7 +10,7 @@ interface SubscriptionStatus {
 }
 
 export function useSubscription() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery<SubscriptionStatus>({

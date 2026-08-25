@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "wouter";
-import { LoginDialog } from "@/components/LoginDialog";
 
 export function useRequireAuth() {
   const { user, isLoading } = useAuth();
@@ -27,16 +26,9 @@ export function useRequireAuth() {
     }
   }, [user]);
 
-  const AuthDialog = useCallback(() => (
-    <LoginDialog
-      open={showLogin}
-      onOpenChange={(open) => {
-        setShowLogin(open);
-      }}
-      title="Sign in to continue"
-      description="Please sign in to access this feature"
-    />
-  ), [showLogin]);
+  const closeLogin = useCallback(() => {
+    setShowLogin(false);
+  }, []);
 
   return {
     user,
@@ -46,6 +38,7 @@ export function useRequireAuth() {
     requireAuthThenAction,
     showLogin,
     setShowLogin,
-    AuthDialog,
+    closeLogin,
+    pendingDestination,
   };
 }

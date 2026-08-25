@@ -77,7 +77,7 @@ export class PerformanceMonitor {
             console.log(`📊 INP: ${entry.duration.toFixed(2)}ms`);
           }
         });
-      }).observe({ type: 'event', durationThreshold: 40, buffered: true });
+      }).observe({ type: 'event', durationThreshold: 40, buffered: true } as any);
     } catch (e) {
       // event timing might not be supported in all browsers
     }

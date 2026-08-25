@@ -4,10 +4,12 @@ import { Webhook } from 'standardwebhooks';
 const router = Router();
 
 if (!process.env.DODO_PAYMENTS_WEBHOOK_SECRET) {
-  console.warn('DODO_PAYMENTS_WEBHOOK_SECRET is not set. Webhook verification will fail.');
+  console.warn('⚠️ DODO_PAYMENTS_WEBHOOK_SECRET is not set. Webhook verification will fail.');
 }
 
-const webhook = new Webhook(process.env.DODO_PAYMENTS_WEBHOOK_SECRET || '');
+const webhook = process.env.DODO_PAYMENTS_WEBHOOK_SECRET
+  ? new Webhook(process.env.DODO_PAYMENTS_WEBHOOK_SECRET)
+  : null;
 
 interface WebhookPayload {
   event_type: string;
@@ -36,7 +38,9 @@ interface WebhookPayload {
 
 router.post('/dodo-payments', async (req: Request, res: Response) => {
   try {
-    const rawBody = JSON.stringify(req.body);
+    const rawBody = (req as any).rawBody
+      ? (req as any).rawBody.toString('utf8')
+      : JSON.stringify(req.body);
     
     const webhookHeaders = {
       'webhook-id': req.headers['webhook-id'] as string || '',
@@ -45,6 +49,10 @@ router.post('/dodo-payments', async (req: Request, res: Response) => {
     };
 
     try {
+      if (!webhook) {
+        console.error('Webhook verification skipped: DODO_PAYMENTS_WEBHOOK_SECRET is not configured');
+        return res.status(400).json({ error: 'Webhook secret not configured' });
+      }
       await webhook.verify(rawBody, webhookHeaders);
     } catch (err) {
       console.error('Webhook verification failed:', err);
@@ -190,7 +198,7 @@ async function updateUserSubscriptionStatus(
     
     // Priority 2: Try to find user by Dodo customer ID if userId not provided
     if (!finalUserId && customerId) {
-      finalUserId = await getUserByDodoCustomerId(customerId);
+      finalUserId = (await getUserByDodoCustomerId(customerId)) || undefined;
     }
     
     // Priority 3: Try to find by email as last resort

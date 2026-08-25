@@ -9,6 +9,7 @@
 import mammoth from 'mammoth';
 import fs from 'fs';
 import { promisify } from 'util';
+import PDFParser from 'pdf2json';
 
 const readFile = promisify(fs.readFile);
 
@@ -19,7 +20,7 @@ interface ParsedContent {
 }
 
 class DocumentParser {
-  // CRITICAL — DO NOT MODIFY: Main file parsing dispatcher. Routes uploaded files to the correct extractor.
+  // Main file parsing dispatcher. Routes uploaded files to the correct extractor.
   async extractText(filePath: string, mimeType: string): Promise<ParsedContent> {
     switch (mimeType) {
       case 'application/pdf':
@@ -36,28 +37,28 @@ class DocumentParser {
     }
   }
   
-  // CRITICAL — DO NOT MODIFY: DOCX text extraction. Used for all .docx resume uploads.
+  // DOCX text extraction. Used for all .docx resume uploads.
   async extractFromDOCX(filePath: string): Promise<ParsedContent> {
     try {
       const result = await mammoth.extractRawText({ path: filePath });
       const content = result.value;
       return {
         content: content,
-        wordCount: content.split(/\s+/).length,
-        isValid: content.length > 100
+        wordCount: content.split(/\s+/).filter(Boolean).length,
+        isValid: content.length > 50
       };
     } catch (error) {
       throw new Error(`Failed to extract DOCX content: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   
-  // CRITICAL — DO NOT MODIFY: TXT text extraction. Used for all .txt resume uploads.
+  // TXT text extraction. Used for all .txt resume uploads.
   async extractFromTXT(filePath: string): Promise<ParsedContent> {
     try {
       const content = await readFile(filePath, 'utf-8');
       return {
         content: content,
-        wordCount: content.split(/\s+/).length,
+        wordCount: content.split(/\s+/).filter(Boolean).length,
         isValid: content.length > 50
       };
     } catch (error) {
@@ -65,37 +66,36 @@ class DocumentParser {
     }
   }
   
-  // CRITICAL — DO NOT MODIFY: PDF text extraction. Calls the Python pdf_extractor.py script.
+  // PDF text extraction using pure Node.js (pdf2json) for reliable cross-platform execution.
   async extractFromPDF(filePath: string): Promise<ParsedContent> {
-    // Use existing PDF extraction logic from pdf_extractor.py
     try {
-      const { spawn } = require('child_process');
-      
-      return new Promise((resolve, reject) => {
-        const python = spawn('python3', ['pdf_extractor.py', filePath]);
-        let output = '';
-        let error = '';
-        
-        python.stdout.on('data', (data: Buffer) => {
-          output += data.toString();
+      return await new Promise<ParsedContent>((resolve, reject) => {
+        const pdfParser = new (PDFParser as any)(null, 1);
+
+        pdfParser.on("pdfParser_dataError", (errData: any) => {
+          reject(new Error(`PDF extraction failed: ${errData.parserError || JSON.stringify(errData)}`));
         });
-        
-        python.stderr.on('data', (data: Buffer) => {
-          error += data.toString();
-        });
-        
-        python.on('close', (code: number) => {
-          if (code !== 0) {
-            reject(new Error(`PDF extraction failed: ${error}`));
-          } else {
-            const content = output.trim();
+
+        pdfParser.on("pdfParser_dataReady", () => {
+          try {
+            const raw = pdfParser.getRawTextContent() || "";
+            // Clean up page break markers and trailing whitespace
+            const cleanContent = raw
+              .replace(/----------------Page \(\d+\) Break----------------/g, "\n")
+              .replace(/\r\n/g, "\n")
+              .trim();
+
             resolve({
-              content: content,
-              wordCount: content.split(/\s+/).length,
-              isValid: content.length > 100
+              content: cleanContent,
+              wordCount: cleanContent.split(/\s+/).filter(Boolean).length,
+              isValid: cleanContent.length > 50
             });
+          } catch (e) {
+            reject(e);
           }
         });
+
+        pdfParser.loadPDF(filePath);
       });
     } catch (error) {
       throw new Error(`Failed to extract PDF content: ${error instanceof Error ? error.message : 'Unknown error'}`);

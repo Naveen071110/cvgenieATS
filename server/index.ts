@@ -9,13 +9,17 @@ import { initializeUsageSessionsTable } from "./database/subscriptionQueries";
 import dodoWebhookRouter from "./webhooks/dodoPayments";
 import { listAvailableProducts, PRODUCT_ID } from "./services/dodoPayments";
 
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = import.meta.url.includes('/dist/') ? 'production' : 'development';
+}
+
 const app = express();
 
 // Enable compression middleware early in the stack
 app.use(compression({
   level: 6, // Compression level (1-9)
   threshold: 1024, // Only compress responses larger than 1KB
-  filter: (req, res) => {
+  filter: (req: Request, res: Response) => {
     // Don't compress responses if the request includes a cache-control header to prevent compression
     if (req.headers['x-no-compression']) {
       return false;
@@ -25,11 +29,30 @@ app.use(compression({
   }
 }));
 
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({
+  limit: "10mb",
+  verify: (req: any, _res: any, buf: Buffer) => {
+    req.rawBody = buf;
+  }
+}));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Apply Clerk middleware globally
-app.use(clerkMiddleware());
+// Apply Clerk middleware globally (only if key is configured, otherwise fallback safely for public routes)
+const clerkPublishableKey = process.env.CLERK_PUBLISHABLE_KEY || process.env.VITE_CLERK_PUBLISHABLE_KEY;
+const clerkSecretKey = process.env.CLERK_SECRET_KEY;
+
+if (clerkPublishableKey) {
+  app.use(clerkMiddleware({
+    publishableKey: clerkPublishableKey,
+    secretKey: clerkSecretKey,
+  }));
+} else {
+  log("⚠️ Clerk publishable key is not configured. Authentication middleware will be disabled for public routes.");
+  app.use((req, _res, next) => {
+    (req as any).auth = { userId: null };
+    next();
+  });
+}
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -84,13 +107,16 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
 
 (async () => {
   // Initialize Neon database tables
-  try {
-    await initializeResumeTable();
-    await initializeUsageSessionsTable();
-    log("Neon database tables initialized successfully");
-  } catch (error: any) {
-    log("Failed to initialize Neon database tables:", error.message);
-    process.exit(1);
+  if (process.env.DATABASE_URL) {
+    try {
+      await initializeResumeTable();
+      await initializeUsageSessionsTable();
+      log("Neon database tables initialized successfully");
+    } catch (error: any) {
+      log("⚠️ Failed to initialize Neon database tables:", error.message);
+    }
+  } else {
+    log("⚠️ DATABASE_URL not configured. Database features will be unavailable.");
   }
 
   // Validate Dodo Payments configuration
@@ -159,8 +185,13 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    res.status(status).json({ message });
-    throw err;
+    if (!res.headersSent) {
+      res.status(status).json({ message });
+    }
+    log(`[error] ${status} - ${message}`);
+    if (status >= 500 && err.stack) {
+      console.error(err.stack);
+    }
   });
 
   // Create HTTP server instance

@@ -19,6 +19,7 @@ import Icon3D from "./Icon3D";
 import AnimatedStatCard from "./AnimatedStatCard";
 import { useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { LoginDialog } from "@/components/LoginDialog";
 
 
 
@@ -77,7 +78,7 @@ export default function HeroSection() {
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
   const shouldDisableAnimations = isMobile || prefersReducedMotion;
-  const { requireAuthThenNavigate, AuthDialog } = useRequireAuth();
+  const { requireAuthThenNavigate, showLogin, setShowLogin } = useRequireAuth();
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -353,7 +354,12 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-      <AuthDialog />
+      <LoginDialog
+        open={showLogin}
+        onOpenChange={setShowLogin}
+        title="Sign in to continue"
+        description="Please sign in to access this feature"
+      />
     </section>
 
     {/* Features & stats — outside the video hero */}

@@ -55,7 +55,10 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       generationsUsed: insertSession.generationsUsed ?? 0,
-      isPro: insertSession.isPro ?? 0
+      isPro: insertSession.isPro ?? 0,
+      dodoCustomerId: insertSession.dodoCustomerId ?? null,
+      dodoSubscriptionId: insertSession.dodoSubscriptionId ?? null,
+      subscriptionStatus: insertSession.subscriptionStatus ?? null,
     };
     this.usageSessions.set(id, session);
     return session;

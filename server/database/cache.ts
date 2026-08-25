@@ -5,6 +5,17 @@ interface CacheEntry<T> {
 
 class MemoryCache {
   private store: Map<string, CacheEntry<any>> = new Map();
+  private cleanupTimer: NodeJS.Timeout | null = null;
+
+  constructor() {
+    // Run cleanup every 5 minutes to sweep expired entries
+    if (typeof setInterval !== 'undefined') {
+      this.cleanupTimer = setInterval(() => this.cleanup(), 5 * 60 * 1000);
+      if (this.cleanupTimer.unref) {
+        this.cleanupTimer.unref();
+      }
+    }
+  }
 
   get<T>(key: string): T | null {
     const entry = this.store.get(key);
@@ -17,6 +28,10 @@ class MemoryCache {
   }
 
   set<T>(key: string, data: T, ttlMs: number): void {
+    // Prevent unbounded memory growth by limiting cache size
+    if (this.store.size > 2000) {
+      this.cleanup();
+    }
     this.store.set(key, {
       data,
       expiresAt: Date.now() + ttlMs,
@@ -34,6 +49,15 @@ class MemoryCache {
         this.store.delete(key);
       }
     }
+  }
+
+  private cleanup(): void {
+    const now = Date.now();
+    this.store.forEach((entry, key) => {
+      if (now > entry.expiresAt) {
+        this.store.delete(key);
+      }
+    });
   }
 }
 

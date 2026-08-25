@@ -1,6 +1,6 @@
 import { Check, Star } from "lucide-react"
 import { useState } from "react"
-import { useUser } from "@clerk/clerk-react"
+import { useAuth } from "@/context/AuthContext"
 import ATSShieldIcon from "../assets/icons/ats-shield.svg?react"
 import MultiFormatExportIcon from "../assets/icons/multi-format-export.svg?react"
 import AnalyticsDashboardIcon from "../assets/icons/analytics-dashboard.svg?react"
@@ -152,7 +152,7 @@ export default function PricingSection() {
   const cardsAnimation = useScrollAnimation({ threshold: 0.3 });
   const { isOpen, openAuthDialog, closeAuthDialog, dialogConfig } = useAuthDialog();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn } = useAuth();
   const [, setLocation] = useLocation();
 
   const handleFreeClick = () => {

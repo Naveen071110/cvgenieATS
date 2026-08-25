@@ -19,7 +19,7 @@ import path from "path";
 import fs from "fs";
 import { requireAuth, getAuth, clerkClient } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
-import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription } from "./services/dodoPayments";
+import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription, PRODUCT_ID } from "./services/dodoPayments";
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
 import type { ResumeData } from "./documentGenerator"; // Assuming ResumeData is exported from documentGenerator
 import { getUserSubscription, updateUserSubscription } from "./database/subscriptionQueries";
@@ -420,17 +420,18 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // Download endpoint
+  // Download endpoint (Sanitized against path traversal)
   app.get("/api/download/:filename", (req, res) => {
     try {
-      const filename = req.params.filename;
-      const filepath = path.join(tmpDir, filename); // Use tmpDir
+      const sanitizedFilename = path.basename(req.params.filename);
+      const filepath = path.resolve(tmpDir, sanitizedFilename);
 
-      if (!fs.existsSync(filepath)) {
+      // Verify the resolved path is strictly within tmpDir
+      if (!filepath.startsWith(path.resolve(tmpDir)) || !fs.existsSync(filepath)) {
         return res.status(404).json({ error: "File not found" });
       }
 
-      res.download(filepath, filename, (err) => {
+      res.download(filepath, sanitizedFilename, (err) => {
         if (err) {
           console.error("Download error:", err);
           // Ensure error response is sent only once
@@ -729,9 +730,10 @@ ${resumeText.trim().slice(0, 6000)}`;
         await updateUserSubscription(userId, '', '', 'free');
       }
 
-      // SIMPLIFIED: Use direct Dodo Payments checkout link
-      // This bypasses API issues and uses the proven checkout page
-      const productId = process.env.DODO_PAYMENTS_PRODUCT_ID || 'pdt_4oZICjqHtM1kIMDDDEpTG';
+      const productId = process.env.DODO_PAYMENTS_PRODUCT_ID || PRODUCT_ID;
+      if (!productId) {
+        return res.status(500).json({ error: "Payment product ID is not configured" });
+      }
 
       // Build checkout URL with prefilled customer information
       const checkoutUrl = new URL(`https://checkout.dodopayments.com/buy/${productId}`);

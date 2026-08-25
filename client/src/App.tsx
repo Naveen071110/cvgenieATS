@@ -108,16 +108,24 @@ function App() {
     console.warn('Clerk publishable key is missing. Please add VITE_CLERK_PUBLISHABLE_KEY to your environment variables.');
   }
 
+  const appContent = (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+
+  if (!clerkPubKey) {
+    return appContent;
+  }
+
   return (
-    <ClerkProvider publishableKey={clerkPubKey || ''}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+    <ClerkProvider publishableKey={clerkPubKey}>
+      {appContent}
     </ClerkProvider>
   );
 }

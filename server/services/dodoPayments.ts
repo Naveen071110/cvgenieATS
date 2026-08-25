@@ -1,11 +1,11 @@
 import DodoPayments from 'dodopayments';
 
 if (!process.env.DODO_PAYMENTS_API_KEY) {
-  throw new Error('DODO_PAYMENTS_API_KEY is not set in environment variables');
+  console.warn('⚠️ DODO_PAYMENTS_API_KEY is not set in environment variables');
 }
 
 if (!process.env.DODO_PAYMENTS_PRODUCT_ID) {
-  throw new Error('DODO_PAYMENTS_PRODUCT_ID is not set in environment variables');
+  console.warn('⚠️ DODO_PAYMENTS_PRODUCT_ID is not set in environment variables');
 }
 
 /**
@@ -33,31 +33,37 @@ const getDodoEnvironment = (): 'live_mode' | 'test_mode' => {
 };
 
 export const DODO_ENVIRONMENT = getDodoEnvironment();
-export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID;
+export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID || '';
 
 // Log configuration at startup
 console.log('🔧 Dodo Payments Configuration:');
 console.log(`   Environment: ${DODO_ENVIRONMENT}`);
-console.log(`   Product ID: ${PRODUCT_ID.substring(0, 15)}...`);
-console.log(`   API Key: ${process.env.DODO_PAYMENTS_API_KEY?.substring(0, 10)}...`);
+console.log(`   Product ID: ${PRODUCT_ID ? PRODUCT_ID.substring(0, 15) + '...' : 'Not configured'}`);
+console.log(`   API Key: ${process.env.DODO_PAYMENTS_API_KEY ? process.env.DODO_PAYMENTS_API_KEY.substring(0, 10) + '...' : 'Not configured'}`);
 
-export const dodoClient = new DodoPayments({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY,
-  environment: DODO_ENVIRONMENT,
-});
+export const dodoClient = process.env.DODO_PAYMENTS_API_KEY
+  ? new DodoPayments({
+      bearerToken: process.env.DODO_PAYMENTS_API_KEY,
+      environment: DODO_ENVIRONMENT,
+    })
+  : null;
 
 /**
  * Debug function to list all available products in current environment
  */
-export async function listAvailableProducts() {
+export async function listAvailableProducts(): Promise<any[]> {
+  if (!dodoClient) {
+    return [];
+  }
   try {
-    const products = await dodoClient.products.list({});
+    const productsResponse: any = await dodoClient.products.list({});
+    const products = productsResponse.items || productsResponse.products || [];
     console.log('📦 Available products in Dodo Payments:');
-    if (products.products && products.products.length > 0) {
-      products.products.forEach((product: any) => {
+    if (products.length > 0) {
+      products.forEach((product: any) => {
         console.log(`  - ${product.name}: ${product.product_id}`);
       });
-      return products.products;
+      return products;
     } else {
       console.log('  ⚠️ No products found in current environment');
       return [];
@@ -72,10 +78,14 @@ export async function listAvailableProducts() {
  * Get or create a Dodo Payments customer by email
  */
 export async function getOrCreateCustomer(email: string, name: string) {
+  if (!dodoClient) {
+    throw new Error('Dodo Payments is not configured');
+  }
   try {
     // Try to find existing customer by email
-    const customers = await dodoClient.customers.list({});
-    const existingCustomer = customers.customers?.find((c: any) => c.email === email);
+    const customersResponse: any = await dodoClient.customers.list({});
+    const customersList: any[] = customersResponse.items || customersResponse.customers || [];
+    const existingCustomer = customersList.find((c: any) => c.email === email);
 
     if (existingCustomer) {
       return {
@@ -114,9 +124,9 @@ export async function createCheckoutSession(
   console.log(`👤 Customer: ${customerEmail} (User ID: ${userId})`);
   console.log(`🌍 Dodo Environment: ${DODO_ENVIRONMENT}`);
   console.log(`🆔 Product ID: ${productId}`);
-  console.log(`🔑 API Key (first 10 chars): ${apiKey?.substring(0, 10)}...`);
+  console.log(`🔑 API Key (first 10 chars): ${apiKey ? apiKey.substring(0, 10) + '...' : 'Not configured'}`);
 
-  if (!apiKey || !productId) {
+  if (!dodoClient || !apiKey || !productId) {
     console.error("❌ Missing Dodo Payments configuration");
     throw new Error("Dodo Payments API key or Product ID not configured");
   }
@@ -133,18 +143,14 @@ export async function createCheckoutSession(
     const availableProducts = await listAvailableProducts();
     const productExists = availableProducts.some((p: any) => p.product_id === productId);
     
-    if (!productExists) {
+    if (!productExists && availableProducts.length > 0) {
       console.error(`❌ CRITICAL: Product ID '${productId}' NOT FOUND in Dodo Payments ${DODO_ENVIRONMENT}`);
-      if (availableProducts.length > 0) {
-        console.error(`💡 Available products in ${DODO_ENVIRONMENT}:`);
-        availableProducts.forEach((p: any) => {
-          console.error(`   - ${p.name}: ${p.product_id}`);
-        });
-      } else {
-        console.error(`⚠️ No products found in ${DODO_ENVIRONMENT}. Check your Dodo dashboard.`);
-      }
+      console.error(`💡 Available products in ${DODO_ENVIRONMENT}:`);
+      availableProducts.forEach((p: any) => {
+        console.error(`   - ${p.name}: ${p.product_id}`);
+      });
       throw new Error(`Product not found in ${DODO_ENVIRONMENT}. Please verify your product exists in the correct environment.`);
-    } else {
+    } else if (productExists) {
       console.log(`✅ Product verified: ${productId} exists in ${DODO_ENVIRONMENT}`);
     }
 
@@ -189,7 +195,7 @@ export async function createCheckoutSession(
     console.error(`🌍 Environment: ${DODO_ENVIRONMENT}`);
     console.error(`🆔 Product ID: ${productId}`);
     console.error(`👤 Customer: ${customerEmail}`);
-    console.error(`🔴 Error Type: ${error.constructor.name}`);
+    console.error(`🔴 Error Type: ${error.constructor?.name || typeof error}`);
     console.error(`🔴 Error Message: ${error.message}`);
     console.error(`🔴 Status Code: ${error.status || error.response?.status || 'N/A'}`);
     console.error(`🔴 Response Data:`, JSON.stringify(error.response?.data || error.body || 'No response data', null, 2));
@@ -226,6 +232,9 @@ export async function createCheckoutSession(
 }
 
 export async function verifyPaymentStatus(paymentId: string) {
+  if (!dodoClient) {
+    throw new Error('Dodo Payments is not configured');
+  }
   try {
     const payment = await dodoClient.payments.retrieve(paymentId);
     return {
@@ -240,6 +249,9 @@ export async function verifyPaymentStatus(paymentId: string) {
 }
 
 export async function getSubscriptionStatus(subscriptionId: string) {
+  if (!dodoClient) {
+    throw new Error('Dodo Payments is not configured');
+  }
   try {
     const subscription = await dodoClient.subscriptions.retrieve(subscriptionId);
     return {
@@ -254,6 +266,9 @@ export async function getSubscriptionStatus(subscriptionId: string) {
 }
 
 export async function cancelSubscription(subscriptionId: string) {
+  if (!dodoClient) {
+    throw new Error('Dodo Payments is not configured');
+  }
   try {
     const subscription = await dodoClient.subscriptions.update(subscriptionId, {
       status: 'cancelled',
