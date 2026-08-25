@@ -23,6 +23,7 @@ import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, canc
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
 import type { ResumeData } from "./documentGenerator"; // Assuming ResumeData is exported from documentGenerator
 import { getUserSubscription, updateUserSubscription } from "./database/subscriptionQueries";
+import { generateLimiter, uploadLimiter, interviewLimiter } from "./middleware/rateLimiter";
 
 const tmpDir = path.join(process.cwd(), "tmp");
 
@@ -246,8 +247,8 @@ Generate a professional cover letter now:`;
 }
 
 export function registerRoutes(app: Express) {
-  // File upload endpoint (requires auth)
-  app.post("/api/upload", upload.single("resume"), async (req, res) => {
+  // File upload endpoint (requires auth + rate limited)
+  app.post("/api/upload", uploadLimiter, upload.single("resume"), async (req, res) => {
     try {
       const userId = getAuth(req)?.userId;
       if (!userId) {
@@ -324,8 +325,8 @@ export function registerRoutes(app: Express) {
   });
 
   // CRITICAL — DO NOT MODIFY: End-to-end generation endpoint. Orchestrates all AI + document steps.
-  // Generate resume and cover letter endpoint (DeepSeek)
-  app.post("/api/generate", async (req, res) => {
+  // Generate resume and cover letter endpoint (DeepSeek + Rate Limited)
+  app.post("/api/generate", generateLimiter, async (req, res) => {
     try {
       const { resumeText, coverLetterText, jobDescription, format = "pdf" } = req.body;
       const userId = getAuth(req)?.userId; // Use getAuth directly
@@ -455,12 +456,16 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // Get user's resumes from storage
+  // Get user's resumes from storage (requires auth)
   app.get("/api/resumes", async (req, res) => {
     try {
-      const sessionId = req.query.sessionId as string || "default_session";
-      const generations = await storage.getGenerationsBySession(sessionId);
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
 
+      const generations = await storage.getGenerationsBySession(userId);
       res.json(generations);
     } catch (error: any) {
       console.error("Fetch resumes error:", error);
@@ -469,7 +474,7 @@ export function registerRoutes(app: Express) {
   });
 
   // GET /api/resume-history - Fetch resume history from NEON POSTGRES ONLY (requires auth and active Pro)
-  app.get("/api/resume-history", requireAuth(), async (req, res) => {
+  app.get("/api/resume-history", async (req, res) => {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
@@ -501,7 +506,7 @@ export function registerRoutes(app: Express) {
   });
 
   // GET /api/resume-history/:id - Fetch single resume by ID from NEON POSTGRES ONLY (requires auth and active Pro)
-  app.get("/api/resume-history/:id", requireAuth(), async (req, res) => {
+  app.get("/api/resume-history/:id", async (req, res) => {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
@@ -541,7 +546,7 @@ export function registerRoutes(app: Express) {
   });
 
   // DELETE /api/resume-history/:id - Delete resume from NEON POSTGRES ONLY (requires auth and active Pro)
-  app.delete("/api/resume-history/:id", requireAuth(), async (req, res) => {
+  app.delete("/api/resume-history/:id", async (req, res) => {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
@@ -580,8 +585,8 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // POST /api/interview-questions — generate mock interview questions from resume text (requires auth)
-  app.post("/api/interview-questions", requireAuth(), async (req, res) => {
+  // POST /api/interview-questions — generate mock interview questions from resume text (requires auth + rate limited)
+  app.post("/api/interview-questions", interviewLimiter, requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;

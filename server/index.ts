@@ -158,7 +158,7 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
     log(`❌ Current value: ${dodoProductId}`);
   } else {
     // Note: Dodo environment logging is now in dodoPayments.ts on import
-    log(`✅ Dodo Payments Product ID configured: ${dodoProductId.substring(0, 15)}...`);
+    log(`✅ Dodo Payments Product ID configured: [CONFIGURED]`);
     
     // Verify product exists in Dodo Payments
     try {

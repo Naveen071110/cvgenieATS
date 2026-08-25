@@ -38,8 +38,8 @@ export const PRODUCT_ID = process.env.DODO_PAYMENTS_PRODUCT_ID || '';
 // Log configuration at startup
 console.log('🔧 Dodo Payments Configuration:');
 console.log(`   Environment: ${DODO_ENVIRONMENT}`);
-console.log(`   Product ID: ${PRODUCT_ID ? PRODUCT_ID.substring(0, 15) + '...' : 'Not configured'}`);
-console.log(`   API Key: ${process.env.DODO_PAYMENTS_API_KEY ? process.env.DODO_PAYMENTS_API_KEY.substring(0, 10) + '...' : 'Not configured'}`);
+console.log(`   Product ID: ${PRODUCT_ID ? '[CONFIGURED]' : 'Not configured'}`);
+console.log(`   API Key: ${process.env.DODO_PAYMENTS_API_KEY ? '[CONFIGURED]' : 'Not configured'}`);
 
 export const dodoClient = process.env.DODO_PAYMENTS_API_KEY
   ? new DodoPayments({
@@ -124,7 +124,7 @@ export async function createCheckoutSession(
   console.log(`👤 Customer: ${customerEmail} (User ID: ${userId})`);
   console.log(`🌍 Dodo Environment: ${DODO_ENVIRONMENT}`);
   console.log(`🆔 Product ID: ${productId}`);
-  console.log(`🔑 API Key (first 10 chars): ${apiKey ? apiKey.substring(0, 10) + '...' : 'Not configured'}`);
+  console.log(`🔑 API Key: ${apiKey ? '[CONFIGURED]' : 'Not configured'}`);
 
   if (!dodoClient || !apiKey || !productId) {
     console.error("❌ Missing Dodo Payments configuration");

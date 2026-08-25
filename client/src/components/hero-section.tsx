@@ -31,43 +31,7 @@ const rotatingTexts = [
   "Remote Work",
 ];
 
-// Particle component
-const Particle = ({ delay }: { delay: number }) => (
-  <div
-    className="absolute w-1 h-1 bg-primary/20 rounded-full animate-float"
-    style={{
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      animationDelay: `${delay}s`,
-      animationDuration: `${6 + Math.random() * 4}s`,
-    }}
-  />
-);
 
-// Placeholder for the spinner component
-const Spinner = () => (
-  <div className="flex items-center justify-center">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-  </div>
-);
-
-// Placeholder for skeleton component
-const SkeletonLoader = () => (
-  <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg p-4">
-    <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
-    <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
-  </div>
-);
-
-// Placeholder for progress indicator component
-const ProgressIndicator = ({ progress }: { progress: number }) => (
-  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-    <div
-      className="bg-primary dark:bg-blue-500 h-2.5 rounded-full transition-all duration-300"
-      style={{ width: `${progress}%` }}
-    ></div>
-  </div>
-);
 
 export default function HeroSection() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -156,11 +120,12 @@ export default function HeroSection() {
       <video
         className="absolute inset-0 w-full h-full object-cover"
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4"
+        poster="/hero-ai-resume.jpg"
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload={isMobile ? "none" : "auto"}
         aria-hidden="true"
       />
 

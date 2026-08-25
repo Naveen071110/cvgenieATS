@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { getPostBySlug, blogPosts } from "@/content/blog/posts";
+import DOMPurify from "dompurify";
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -119,7 +120,7 @@ export default function BlogPost() {
             prose-blockquote:border-blue-400 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:pr-4
             prose-ol:text-slate-600 dark:prose-ol:text-slate-400
             prose-a:text-blue-600 dark:prose-a:text-blue-400"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
 
         {/* CTA */}
