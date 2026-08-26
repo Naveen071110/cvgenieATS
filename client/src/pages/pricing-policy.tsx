@@ -27,31 +27,37 @@ export default function PricingPolicy() {
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">Free Plan</h2>
             <ul className="space-y-2 text-slate-600 dark:text-slate-400">
-              <li>3 resume/cover letter generations per month</li>
-              <li>No signup needed</li>
-              <li>Full access to basic features</li>
+              <li>3 AI resume and cover letter generations per month</li>
+              <li>Core two-pass ATS keyword optimization</li>
+              <li>PDF (with watermark), DOCX, and TXT document exports</li>
+              <li>Free account creation with secure Google / Email sign-in</li>
             </ul>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">Pro Plan</h2>
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">Pro Plan ($9.99 / Month)</h2>
             <ul className="space-y-2 mb-4 text-slate-600 dark:text-slate-400">
-              <li>$9.99/month</li>
-              <li>Unlimited generations</li>
-              <li>Priority queue (where available)</li>
+              <li>Unlimited AI resume and cover letter generations</li>
+              <li>100% Watermark-free clean PDF and Word DOCX downloads</li>
+              <li>Priority instant AI generation speed (zero queue delays)</li>
+              <li>Full resume version history with encrypted cloud persistence</li>
+              <li>AI mock interview preparation and behavioral question copilot</li>
+              <li>Priority email customer support</li>
             </ul>
-            <p className="text-slate-600 dark:text-slate-400">Pro subscriptions are billed monthly and can be cancelled anytime via your account.</p>
+            <p className="text-slate-600 dark:text-slate-400">
+              Pro subscriptions are billed monthly on a recurring basis and can be cancelled at any time directly from your account settings.
+            </p>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">Refunds</h2>
-            <p className="text-slate-600 dark:text-slate-400">
-              Refunds are granted only if a technical failure prevents delivery of Pro features and you contact support within 7 days of purchase.
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">Refund Policy</h2>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              We want you to be completely satisfied with CVGenie. If you experience technical issues or are not satisfied with your Pro subscription, you may request a full refund within 14 days of purchase by contacting our billing team.
             </p>
           </div>
           
           <p className="text-slate-600 dark:text-slate-400">
-            For questions or cancellations, email <a href="mailto:billing@cvgenie.com" className="text-primary hover:underline">billing@cvgenie.com</a>.
+            For billing inquiries, subscription cancellations, or refunds, please email <a href="mailto:singhnaveen360@gmail.com" className="text-primary hover:underline">singhnaveen360@gmail.com</a>.
           </p>
         </div>
       </div>

@@ -78,14 +78,14 @@ export function SubscriptionModal({ isOpen, onClose, onNeedLogin }: Subscription
   };
 
   const proFeatures = [
-    "Unlimited resume generations",
-    "Unlimited cover letters",
-    "Priority AI processing",
-    "Advanced ATS optimization",
-    "Resume history storage",
-    "Download in multiple formats",
-    "24/7 priority support",
-    "Cancel anytime",
+    "Unlimited ATS resume generations",
+    "100% Watermark-free PDF & DOCX downloads",
+    "Priority instant AI processing speed",
+    "Unlimited tailored cover letters",
+    "Complete resume version history & storage",
+    "AI interview preparation copilot",
+    "Priority email support",
+    "Cancel anytime from your account",
   ];
 
   return (

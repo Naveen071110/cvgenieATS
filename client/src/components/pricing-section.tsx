@@ -14,55 +14,55 @@ import { Link, useLocation } from "wouter"
 
 const freePlanFeatures = [
   {
-    text: "3 Genie's Wishes per month",
-    description: "Perfect for testing our magical AI technology"
+    text: "3 AI Resume Generations / Month",
+    description: "Full access to our core two-pass ATS optimization engine"
   },
   {
-    text: "Professional ATS optimization",
-    description: "Beat applicant tracking systems"
+    text: "Tailored AI Cover Letters",
+    description: "Generated alongside each resume to match the job post"
   },
   {
-    text: "Personalized cover letters",
-    description: "Match each job application perfectly"
+    text: "Interactive ATS Score Analysis",
+    description: "Instant feedback on keyword density and section structure"
   },
   {
-    text: "Multiple export formats (DOCX, TXT)",
-    description: "Compatible with all job applications"
+    text: "Multiple Export Formats",
+    description: "Export to PDF (with watermark), Word DOCX, & TXT"
   },
   {
-    text: "Quick Google sign-in",
-    description: "Get started in seconds"
+    text: "Quick Google & Email Sign-In",
+    description: "Get started in seconds with secure authentication"
   }
 ];
 
 const proPlanFeatures = [
   {
-    text: "Unlimited Genie's Wishes",
-    description: "Apply to as many jobs as you want"
+    text: "Unlimited AI Resume Generations",
+    description: "Apply to as many jobs as you need without monthly limits"
   },
   {
-    text: "Priority Genie processing",
-    description: "Your wishes granted faster than free users"
+    text: "100% Watermark-Free Downloads",
+    description: "Clean, professional PDF & DOCX files ready for submission"
   },
   {
-    text: "Advanced magical optimizations",
-    description: "Premium spells for better results"
+    text: "Priority Instant AI Processing",
+    description: "Zero wait times with instant high-speed generation"
   },
   {
-    text: "Premium export formats",
-    description: "Additional styling and layout options"
+    text: "Resume Version History & Cloud Storage",
+    description: "Save, manage, and re-download all past generated resumes"
   },
   {
-    text: "Email support",
-    description: "Direct help when you need it"
+    text: "AI Interview Preparation Copilot",
+    description: "Targeted behavioral, technical, and role-specific mock questions"
   },
   {
-    text: "Resume version history",
-    description: "Track and compare different versions"
+    text: "Unlimited Matched Cover Letters",
+    description: "Personalized cover letters matching each tailored resume"
   },
   {
-    text: "Job-specific customization",
-    description: "Tailor resumes for specific roles"
+    text: "Priority Email Support",
+    description: "Direct assistance whenever you need help"
   }
 ];
 

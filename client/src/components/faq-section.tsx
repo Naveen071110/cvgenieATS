@@ -64,13 +64,13 @@ const faqData: FAQItem[] = [
   {
     id: 'refund-policy',
     question: 'What is your refund policy?',
-    answer: 'We offer a 30-day money-back guarantee. If you\'re not satisfied with our service, contact support within 30 days of purchase for a full refund.',
+    answer: 'We offer a 14-day money-back satisfaction guarantee on Pro subscriptions. If you experience technical issues or are not satisfied, contact support within 14 days of purchase for a full refund.',
     keywords: ['refund', 'money back', 'guarantee', 'cancel', 'return']
   },
   {
     id: 'support',
     question: 'How can I get support?',
-    answer: 'Our support team is available via email at support@cvgenie.com. Premium users also get priority support with faster response times. We typically respond within 24 hours.',
+    answer: 'Our support team is available via email at singhnaveen360@gmail.com. Pro users receive priority support with fast turnaround times.',
     keywords: ['support', 'help', 'contact', 'email', 'assistance', 'customer service']
   }
 ];
