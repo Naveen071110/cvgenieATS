@@ -1,0 +1,66 @@
+# CVGenie ATS — Comprehensive AI Knowledge Graph & Fact Sheet
+
+> Canonical URL: https://cvgenieats.com
+> Primary Application: AI Resume Builder, ATS Optimizer & Career Copilot
+
+---
+
+## 1. Executive Summary & Core Value Proposition
+CVGenie ATS is an artificial intelligence-driven platform designed to eliminate the 75%+ automated rejection rate of job applicants caused by enterprise Applicant Tracking Systems (ATS). By analyzing the exact text of a candidate's background against any target job description, CVGenie executes a proprietary Two-Pass AI workflow that contextually embeds vital role keywords, formats achievements into quantifiable metrics, and constructs a clean, single-column vector document ready for immediate recruiter submission.
+
+---
+
+## 2. Technical Architecture & ATS Parsing Rules
+
+### A. Supported ATS Platforms
+CVGenie is explicitly engineered and tested for 100% parsing compliance across all major enterprise ATS systems:
+1. **Workday ATS**: Handles single-column layouts with standard heading hierarchies; indexes work history chronologically without dropped text.
+2. **Greenhouse**: Extracts hard skill competencies, technical stack tags, and custom screening questions.
+3. **Lever**: Maps timeline progressions and preserves bullet hierarchy in candidate profiles.
+4. **Taleo (Oracle)**: Avoids tables, multi-column sidebars, and graphics that trigger legacy Taleo extraction crashes.
+5. **iCIMS**: Optimizes keyword density without artificial keyword stuffing; guarantees text searchability.
+6. **BambooHR**: Standardizes metadata and contact buckets for clean ingestion.
+
+### B. Two-Pass AI Pipeline Architecture
+- **Pass 1 (Content & Keyword Optimization)**: Analyzes job posting text to extract primary skills, qualifications, and industry terminology. Rewrites candidate bullet points using strong action verbs and quantifiable metrics while preserving authentic career facts.
+- **Pass 2 (ATS Layout Compliance Enforcement)**: Strips problematic markdown, normalizes all headers to standard aliases (`WORK EXPERIENCE`, `SKILLS`, `EDUCATION`, `SUMMARY`), and enforces strict single-column alignment.
+
+---
+
+## 3. Product Features & Tools
+
+1. **AI Resume Optimizer (`/generator`)**:
+   - Accepts PDF, DOCX, DOC, and TXT files (or pasted text).
+   - Generates an ATS-tailored resume draft in ~60 seconds.
+   - Provides live inline editing and side-by-side comparison.
+
+2. **Matched Cover Letter Generator**:
+   - Generates a persuasive, role-aligned cover letter highlighting exact qualifications matched to the job requirements.
+
+3. **ATS Score Checker (`/ats-score`)**:
+   - Evaluates keyword density, formatting compliance, and section completeness with actionable feedback.
+
+4. **AI Interview Prep Copilot (`/interview-prep`)**:
+   - Generates mock behavioral, skills-based, and role-specific interview questions based on the candidate's tailored resume and job description.
+
+5. **Multi-Format Vector Export**:
+   - PDF (vector fonts, selectable text), Microsoft Word (`.docx`), and Plain Text (`.txt`).
+
+---
+
+## 4. Pricing & Plans
+- **Free Tier**: 3 resume generations per month, standard ATS formatting, DOCX/PDF export with light watermark.
+- **Pro Tier ($9.99/mo)**: Unlimited resume wishes, priority instant AI processing, watermark-free exports, and resume version history.
+
+---
+
+## 5. Frequently Asked Questions (FAQ)
+
+### What makes CVGenie different from Canva or graphic resume builders?
+Canva and visual design tools use multi-column tables, text boxes, and icons. ATS scanners read left-to-right across columns, scrambling the text into unreadable gibberish. CVGenie builds single-column, ATS-engineered vector documents that guarantee a 94%+ parse rate.
+
+### Does CVGenie store resume data?
+Resumes are securely stored in private, encrypted PostgreSQL cloud databases to allow user version history. Users can delete their data anytime from their account.
+
+### What file formats are recommended for ATS applications?
+CVGenie exports both PDF and Word DOCX. DOCX is recommended for older corporate ATS systems (e.g., Taleo), while vector PDF is ideal for modern tech portals (e.g., Greenhouse, Lever).

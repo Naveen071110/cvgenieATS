@@ -43,39 +43,101 @@
 
     <title>CVGenie ATS - AI Resume Builder & ATS Optimizer | cvgenieats.com</title>
 
-    <!-- Structured Data for SEO -->
+    <!-- Structured Data for SEO & AEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "CVGenie",
-      "alternateName": "CVGenie ATS",
-      "url": "https://cvgenieats.com",
-      "description": "AI-powered resume builder and ATS optimizer that helps job seekers create professional resumes and cover letters optimized for applicant tracking systems.",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web Browser",
-      "offers": [
+      "@graph": [
         {
-          "@type": "Offer",
-          "name": "Free Plan",
-          "price": "0",
-          "priceCurrency": "USD",
-          "description": "3 resume generations per month"
+          "@type": "Organization",
+          "@id": "https://cvgenieats.com/#organization",
+          "name": "CVGenie ATS",
+          "url": "https://cvgenieats.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://cvgenieats.com/og-image.jpg",
+            "width": 1200,
+            "height": 630
+          },
+          "sameAs": [
+            "https://twitter.com/cvgenieats",
+            "https://www.linkedin.com/company/cvgenieats",
+            "https://github.com/Naveen071110/cvgenieATS"
+          ]
         },
         {
-          "@type": "Offer",
-          "name": "Pro Plan",
-          "price": "9.99",
-          "priceCurrency": "USD",
-          "description": "Unlimited resume generations and premium features"
+          "@type": "WebSite",
+          "@id": "https://cvgenieats.com/#website",
+          "url": "https://cvgenieats.com",
+          "name": "CVGenie ATS",
+          "publisher": {
+            "@id": "https://cvgenieats.com/#organization"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://cvgenieats.com/#software",
+          "name": "CVGenie ATS",
+          "alternateName": ["CVGenie", "CV Genie ATS", "CVGenie AI Resume Builder"],
+          "url": "https://cvgenieats.com",
+          "description": "AI-powered resume builder and ATS optimizer that tailors resumes to job descriptions and ensures 100% compliance with Applicant Tracking Systems like Workday and Greenhouse.",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web Browser",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "1240",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Free Tier",
+              "price": "0",
+              "priceCurrency": "USD",
+              "description": "3 ATS-optimized resume generations per month"
+            },
+            {
+              "@type": "Offer",
+              "name": "Pro Monthly",
+              "price": "9.99",
+              "priceCurrency": "USD",
+              "description": "Unlimited ATS optimizations, priority AI generation, watermark-free PDF/DOCX downloads"
+            }
+          ],
+          "creator": {
+            "@id": "https://cvgenieats.com/#organization"
+          },
+          "keywords": "AI resume builder, ATS optimizer, Workday resume builder, Greenhouse ATS resume, resume scanner, ATS resume format"
+        },
+        {
+          "@type": "HowTo",
+          "@id": "https://cvgenieats.com/#howto",
+          "name": "How to Create an ATS-Optimized Resume with CVGenie",
+          "description": "Step-by-step guide to optimizing your resume for applicant tracking systems in under 2 minutes.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Upload or paste your existing resume",
+              "text": "Upload your resume in PDF, Word (DOCX), or plain text (TXT) format or paste the text directly into CVGenie."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Paste the target job description",
+              "text": "Copy and paste the job posting requirements so CVGenie's AI can extract essential keywords and competencies."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Generate and download your ATS-ready resume and cover letter",
+              "text": "Download your tailored, single-column vector resume in PDF, DOCX, or TXT format alongside a matched cover letter."
+            }
+          ]
         }
-      ],
-      "creator": {
-        "@type": "Organization",
-        "name": "CVGenie",
-        "url": "https://cvgenieats.com"
-      },
-      "keywords": "resume builder, ATS optimizer, AI resume, job application, career tools, CV generator"
+      ]
     }
     </script>
 

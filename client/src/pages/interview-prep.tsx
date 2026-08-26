@@ -405,6 +405,25 @@ function InterviewPrepContent() {
 export default function InterviewPrep() {
   const { user, isLoading } = useAuth();
 
+  useEffect(() => {
+    document.title = "AI Interview Preparation & Question Generator | CVGenie ATS";
+    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = "Generate personalized behavioral, technical, and role-specific mock interview questions with answering tips based on your tailored resume and target job role.";
+
+    return () => {
+      document.title = "CVGenie ATS - AI Resume Builder & ATS Optimizer | cvgenieats.com";
+      const cleanupMeta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      if (cleanupMeta) {
+        cleanupMeta.content = "CVGenie: AI-powered resume builder that beats ATS systems. Create optimized resumes, cover letters, and get past applicant tracking systems. Free AI resume optimization.";
+      }
+    };
+  }, []);
+
   if (isLoading) {
     return (
       <AppShell title="Interview Prep">

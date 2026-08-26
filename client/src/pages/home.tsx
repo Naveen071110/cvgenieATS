@@ -23,6 +23,8 @@ const FeaturesSection = lazy(() => import("@/components/features-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
 const FAQSection = lazy(() => import("@/components/faq-section").then(m => ({ default: m.FAQSection })));
 const TrustIndicatorsSection = lazy(() => import("@/components/trust-indicators-section").then(m => ({ default: m.TrustIndicatorsSection })));
+const AtsCompatibilitySection = lazy(() => import("@/components/ats-compatibility-section").then(m => ({ default: m.AtsCompatibilitySection })));
+const ComparisonSection = lazy(() => import("@/components/comparison-section").then(m => ({ default: m.ComparisonSection })));
 
 function ScrollReveal({
   children,
@@ -273,6 +275,20 @@ export default function Home() {
           rootMargin="400px"
           minHeight="400px"
         >
+          <div className="py-6">
+            <Suspense fallback={<FeatureSectionSkeleton />}>
+              <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
+                <AtsCompatibilitySection />
+              </ScrollReveal>
+            </Suspense>
+          </div>
+        </LazyLoadSection>
+
+        <LazyLoadSection 
+          fallback={<FeatureSectionSkeleton />}
+          rootMargin="400px"
+          minHeight="400px"
+        >
           <div className="py-12">
             <Suspense fallback={<FeatureSectionSkeleton />}>
               <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
@@ -281,7 +297,20 @@ export default function Home() {
             </Suspense>
           </div>
         </LazyLoadSection>
-        
+
+        <LazyLoadSection 
+          fallback={<FeatureSectionSkeleton />}
+          rootMargin="400px"
+          minHeight="400px"
+        >
+          <div className="py-6">
+            <Suspense fallback={<FeatureSectionSkeleton />}>
+              <ScrollReveal shouldDisableAnimations={shouldDisableAnimations}>
+                <ComparisonSection />
+              </ScrollReveal>
+            </Suspense>
+          </div>
+        </LazyLoadSection>
         
         <LazyLoadSection 
           fallback={
