@@ -30,7 +30,7 @@ export default function PricingPolicy() {
               <li>3 AI resume and cover letter generations per month</li>
               <li>Core two-pass ATS keyword optimization</li>
               <li>PDF (with watermark), DOCX, and TXT document exports</li>
-              <li>Free account creation with secure Google / Email sign-in</li>
+              <li>Free account creation with secure Email sign-in (via Clerk)</li>
             </ul>
           </div>
 

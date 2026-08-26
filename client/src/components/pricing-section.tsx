@@ -30,8 +30,8 @@ const freePlanFeatures = [
     description: "Export to PDF (with watermark), Word DOCX, & TXT"
   },
   {
-    text: "Quick Google & Email Sign-In",
-    description: "Get started in seconds with secure authentication"
+    text: "Secure Email Sign-In",
+    description: "Get started in seconds with passwordless Clerk email verification"
   }
 ];
 
