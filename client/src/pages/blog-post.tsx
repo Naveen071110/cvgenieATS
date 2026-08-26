@@ -18,7 +18,9 @@ export default function BlogPost() {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} | CVGenie Blog`;
+      document.title = `${post.title} | CVGenie ATS Blog`;
+      
+      // Update Meta Description
       let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       if (!metaDesc) {
         metaDesc = document.createElement("meta");
@@ -26,6 +28,31 @@ export default function BlogPost() {
         document.head.appendChild(metaDesc);
       }
       metaDesc.content = post.excerpt;
+
+      // Update Canonical Link
+      let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+      }
+      canonical.href = `https://cvgenieats.com/blog/${post.slug}`;
+
+      // Open Graph Meta Tags
+      const setMetaTag = (property: string, content: string) => {
+        let meta = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
+        if (!meta) {
+          meta = document.createElement("meta");
+          meta.setAttribute("property", property);
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      setMetaTag("og:title", `${post.title} | CVGenie ATS`);
+      setMetaTag("og:description", post.excerpt);
+      setMetaTag("og:url", `https://cvgenieats.com/blog/${post.slug}`);
+      setMetaTag("og:type", "article");
 
       // SEO/AEO: Inject BlogPosting structured data
       const articleSchema = {
@@ -51,13 +78,16 @@ export default function BlogPost() {
         "mainEntityOfPage": `https://cvgenieats.com/blog/${post.slug}`
       };
 
-      const script = document.createElement('script');
-      script.type = 'application/ld+json';
-      script.id = 'blog-post-jsonld';
+      let script = document.getElementById('blog-post-jsonld') as HTMLScriptElement | null;
+      if (!script) {
+        script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = 'blog-post-jsonld';
+        document.head.appendChild(script);
+      }
       script.text = JSON.stringify(articleSchema);
-      document.head.appendChild(script);
     } else {
-      document.title = "Post Not Found | CVGenie Blog";
+      document.title = "Post Not Found | CVGenie ATS Blog";
     }
 
     return () => {
@@ -66,6 +96,10 @@ export default function BlogPost() {
       if (metaDescCleanup) {
         metaDescCleanup.content =
           "CVGenie: AI-powered resume builder that beats ATS systems. Create optimized resumes, cover letters, and get past applicant tracking systems. Free AI resume optimization.";
+      }
+      const canonicalCleanup = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+      if (canonicalCleanup) {
+        canonicalCleanup.href = "https://cvgenieats.com/";
       }
       const existing = document.getElementById('blog-post-jsonld');
       if (existing && existing.parentNode) {

@@ -27,8 +27,63 @@
   <url>
     <loc>https://cvgenieats.com/blog</loc>
     <lastmod>2026-08-26</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.85</priority>
+  </url>
+  <!-- Blog Articles -->
+  <url>
+    <loc>https://cvgenieats.com/blog/ai-resume-builder-vs-human-writer</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/free-vs-paid-ats-resume-builders</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/best-ai-resume-builders-career-changers</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/how-to-beat-applicant-tracking-systems</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/cv-vs-resume-differences</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/resume-header-best-practices-ats</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/references-on-resume-guide</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/tech-resume-ats-keywords</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cvgenieats.com/blog/ai-cover-letter-generator-guide</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://cvgenieats.com/blog/how-ats-works-and-why-it-matters</loc>
@@ -66,6 +121,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <!-- Site Utility Pages -->
   <url>
     <loc>https://cvgenieats.com/about</loc>
     <lastmod>2026-08-26</lastmod>
