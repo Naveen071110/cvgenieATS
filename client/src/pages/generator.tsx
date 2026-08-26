@@ -21,9 +21,9 @@ import { ExportDropdown } from "@/components/ExportDropdown";
 
 // Define supported formats
 const SUPPORTED_FORMATS = {
-  display: "DOCX, TXT files",
-  accept: ".docx,.txt",
-  description: "Upload your resume in Word (DOCX) or text (TXT) format",
+  display: "PDF, DOCX, TXT files",
+  accept: ".pdf,.docx,.doc,.txt",
+  description: "Upload your resume in PDF, Word (DOCX/DOC), or text (TXT) format",
   maxSizeMB: 10
 };
 

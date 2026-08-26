@@ -9,7 +9,7 @@ interface Badge {
 const trustBadges: Badge[] = [
   {
     icon: <Database className="w-4 h-4" />,
-    label: 'No resume data stored',
+    label: 'Encrypted cloud storage',
   },
   {
     icon: <Globe className="w-4 h-4" />,

@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronDown, Search, HelpCircle } from 'lucide-react';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -16,8 +16,8 @@ const faqData: FAQItem[] = [
   {
     id: 'file-formats',
     question: 'What file formats do you support?',
-    answer: 'We support DOC, DOCX, and TXT files. DOCX files provide the best results for our AI analysis. You can also paste your resume content directly into the text area.',
-    keywords: ['doc', 'docx', 'txt', 'format', 'upload', 'file']
+    answer: 'We support PDF, DOC, DOCX, and TXT files. PDF and DOCX files provide the highest quality ATS parsing. You can also paste your resume text directly into the generator.',
+    keywords: ['pdf', 'doc', 'docx', 'txt', 'format', 'upload', 'file']
   },
   {
     id: 'ats-optimization',
@@ -52,8 +52,8 @@ const faqData: FAQItem[] = [
   {
     id: 'download-formats',
     question: 'What download formats are available?',
-    answer: 'You can download your optimized resume as DOCX or TXT. DOCX is recommended for most applications, while TXT format allows easy copying and pasting.',
-    keywords: ['download', 'export', 'doc', 'docx', 'txt', 'format']
+    answer: 'You can download your optimized resume in PDF, Microsoft Word (DOCX), or plain text (TXT) format. PDF is ideal for online job portals, while DOCX allows easy local editing.',
+    keywords: ['download', 'export', 'pdf', 'doc', 'docx', 'txt', 'format']
   },
   {
     id: 'ai-accuracy',
@@ -161,6 +161,35 @@ export function FAQSection() {
     setSearchQuery(e.target.value);
     // Close all items when searching
     setOpenItems(new Set());
+  }, []);
+
+  // SEO/AEO: Inject FAQPage Schema.org JSON-LD structured data
+  useEffect(() => {
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqData.map((item) => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'faq-jsonld-schema';
+    script.text = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    return () => {
+      const existing = document.getElementById('faq-jsonld-schema');
+      if (existing && existing.parentNode) {
+        existing.parentNode.removeChild(existing);
+      }
+    };
   }, []);
 
   return (

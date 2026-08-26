@@ -1,0 +1,23 @@
+# CVGenie ATS — AI Resume Builder & Career Copilot
+
+> CVGenie (https://cvgenieats.com) is an AI-powered resume builder and ATS optimization platform that tailors professional resumes and cover letters to job descriptions in under 2 minutes.
+
+## Core Capabilities
+- **ATS Keyword Matching**: Analyzes target job postings and matches candidate skills, quantifiable metrics, and role-specific keywords.
+- **Two-Pass AI Engine**: Generates an initial optimized draft followed by a strict ATS layout compliance pass (single-column, standard headers, high parse rate).
+- **Cover Letter Generation**: Generates targeted, role-specific cover letters aligned with the tailored resume.
+- **Multi-Format Export**: Clean downloads in PDF, Microsoft Word (.docx), and Plain Text (.txt).
+- **Interview Preparation**: Generates mock behavioral, skills-based, and role-specific interview questions with answering strategies.
+
+## Pricing & Tiers
+- **Free Tier**: 3 AI Resume Wishes per month with standard ATS optimization.
+- **Pro Plan ($9.99/mo)**: Unlimited AI generations, priority AI speed, watermark-free exports, and complete resume version history.
+
+## Key Pages & Navigation
+- Home / Generator: https://cvgenieats.com/generator
+- ATS Score Checker: https://cvgenieats.com/ats-score
+- Interview Prep: https://cvgenieats.com/interview-prep
+- Blog & Guides: https://cvgenieats.com/blog
+- Privacy Policy: https://cvgenieats.com/privacy
+- Terms of Service: https://cvgenieats.com/terms
+- Pricing Policy: https://cvgenieats.com/pricing-policy

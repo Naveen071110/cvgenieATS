@@ -137,3 +137,39 @@ export async function initializeUsageSessionsTable(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_usage_sessions_dodo_customer_id ON usage_sessions(dodo_customer_id)
   `;
 }
+
+/**
+ * Get total generations used by a user
+ */
+export async function getUserUsageCount(userId: string): Promise<number> {
+  try {
+    const result = await sql`
+      SELECT generations_used FROM usage_sessions WHERE session_id = ${userId} LIMIT 1
+    `;
+    if (result.length === 0 || !result[0]) return 0;
+    return Number(result[0].generations_used) || 0;
+  } catch (error) {
+    console.error("Error getting user usage count:", error);
+    return 0;
+  }
+}
+
+/**
+ * Increment generations used count for a user
+ */
+export async function incrementUserUsageCount(userId: string): Promise<number> {
+  try {
+    const result = await sql`
+      INSERT INTO usage_sessions (session_id, generations_used, is_pro, subscription_status)
+      VALUES (${userId}, 1, 0, 'free')
+      ON CONFLICT (session_id) DO UPDATE SET
+        generations_used = usage_sessions.generations_used + 1
+      RETURNING generations_used
+    `;
+    return Number(result[0]?.generations_used) || 1;
+  } catch (error) {
+    console.error("Error incrementing user usage count:", error);
+    return 1;
+  }
+}
+

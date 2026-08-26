@@ -1,13 +1,15 @@
 
 export const SUPPORTED_FORMATS = {
-  display: "DOCX, TXT files",
-  accept: ".docx,.txt",
+  display: "PDF, DOCX, TXT files",
+  accept: ".pdf,.docx,.doc,.txt",
   mimeTypes: [
+    "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/msword",
     "text/plain"
   ],
-  extensions: ["docx", "txt"],
-  description: "Upload your resume in Word (DOCX) or text (TXT) format",
+  extensions: ["pdf", "docx", "doc", "txt"],
+  description: "Upload your resume in PDF, Word (DOCX/DOC), or text (TXT) format",
   maxSizeMB: 10,
-  errorMessage: "Only DOCX and TXT files are supported"
+  errorMessage: "Only PDF, DOC, DOCX, and TXT files are supported"
 };

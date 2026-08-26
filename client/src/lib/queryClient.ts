@@ -1,4 +1,6 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { getCookie } from "./cookies/client";
+import { KNOWN_COOKIE_KEYS } from "../../../shared/cookies/types";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -12,9 +14,21 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  const headers: Record<string, string> = {};
+
+  if (data) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  // Double-submit CSRF token attachment on state-changing requests
+  const csrfToken = getCookie<string>(KNOWN_COOKIE_KEYS.CSRF_TOKEN);
+  if (csrfToken && !["GET", "HEAD", "OPTIONS"].includes(method.toUpperCase())) {
+    headers["X-CSRF-Token"] = csrfToken;
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });

@@ -26,15 +26,50 @@ export default function BlogPost() {
         document.head.appendChild(metaDesc);
       }
       metaDesc.content = post.excerpt;
+
+      // SEO/AEO: Inject BlogPosting structured data
+      const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.excerpt,
+        "datePublished": post.date,
+        "dateModified": post.date,
+        "author": {
+          "@type": "Organization",
+          "name": "CVGenie Editorial Team",
+          "url": "https://cvgenieats.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "CVGenie ATS",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://cvgenieats.com/og-image.jpg"
+          }
+        },
+        "mainEntityOfPage": `https://cvgenieats.com/blog/${post.slug}`
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'blog-post-jsonld';
+      script.text = JSON.stringify(articleSchema);
+      document.head.appendChild(script);
     } else {
       document.title = "Post Not Found | CVGenie Blog";
     }
+
     return () => {
-      document.title = "CVGenie — AI Resume & Cover Letter Generator";
+      document.title = "CVGenie ATS - AI Resume Builder & ATS Optimizer | cvgenieats.com";
       const metaDescCleanup = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       if (metaDescCleanup) {
         metaDescCleanup.content =
-          "CVGenie uses AI to generate ATS-optimized resumes and cover letters tailored to any job description. Try free today.";
+          "CVGenie: AI-powered resume builder that beats ATS systems. Create optimized resumes, cover letters, and get past applicant tracking systems. Free AI resume optimization.";
+      }
+      const existing = document.getElementById('blog-post-jsonld');
+      if (existing && existing.parentNode) {
+        existing.parentNode.removeChild(existing);
       }
     };
   }, [post]);

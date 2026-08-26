@@ -22,7 +22,7 @@ import { insertResume, getResumesByUserId, getResumeById, deleteResume } from ".
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription, PRODUCT_ID } from "./services/dodoPayments";
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
 import type { ResumeData } from "./documentGenerator"; // Assuming ResumeData is exported from documentGenerator
-import { getUserSubscription, updateUserSubscription } from "./database/subscriptionQueries";
+import { getUserSubscription, updateUserSubscription, getUserUsageCount, incrementUserUsageCount } from "./database/subscriptionQueries";
 import { generateLimiter, uploadLimiter, interviewLimiter } from "./middleware/rateLimiter";
 
 const tmpDir = path.join(process.cwd(), "tmp");
@@ -343,9 +343,20 @@ export function registerRoutes(app: Express) {
 
       console.log("Starting DeepSeek-powered generation...");
 
-      // Step 1: Check user's Pro status for watermark and speed
+      // Step 1: Check user's Pro status and monthly free quota
       const userSubscription = await getUserSubscriptionStatus(userId);
       const isPro = userSubscription?.isPro || false;
+
+      if (!isPro) {
+        const usageCount = await getUserUsageCount(userId);
+        if (usageCount >= 3) {
+          return res.status(403).json({
+            error: "Monthly free limit reached",
+            message: "You have used all 3 of your free resume generations for this month. Upgrade to CVGenie Pro for unlimited generations.",
+            limitReached: true,
+          });
+        }
+      }
 
       console.log('[Generate] User Pro status:', isPro ? 'Pro (no watermark, instant generation)' : 'Free (with watermark, delayed generation)');
 
@@ -376,7 +387,7 @@ export function registerRoutes(app: Express) {
       fs.writeFileSync(resumePath, resumeBuffer);
       fs.writeFileSync(coverLetterPath, coverLetterBuffer);
 
-      // Step 6: Save to Neon Postgres
+      // Step 6: Save to Neon Postgres & increment usage
       try {
         await insertResume(
           userId,
@@ -388,6 +399,12 @@ export function registerRoutes(app: Express) {
       } catch (dbError: any) {
         console.error("Failed to save to Neon database:", dbError);
         // Don't fail the request if database save fails
+      }
+
+      try {
+        await incrementUserUsageCount(userId);
+      } catch (countError: any) {
+        console.error("Failed to increment usage count:", countError);
       }
 
       // Step 8: Apply generation speed difference
