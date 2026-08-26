@@ -1,14 +1,14 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { lazy, Suspense, useEffect } from "react";
+import { motion } from "framer-motion";
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
 import Footer from "@/components/footer";
-import { FileText, ClipboardPaste, Download, ChevronRight } from "lucide-react";
+import Icon3D from "@/components/Icon3D";
+import { FileText, ClipboardPaste, Download, ChevronRight, Sparkles } from "lucide-react";
 import resumeDocImg from "@assets/generated_images/icon-resume-doc-3d.webp";
 import clipboardImg from "@assets/generated_images/icon-clipboard-3d.webp";
 import downloadImg from "@assets/generated_images/icon-download-3d.webp";
 
-const stepImages = [resumeDocImg, clipboardImg, downloadImg];
 import {
   FeatureSectionSkeleton,
   PricingSectionSkeleton,
@@ -38,11 +38,10 @@ function ScrollReveal({
   if (shouldDisableAnimations) return <>{children}</>;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 48, scale: 0.96, rotateX: 6 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.7, delay, ease: "easeOut" }}
-      style={{ transformPerspective: 1000 }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
     >
       {children}
     </motion.div>
@@ -55,24 +54,6 @@ export default function Home() {
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
   const shouldDisableAnimations = isMobile || prefersReducedMotion;
-  const [activeStep, setActiveStep] = useState(0);
-  const howItWorksRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: howItWorksProgress } = useScroll({
-    target: howItWorksRef,
-    offset: ["start start", "end end"],
-  });
-  const step1Height = useTransform(howItWorksProgress, [0, 0.33], ["0%", "100%"]);
-  const step2Height = useTransform(howItWorksProgress, [0.33, 0.66], ["0%", "100%"]);
-
-  useEffect(() => {
-    if (shouldDisableAnimations) return;
-    const unsubscribe = howItWorksProgress.on("change", (latest) => {
-      if (latest < 0.33) setActiveStep(0);
-      else if (latest < 0.66) setActiveStep(1);
-      else setActiveStep(2);
-    });
-    return () => unsubscribe();
-  }, [howItWorksProgress, shouldDisableAnimations]);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -86,22 +67,31 @@ export default function Home() {
 
   const steps = [
     {
-      num: 1,
-      icon: <FileText className="w-6 h-6" aria-hidden="true" />,
-      title: "Upload your resume",
-      body: "Paste your existing resume text or upload a DOCX/TXT file. CVGenie reads your background exactly as-is — no rewriting your story.",
+      num: "01",
+      badge: "Step 1",
+      img: resumeDocImg,
+      icon: <FileText className="w-5 h-5" aria-hidden="true" />,
+      glowColor: "rgba(59, 130, 246, 0.45)",
+      title: "Upload Your Resume",
+      body: "Upload your current resume in PDF, Word DOCX, or TXT format (or simply paste your text). CVGenie extracts your background, achievements, and work history without altering your authentic career story.",
     },
     {
-      num: 2,
-      icon: <ClipboardPaste className="w-6 h-6" aria-hidden="true" />,
-      title: "Paste the job description",
-      body: "Drop in any job posting. CVGenie extracts the keywords, required skills, and tone the recruiter is looking for.",
+      num: "02",
+      badge: "Step 2",
+      img: clipboardImg,
+      icon: <ClipboardPaste className="w-5 h-5" aria-hidden="true" />,
+      glowColor: "rgba(168, 85, 247, 0.45)",
+      title: "Paste the Job Posting",
+      body: "Paste the job description from LinkedIn, Indeed, or company portals. Our AI analyzes the role to identify mandatory keywords, technical competencies, and ATS screening triggers.",
     },
     {
-      num: 3,
-      icon: <Download className="w-6 h-6" aria-hidden="true" />,
-      title: "Download your tailored resume",
-      body: "In about 60 seconds you get an ATS-optimized resume and matching cover letter, ready to submit.",
+      num: "03",
+      badge: "Step 3",
+      img: downloadImg,
+      icon: <Download className="w-5 h-5" aria-hidden="true" />,
+      glowColor: "rgba(20, 184, 166, 0.45)",
+      title: "Download Tailored Resume",
+      body: "In about 60 seconds, receive your ATS-optimized resume and personalized cover letter with high keyword alignment—formatted specifically to pass automated applicant tracking filters.",
     },
   ];
 
@@ -111,165 +101,79 @@ export default function Home() {
       <main>
         <HeroSection />
 
-        {shouldDisableAnimations ? (
-          <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-800">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-14">
-                <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
-                  How it works
-                </p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                  Three simple steps
-                </h2>
-                <p className="text-lg text-slate-600 dark:text-gray-400 max-w-2xl mx-auto">
-                  From your existing resume to a tailored, ATS-ready document in about a minute.
-                </p>
+        {/* How It Works Section */}
+        <section
+          id="how-it-works"
+          className="py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-slate-50/70 dark:bg-slate-900/60 border-t border-b border-slate-200/80 dark:border-slate-800"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60 mb-4 shadow-sm">
+                <Sparkles className="w-3.5 h-3.5" />
+                Simple 3-Step Process
               </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
+                From Job Post to Interview-Ready in 60 Seconds
+              </h2>
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                No complicated design tools, no manual formatting headaches. Let our two-pass AI align your resume to any job description in three effortless steps.
+              </p>
+            </div>
 
-              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-stretch">
-                {steps.map((step, index) => (
-                  <div key={step.num} className="contents">
-                    <div className="relative flex flex-col items-start p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold text-base shadow-sm">
-                          {step.num}
-                        </div>
-                        <div className="text-primary dark:text-blue-400">
-                          {step.icon}
-                        </div>
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
-                        {step.body}
-                      </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-8 relative items-stretch">
+              {steps.map((step, index) => (
+                <motion.div
+                  key={step.num}
+                  initial={shouldDisableAnimations ? undefined : { opacity: 0, y: 28 }}
+                  whileInView={shouldDisableAnimations ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.5, delay: index * 0.12 }}
+                  className="group relative flex flex-col bg-white dark:bg-slate-800/90 rounded-2xl p-7 sm:p-8 border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1"
+                >
+                  {/* Step Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-md shadow-blue-500/25">
+                        {step.num}
+                      </span>
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                        {step.badge}
+                      </span>
                     </div>
                     {index < steps.length - 1 && (
-                      <div className="hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 z-10"
-                        style={{ left: `calc(${(index + 1) * 33.333}% - 16px)` }}>
-                        <div className="flex items-center gap-1 text-slate-300 dark:text-slate-600">
-                          <div className="w-8 border-t-2 border-dashed border-slate-300 dark:border-slate-600" />
-                          <ChevronRight className="w-4 h-4 flex-shrink-0" />
-                        </div>
+                      <div className="hidden lg:flex items-center text-slate-300 dark:text-slate-600">
+                        <ChevronRight className="w-5 h-5" />
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        ) : (
-          <section id="how-it-works" ref={howItWorksRef} className="relative h-[300vh] bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-800">
-            <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center w-full">
-                <div className="space-y-10">
-                  <div>
-                    <p className="text-sm font-semibold text-primary dark:text-blue-400 uppercase tracking-wide mb-3">
-                      How it works
+
+                  {/* 3D Icon illustration */}
+                  <div className="flex items-center justify-center my-4">
+                    <Icon3D
+                      src={step.img}
+                      size={96}
+                      glowColor={step.glowColor}
+                      disabled={shouldDisableAnimations}
+                      floatDelay={index * 0.8}
+                    />
+                  </div>
+
+                  {/* Step Description */}
+                  <div className="mt-4 flex-1 flex flex-col">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                      {step.body}
                     </p>
-                    <h2 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white tracking-tighter leading-[1.02]">
-                      From job post to interview
-                    </h2>
                   </div>
-
-                  <div className="relative space-y-10">
-                    {steps.map((step, index) => (
-                      <div key={step.num} className="flex gap-6">
-                        <div className="flex flex-col items-center">
-                          <motion.div
-                            initial={false}
-                            animate={{
-                              scale: activeStep === index ? 1.15 : 1,
-                              backgroundColor: activeStep === index ? "#3b82f6" : "rgb(226, 232, 240)",
-                            }}
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shadow-sm relative z-10 flex-shrink-0"
-                          >
-                            {step.num}
-                          </motion.div>
-                          {index < steps.length - 1 && (
-                            <div className="w-0.5 flex-1 min-h-[40px] bg-slate-200 dark:bg-slate-700 mt-2 mb-2 rounded-full overflow-hidden">
-                              <motion.div
-                                style={{ height: index === 0 ? step1Height : step2Height }}
-                                className="bg-primary dark:bg-blue-400 w-full"
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <motion.div
-                          animate={{ opacity: activeStep === index ? 1 : 0.5, x: activeStep === index ? 6 : 0 }}
-                          className="space-y-2 pb-2"
-                        >
-                          <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                            {step.title}
-                          </h3>
-                          <p className="text-base text-slate-600 dark:text-gray-400 leading-relaxed max-w-md">
-                            {step.body}
-                          </p>
-                        </motion.div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="relative aspect-square max-w-md mx-auto hidden lg:block" style={{ perspective: 1200 }}>
-                  <motion.div
-                    aria-hidden
-                    animate={{ scale: [1, 1.15, 1], opacity: [0.35, 0.55, 0.35] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -inset-10 rounded-full bg-primary/30 dark:bg-blue-500/20 blur-3xl"
-                  />
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeStep}
-                      initial={{ opacity: 0, scale: 0.8, rotateY: 55, rotateX: -8 }}
-                      animate={{ opacity: 1, scale: 1, rotateY: 0, rotateX: 0 }}
-                      exit={{ opacity: 0, scale: 0.85, rotateY: -55, rotateX: 8 }}
-                      transition={{ type: "spring", damping: 18, stiffness: 90 }}
-                      style={{ transformStyle: "preserve-3d" }}
-                      className="relative w-full h-full rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 p-10 flex flex-col justify-center items-center gap-8 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm"
-                    >
-                      <div className="step-icon-stage">
-                        <motion.div
-                          aria-hidden
-                          animate={{ scale: [1, 1.18, 1], opacity: [0.4, 0.7, 0.4] }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                          className="absolute inset-0 -m-6 rounded-full bg-primary/25 dark:bg-blue-400/20 blur-2xl"
-                        />
-                        <motion.div
-                          aria-hidden
-                          animate={{ scaleX: [1, 0.75, 1], opacity: [0.45, 0.25, 0.45] }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                          className="absolute left-1/2 -translate-x-1/2 -bottom-4 w-24 h-3 rounded-full bg-slate-900/25 dark:bg-black/50 blur-md"
-                        />
-                        <motion.img
-                          src={stepImages[activeStep]}
-                          alt=""
-                          width={160}
-                          height={160}
-                          loading="lazy"
-                          decoding="async"
-                          className="relative z-10 w-36 h-36 lg:w-40 lg:h-40 object-contain icon-3d-img"
-                          animate={{ y: [0, -12, 0], rotate: [0, 2.5, 0, -2.5, 0] }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        />
-                      </div>
-                      <div className="text-center space-y-2">
-                        <div className="text-xs font-bold uppercase tracking-widest text-slate-400">
-                          Step 0{activeStep + 1}
-                        </div>
-                        <h4 className="text-2xl font-bold text-slate-900 dark:text-white">
-                          {steps[activeStep].title}
-                        </h4>
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </div>
+                </motion.div>
+              ))}
             </div>
-          </section>
-        )}
+          </div>
+        </section>
 
+        {/* ATS Compatibility Section */}
         <LazyLoadSection 
           fallback={<FeatureSectionSkeleton />}
           rootMargin="400px"
@@ -284,6 +188,7 @@ export default function Home() {
           </div>
         </LazyLoadSection>
 
+        {/* Features Section */}
         <LazyLoadSection 
           fallback={<FeatureSectionSkeleton />}
           rootMargin="400px"
@@ -298,6 +203,7 @@ export default function Home() {
           </div>
         </LazyLoadSection>
 
+        {/* Comparison Section */}
         <LazyLoadSection 
           fallback={<FeatureSectionSkeleton />}
           rootMargin="400px"
@@ -312,6 +218,7 @@ export default function Home() {
           </div>
         </LazyLoadSection>
         
+        {/* Trust Badges */}
         <LazyLoadSection 
           fallback={
             <div className="py-16 bg-gray-50 dark:bg-slate-900">
@@ -338,6 +245,7 @@ export default function Home() {
           </div>
         </LazyLoadSection>
         
+        {/* Pricing Section */}
         <LazyLoadSection 
           fallback={<PricingSectionSkeleton />}
           rootMargin="300px"
@@ -352,6 +260,7 @@ export default function Home() {
           </div>
         </LazyLoadSection>
         
+        {/* FAQ Section */}
         <LazyLoadSection 
           fallback={<FAQSkeleton />}
           rootMargin="300px"
