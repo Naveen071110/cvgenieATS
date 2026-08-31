@@ -161,8 +161,8 @@ export default function HeroSection() {
                 id="hero-title"
                 className="hero-display-font hero-title text-5xl sm:text-6xl lg:text-7xl text-white mb-6 leading-[0.98] tracking-tight animate-fade-rise"
               >
-                Get Noticed Faster.{" "}
-                <em className="not-italic text-white/80">Land More Interviews</em>{" "}
+                AI Resume Builder —{" "}
+                <em className="not-italic text-white/80">Beat ATS &amp; Land Interviews</em>{" "}
                 for{" "}
                 <span
                   className={`inline-block min-w-0 transition-opacity duration-300 text-blue-300 ${
@@ -175,8 +175,8 @@ export default function HeroSection() {
               <p
                 className="hero-subtitle text-lg sm:text-xl text-white/90 mb-8 max-w-3xl leading-relaxed animate-fade-rise-delay"
               >
-                Create ATS-optimized resumes and cover letters in seconds with AI.
-                Get past filters, impress recruiters, and land more interviews.
+                Create ATS-optimized resumes and tailored cover letters in seconds with AI.
+                Beat applicant tracking systems, impress recruiters, and land more interviews with our two-pass AI resume generator.
               </p>
               <div
                 className="flex flex-col sm:flex-row justify-center lg:justify-start items-center w-full animate-fade-rise-delay-2"
@@ -346,6 +346,7 @@ export default function HeroSection() {
               <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
                 <Icon3D
                   src={aiBrainImg}
+                  alt="AI Keyword Matching 3D Icon"
                   size={96}
                   disabled={shouldDisableAnimations}
                   glowColor="rgba(59, 130, 246, 0.4)"
@@ -371,6 +372,7 @@ export default function HeroSection() {
               <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
                 <Icon3D
                   src={atsShieldImg}
+                  alt="ATS Shield Verification 3D Icon"
                   size={84}
                   disabled={shouldDisableAnimations}
                   glowColor="rgba(168, 85, 247, 0.4)"
@@ -396,6 +398,7 @@ export default function HeroSection() {
               <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
                 <Icon3D
                   src={speedBoltImg}
+                  alt="Speed Optimization 3D Icon"
                   size={84}
                   disabled={shouldDisableAnimations}
                   glowColor="rgba(20, 184, 166, 0.4)"
@@ -421,6 +424,7 @@ export default function HeroSection() {
               <div className="mb-5 transition-transform duration-300 group-hover:scale-105">
                 <Icon3D
                   src={mailDocImg}
+                  alt="Tailored Cover Letter 3D Icon"
                   size={84}
                   disabled={shouldDisableAnimations}
                   glowColor="rgba(255, 255, 255, 0.35)"

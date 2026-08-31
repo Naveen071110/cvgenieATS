@@ -2,48 +2,64 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- DNS prefetch and preconnect for faster loading -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="dns-prefetch" href="//clerk.cvgenieats.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://clerk.cvgenieats.com" crossorigin>
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Primary SEO Title (50-60 chars) & Meta Description (145-155 chars) -->
+    <title>AI Resume Builder — Beat ATS &amp; Land Interviews | CVGenie ATS</title>
+    <meta name="description" content="Build ATS-optimized resumes and tailored cover letters in seconds with AI. Beat applicant tracking systems and land more interviews. Try CVGenie free today." />
+    <meta name="keywords" content="AI resume builder, ATS optimizer, resume generator, CV maker, applicant tracking system, ATS friendly resume template, free resume builder, best ai resume builder, resume optimization, cover letter generator, Workday resume format, Greenhouse ATS resume" />
+    <meta name="author" content="CVGenie ATS" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://cvgenieats.com/" />
+
+    <!-- Robots & Indexation Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- DNS Prefetch and Preconnect for Core Web Vitals (LCP/FCP) -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//clerk.cvgenieats.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://clerk.cvgenieats.com" crossorigin />
     
-    <!-- Critical fonts with font-display: swap for faster rendering -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <!-- Critical Fonts with font-display: swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
     </noscript>
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="CVGenie: AI-powered resume builder that beats ATS systems. Create optimized resumes, cover letters, and get past applicant tracking systems. Free AI resume optimization." />
-    <meta name="keywords" content="AI resume builder, ATS optimizer, cvgenie, cvgenieats, resume generator, CV maker, applicant tracking system, job application, career, ATS resume builder, AI resume builder, ATS friendly resume template, free resume builder, ats resume builder free, best ai resume builder, resume optimization, cover letter generator" />
-    <meta name="author" content="CVGenie" />
-    <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
-    <link rel="canonical" href="https://cvgenieats.com" />
-
-    <!-- Open Graph / Social Media Meta Tags -->
+    <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="CVGenie ATS - AI Resume Builder That Beats the System" />
-    <meta property="og:description" content="Create ATS-optimized resumes and cover letters in seconds with AI. Beat applicant tracking systems and land more interviews." />
-    <meta property="og:url" content="https://cvgenieats.com" />
-    <meta property="og:site_name" content="CVGenie" />
+    <meta property="og:site_name" content="CVGenie ATS" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="AI Resume Builder — Beat ATS &amp; Land Interviews | CVGenie ATS" />
+    <meta property="og:description" content="Build ATS-optimized resumes and tailored cover letters in seconds with AI. Beat applicant tracking systems and land more interviews. Try CVGenie free today." />
+    <meta property="og:url" content="https://cvgenieats.com/" />
     <meta property="og:image" content="https://cvgenieats.com/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://cvgenieats.com/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CVGenie ATS - AI Resume Builder and ATS Optimization Platform" />
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="CVGenie ATS - AI Resume Builder" />
-    <meta name="twitter:description" content="Create ATS-optimized resumes with AI. Beat tracking systems and land interviews." />
-    <meta name="twitter:image" content="https://cvgenieats.com/twitter-image.jpg" />
+    <meta name="twitter:site" content="@cvgenieats" />
+    <meta name="twitter:creator" content="@cvgenieats" />
+    <meta name="twitter:title" content="AI Resume Builder — Beat ATS &amp; Land Interviews | CVGenie ATS" />
+    <meta name="twitter:description" content="Build ATS-optimized resumes and tailored cover letters in seconds with AI. Beat applicant tracking systems and land more interviews. Try CVGenie free today." />
+    <meta name="twitter:image" content="https://cvgenieats.com/og-image.jpg" />
+    <meta name="twitter:image:alt" content="CVGenie ATS - AI Resume Builder and ATS Optimization Platform" />
 
-
-    <title>CVGenie ATS - AI Resume Builder & ATS Optimizer | cvgenieats.com</title>
-
-    <!-- Structured Data for SEO & AEO -->
+    <!-- Comprehensive Schema.org JSON-LD Graph for Rich Snippets & Answer Engines -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -59,8 +75,13 @@
             "width": 1200,
             "height": 630
           },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "singhnaveen360@gmail.com",
+            "contactType": "customer support"
+          },
           "sameAs": [
-            "https://twitter.com/cvgenieats",
+            "https://x.com/cvgenieats",
             "https://www.linkedin.com/company/cvgenieats",
             "https://github.com/Naveen071110/cvgenieATS"
           ]
@@ -68,21 +89,25 @@
         {
           "@type": "WebSite",
           "@id": "https://cvgenieats.com/#website",
-          "url": "https://cvgenieats.com",
+          "url": "https://cvgenieats.com/",
           "name": "CVGenie ATS",
+          "description": "AI-powered resume builder and ATS optimization platform that tailors resumes and cover letters to job postings in under 60 seconds.",
           "publisher": {
             "@id": "https://cvgenieats.com/#organization"
-          }
+          },
+          "inLanguage": "en-US"
         },
         {
-          "@type": "SoftwareApplication",
+          "@type": "WebApplication",
           "@id": "https://cvgenieats.com/#software",
           "name": "CVGenie ATS",
           "alternateName": ["CVGenie", "CV Genie ATS", "CVGenie AI Resume Builder"],
-          "url": "https://cvgenieats.com",
-          "description": "AI-powered resume builder and ATS optimizer that tailors resumes to job descriptions and ensures 100% compliance with Applicant Tracking Systems like Workday and Greenhouse.",
+          "url": "https://cvgenieats.com/",
+          "description": "AI resume builder engineered for 100% ATS compatibility. Analyzes job descriptions, injects high-impact role keywords, and formats resumes for Workday, Greenhouse, Taleo, and Lever.",
           "applicationCategory": "BusinessApplication",
-          "operatingSystem": "Web Browser",
+          "operatingSystem": "All Web Browsers (Chrome, Safari, Firefox, Edge)",
+          "browserRequirements": "Requires JavaScript",
+          "softwareVersion": "2.4.0",
           "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.9",
@@ -93,72 +118,64 @@
           "offers": [
             {
               "@type": "Offer",
-              "name": "Free Tier",
+              "name": "Free Plan",
               "price": "0",
               "priceCurrency": "USD",
-              "description": "3 ATS-optimized resume generations per month"
+              "description": "3 ATS-optimized resume generations per month with full two-pass AI keyword alignment."
             },
             {
               "@type": "Offer",
-              "name": "Pro Monthly",
+              "name": "Pro Plan",
               "price": "9.99",
               "priceCurrency": "USD",
-              "description": "Unlimited ATS optimizations, priority AI generation, watermark-free PDF/DOCX downloads"
+              "description": "Unlimited AI resume generations, 100% watermark-free PDF/DOCX downloads, priority AI speed, and interview prep."
             }
           ],
           "creator": {
             "@id": "https://cvgenieats.com/#organization"
           },
-          "keywords": "AI resume builder, ATS optimizer, Workday resume builder, Greenhouse ATS resume, resume scanner, ATS resume format"
+          "featureList": [
+            "Two-Pass DeepSeek AI Resume Keyword Optimization",
+            "100% ATS Compliant Single-Column Vector Rendering",
+            "Instant Matched Cover Letter Generator",
+            "AI Interview Preparation & Mock Question Copilot",
+            "Real-Time ATS Score & Keyword Match Analyzer",
+            "Multi-Format Document Upload (PDF, DOCX, TXT) and Export"
+          ]
         },
         {
           "@type": "HowTo",
           "@id": "https://cvgenieats.com/#howto",
           "name": "How to Create an ATS-Optimized Resume with CVGenie",
-          "description": "Step-by-step guide to optimizing your resume for applicant tracking systems in under 2 minutes.",
+          "description": "Step-by-step guide to generating a recruiter-ready, ATS-compliant resume and cover letter in under 60 seconds.",
+          "totalTime": "PT1M",
           "step": [
             {
               "@type": "HowToStep",
               "position": 1,
-              "name": "Upload or paste your existing resume",
-              "text": "Upload your resume in PDF, Word (DOCX), or plain text (TXT) format or paste the text directly into CVGenie."
+              "name": "Upload or Paste Your Resume",
+              "text": "Upload your existing resume in PDF, DOCX, or TXT format or paste your resume text into CVGenie."
             },
             {
               "@type": "HowToStep",
               "position": 2,
-              "name": "Paste the target job description",
-              "text": "Copy and paste the job posting requirements so CVGenie's AI can extract essential keywords and competencies."
+              "name": "Paste the Target Job Description",
+              "text": "Paste any job posting from LinkedIn, Indeed, or company portals so the AI can extract critical role competencies."
             },
             {
               "@type": "HowToStep",
               "position": 3,
-              "name": "Generate and download your ATS-ready resume and cover letter",
-              "text": "Download your tailored, single-column vector resume in PDF, DOCX, or TXT format alongside a matched cover letter."
+              "name": "Generate & Download Tailored Resume",
+              "text": "Download your ATS-optimized vector resume and tailored cover letter formatted specifically to pass automated ATS filters."
             }
           ]
         }
       ]
     }
     </script>
-
-    <!-- Google Analytics (replace GA_TRACKING_ID with your actual ID) -->
-    <!-- Uncomment and add your tracking ID when ready:
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'GA_TRACKING_ID');
-    </script>
-    -->
-
-    <!-- Google Search Console Verification (replace VERIFICATION_CODE) -->
-    <!-- Uncomment and add your verification code when ready:
-    <meta name="google-site-verification" content="VERIFICATION_CODE">
-    -->
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx" async defer></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

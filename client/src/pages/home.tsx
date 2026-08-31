@@ -56,6 +56,15 @@ export default function Home() {
   const shouldDisableAnimations = isMobile || prefersReducedMotion;
 
   useEffect(() => {
+    document.title = "AI Resume Builder — Beat ATS & Land Interviews | CVGenie ATS";
+    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.content = "Build ATS-optimized resumes and tailored cover letters in seconds with AI. Beat applicant tracking systems and land more interviews. Try CVGenie free today.";
+    }
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (canonical) {
+      canonical.href = "https://cvgenieats.com/";
+    }
     if (!isLoading && user) {
       setLocation("/dashboard");
     }
@@ -151,6 +160,7 @@ export default function Home() {
                   <div className="flex items-center justify-center my-4">
                     <Icon3D
                       src={step.img}
+                      alt={`${step.title} 3D Illustration`}
                       size={96}
                       glowColor={step.glowColor}
                       disabled={shouldDisableAnimations}

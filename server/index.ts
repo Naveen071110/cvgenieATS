@@ -192,9 +192,8 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
     }
   }
 
-  // Serve SEO files with correct content types (before other routes)
+  // Serve SEO & AEO files with correct content types (before other routes)
   app.get('/robots.txt', (_req, res) => {
-    // In production, files are in dist/public, in development they're in client/public
     const isDev = app.get("env") === "development";
     const robotsPath = isDev
       ? path.join(process.cwd(), 'client', 'public', 'robots.txt')
@@ -204,13 +203,30 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
   });
 
   app.get('/sitemap.xml', (_req, res) => {
-    // In production, files are in dist/public, in development they're in client/public
     const isDev = app.get("env") === "development";
     const sitemapPath = isDev
       ? path.join(process.cwd(), 'client', 'public', 'sitemap.xml')
       : path.join(import.meta.dirname, 'public', 'sitemap.xml');
     res.type('application/xml');
     res.sendFile(sitemapPath);
+  });
+
+  app.get('/llms.txt', (_req, res) => {
+    const isDev = app.get("env") === "development";
+    const llmsPath = isDev
+      ? path.join(process.cwd(), 'client', 'public', 'llms.txt')
+      : path.join(import.meta.dirname, 'public', 'llms.txt');
+    res.type('text/plain');
+    res.sendFile(llmsPath);
+  });
+
+  app.get('/llms-full.txt', (_req, res) => {
+    const isDev = app.get("env") === "development";
+    const llmsFullPath = isDev
+      ? path.join(process.cwd(), 'client', 'public', 'llms-full.txt')
+      : path.join(import.meta.dirname, 'public', 'llms-full.txt');
+    res.type('text/plain');
+    res.sendFile(llmsFullPath);
   });
 
   // Add webhook routes before regular routes
