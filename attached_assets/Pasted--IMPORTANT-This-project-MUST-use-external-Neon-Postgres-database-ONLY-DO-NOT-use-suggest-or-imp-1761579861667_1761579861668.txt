@@ -39,7 +39,7 @@ npm install @clerk/nextjs  # for auth
 Create `.env` with ONLY external database connection:
 ```env
 # NEON POSTGRES CONNECTION (EXTERNAL ONLY)
-DATABASE_URL="postgresql://neondb_owner:npg_Vqbo18yJscKg@ep-curly-dawn-a1ud6fwr-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="postgresql://neondb_owner:[REDACTED]@ep-curly-dawn-a1ud6fwr-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 
 # CLERK AUTH
 CLERK_SECRET_KEY="your_clerk_secret_key"

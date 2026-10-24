@@ -187,27 +187,27 @@ export default function HeroSection() {
               >
                 <Button
                   size="lg"
-                  className="liquid-glass text-lg px-12 py-7 rounded-full text-white font-medium tracking-wide hover:scale-[1.03] hover:bg-white/10 transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-white/30"
+                  className="liquid-glass text-lg px-10 py-7 rounded-full text-white font-medium tracking-wide hover:scale-[1.03] hover:bg-white/10 transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-white/30 shadow-xl shadow-blue-500/20"
                   onClick={handleCreateResume}
-                  aria-label="Start your free resume generation - Sign in required"
+                  aria-label="Build your free ATS-optimized resume now - Sign in required"
                 >
-                  <Sparkles className="mr-2 h-6 w-6" aria-hidden="true" />
-                  Grant My Wish
+                  <Sparkles className="mr-2 h-6 w-6 text-yellow-300 animate-pulse" aria-hidden="true" />
+                  Build Free ATS Resume
                   <ArrowRight
                     className="ml-2 h-6 w-6"
                     aria-hidden="true"
                   />
                 </Button>
                 <div
-                  className="flex items-center text-white/75"
-                  style={{ gap: "var(--space-3)" }}
+                  className="flex items-center text-white/85 text-xs sm:text-sm font-medium"
+                  style={{ gap: "var(--space-2)" }}
                 >
                   <Zap
-                    className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400"
+                    className="w-5 h-5 text-yellow-400 shrink-0"
                     aria-hidden="true"
                   />
-                  <span className="text-sm font-medium">
-                    Generated in 40-60 seconds
+                  <span>
+                    Ready in 60s • No credit card required
                   </span>
                 </div>
               </div>

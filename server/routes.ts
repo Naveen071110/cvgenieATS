@@ -17,6 +17,7 @@ import documentParser from "./documentParser";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { randomUUID } from "crypto";
 import { requireAuth, getAuth, clerkClient } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription, PRODUCT_ID } from "./services/dodoPayments";
@@ -249,22 +250,18 @@ Generate a professional cover letter now:`;
 export function registerRoutes(app: Express) {
   // File upload endpoint (requires auth + rate limited)
   app.post("/api/upload", uploadLimiter, upload.single("resume"), async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const filePath = req.file.path;
     try {
       const userId = getAuth(req)?.userId;
       if (!userId) {
         return res.status(401).json({ error: "Please sign in to continue" });
       }
 
-      if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
-      }
-
-      const filePath = req.file.path;
       const result = await documentParser.extractText(filePath, req.file.mimetype);
-
-      // Clean up uploaded file
-      fs.unlinkSync(filePath);
-
       const parsedText = result.content;
 
       res.json({
@@ -275,22 +272,26 @@ export function registerRoutes(app: Express) {
     } catch (error: any) {
       console.error("Upload error:", error);
       res.status(500).json({ error: error.message || "Failed to process file" });
+    } finally {
+      // Guaranteed cleanup to prevent disk leak
+      try {
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      } catch (_) {}
     }
   });
 
-  // Extract resume endpoint - returns fields expected by the frontend generator
-  app.post("/api/extract-resume", upload.single("resume"), async (req, res) => {
+  // Extract resume endpoint - returns fields expected by the frontend generator (rate limited + auto-cleanup)
+  app.post("/api/extract-resume", uploadLimiter, upload.single("resume"), async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const filePath = req.file.path;
     try {
       const userId = getAuth(req)?.userId;
       if (!userId) {
         return res.status(401).json({ error: "Please sign in to continue" });
       }
-
-      if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
-      }
-
-      const filePath = req.file.path;
 
       // Normalise mimetype — browsers sometimes send application/octet-stream
       // for DOCX files, so fall back to extension-based detection
@@ -303,9 +304,6 @@ export function registerRoutes(app: Express) {
       }
 
       const result = await documentParser.extractText(filePath, mimetype);
-
-      // Clean up uploaded file
-      try { fs.unlinkSync(filePath); } catch (_) { /* ignore cleanup errors */ }
 
       if (!result.isValid) {
         return res.status(422).json({
@@ -321,6 +319,11 @@ export function registerRoutes(app: Express) {
     } catch (error: any) {
       console.error("Extract-resume error:", error);
       res.status(500).json({ error: error.message || "Failed to process file" });
+    } finally {
+      // Guaranteed cleanup to prevent disk leak
+      try {
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      } catch (_) {}
     }
   });
 
@@ -335,9 +338,20 @@ export function registerRoutes(app: Express) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      if (!resumeText || !jobDescription) {
+      if (
+        !resumeText || 
+        typeof resumeText !== "string" || 
+        !jobDescription || 
+        typeof jobDescription !== "string"
+      ) {
         return res.status(400).json({
           error: "Resume text and job description are required"
+        });
+      }
+
+      if (resumeText.trim().length > 50000 || jobDescription.trim().length > 25000) {
+        return res.status(400).json({
+          error: "Input exceeds maximum allowed size (50,000 characters for resume, 25,000 characters for job description)."
         });
       }
 
@@ -372,9 +386,9 @@ export function registerRoutes(app: Express) {
       const coverLetter = await generateCoverLetter(resumeText, jobDescription);
       console.log("Cover letter generated");
 
-      // Step 5: Generate documents
-      const timestamp = Date.now();
-      const baseFilename = `generated_${timestamp}`;
+      // Step 5: Generate documents with cryptographically secure unguessable tokens tied to user
+      const docToken = randomUUID();
+      const baseFilename = `doc_${userId}_${docToken}`;
 
       const resumeBuffer = await documentGenerator.generateDOCXFromText(optimizedResume, { isPro, documentType: 'resume' });
       const coverLetterBuffer = await documentGenerator.generateDOCXFromText(coverLetter, { isPro, documentType: 'coverLetter' });
@@ -438,31 +452,43 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  // Download endpoint (Sanitized against path traversal)
-  app.get("/api/download/:filename", (req, res) => {
+  // Download endpoint (Authenticated & Secured against IDOR and Path Traversal)
+  app.get("/api/download/:filename", requireAuth(), (req, res) => {
     try {
+      const auth = getAuth(req);
+      const userId = auth?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
       const sanitizedFilename = path.basename(req.params.filename);
+
+      // Verify the user owns this file (doc_{userId}_{token}_{type}.docx)
+      if (!sanitizedFilename.startsWith(`doc_${userId}_`)) {
+        console.warn(`[SECURITY ALERT] User ${userId} attempted to access unauthorized file: ${sanitizedFilename}`);
+        return res.status(403).json({ error: "Access denied to requested file" });
+      }
+
       const filepath = path.resolve(tmpDir, sanitizedFilename);
 
       // Verify the resolved path is strictly within tmpDir
       if (!filepath.startsWith(path.resolve(tmpDir)) || !fs.existsSync(filepath)) {
-        return res.status(404).json({ error: "File not found" });
+        return res.status(404).json({ error: "File not found or expired" });
       }
 
       res.download(filepath, sanitizedFilename, (err) => {
         if (err) {
           console.error("Download error:", err);
-          // Ensure error response is sent only once
           if (!res.headersSent) {
             res.status(500).json({ error: "Failed to download file" });
           }
-        } else {
-          // Optionally, clean up the file after download
-          fs.unlink(filepath, (unlinkErr) => {
-            if (unlinkErr) {
-              console.error("Error deleting file after download:", unlinkErr);
-            }
-          });
+        }
+        // Always clean up the temporary file after transfer
+        try {
+          if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
+        } catch (unlinkErr) {
+          console.error("Error deleting file after download:", unlinkErr);
         }
       });
     } catch (error: any) {
@@ -764,6 +790,8 @@ ${resumeText.trim().slice(0, 6000)}`;
       checkoutUrl.searchParams.set('prefilled_customer_name', userName);
       // Add userId as customer reference for webhook identification
       checkoutUrl.searchParams.set('customer_reference', userId);
+      // Redirect to custom thank-you confirmation page after checkout
+      checkoutUrl.searchParams.set('return_url', 'https://cvgenieats.com/thank-you?type=pro');
 
       const paymentLink = checkoutUrl.toString();
 
@@ -842,7 +870,7 @@ ${resumeText.trim().slice(0, 6000)}`;
     }
   });
 
-  // POST /api/subscription/cancel - Cancel user's subscription (requires auth)
+  // POST /api/subscription/cancel - Cancel user's subscription (requires auth & tenant ownership check)
   app.post("/api/subscription/cancel", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
@@ -853,8 +881,15 @@ ${resumeText.trim().slice(0, 6000)}`;
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      if (!subscriptionId) {
+      if (!subscriptionId || typeof subscriptionId !== "string") {
         return res.status(400).json({ error: "Subscription ID is required" });
+      }
+
+      // Tenant isolation: verify the subscription belongs to the requesting user
+      const userSubscription = await getUserSubscription(userId);
+      if (!userSubscription || userSubscription.dodoSubscriptionId !== subscriptionId) {
+        console.warn(`[SECURITY ALERT] User ${userId} attempted to cancel unauthorized subscription: ${subscriptionId}`);
+        return res.status(403).json({ error: "Forbidden: You do not have permission to modify this subscription." });
       }
 
       const result = await cancelSubscription(subscriptionId);
@@ -869,7 +904,7 @@ ${resumeText.trim().slice(0, 6000)}`;
     }
   });
 
-  // POST /api/admin/reset-subscriptions - Reset all users to free tier (admin only)
+  // POST /api/admin/reset-subscriptions - Reset all users to free tier (protected admin endpoint)
   app.post("/api/admin/reset-subscriptions", requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
@@ -879,8 +914,14 @@ ${resumeText.trim().slice(0, 6000)}`;
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // TODO: Add admin check here if needed
-      // For now, any authenticated user can run this (remove in production or add proper admin check)
+      // Strict administrative authorization check
+      const adminSecret = (req.headers["x-admin-secret"] as string) || req.body?.adminSecret;
+      const configuredSecret = process.env.ADMIN_SECRET_KEY;
+
+      if (!configuredSecret || adminSecret !== configuredSecret) {
+        console.warn(`[SECURITY ALERT] Unauthorized admin reset attempt by user: ${userId}`);
+        return res.status(403).json({ error: "Forbidden: Administrator secret required." });
+      }
 
       const result = await resetAllUsersToFree();
 

@@ -117,10 +117,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-800 mt-6 md:mt-12 pt-4 md:pt-8 flex flex-col sm:flex-row justify-between items-center">
-          <p className="typography-small text-slate-400 text-xs md:text-sm">
-            © 2026 CVGenie. All rights reserved.
-          </p>
+        <div className="border-t border-slate-800 mt-6 md:mt-12 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs text-slate-400">
+          <div>
+            <p className="font-semibold text-slate-300">CVGenie ATS Platforms</p>
+            <p className="mt-0.5">Outer Ring Road, Marathahalli Tech Corridor, Bengaluru, Karnataka 560037, India</p>
+            <p className="mt-0.5">Support: <a href="mailto:singhnaveen360@gmail.com" className="text-primary hover:underline">singhnaveen360@gmail.com</a> • Mon–Sat 9AM–6PM IST (SLA: &lt; 24h)</p>
+          </div>
+          <div className="text-left md:text-right shrink-0">
+            <p className="typography-small text-slate-400 text-xs md:text-sm">
+              © 2026 CVGenie. All rights reserved.
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Engineered for 100% ATS Compatibility</p>
+          </div>
         </div>
       </div>
     </footer>

@@ -33,7 +33,8 @@ export async function insertResume(
   return result[0] as Resume;
 }
 
-export async function getResumesByUserId(userId: string): Promise<Resume[]> {
+export async function getResumesByUserId(userId: string, limit = 50): Promise<Resume[]> {
+  const safeLimit = Math.min(Math.max(1, limit), 100);
   const cacheKey = CACHE_KEYS.resumeHistory(userId);
   const cached = dbCache.get<Resume[]>(cacheKey);
   if (cached) return cached;
@@ -43,6 +44,7 @@ export async function getResumesByUserId(userId: string): Promise<Resume[]> {
     FROM resumes 
     WHERE user_id = ${userId}
     ORDER BY created_at DESC
+    LIMIT ${safeLimit}
   `;
   const resumes = result as Resume[];
   dbCache.set(cacheKey, resumes, CACHE_TTL.resumeHistory);

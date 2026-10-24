@@ -16,6 +16,7 @@ import {
   hasUserConsented,
   COOKIE_CONSENT_EVENT,
 } from '../lib/cookies/client';
+import { initAnalytics } from '../lib/analytics';
 
 export interface ConsentContextValue {
   consent: ConsentPreferences;
@@ -45,12 +46,14 @@ export const ConsentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setConsentState(currentConsent);
     setHasResponded(answered);
     setIsReady(true);
+    initAnalytics(currentConsent.analytics);
 
     const handleConsentEvent = (event: Event) => {
       const customEvent = event as CustomEvent<ConsentPreferences>;
       if (customEvent.detail) {
         setConsentState(customEvent.detail);
         setHasResponded(true);
+        initAnalytics(customEvent.detail.analytics);
       }
     };
 

@@ -1,9 +1,16 @@
-import { ArrowLeft, Target, Users, Zap, MessageSquare } from "lucide-react";
+import { ArrowLeft, Target, Users, Zap, MessageSquare, MapPin, Mail, Clock, ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
+import { SEO } from "@/components/SEO";
+import Footer from "@/components/footer";
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+      <SEO
+        title="About CVGenie ATS — Mission, Technology & Team"
+        description="Learn how CVGenie was built to demystify Applicant Tracking Systems and empower job seekers to generate recruiter-ready, ATS-compliant resumes with AI."
+        canonical="https://cvgenieats.com/about"
+      />
       <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -92,20 +99,60 @@ export default function About() {
             </p>
           </section>
 
-          <div className="mt-12 p-6 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Get in Touch</h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-4">
-              Have questions, feedback, or just want to say hello? We'd love to hear from you.
+          <div className="mt-12 p-8 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Office &amp; Contact Information</h3>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              CVGenie is developed and operated as a full-stack automated career acceleration platform. We take customer satisfaction, data security, and transparent communication seriously.
             </p>
-            <a 
-              href="mailto:singhnaveen360@gmail.com" 
-              className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Contact Us
-            </a>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 shrink-0">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Registered Entity</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                    CVGenie ATS Platforms<br />
+                    Outer Ring Road, Marathahalli Tech Corridor<br />
+                    Bengaluru, Karnataka 560037, India
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 shrink-0">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Direct Support</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                    <a href="mailto:singhnaveen360@gmail.com" className="hover:underline text-primary">
+                      singhnaveen360@gmail.com
+                    </a>
+                  </p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Average reply time: &lt; 24h</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 shrink-0">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Operating Hours</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                    Monday – Saturday<br />
+                    9:00 AM – 6:00 PM IST<br />
+                    System Status: 99.98% Uptime
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

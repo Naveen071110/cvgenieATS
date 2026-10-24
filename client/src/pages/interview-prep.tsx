@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell/AppShell";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -448,6 +449,11 @@ export default function InterviewPrep() {
 
   return (
     <AppShell title="Interview Prep">
+      <SEO
+        title="AI Interview Preparation & Mock Questions Copilot | CVGenie ATS"
+        description="Generate tailored mock interview questions and expert coaching tips based on your resume and target role. Practice behavioral, skills-based, and role-specific questions."
+        canonical="https://cvgenieats.com/interview-prep"
+      />
       <InterviewPrepContent />
     </AppShell>
   );

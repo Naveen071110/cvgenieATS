@@ -18,6 +18,8 @@ import {
 import { LazyLoadSection, useIsMobile, useReducedMotion } from "@/hooks/useIntersectionLoader";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "wouter";
+import { SEO } from "@/components/SEO";
+import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 
 const FeaturesSection = lazy(() => import("@/components/features-section"));
 const PricingSection = lazy(() => import("@/components/pricing-section"));
@@ -106,6 +108,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-200">
+      <SEO
+        title="AI Resume Builder — Beat ATS & Land Interviews | CVGenie ATS"
+        description="Build ATS-optimized resumes and tailored cover letters in seconds with AI. Beat applicant tracking systems and land more interviews. Try CVGenie free today."
+        canonical="https://cvgenieats.com/"
+      />
       <Header />
       <main>
         <HeroSection />
@@ -285,6 +292,7 @@ export default function Home() {
           </div>
         </LazyLoadSection>
       </main>
+      <StickyMobileCTA />
       <Footer />
     </div>
   );

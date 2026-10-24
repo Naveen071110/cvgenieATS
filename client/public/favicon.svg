@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="cvGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#60a5fa" />
+    </linearGradient>
+    <linearGradient id="sparkleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
+    </filter>
+  </defs>
+  
+  <!-- Rounded Base Badge -->
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#cvGrad)" filter="url(#shadow)" />
+  
+  <!-- Document Sheet Silhouette -->
+  <path d="M20 16 H36 L44 24 V48 H20 Z" fill="#ffffff" fill-opacity="0.95" />
+  
+  <!-- Folded Corner -->
+  <path d="M36 16 V24 H44 Z" fill="#93c5fd" />
+  
+  <!-- Document Lines (ATS Structured) -->
+  <line x1="25" y1="28" x2="35" y2="28" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round" />
+  <line x1="25" y1="34" x2="39" y2="34" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" />
+  <line x1="25" y1="39" x2="37" y2="39" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" />
+  <line x1="25" y1="44" x2="32" y2="44" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" />
+  
+  <!-- AI Sparkle Icon -->
+  <path d="M46 12 L47.5 16.5 L52 18 L47.5 19.5 L46 24 L44.5 19.5 L40 18 L44.5 16.5 Z" fill="url(#sparkleGrad)" />
+  <circle cx="50" cy="27" r="1.5" fill="#fde68a" />
+</svg>

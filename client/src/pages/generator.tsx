@@ -18,6 +18,7 @@ import CoverLetterIcon from '@/assets/icons/cover-letter.svg?react';
 import { FileUpload } from "@/components/file-upload";
 import { AILoadingState } from "@/components/ai-loading-state";
 import { ExportDropdown } from "@/components/ExportDropdown";
+import { SEO } from "@/components/SEO";
 
 // Define supported formats
 const SUPPORTED_FORMATS = {
@@ -392,6 +393,11 @@ export default function Generator() {
 
   return (
     <AppShell title="Generate Resume">
+      <SEO
+        title="AI Resume & Cover Letter Generator — Two-Pass Optimization | CVGenie ATS"
+        description="Generate an ATS-compliant resume and tailored cover letter in under 60 seconds with AI. Vector formatting engineered for Workday, Greenhouse, and Taleo."
+        canonical="https://cvgenieats.com/generator"
+      />
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="typography-headline text-slate-900 dark:text-white mb-4">

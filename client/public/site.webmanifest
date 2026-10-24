@@ -1,0 +1,22 @@
+{
+  "name": "CVGenie ATS — AI Resume Builder",
+  "short_name": "CVGenie",
+  "description": "AI-powered resume builder engineered to pass every major ATS scanner. Generate tailored resumes and cover letters in seconds.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/og-image.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

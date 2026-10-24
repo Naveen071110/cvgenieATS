@@ -4,6 +4,7 @@ import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { SEO } from "@/components/SEO";
 import { blogPosts } from "@/content/blog/posts";
 
 function formatDate(dateStr: string): string {
@@ -38,28 +39,13 @@ export default function Blog() {
     return blogPosts.filter((post) => post.tags.includes(activeTag));
   }, [activeTag]);
 
-  useEffect(() => {
-    document.title = "Blog — ATS & Resume Tips | CVGenie";
-    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content =
-      "Actionable tips on ATS optimization, resume writing, cover letters, and job search strategy from the CVGenie team.";
-    return () => {
-      document.title = "CVGenie — AI Resume & Cover Letter Generator";
-      const metaDescCleanup = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-      if (metaDescCleanup) {
-        metaDescCleanup.content =
-          "CVGenie uses AI to generate ATS-optimized resumes and cover letters tailored to any job description. Try free today.";
-      }
-    };
-  }, []);
-
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <SEO
+        title="ATS Optimization & Career Blog — Field Guides | CVGenie ATS"
+        description="Actionable field guides on beating Applicant Tracking Systems, keyword targeting, modern resume formatting, and interview preparation from CVGenie."
+        canonical="https://cvgenieats.com/blog"
+      />
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">

@@ -25,6 +25,7 @@ const ATSScore = lazy(() => import("@/pages/ats-score"));
 const InterviewPrep = lazy(() => import("@/pages/interview-prep"));
 const Blog = lazy(() => import("@/pages/blog"));
 const BlogPost = lazy(() => import("@/pages/blog-post"));
+const ThankYou = lazy(() => import("@/pages/thank-you"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
@@ -94,6 +95,11 @@ function Router() {
       <Route path="/blog">
         <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
           <Blog />
+        </Suspense>
+      </Route>
+      <Route path="/thank-you">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="branded-spinner"></div></div>}>
+          <ThankYou />
         </Suspense>
       </Route>
       <Route>

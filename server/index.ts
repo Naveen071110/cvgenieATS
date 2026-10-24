@@ -44,6 +44,21 @@ if (!process.env.NODE_ENV) {
 
 const app = express();
 
+// Trust reverse proxy for correct client IP detection in rate limiters
+app.set("trust proxy", 1);
+
+// Security Headers Middleware (OWASP defensive posture)
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  }
+  next();
+});
+
 // Enable compression middleware early in the stack
 app.use(compression({
   level: 6, // Compression level (1-9)
@@ -106,12 +121,23 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (capturedJsonResponse && typeof capturedJsonResponse === "object") {
+        // Redact full resume and document text from logs to prevent PII exposure
+        const sanitized = { ...capturedJsonResponse };
+        if (sanitized.resume && typeof sanitized.resume === "string") {
+          sanitized.resume = `[REDACTED_TEXT length=${sanitized.resume.length}]`;
+        }
+        if (sanitized.coverLetter && typeof sanitized.coverLetter === "string") {
+          sanitized.coverLetter = `[REDACTED_TEXT length=${sanitized.coverLetter.length}]`;
+        }
+        if (sanitized.extractedContent && typeof sanitized.extractedContent === "string") {
+          sanitized.extractedContent = `[REDACTED_TEXT length=${sanitized.extractedContent.length}]`;
+        }
+        logLine += ` :: ${JSON.stringify(sanitized)}`;
       }
 
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
+      if (logLine.length > 120) {
+        logLine = logLine.slice(0, 119) + "…";
       }
 
       log(logLine);

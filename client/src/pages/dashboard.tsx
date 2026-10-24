@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell/AppShell";
 import { useQuery } from "@tanstack/react-query";
+import { SEO } from "@/components/SEO";
 
 interface SubscriptionStatus {
   isPro: boolean;
@@ -308,6 +309,11 @@ export default function Dashboard() {
 
   return (
     <AppShell title="Dashboard">
+      <SEO
+        title="Candidate Dashboard — Saved Resumes &amp; ATS Analytics | CVGenie ATS"
+        description="Access your generated resumes, ATS optimization history, cover letters, and mock interview prep from your CVGenie candidate portal."
+        noindex={true}
+      />
       <DashboardContent />
     </AppShell>
   );
