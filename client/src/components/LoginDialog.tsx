@@ -10,7 +10,16 @@ interface LoginDialogProps {
 
 function getRedirectUrl(): string {
   const savedRedirect = localStorage.getItem("auth_redirect");
-  return savedRedirect || "/dashboard";
+  if (
+    savedRedirect &&
+    typeof savedRedirect === "string" &&
+    savedRedirect.startsWith("/") &&
+    !savedRedirect.startsWith("//") &&
+    !savedRedirect.includes("\\")
+  ) {
+    return savedRedirect;
+  }
+  return "/dashboard";
 }
 
 export function LoginDialog({ open, onOpenChange, title, description }: LoginDialogProps) {

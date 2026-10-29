@@ -17,14 +17,14 @@ import documentParser from "./documentParser";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { randomUUID } from "crypto";
+import crypto, { randomUUID } from "crypto";
 import { requireAuth, getAuth, clerkClient } from "@clerk/express";
 import { insertResume, getResumesByUserId, getResumeById, deleteResume } from "./database/resumeQueries";
 import { createCheckoutSession, verifyPaymentStatus, getSubscriptionStatus, cancelSubscription, PRODUCT_ID } from "./services/dodoPayments";
 import { resetAllUsersToFree } from "./database/resetSubscriptions";
 import type { ResumeData } from "./documentGenerator"; // Assuming ResumeData is exported from documentGenerator
 import { getUserSubscription, updateUserSubscription, getUserUsageCount, incrementUserUsageCount } from "./database/subscriptionQueries";
-import { generateLimiter, uploadLimiter, interviewLimiter } from "./middleware/rateLimiter";
+import { generateLimiter, uploadLimiter, interviewLimiter, exportLimiter, adminLimiter } from "./middleware/rateLimiter";
 
 const tmpDir = path.join(process.cwd(), "tmp");
 
@@ -795,10 +795,8 @@ ${resumeText.trim().slice(0, 6000)}`;
 
       const paymentLink = checkoutUrl.toString();
 
-      console.log(`✅ Generated direct checkout link for user ${userId}`);
-      console.log(`   Email: ${userEmail}`);
-      console.log(`   Name: ${userName}`);
-      console.log(`   Link: ${paymentLink}`);
+      const maskedEmail = userEmail.replace(/^(.{2})(.*)(@.*)$/, (_, a, b, c) => `${a}${'*'.repeat(Math.max(1, b.length))}${c}`);
+      console.log(`✅ Generated checkout link for user ${userId} (Email: ${maskedEmail})`);
 
       res.json({
         paymentLink,
@@ -905,7 +903,7 @@ ${resumeText.trim().slice(0, 6000)}`;
   });
 
   // POST /api/admin/reset-subscriptions - Reset all users to free tier (protected admin endpoint)
-  app.post("/api/admin/reset-subscriptions", requireAuth(), async (req, res) => {
+  app.post("/api/admin/reset-subscriptions", adminLimiter, requireAuth(), async (req, res) => {
     try {
       const auth = getAuth(req);
       const userId = auth?.userId;
@@ -914,11 +912,19 @@ ${resumeText.trim().slice(0, 6000)}`;
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Strict administrative authorization check
+      // Strict administrative authorization check with timing-safe comparison
       const adminSecret = (req.headers["x-admin-secret"] as string) || req.body?.adminSecret;
       const configuredSecret = process.env.ADMIN_SECRET_KEY;
 
-      if (!configuredSecret || adminSecret !== configuredSecret) {
+      const isSecretValid = Boolean(
+        configuredSecret &&
+        adminSecret &&
+        typeof adminSecret === "string" &&
+        adminSecret.length === configuredSecret.length &&
+        crypto.timingSafeEqual(Buffer.from(adminSecret), Buffer.from(configuredSecret))
+      );
+
+      if (!isSecretValid) {
         console.warn(`[SECURITY ALERT] Unauthorized admin reset attempt by user: ${userId}`);
         return res.status(403).json({ error: "Forbidden: Administrator secret required." });
       }
@@ -937,12 +943,12 @@ ${resumeText.trim().slice(0, 6000)}`;
   });
 
   // POST /api/export/pdf - Export content to PDF
-  app.post("/api/export/pdf", async (req, res) => {
+  app.post("/api/export/pdf", exportLimiter, async (req, res) => {
     try {
       const { content, filename = "document.pdf" } = req.body;
 
-      if (!content || typeof content !== "string") {
-        return res.status(400).json({ error: "Content is required" });
+      if (!content || typeof content !== "string" || content.length > 50000) {
+        return res.status(400).json({ error: "Content is required and must not exceed 50,000 characters" });
       }
 
       // Check if user is Pro (optional auth)
@@ -958,9 +964,10 @@ ${resumeText.trim().slice(0, 6000)}`;
       }
 
       const pdfBuffer = await documentGenerator.generatePDFFromText(content, { isPro });
+      const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, "_") || "document.pdf";
 
       res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.setHeader("Content-Disposition", `attachment; filename="${safeFilename}"`);
       res.send(pdfBuffer);
     } catch (error: any) {
       console.error("Error generating PDF:", error);
@@ -969,12 +976,12 @@ ${resumeText.trim().slice(0, 6000)}`;
   });
 
   // POST /api/export/docx - Export content to DOCX
-  app.post("/api/export/docx", async (req, res) => {
+  app.post("/api/export/docx", exportLimiter, async (req, res) => {
     try {
       const { content, filename = "document.docx" } = req.body;
 
-      if (!content || typeof content !== "string") {
-        return res.status(400).json({ error: "Content is required" });
+      if (!content || typeof content !== "string" || content.length > 50000) {
+        return res.status(400).json({ error: "Content is required and must not exceed 50,000 characters" });
       }
 
       // Check if user is Pro (optional auth)
@@ -990,9 +997,10 @@ ${resumeText.trim().slice(0, 6000)}`;
       }
 
       const docxBuffer = await documentGenerator.generateDOCXFromText(content, { isPro });
+      const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, "_") || "document.docx";
 
       res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.setHeader("Content-Disposition", `attachment; filename="${safeFilename}"`);
       res.send(docxBuffer);
     } catch (error: any) {
       console.error("Error generating DOCX:", error);
@@ -1001,12 +1009,12 @@ ${resumeText.trim().slice(0, 6000)}`;
   });
 
   // POST /api/export/txt - Export content to TXT
-  app.post("/api/export/txt", async (req, res) => {
+  app.post("/api/export/txt", exportLimiter, async (req, res) => {
     try {
       const { content, filename = "document.txt" } = req.body;
 
-      if (!content || typeof content !== "string") {
-        return res.status(400).json({ error: "Content is required" });
+      if (!content || typeof content !== "string" || content.length > 50000) {
+        return res.status(400).json({ error: "Content is required and must not exceed 50,000 characters" });
       }
 
       // Check if user is Pro (optional auth)
@@ -1022,9 +1030,10 @@ ${resumeText.trim().slice(0, 6000)}`;
       }
 
       const txtBuffer = documentGenerator.generateTXTFromText(content, { isPro });
+      const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, "_") || "document.txt";
 
       res.setHeader("Content-Type", "text/plain");
-      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.setHeader("Content-Disposition", `attachment; filename="${safeFilename}"`);
       res.send(txtBuffer);
     } catch (error: any) {
       console.error("Error generating TXT:", error);

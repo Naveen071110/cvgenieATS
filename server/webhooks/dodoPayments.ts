@@ -116,7 +116,6 @@ async function handleSubscriptionCreated(payload: WebhookPayload) {
   console.log('Subscription created:', {
     subscriptionId,
     customerId,
-    customerEmail,
     userId,
   });
 

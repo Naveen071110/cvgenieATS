@@ -53,6 +53,20 @@ app.use((_req, res, next) => {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), payment=(self 'https://checkout.dodopayments.com')"
+  );
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' https://clerk.cvgenieats.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://www.googletagmanager.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src 'self' https://fonts.gstatic.com data:; " +
+    "img-src 'self' data: https: blob:; " +
+    "connect-src 'self' https://clerk.cvgenieats.com https://*.clerk.accounts.dev https://api.dodopayments.com https://checkout.dodopayments.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; " +
+    "frame-src 'self' https://challenges.cloudflare.com https://checkout.dodopayments.com;"
+  );
   if (process.env.NODE_ENV === "production") {
     res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   }
@@ -167,6 +181,24 @@ app.use(/\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$/, (req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=604800');
   next();
 });
+
+// Periodic temporary file reaper (cleans orphaned .docx files older than 30 minutes)
+const tmpCleanupDir = path.join(process.cwd(), "tmp");
+setInterval(() => {
+  try {
+    if (fs.existsSync(tmpCleanupDir)) {
+      const now = Date.now();
+      const maxAgeMs = 30 * 60 * 1000;
+      fs.readdirSync(tmpCleanupDir).forEach((file) => {
+        const fullPath = path.join(tmpCleanupDir, file);
+        const stats = fs.statSync(fullPath);
+        if (now - stats.mtimeMs > maxAgeMs) {
+          try { fs.unlinkSync(fullPath); } catch (_) {}
+        }
+      });
+    }
+  } catch (_) {}
+}, 15 * 60 * 1000);
 
 (async () => {
   // Initialize Neon database tables

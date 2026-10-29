@@ -59,3 +59,33 @@ export const interviewLimiter = rateLimit({
     error: "Too many interview question requests. Please wait a few minutes before trying again.",
   },
 });
+
+/**
+ * Rate limiter for CPU-intensive document exports (PDF, DOCX, TXT)
+ * Max 20 requests per 10 minutes window
+ */
+export const exportLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 20,
+  keyGenerator,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many document export requests. Please wait a few minutes before trying again.",
+  },
+});
+
+/**
+ * Strict rate limiter for administrative reset actions
+ * Max 5 attempts per 15 minutes window
+ */
+export const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  keyGenerator,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many administrative attempts. Access temporarily locked.",
+  },
+});

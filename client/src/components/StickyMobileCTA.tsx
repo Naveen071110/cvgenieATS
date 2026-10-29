@@ -80,8 +80,8 @@ export function StickyMobileCTA() {
       </AnimatePresence>
 
       <LoginDialog
-        isOpen={showLogin}
-        onClose={() => setShowLogin(false)}
+        open={showLogin}
+        onOpenChange={setShowLogin}
         title="Sign in to Build Your Resume"
         description="Save your resumes, track ATS match score, and generate tailored cover letters in seconds."
       />
